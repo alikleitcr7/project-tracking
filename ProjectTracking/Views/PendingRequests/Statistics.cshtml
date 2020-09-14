@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewData["Title"] = "Permission Requests Records";
+    var userId = ViewData["UserId"] ?? null;
+}
+@model ProjectTracking.DataContract.User
+
+
+<div class="main-container" id="app" v-cloak>
+    <input type="hidden" value="@userId" id="UserIdField" />
+   
+    <h2 class="mb-3">
+        @(Model == null ? "" : Model.FullName + "'s Approved Permission Requests")
+    </h2>
+
+    <div  v-show="searchYears.length==0">
+        no approved permissions yet...
+    </div>
+
+    <div class="mt-5">
+        <div class="form-inline mt-5" v-show="searchYears.length>0">
+            <span class="mt-5">Filter Permissions</span>
+
+            <div class="form-group">
+                <label for="YearSelector">
+                    Year
+                    <select v-show="searchYears.length>0" v-on:change="GetPermissionRequestsMonths(yearOfTotals)" v-model="yearOfTotals" class="form-control" id="YearSelector">
+                        <option v-for="year in searchYears" :value="year" >{{year}}</option>
+                    </select>
+                </label>
+            </div>
+            <div class="form-group" v-show="yearOfTotals>0 && searchMonths.length>0">
+                <label for="MonthSelector">
+                    Month
+                    <select v-model="monthOfTotals" class="form-control" id="MonthSelector">
+                        <option selected></option>
+                        <option v-for="month in searchMonths" :value="month">{{month}}</option>
+
+                    </select>
+                </label>
+            </div>
+
+            <button v-on:click="searchPermissionRequests()" class="Button ml-4 Button-Shared">Search</button>
+        </div>
+        <div class="dashboard-insights" v-show="permissionRequestTotals.length>0">
+            <div class="dashboard-insight d-inline-block text-center" v-for="permissionRequestTotal in permissionRequestTotals">
+                <div class="dashboard-insight__title">
+                    
+                    <h4>{{permissionRequestTotal.durationSpan}}</h4>
+                </div>
+                <div class="dashboard-insight__value">
+                    <h4> {{permissionRequestTotal.permissionTitle}}  </h4>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="mt-5" v-show="requestedPermissions.length>0">
+        <h4 >Permissions Details</h4>
+        <section v-show="!requestedPermissionsLoading" id="Pagination" v-bind:class="{ 'd-none':(dataPaging.totalPages < 2 )}">
+            <div class="container">
+
+                <paginate :page-count="dataPaging.totalPages"
+                          :container-class="dataPaging.pagination"
+                          :prev-text="dataPaging.prev"
+                          :next-text="dataPaging.next"
+                          :click-handler="clickCallback">
+                </paginate>
+
+            </div>
+        </section>
+        <div v-show="!requestedPermissionsLoading"
+             class="table-controls table-responsive">
+
+            <table class="table border bg-light " style="min-width:1000px;">
+                <thead>
+                    <tr>
+                        <td>Requested Permission</td>
+                        <td>From Date/Time</td>
+                        <td>To Date/Time</td>
+                        <td>Duration Span</td>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="(permission ,index ) in requestedPermissions ">
+                        <tr>
+                            <td>
+                                <span>{{permission.permissionTitle}}</span>
+                            </td>
+                            <td>
+                                <span>{{permission.displayFromDate}}</span>
+                            </td>
+                            <td>
+                                <span>{{permission.displayToDate}}</span>
+                            </td>
+                            <td>
+                                {{permission.timeSpan}}
+                            </td>
+
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Styles{
+    <link href="~/css/Dashboard.min.css" rel="stylesheet" />
+}
+
+@section Scripts{
+    <script src="https://unpkg.com/vuejs-paginate@latest"></script>
+
+    <script src="~/services/PermissionRequests.js"></script>
+    <script src="~/js/statistics/ApprovedPermissionRequests.js"></script>
+}

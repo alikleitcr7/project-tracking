@@ -1,0 +1,318 @@
+﻿@using System.Security.Claims;
+@{
+    ViewData["Title"] = "PendingRequests";
+
+ string userId = "";
+ if (User.Identity.IsAuthenticated)
+ {
+     userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+ }
+}
+
+<div class="main-container" id="Requests" v-cloak>
+    <h2>Leave Permissions</h2>
+
+    <ul class="nav nav-pills">
+        <li class="active"><a class="" data-toggle="tab" href="#MakeRequestPanel">Request</a></li>
+        <li><a data-toggle="tab" href="#RequestsStatusPanel">Sent Requests </a></li>
+        <li><a data-toggle="tab" v-if="EmployeeHasSubordinates" href="#SubEmpsRequestPanel">Subordinates Permission Requests</a></li>
+        <li><a v-if="EmployeeHasSubordinates" asp-controller="TimeSheets" asp-action="SubordinatesTimeSheets">Subordinates TimeSheet Requests</a></li>
+
+    </ul>
+
+    <div class="tab-content pt-5">
+        <div id="MakeRequestPanel" class="tab-pane fade in active">
+            <div class="top-buttons mb-2">
+                <a class="Button-Shared" href="/pendingrequests/statistics/@userId">Previous Requests Made (By Year)</a>
+            </div>
+            <br />
+            <form>
+                <div class="form-group">
+                    <label for="sel1">Permission</label>
+                    <select class="form-control" id="sel1" v-model="selectedPermission">
+                        <option value="" disabled selected>Select your permission</option>
+                        <option v-for="permission in permissions" v-bind:value="permission.id">{{permission.title}}</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-5">
+                        <label for="usr">from date</label>
+
+                        @*<input type="text"
+                            class="form-control datetimepicker-time"
+                            id="RequestPermissionFromDate">*@
+
+                        <date-picker v-model="permissionRequestModal.FromDate" :config="dateTimeOptions"></date-picker>
+                    </div>
+                    <div class="form-group col-sm-5">
+                        <label for="pwd">to date</label>
+                        <date-picker v-model="permissionRequestModal.ToDate" :config="dateTimeOptions"></date-picker>
+
+                        @*<input type="text"
+                            class="form-control datetimepicker-time"
+                            id="RequestPermissionToDate">*@
+                    </div>
+                    <div class="form-group col-sm-2">
+                        <label>Duration</label>
+                        <div>
+                            {{fromToTimeSpan}}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="comment">Note</label>
+                    <textarea class="form-control"
+                              v-model="permissionRequestModal.Notes"
+                              rows="5"
+                              id="comment">
+                    </textarea>
+                </div>
+                <div>
+                    <div v-show="errors.length>0" class="text-danger">
+                        <ul>
+                            <li v-for="error in errors">{{error}}</li>
+                        </ul>
+                    </div>
+                    <a class="btn Button-Shared " v-on:click="addPermission">Send Permission</a>
+                </div>
+            </form>
+        </div>
+        <div id="RequestsStatusPanel" class="tab-pane fade">
+            <section v-show="!requestedPermissionsLoading" id="Pagination" v-bind:class="{ 'd-none':(dataPaging.totalPages < 2 )}">
+                <div class="container">
+                    <paginate :page-count="dataPaging.totalPages"
+                              :container-class="dataPaging.pagination"
+                              :prev-text="dataPaging.prev"
+                              :next-text="dataPaging.next"
+                              :click-handler="clickCallback">
+                    </paginate>
+                </div>
+            </section>
+
+            <h4 v-show="!requestedPermissionsLoading && !requestedPermissions.length">No Sent Requests</h4>
+            <div v-show="!requestedPermissionsLoading  && requestedPermissions.length">
+
+                <div class="top-buttons mb-4">
+                    <span class="clickable-link Button-Shared" v-on:click="expanddAll">
+                        <span style="display:none">
+                            <img style="" class="cell-arrow"
+                                 v-bind:class="{'rotate-Arrow' : areExpandAll}"
+                                 src="~/icons/arrow-down.svg" />
+                        </span>
+                        <span><small class="">{{areExpandAll ? 'Collapse': 'Expand'}}</small></span>
+                    </span>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Title</th>
+                            <th>From Date/Time</th>
+                            <th>To Date/Time</th>
+                            <th>Duration</th>
+                            <th>Notes</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template v-for="permissionRequest in requestedPermissions">
+                            <tr>
+                                <td width="5px;">
+                                    <span v-on:click="expandPermission(permissionRequest,requestedPermissions.indexOf(permissionRequest))">
+                                        <img class="cell-arrow"
+                                             v-bind:class="{'rotate-Arrow' : permissionRequest.isExpanded }"
+                                             src="~/icons/arrow-down.svg" />
+                                    </span>
+                                </td>
+                                <td>
+                                    <span>{{permissionRequest.permission.title}}</span>
+                                </td>
+                                <td>
+                                    <span>{{permissionRequest.displayFromDate}}</span>
+                                </td>
+                                <td>
+                                    <span>{{permissionRequest.displayToDate}}</span>
+                                </td>
+                                <td>
+                                    {{permissionRequest.timeSpan}}
+                                </td>
+                                <td>
+                                    <span>{{permissionRequest.notes}}</span>
+                                </td>
+                                <td>
+                                    {{getFinalStatus(permissionRequest)}}
+                                </td>
+                            </tr>
+                            <tr class="gray-light-background {" v-show="permissionRequest.isExpanded && permissionRequest.requestedPermissionsStatuses.length>0">
+                                <td colspan="5">
+                                    <table class="table table-child bg-transparent">
+                                        <thead>
+                                            <tr>
+                                                <th>Supervisor</th>
+                                                <th>Status</th>
+                                                <th>Comments</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template v-for="requestedPermissionsStatus in permissionRequest.requestedPermissionsStatuses">
+                                                <tr>
+                                                    <td>
+                                                        <span>
+                                                            {{requestedPermissionsStatus.superviser.fullName}}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span>{{requestedPermissionsStatus.requestStatus}}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span>
+                                                            {{requestedPermissionsStatus.comments}}
+                                                        </span>
+                                                    </td>
+
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div id="SubEmpsRequestPanel" class="tab-pane fade">
+            <h3>Subordinates Permission Requests</h3>
+            <section v-show="!supervisingRequestedPermissionsLoading" id="Pagination" v-bind:class="{ 'd-none':(supervisingDataPaging.totalPages < 2 )}">
+                <div class="container">
+
+                    <paginate :page-count="supervisingDataPaging.totalPages"
+                              :container-class="supervisingDataPaging.pagination"
+                              :prev-text="supervisingDataPaging.prev"
+                              :next-text="supervisingDataPaging.next"
+                              :click-handler="clickCallbackSupervising">
+                    </paginate>
+
+                </div>
+            </section>
+            <div v-show="!supervisingRequestedPermissionsLoading"
+                 class="table-controls table-responsive">
+
+                <table class="table border bg-light " style="min-width:1000px;">
+                    <thead>
+                        <tr>
+                            <td>Employee Name</td>
+                            <td>Company/Department</td>
+                            <td>Notes</td>
+                            <td>From Date/Time</td>
+                            <td>To Date/Time</td>
+                            <td>Duration Span</td>
+                            <td> Permissions Tracking</td>
+
+                            <td>Permit</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template v-for="(permission ,index ) in supervisingRequestedPermissions ">
+                            <tr>
+                                <td>
+                                    <span>{{permission.requestedPermission.applicationUser.fullName}}</span>
+                                </td>
+                                <td>
+                                    <span>{{permission.requestedPermission.applicationUser.company.name}}</span>/
+                                    <span>{{permission.requestedPermission.applicationUser.department.name}}</span>
+                                </td>
+
+                                <td>
+                                    <span>
+                                        {{permission.requestedPermission.notes}}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span>{{permission.requestedPermission.displayFromDate}}</span>
+                                </td>
+                                <td>
+                                    <span>{{permission.requestedPermission.displayToDate}}</span>
+                                </td>
+                                <td>
+                                    {{permission.requestedPermission.timeSpan}}
+                                </td>
+                                <td class="text-center">
+                                    <a class="Button Button-Shared" target="_blank"
+                                       v-bind:href="'PendingRequests/statistics/'+permission.requestedPermission.applicationUser.id">
+                                        <i class="fa fa-archive "></i>
+                                    </a>
+                                </td>
+                                <td class="buttons-cell">
+                                    <span v-show="permission.isApproved==0" data-toggle="modal" data-target="#PermitModal" v-on:click="setPermitModal(permission.id,index)">
+                                        <img style="width:30px;" src="~/icons/edit(1).svg" />
+                                    </span>
+                                    <span v-show="permission.isApproved==1">
+                                        Approved
+                                    </span>
+                                    <span v-show="permission.isApproved==2">
+                                        Rejected
+                                    </span>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="PermitModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Permission Permit</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="comment">Comment:</label>
+                        <textarea class="form-control" v-model="permitModal.comment" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="radio disabled">
+                            <label><input type="radio" v-model="permitModal.status" v-bind:value="0" disabled>Pending</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" v-model="permitModal.status" v-bind:value="1">Approve</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" v-model="permitModal.status" v-bind:value="2">Reject</label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default text-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn Button-Shared " v-on:click="PermitRequestPermission" data-dismiss="modal">Permit</button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    <link href="~/css/pendingRequests.min.css" rel="stylesheet" />
+}
+
+@section Scripts{
+
+    <script src="https://unpkg.com/vuejs-paginate@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
+
+    <script src="~/services/PermissionRequests.js"></script>
+    <script src="~/js/PendingRequests.js"></script>
+}

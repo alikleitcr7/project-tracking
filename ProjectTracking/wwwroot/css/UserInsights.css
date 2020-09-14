@@ -1,0 +1,10 @@
+.top-controls select,
+.top-controls input {
+  max-width: 200px;
+}
+.flex-visualize {
+  display: flex;
+}
+.flex-visualize > div {
+  flex: 1;
+}

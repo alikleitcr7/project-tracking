@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "Permissions Management";
+}
+<div class="main-container">
+    <h2>Leave Permissions</h2>
+    <div id="permissionManager" v-cloak>
+       
+        <div class="top-controls mb-3" v-if="!isLoading">
+            <div class="mb-2">
+                <button class="Button-Shared "
+                        data-toggle="modal"
+                        data-target="#CreateProjModal"
+                    >
+                    Create
+                </button>
+            </div>
+        </div>
+
+        <div class="scrollable-container-500">
+            <h4 v-show="!isLoading && !permissions.length">No Records, Click <span class="main-color clickable-link" data-target="#CreateProjModal" data-toggle="modal" >Create</span> to Add Leave Permissions </h4>
+            <table class="table" v-show="permissions.length">
+                <thead>
+                    <tr>
+                        <td>Title</td>
+                        <td>description</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="(permission ,index ) in permissions ">
+                        <tr>
+                            <td>
+                                <span v-show="permission.editMode && !permission.editMode.active">{{permission.title}}</span>
+                                <input v-show="permission.editMode &&  permission.editMode.active" v-model="permission.editMode.title">
+                            </td>
+                            <td>
+                                <span v-show="!permission.editMode.active">{{permission.description}}</span>
+                                <input v-show="permission.editMode.active" v-model="permission.editMode.description">
+                            </td>
+                           
+                            <td class="buttons-cell">
+                                <span v-show="!permission.editMode.active" v-on:click="toggleEditMode(permission,index)">
+                                    <img src="~/icons/edit(1).svg" />
+                                </span>
+                                <span v-show="permission.editMode.active" v-on:click="editPermission(permission,index)">
+                                    <img src="~/icons/check.svg" />
+                                </span>
+                                <span v-show="permission.editMode.active" v-on:click="toggleEditMode(permission,index)">
+                                    <img src="~/icons/letter-x.svg" />
+                                </span>
+                                <span v-on:click="deletepermission(permission.id,index)">
+                                    <img src="~/icons/delete-button.svg" />
+                                </span>
+                            </td>
+                        </tr>
+
+
+                        <button class="Button-Shared ml-2 mb-3"
+                                data-toggle="modal"
+                                data-target="#CreateProjModal"
+                                type="button"
+                                v-show="permission.isExpanded"
+                                v-on:click="openAddModal(permission)">
+                            Add Activity
+                        </button>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+        <div id="permissionContents">
+            <p v-if="isLoading">Loading...</p>
+            <div v-if="!isLoading"></div>
+        </div>
+        <!--Create Proj Modal -->
+        <div id="CreateProjModal" class="modal fade" role="dialog">
+          
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Create Permission</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="usr">Title</label>
+                            <input type="text" class="form-control" v-model="permission.title">
+                        </div>
+                        <div class="form-group">
+                            <label for="usr">Description</label>
+                            <input type="text" class="form-control" v-model="permission.description">
+                        </div>
+                        <div class="form-group">
+                            <div v-show="errors.length>0" >
+                                <div v-for="error in errors" class="text-danger">
+                                    {{error}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="Button-Shared" v-on:click="addpermission">Add Permission</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section styles{
+    <link href="~/css/projects.min.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="~/js/permissions.js"></script>
+}

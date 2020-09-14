@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="InventoryProject.cs" />
+    <Compile Remove="InventoryProjectFilter.cs" />
+    <Compile Remove="InventoryProjectPublishingChannel.cs" />
+    <Compile Remove="InventoryProjectSubProjects.cs" />
+    <Compile Remove="Permission.cs" />
+    <Compile Remove="RequestedPermission.cs" />
+    <Compile Remove="RequestedPermissionsStatus.cs" />
+    <Compile Remove="RequestedPermissionsStatusCode.cs" />
+  </ItemGroup>
+
+</Project>

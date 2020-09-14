@@ -1,0 +1,99 @@
+﻿@using ProjectTracking.DataContract
+
+@inject ProjectTracking.Data.Methods.Interfaces.IUserMethods _users
+@{
+    ViewData["Title"] = "Index";
+    string id = ViewData["ID"].ToString();
+    TimeSheet timeSheet = (TimeSheet)ViewData["TimeSheet"];
+
+    User timeSheetUser = _users.GetEmployee(timeSheet.UserId);
+    //ProjectTracking.DataContract.User user= (ProjectTracking.DataContract.User)ViewData["TimeSheetUser"];
+}
+
+
+<input type="hidden" value="@id" name="id" />
+
+
+<div id="TimeSheet" class="main-container" v-cloak>
+
+    <a id="dlink" style="display:none;"></a>
+
+    <div class="top-buttons pb-3">
+        <input class="Button-Shared" type="button" onclick="tableToExcel('TimeSheetTable', 'TimeSheetTable', `TimeSheet_@(timeSheet.FromDateDisplay).xls`)" value="Export to Excel" />
+
+        <a class="Button-Shared" target="_blank" href="/timesheets/usertimesheets?userId=@timeSheet.UserId&timeSheetId=@timeSheet.ID">Explore</a>
+
+        <a href="/employees/profile/@timeSheetUser.Id" class="Button-Shared">Profile</a>
+    </div>
+
+    <p v-show="timeSheetLoading">Loading Time Sheet...</p>
+
+    <div class="timesheet" v-if="timeSheet !== null && !timeSheetLoading">
+
+        <div class="timesheet-header">
+            <h4>@timeSheetUser.FullName - {{timeSheet.title}}</h4>
+            <small>{{timeSheet.fromDate}} - {{timeSheet.toDate}}</small>
+        </div>
+        <div class="timesheet-content">
+            <div class="table-responsive">
+                <table id="TimeSheetTable" class="table table-striped">
+                    <tr>
+                        <th class="fixed-side">Project</th>
+                        <th>Activities</th>
+                        <th v-for="month in timeSheet.months" v-bind:class="{'highlight': month.isHighlighted}">{{month.monthDay}}/{{month.month}}</th>
+                        <th>Total</th>
+                    </tr>
+
+                    <template v-for="(project, index) in timeSheet.projects">
+
+
+                        <tr v-for="(activity,activityIndex) in project.activities">
+                            <td class="fixed-side" v-if="activityIndex === 0"
+                                v-bind:rowspan="`${project.activities.length}`">
+                                {{project.title}}
+                            </td>
+                            <td>{{project.activities[activityIndex].title}}</td>
+                            <td v-bind:class="{'highlight' : timeSheet.months[monthActivity.monthIndex].isHighlighted}"
+                                v-for="monthActivity in project.activities[activityIndex].monthActivities">
+                                {{monthActivity.numberOfHours}}
+                            </td>
+                            <td>
+                                {{getTotalHoursForProject(project.activities[activityIndex].monthActivities)}}
+                            </td>
+                        </tr>
+
+                    </template>
+
+                    <tr>
+                        <td class="fixed-side" colspan="2">
+                            Total
+                        </td>
+                        <td v-for="totalHours in totalHoursPerDay">
+                            {{totalHours}}
+                        </td>
+                        <td>
+                            {{getTotalTimeSheetHours()}}
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+@section styles{
+    <link href="~/css/timesheet.min.css" rel="stylesheet" />
+}
+
+@section scripts{
+
+    <script src="~/js/TimeSheet.js"></script>
+}
+

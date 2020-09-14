@@ -1,0 +1,119 @@
+﻿@using ProjectTracking.DataContract
+@using ProjectTracking.Data.Methods.Interfaces
+
+@{
+    ViewData["Title"] = "TimeSheet Activity Log";
+    int activityId = (int)ViewData["ActivityId"];
+
+
+    List<TimeSheetActivityLog> logs = new List<TimeSheetActivityLog>();
+
+    ProjectTracking.DataContract.TimeSheetActivity activity = activitiesMethods.Get(activityId);
+    ProjectTracking.DataContract.User user = null;
+    ProjectTracking.DataContract.Project project = null;
+
+    if (activity != null)
+    {
+        user = activitiesMethods.GetActivityUser(activityId);
+        project = activitiesMethods.GetActivityProject(activityId);
+        logs = logsMethods.GetByActivity(activityId);
+    }
+
+
+}
+
+
+@inject ITimeSheetActivityLogsMethods logsMethods
+@inject ITimeSheetActivitiesMethods activitiesMethods
+
+@if (activity == null)
+{
+    <h2>Activity Not Found</h2>
+}
+else
+{
+
+    <div class="main-container">
+
+        <h2>Activity log for "@project.Title" in Project "@(project.Parent == null ? "-" : project.Parent.Title)" </h2>
+        <hr />
+        <h4>Employee</h4>
+        <table class="table table-sm">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Company</th>
+                <th>Department</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>@user.FullName</td>
+                <td>@user.Email</td>
+                <td>@user.CompanyDisplay</td>
+                <td>@user.DepartmentDisplay</td>
+                <td>
+                    <a target="_blank" href="/employees/profile/@user.Id" class="Button-Shared Button-Shared">Profile</a>
+                </td>
+            </tr>
+        </table>
+
+        <h4>Latest Activity</h4>
+        <table class="table table-sm">
+            <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Type Of Work</th>
+                <th>Measurement Unit</th>
+                <th>File</th>
+                <th>Number</th>
+                <th>Comment</th>
+                <th>Address</th>
+            </tr>
+            <tr>
+                <td>@activity.FromDateDisplay</td>
+                <td>@activity.ToDateDisplay</td>
+                <td>@activity.TypeOfWorkDisplay</td>
+                <td>@activity.MeasurementUnitDisplay</td>
+                <td>@activity.ProjectFileDisplay</td>
+                <td>@activity.Number</td>
+                <td>@activity.Comment</td>
+                <td>@(activity.IpAddressTitle ?? activity.IpAddress)</td>
+            </tr>
+        </table>
+
+        <h4>Activity Logs</h4>
+        @if (logs.Count == 0)
+        {
+            <p>No logs recorded for this activity</p>
+        }
+        else
+        {
+            <table class="table">
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Type Of Work</th>
+                    <th>Measurement Unit</th>
+                    <th>File</th>
+                    <th>Number</th>
+                    <th>Comment</th>
+                    <th>Address</th>
+                </tr>
+                @foreach (var item in logs)
+                {
+                    <tr>
+                        <td>@item.FromDateDisplay</td>
+                        <td>@item.ToDateDisplay</td>
+                        <td>@item.TypeOfWorkDisplay</td>
+                        <td>@item.MeasurementUnitDisplay</td>
+                        <td>@item.ProjectFileDisplay</td>
+                        <td>@item.Number</td>
+                        <td>@item.Comment</td>
+                        <td>@(item.IpAddressTitle ?? item.IpAddress)</td>
+                    </tr>
+                }
+            </table>
+        }
+
+    </div>
+}

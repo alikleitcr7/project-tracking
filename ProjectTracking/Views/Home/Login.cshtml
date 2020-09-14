@@ -1,0 +1,73 @@
+﻿@using Microsoft.AspNetCore.Identity
+@{
+    string errorMessage = ViewBag.ErrorMessage;
+
+    List<IdentityRole<string>> roles = (List<IdentityRole<string>>)ViewData["Roles"];
+
+    bool s = false;
+}
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model LoginViewModel
+
+<div id="LoginContainer" class="MiddleBoxContainerTemplate">
+
+    @using (Html.BeginForm("Login", "Home", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="MiddleBox">
+
+            <h3>Login</h3>
+
+            <div class="MiddleBoxContent">
+
+                <label>Email</label>
+                @Html.TextBoxFor(m => m.UserName)
+
+                <label>Password</label>
+                @Html.Password("Password")
+
+                @*<label>Role</label>
+                @Html.DropDownListFor(m => m.Role, roles.Select(k => new SelectListItem(k.Name, k.Id)).ToList())*@
+
+                <div>
+                    @Html.CheckBoxFor(m => m.RememberMe)
+                    <label>Remember Me</label>
+                </div>
+
+                <p class=" MiddleLinks LinksSection">
+                    
+                    <a href="/Identity/Account/ForgotPassword" id="ForgotPassword">Forgot Password?</a>
+                </p>
+
+                <button class="Button-Shared Button-Block" type="submit">Sign In</button>
+
+
+                <div>
+
+                    <p>@ViewData["ErrorMessage"]</p>
+
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                </div>
+
+                <p class="BottomLinks LinksSection">
+                    <a href="~/identity/account/register">Register</a>
+                </p>
+
+            </div>
+        </div>
+    }
+</div>
+
+
+
+
+@section Styles {
+    <link href="~/Content/Login.min.css" rel="stylesheet" />
+}
+

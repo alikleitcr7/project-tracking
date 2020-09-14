@@ -1,0 +1,90 @@
+﻿@import 'variables.less';
+
+a,a:hover,a:focus,a:active{
+    outline:none!important;
+    text-decoration:none!important; 
+}
+
+.side-bar {
+    padding-top: 20px;
+    height: 100vh;
+    position: fixed;
+    z-index: 9999;
+    top: 0px;
+    left:0;
+
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: @primary-color-dark;
+    .Box-Shadow-Right;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+
+    hr {
+        display: block;
+        height: 1px;
+        border: 0;
+        border-top: 1px solid #c4c4c4;
+        margin: 1em 0;
+        width: 90%;
+        padding: 0;
+    }
+
+    > .title {
+        font-weight: 600;
+        letter-spacing: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    a:not(.Button) {
+        display: block;
+        color: #fff;
+        padding: 5px 10px;
+    }
+    
+    a:not(.title):not(.Button):not(.side-bar-arrow) {
+        cursor:pointer;
+        &:hover {
+            background-color: rgba(196, 196, 196, 0.20);
+        }
+    }
+
+    .side-bar-arrow {
+        /*position: absolute;*/
+        /*bottom: 10px;*/
+        margin-top: 30px;
+
+        .icon {
+        }
+    }
+
+    .icon {
+        width: 25px;
+        display: block;
+
+        svg {
+            display: block;
+            width: 100%;
+
+            * {
+                fill: #fff !important;
+            }
+        }
+    }
+
+    .side-bar-item {
+        .name {
+        }
+    }
+
+    .buttons {
+
+        a {
+            display: block;
+            width: 100%;
+        }
+    }
+}

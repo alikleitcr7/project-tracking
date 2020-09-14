@@ -1,0 +1,213 @@
+﻿
+@import 'variables.less';
+
+[v-cloak] {
+    display: none !important;
+
+    * {
+        display: none !important;
+    }
+}
+
+
+.ts-column-scrollable {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+#UserTimeSheets {
+    display: flex;
+
+    .list-group-item {
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        font-weight: 400;
+
+        &.is-current-day {
+            color: @main-color;
+            font-weight: bold;
+        }
+
+        &:hover {
+            background-color: @main-xlight;
+        }
+
+        &.active-tab {
+            background-color: @main-dark;
+            color: #fff;
+        }
+    }
+
+    .user-timesheets {
+        /*width: 210px;*/
+        min-width: 210px;
+
+        .ts-column-scrollable;
+    }
+
+    .user-timesheets-content {
+        flex: 1;
+        padding: 0 10px;
+
+        h4 {
+        }
+
+        h5 {
+            color: @dark-gray;
+            font-weight: 600;
+        }
+
+        .user-timesheets-content-container {
+            display: flex;
+        }
+
+        &__days {
+            width: 125px;       
+            .ts-column-scrollable;
+
+        }
+
+        &__projects {
+            flex: 1;
+            padding: 0 10px;
+
+            .timesheet-subProjects {
+                .item-subproject-activity {
+                    margin: 0 5px;
+                    border-radius: 5px;
+                    padding: 5px;
+                    background-color: #909090;
+                    color: #fff;
+                    cursor: pointer;
+                    transition: 50ms all ease-out;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    -webkit-user-select: none;
+                    user-select: none;
+                    font-size: 0.8em;
+
+                    &:hover {
+                        background-color: @main-light;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.item-subproject {
+    display: flex;
+    background-color: #fff;
+    cursor: default !important;
+    border-radius: 5px;
+    margin: 5px;
+
+    &:hover {
+        background-color: #fff !important;
+    }
+
+    > span {
+        padding: 5px;
+    }
+
+    &__title {
+        flex: 1;
+    }
+
+    &__buttons {
+        flex: auto;
+        min-width: 60px;
+        text-align: right;
+    }
+
+    &__tags {
+        overflow-y: auto;
+        display: block;
+        white-space: nowrap;
+        width: 100%;
+
+        .item-subproject-activity {
+            display: inline-block;
+        }
+    }
+
+    &__buttons > span {
+        cursor: pointer;
+        color: @gray;
+        display: inline;
+        opacity: 0.6;
+        transition: 100ms all ease-out;
+        padding: 0 3px;
+
+        &.active {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        &.disabled {
+            opacity: 0.3;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        &:hover, &.active {
+            color: @main-color;
+            opacity: 1;
+        }
+    }
+}
+
+table td {
+    position: relative;
+}
+
+
+.modal-control {
+    position: relative;
+}
+
+.hint-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 9999999999;
+    max-height: 200px;
+    overflow: auto;
+    .BoxShadow;
+    border: 1px solid @gray;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+
+    p {
+        padding: 3px 10px;
+        margin: 0;
+    }
+
+    > span {
+        display: block;
+        padding: 3px 10px;
+        cursor: pointer;
+        z-index: 9999999999;
+
+        * {
+            pointer-events: none;
+        }
+
+        &:hover {
+            background-color: @main-xlight;
+        }
+    }
+}
+
+.is-readonly {
+    .item-subproject__buttons {
+        /*display: none !important;*/
+    }
+
+}

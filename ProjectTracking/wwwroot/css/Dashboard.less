@@ -1,0 +1,105 @@
+﻿@import 'variables.less';
+
+@dashboard-insight-tab-size: 100px;
+@dashboard-tab-size: 130px;
+@dashboard-icon-size: 40px;
+
+#Dashboard {
+    padding: @page-padding;
+}
+
+.dashboard-tab {
+    border: 2px solid @main-dark;
+    margin: 10px;
+}
+
+.dashboard-tabs {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    font-size: 14px;
+
+    .dashboard-tab {
+        .dashboard-tab;
+        width: @dashboard-tab-size + 30px;
+        height: @dashboard-tab-size;
+        cursor: pointer;
+        .BoxShadow;
+
+        &:hover {
+            background-color: @main-xxlight;
+        }
+
+        &__icon {
+            padding: 20px 10px 0 10px;
+            text-align: center;
+
+            svg {
+                width: @dashboard-icon-size;
+                height: @dashboard-icon-size;
+
+                * {
+                    fill: @dark-gray;
+                }
+            }
+        }
+
+        &__title {
+            text-align: center;
+            letter-spacing: 2px;
+            padding: 10px 5px;
+            font-size: 1em;
+            color: #000;
+            /*font-weight:600;*/
+        }
+    }
+}
+
+.dashboard-insights {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    font-size: 14px;
+    margin: 10px 0 20px 0;
+
+    .dashboard-insight {
+        width: @dashboard-insight-tab-size + 40px;
+        height: @dashboard-insight-tab-size;
+        .dashboard-tab;
+        position: relative;
+
+        &__value {
+            padding: 10px 10px 0 10px;
+            text-align: center;
+            font-size: 2em;
+
+            p {
+                font-size: .4em;
+                margin: 2px;
+                text-align: left;
+            }
+        }
+
+        &__title {
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            right: 0;
+            text-align: center;
+            letter-spacing: 2px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            /*overflow: hidden;*/
+            text-overflow: ellipsis;
+            font-size: 1em;
+            color: #000;
+
+            button, a {
+                font-size: .75em;
+                border-radius: 15px;
+                padding: 5px 10px;
+            }
+        }
+    }
+}

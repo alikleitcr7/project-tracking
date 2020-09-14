@@ -1,0 +1,130 @@
+﻿
+@{
+    ViewData["Title"] = "SubordinatesTimeSheets";
+    string id = ViewData["SuperVisorId"].ToString();
+
+}
+<input type="hidden" value="@id" name="id" />
+
+
+<div id="app" class="mt-5 container" v-cloak>
+    <h2>Subordinates TimeSheets</h2>
+
+    <h3 v-show="SubordinatesTimeSheetStatuses.length==0">
+        No TimeSheet Confirmation Requests
+    </h3>
+    <section v-show="!TimeSheetsAreLoading" id="Pagination" v-bind:class="{ 'd-none':(supervisingDataPaging.totalPages < 2 )}">
+        <div class="container">
+
+            <paginate :page-count="supervisingDataPaging.totalPages"
+                      :container-class="supervisingDataPaging.pagination"
+                      :prev-text="supervisingDataPaging.prev"
+                      :next-text="supervisingDataPaging.next"
+                      :click-handler="clickCallbackSupervising">
+            </paginate>
+
+        </div>
+    </section>
+    <div v-show="!TimeSheetsAreLoading && SubordinatesTimeSheetStatuses.length>0"
+         class="table-controls table-responsive">
+
+        <table class="table border bg-light ">
+            <thead>
+                <tr>
+                    <td>Employee Name</td>
+                    <td>Company/Department</td>
+                    <td>From Date/Time</td>
+                    <td>To Date/Time</td>
+                    <td>Preview</td>
+
+                    <td>Signiture</td>
+                    <td>Permit</td>
+                </tr>
+            </thead>
+            <tbody>
+                <template v-for="(timeSheetStatus ,index ) in SubordinatesTimeSheetStatuses ">
+                    <tr>
+                        <td>
+                            <span>{{timeSheetStatus.timeSheet.user.fullName}}</span>
+                        </td>
+                        <td>
+                            <span>{{timeSheetStatus.timeSheet.user.company.name}}</span>/
+                            <span>{{timeSheetStatus.timeSheet.user.department.name}}</span>
+                        </td>
+                        <td>
+                            <span>{{timeSheetStatus.timeSheet.fromDateDisplay}}</span>
+                        </td>
+
+                        <td>
+                            <span>{{timeSheetStatus.timeSheet.toDateDisplay}}</span>
+                        </td>
+                        <td>
+                            <a v-bind:href="'/timesheets?id='+ timeSheetStatus.timeSheet.id" class="Button-Shared"> Preview</a>
+                        </td>
+                        <td>
+                            {{timeSheetStatus.timeSheet.isSigned?  'Is Signed' : 'Is Not Signed'}}
+                        </td>
+                        <td class="buttons-cell">
+
+                            <span v-show="timeSheetStatus.timeSheet.isSigned">
+                                <span v-show="timeSheetStatus.isApproved==0" data-toggle="modal" data-target="#PermitModal" v-on:click="setPermitModal(timeSheetStatus.id,index)">
+                                    <img style="width:30px;" src="~/icons/edit(1).svg" />
+                                </span>
+                                <span v-show="timeSheetStatus.isApproved==1">
+                                    Approved
+                                </span>
+                                <span v-show="timeSheetStatus.isApproved==2">
+                                    Rejected
+                                </span>
+                            </span>
+
+                        </td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+    <div id="PermitModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Permission Permit</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="comment">Comment:</label>
+                        <textarea class="form-control" v-model="permitModal.comment" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="radio disabled">
+                            <label><input type="radio" v-model="permitModal.status" v-bind:value="0" disabled>Pending</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" v-model="permitModal.status" v-bind:value="1">Approve</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" v-model="permitModal.status" v-bind:value="2">Reject</label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default text-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn Button-Shared " v-on:click="PermitTimeSheet" data-dismiss="modal">Permit</button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="https://unpkg.com/vuejs-paginate@latest"></script>
+
+    <script src="~/services/TimeSheetsService.js"></script>
+    <script src="~/js/SubordinatesTimeSheets.js"></script>
+}

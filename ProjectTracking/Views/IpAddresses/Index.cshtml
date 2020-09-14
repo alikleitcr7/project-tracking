@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>IP Addresses</h2>
+
+<div id="IpAddresses">
+
+    <div class="modal-controls">
+        <table class="table table-controls" style="max-width:500px">
+            <tr>
+                <td>
+                    <label>Address</label>
+                    <input type="text" class="form-control" v-model="ipAddresses.form.address" />
+                </td>
+                <td>
+                    <label>Title</label>
+                    <input type="text" class="form-control" v-model="ipAddresses.form.title" />
+                </td>
+                <td>
+                    <label></label>
+                    <div>
+                        <button type="button" class="Button-Shared" v-on:click="addIpAddress">Add</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <h4 class="display-message">{{ipAddresses.message}}</h4>
+
+    <div class="split-ips">
+        <div>
+            <table class="table table-small-display  ">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Address</th>
+                        <th>Title</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item ,idx) in ipAddresses.data">
+                        <td>{{item.id}}</td>
+                        <td>
+                            {{item.address}}
+                        </td>
+                        <td>
+                            <span v-show="!item.isEdit">{{item.title}}</span>
+                            <input class="form-control" v-show="item.isEdit" type="text" v-model="item.title" />
+                        </td>
+                        <td>
+                            <button v-show="item.isEdit" class="btn btn-sm btn-default" type="button" v-on:click="updateIpAddress(idx)">Save</button>
+                            <button v-show="item.isEdit" class="btn btn-sm btn-default" type="button" v-on:click="cancelIpAddressEdit(idx)">Cancel</button>
+                            <button v-show="!item.isEdit" class="btn btn-sm btn-default" type="button" v-on:click="editIpAddress(idx)">Edit</button>
+                            <button v-show="!item.isEdit" class="btn btn-sm btn-danger" type="button" v-on:click="deleteIpAddress(idx)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <table class="table table-small-display  ">
+                <thead>
+                    <tr>
+                        <th>Unlisted Addresses</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item ,idx) in unlistedIps">
+                        <td>
+                            {{item}}
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-default" type="button" v-on:click="defineIp(item)">Define</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+
+@section Styles{
+    <link href="~/css/IpAddresses.min.css" rel="stylesheet" />
+}
+
+@section Scripts{
+
+    <script src="~/services/IpAddressesService.js"></script>
+    <script src="~/js/IpAddresses.js"></script>
+}

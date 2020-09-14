@@ -1,0 +1,138 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TypeScriptToolsVersion>3.3</TypeScriptToolsVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Views\Holidays\**" />
+    <Compile Remove="Views\InventoryProjects\**" />
+    <Compile Remove="Views\PendingRequests\**" />
+    <Compile Remove="Views\Permissions\**" />
+    <Content Remove="Views\Holidays\**" />
+    <Content Remove="Views\InventoryProjects\**" />
+    <Content Remove="Views\PendingRequests\**" />
+    <Content Remove="Views\Permissions\**" />
+    <EmbeddedResource Remove="Views\Holidays\**" />
+    <EmbeddedResource Remove="Views\InventoryProjects\**" />
+    <EmbeddedResource Remove="Views\PendingRequests\**" />
+    <EmbeddedResource Remove="Views\Permissions\**" />
+    <None Remove="Views\Holidays\**" />
+    <None Remove="Views\InventoryProjects\**" />
+    <None Remove="Views\PendingRequests\**" />
+    <None Remove="Views\Permissions\**" />
+    <TypeScriptCompile Remove="Views\Holidays\**" />
+    <TypeScriptCompile Remove="Views\InventoryProjects\**" />
+    <TypeScriptCompile Remove="Views\PendingRequests\**" />
+    <TypeScriptCompile Remove="Views\Permissions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\CountriesController.cs" />
+    <Compile Remove="Controllers\HolidaysController.cs" />
+    <Compile Remove="Controllers\InventoryProjectsController.cs" />
+    <Compile Remove="Controllers\InventoryStatusesController.cs" />
+    <Compile Remove="Controllers\InventoryTypesController.cs" />
+    <Compile Remove="Controllers\PendingRequestsController.cs" />
+    <Compile Remove="Controllers\PermissionsController.cs" />
+    <Compile Remove="Controllers\PublishingChannelsController.cs" />
+    <Compile Remove="Controllers\SubProjectsController.cs" />
+    <Compile Remove="Controllers\UpdateFrequenciesController.cs" />
+    <Compile Remove="Data\DataSets\Holiday.cs" />
+    <Compile Remove="Data\DataSets\InventoryProject.cs" />
+    <Compile Remove="Data\DataSets\InventoryProjectPublishingChannel.cs" />
+    <Compile Remove="Data\DataSets\InventoryProjectSubProjects.cs" />
+    <Compile Remove="Data\DataSets\Permission.cs" />
+    <Compile Remove="Data\DataSets\RequestedPermission.cs" />
+    <Compile Remove="Data\DataSets\RequestedPermissionsStatus.cs" />
+    <Compile Remove="Data\DataSets\RequestedPermissionsStatusCode.cs" />
+    <Compile Remove="Data\Methods\CountriesMethods.cs" />
+    <Compile Remove="Data\Methods\HolidaysMethods.cs" />
+    <Compile Remove="Data\Methods\Interfaces\ICountriesMethods.cs" />
+    <Compile Remove="Data\Methods\Interfaces\IHolidaysMethods.cs" />
+    <Compile Remove="Data\Methods\Interfaces\IInventoryProjectsMethods.cs" />
+    <Compile Remove="Data\Methods\Interfaces\IInventoryStatusesMethods.cs" />
+    <Compile Remove="Data\Methods\Interfaces\IInventoryTypesMethods.cs" />
+    <Compile Remove="Data\Methods\Interfaces\IPermissionsMethods.cs" />
+    <Compile Remove="Data\Methods\Interfaces\IPublishingChannelsMethods.cs" />
+    <Compile Remove="Data\Methods\Interfaces\IRequestedPermissions.cs" />
+    <Compile Remove="Data\Methods\Interfaces\ISubProjectsMethods.cs" />
+    <Compile Remove="Data\Methods\Interfaces\IUpdateFrequenciesMethods.cs" />
+    <Compile Remove="Data\Methods\InventoryProjectsMethods.cs" />
+    <Compile Remove="Data\Methods\InventoryStatusesMethods.cs" />
+    <Compile Remove="Data\Methods\InventoryTypesMethods.cs" />
+    <Compile Remove="Data\Methods\Permissions.cs" />
+    <Compile Remove="Data\Methods\PublishingChannelsMethods.cs" />
+    <Compile Remove="Data\Methods\RequestedPermissionsMethods.cs" />
+    <Compile Remove="Data\Methods\SubProjectsMethods.cs" />
+    <Compile Remove="Data\Methods\UpdateFrequenciesMethods.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
+    <PackageReference Include="EPPlus" Version="4.5.2" />
+    <PackageReference Include="Microsoft.AspNet.SignalR" Version="2.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.6.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
+    <PackageReference Include="System.IO.Packaging" Version="4.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ProjectTracking.DataContract\ProjectTracking.DataContract.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Projects\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Home\About.cshtml" />
+    <None Include="Views\Home\Contact.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Shared\Error.cshtml" />
+    <None Include="Views\Shared\_CookieConsentPartial.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+    <None Include="wwwroot\images\banner1.svg" />
+    <None Include="wwwroot\images\banner2.svg" />
+    <None Include="wwwroot\images\banner3.svg" />
+    <None Include="wwwroot\js\site.js" />
+    <None Include="wwwroot\js\site.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-theme.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap-theme.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map" />
+    <None Include="wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.svg" />
+    <None Include="wwwroot\lib\bootstrap\dist\fonts\glyphicons-halflings-regular.woff2" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
+    <None Include="wwwroot\lib\bootstrap\dist\js\npm.js" />
+    <None Include="wwwroot\lib\bootstrap\LICENSE" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js" />
+    <None Include="wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\additional-methods.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\additional-methods.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\jquery.validate.js" />
+    <None Include="wwwroot\lib\jquery-validation\dist\jquery.validate.min.js" />
+    <None Include="wwwroot\lib\jquery-validation\LICENSE.md" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.js" />
+    <None Include="wwwroot\lib\jquery\dist\jquery.min.map" />
+  </ItemGroup>
+
+</Project>

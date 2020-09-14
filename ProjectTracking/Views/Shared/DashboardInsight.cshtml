@@ -1,0 +1,11 @@
+﻿
+@model KeyValuePair<string, string>
+
+<div class="dashboard-insight" >
+    <div class="dashboard-insight__value">
+        @Html.Raw(Model.Value)
+    </div>
+    <div class="dashboard-insight__title">
+        @Html.Raw(Model.Key)
+    </div>
+</div>

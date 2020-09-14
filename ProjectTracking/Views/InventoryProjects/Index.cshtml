@@ -1,0 +1,617 @@
+﻿
+@{
+    ViewData["Title"] = "Projects Inventory";
+    @*@ViewContext.RouteData.Values["Controller"]*@
+}
+
+<h2>Projects Inventory</h2>
+
+<div id="ProjectsInventory" v-cloak>
+
+    <div class="top-buttons">
+        <div>
+            <button class="Button-Shared" type="button" v-on:click="openCountriesModal">Countries</button>
+            <button class="Button-Shared" type="button" v-on:click="openInventoryStatusesModal">Inventory Statuses</button>
+            <button class="Button-Shared" type="button" v-on:click="openInventoryTypeModal">Inventory Types</button>
+            <button class="Button-Shared" type="button" v-on:click="openPublishingChannelsModal">Publishing Channels</button>
+            <button class="Button-Shared" type="button" v-on:click="openUpdateFrequenciesModal">Update Frequencies</button>
+            <button class="Button-Shared" type="button" v-on:click="openSubProjectsModal">SubProjects</button>
+        </div>
+        <div>
+            <button class="Button-Shared" type="button" v-on:click="openProjectModal"><span class="glyphicon glyphicon-record"></span> Add Project</button>
+            <button class="Button-Shared" type="button" v-on:click="openFilterProjectsModal"><span class="glyphicon glyphicon-filter"></span>  Filter Project</button>
+            <button class="Button-Shared" type="button" v-on:click="openFilterModal"><span class="glyphicon glyphicon-export"></span> Excel Export</button>
+        </div>
+    </div>
+
+    <div class="result-filter">
+    </div>
+
+    <section id="Pagination" v-bind:class="{ 'd-none':(projects.dataPaging.totalPages < 2 )}">
+        <div class="container">
+
+            <paginate :page-count="projects.dataPaging.totalPages"
+                      :container-class="projects.dataPaging.pagination"
+                      :prev-text="projects.dataPaging.prev"
+                      :next-text="projects.dataPaging.next"
+                      :click-handler="clickCallback">
+            </paginate>
+
+        </div>
+    </section>
+
+    <div class="result-container">
+        <h4 v-show="projects.dataIsLoading">Loading...</h4>
+        <h4 v-show="!projects.dataIsLoading">
+            {{projects.dataPaging.totalCount > 0 ? `Total of ${projects.dataPaging.totalCount} records` : 'No records to show'}}
+        </h4>
+
+        <table v-show="projects.data.length" class="table table-bordered  ">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Date <br />Published</th>
+                    <th>Inventory <br />Type</th>
+                    <th>Inventory <br />Status</th>
+                    <th>Country</th>
+                    <th>Update <br />Frequency</th>
+                    <th>Publishing <br />Channel</th>
+                    <th>Person <br />Responsible</th>
+                    <th>Secondary <br />P.Responsible</th>
+                    <th>Sub<br />Projects</th>
+                    <th>Needs <br />Update</th>
+                    <th>
+                        Date Added<br />Date Modified
+                    </th>
+                    <th class="buttons-cell">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item,idx) in projects.data">
+                    <td>
+                        {{item.id}}
+                    </td>
+
+                    <td>
+                        {{item.title}}
+                    </td>
+
+                    <td>
+                        {{item.datePublishedDisplay}}
+                    </td>
+
+                    <td>
+                        {{item.inventoryTypeDisplay}}
+                    </td>
+                    <td>
+                        {{item.inventoryStatusDisplay}}
+                    </td>
+                    <td>
+                        {{item.countryDisplay}}
+                    </td>
+
+                    <td>
+                        {{item.updateFrequencyDisplay}}
+                    </td>
+
+                    <td>
+                        {{item.publishingChannelDisplay}}
+                    </td>
+
+                    <td>
+                        {{item.personResponsibleDisplay}}
+                    </td>
+                    <td>
+                        {{item.secondaryPersonResponsibleDisplay}}
+                    </td>
+                    <td>
+                        {{item.subProjectsDisplay}}
+                    </td>
+                    <td>
+                        {{item.needsUpdate ? 'Yes' : 'No'}}
+                    </td>
+                    <td class="dates-cell">
+                        <p>{{item.dateAddedDisplay}}</p>
+                        <p v-show="item.dateModified" class="date-modified">{{item.dateModifiedDisplay}}</p>
+                    </td>
+
+                    <td class="buttons-cell">
+                        <button class="btn btn-sm btn-default" type="button" v-on:click="editProject(idx)">Edit</button>
+                        <button class="btn btn-sm Button-Shared" type="button" v-on:click="deleteProject(idx)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+
+    @* MODALS *@
+
+
+    <basic-object-modal id="CountriesModal"
+                        title="Countries"
+                        v-bind:model="countries"
+                        v-on:add-click="addCountry"
+                        v-on:edit-click="editCountry"
+                        v-on:cancel-click="cancelCountryEdit"
+                        v-on:update-click="updateCountry"
+                        v-on:delete-click="deleteCountry">
+    </basic-object-modal>
+
+    <basic-object-modal id="InventoryStatusesModal"
+                        title="Inventory Statuses"
+                        v-bind:model="inventoryStatuses"
+                        v-on:add-click="addInventoryStatus"
+                        v-on:edit-click="editInventoryStatus"
+                        v-on:cancel-click="cancelInventoryStatusEdit"
+                        v-on:update-click="updateInventoryStatus"
+                        v-on:delete-click="deleteInventoryStatus">
+    </basic-object-modal>
+
+    <basic-object-modal id="InventoryTypesModal"
+                        title="Inventory Types"
+                        v-bind:model="inventoryTypes"
+                        v-on:add-click="addInventoryType"
+                        v-on:edit-click="editInventoryType"
+                        v-on:cancel-click="cancelInventoryTypeEdit"
+                        v-on:update-click="updateInventoryType"
+                        v-on:delete-click="deleteInventoryType">
+    </basic-object-modal>
+
+    <basic-object-modal id="PublishingChannelsModal"
+                        title="Publishing Channels"
+                        v-bind:model="publishingChannels"
+                        v-on:add-click="addPublishingChannel"
+                        v-on:edit-click="editPublishingChannel"
+                        v-on:cancel-click="cancelPublishingChannelEdit"
+                        v-on:update-click="updatePublishingChannel"
+                        v-on:delete-click="deletePublishingChannel">
+    </basic-object-modal>
+
+    <basic-object-modal id="UpdateFrequenciesModal"
+                        title="Update Frequencies"
+                        v-bind:model="updateFrequencies"
+                        v-on:add-click="addUpdateFrequency"
+                        v-on:edit-click="editUpdateFrequency"
+                        v-on:cancel-click="cancelUpdateFrequencyEdit"
+                        v-on:update-click="updateUpdateFrequency"
+                        v-on:delete-click="deleteUpdateFrequency">
+    </basic-object-modal>
+
+        <basic-object-modal id="SubProjectsModal" title="Inventory Sub Projects" v-bind:model="subProjects"
+                            v-on:add-click="addSubProject" v-on:edit-click="editSubProject"
+                            v-on:cancel-click="cancelSubProjectEdit" v-on:update-click="updateSubProject"
+                            v-on:delete-click="deleteSubProject">
+        </basic-object-modal>
+
+    <div id="ProjectsModal" class="modal fade" role="dialog">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">{{projects.id && projects.id !== 0 ? 'Edit' : 'Add' }} Project</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <table class="table table-borderless" border="0">
+                        <tr>
+                            <td colspan="3">
+                                <div class="modal-control">
+                                    <label>Title</label>
+                                    <input type="text" class="form-control" v-model="projects.title" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <div class="modal-control">
+                                    <label>Description</label>
+
+                                    <input type="text" class="form-control" v-model="projects.description" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Person Responsible</label>
+
+                                    <select class="form-control" v-model="projects.personResponsibleId">
+                                        <option value="">-</option>
+                                        <option v-for="option in users" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Secondary P. Responsible</label>
+
+                                    <select class="form-control" v-model="projects.secondaryPersonResponsibleId">
+                                        <option value="">-</option>
+                                        <option v-for="option in users" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Date Published</label>
+                                    <date-picker v-model="projects.datePublished" :config="dateOptions"></date-picker>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Inventory Type</label>
+
+                                    <select class="form-control" v-model="projects.inventoryTypeId">
+                                        <option value="">-</option>
+                                        <option v-for="option in inventoryTypes.data" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Inventory Statuses</label>
+
+                                    <select class="form-control" v-model="projects.inventoryStatusId">
+                                        <option value="">-</option>
+                                        <option v-for="option in inventoryStatuses.data" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Country</label>
+
+                                    <select class="form-control" v-model="projects.countryId">
+                                        <option value="">-</option>
+                                        <option v-for="option in countries.data" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Update Frequency</label>
+
+                                    <select class="form-control" v-model="projects.updateFrequencyId">
+                                        <option value="">-</option>
+                                        <option v-for="option in updateFrequencies.data" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Publishing Channels</label>
+                                    @*{{projects.publishingChannelIds}}*@
+
+                                    <div class="modal-checkboxes">
+                                        <span v-for="item in publishingChannels.data" :key="item.id">
+                                            <span>
+                                                <input type="checkbox" :value="item.id" v-model="projects.publishingChannelIds" />
+                                            </span>
+                                            <span>{{item.name}}</span>
+                                        </span>
+                                    </div>
+                                    @*<select class="form-control" v-model="projects.publishingChannelId">
+                                            <option value="">-</option>
+                                            <option v-for="option in publishingChannels.data" v-bind:value="option.id">
+                                                {{ option.name }}
+                                            </option>
+                                        </select>*@
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Needs Update ({{projects.needsUpdate ? 'Yes' : 'No'}})</label>
+                                    <div>
+                                        <input type="checkbox" v-model="projects.needsUpdate" />
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <div class="modal-control">
+                                    <label>Sub Projects</label>
+                                    @*{{projects.subProjectIds}}*@
+                                    <div class="modal-checkboxes">
+                                        <span v-for="item in subProjects.data" :key="item.id">
+                                            <span>
+                                                <input type="checkbox" :value="item.id" v-model="projects.subProjectIds" />
+                                            </span>
+                                            <span>{{item.name}}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <h4 class="display-message">{{projects.message}}</h4>
+                </div>
+
+                <div class="modal-footer">
+                    <button v-show="projects.id === 0" type="button" class="Button-Shared" v-on:click="addProject">Add</button>
+                    <button v-show="projects.id !== 0" type="button" class="Button-Shared" v-on:click="updateProject">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="FilterProjectsModal" class="modal fade" role="dialog">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Filter Projects</h4>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table table-borderless" border="0">
+                        <tr>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Title</label>
+                                    <input type="text" class="form-control" v-model="projectsFilter.title" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Inventory Type</label>
+
+                                    <select class="form-control" v-model="projectsFilter.inventoryTypeId">
+                                        <option value="">-</option>
+                                        <option v-for="option in inventoryTypes.data" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Inventory Statuses</label>
+
+                                    <select class="form-control" v-model="projectsFilter.inventoryStatusId">
+                                        <option value="">-</option>
+                                        <option v-for="option in inventoryStatuses.data" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Date Modified From</label>
+                                    <date-picker v-model="projectsFilter.dateModifiedFrom" :config="dateOptions"></date-picker>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>To</label>
+                                    <date-picker v-model="projectsFilter.dateModifiedTo" :config="dateOptions"></date-picker>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Country</label>
+
+                                    <select class="form-control" v-model="projectsFilter.countryId">
+                                        <option value="">-</option>
+                                        <option v-for="option in countries.data" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Date Pub. From</label>
+                                    <date-picker v-model="projectsFilter.datePublishedFrom" :config="dateOptions"></date-picker>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>To</label>
+                                    <date-picker v-model="projectsFilter.datePublishedTo" :config="dateOptions"></date-picker>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Update Frequency</label>
+
+                                    <select class="form-control" v-model="projectsFilter.updateFrequencyId">
+                                        <option value="">-</option>
+                                        <option v-for="option in updateFrequencies.data" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Person Responsible</label>
+
+                                    <select class="form-control" v-model="projectsFilter.personResponsibleId">
+                                        <option value="">-</option>
+                                        <option v-for="option in users" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Secondary Person Responsible</label>
+
+                                    <select class="form-control" v-model="projectsFilter.secondaryPersonResponsibleId">
+                                        <option value="">-</option>
+                                        <option v-for="option in users" v-bind:value="option.id">
+                                            {{ option.name }}
+                                        </option>
+                                    </select>
+
+                                </div>
+                            </td>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Publishing Channels</label>
+                                    @*{{projectsFilter.publishingChannelIds}}*@
+
+                                    <div class="modal-checkboxes">
+                                        <span v-for="item in publishingChannels.data" :key="item.id">
+                                            <span>
+                                                <input type="checkbox" :value="item.id" v-model="projectsFilter.publishingChannelIds" />
+                                            </span>
+                                            <span>{{item.name}}</span>
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="modal-control">
+                                    <label>Needs Update ({{projectsFilter.needsUpdate ? 'Yes' : 'No'}})</label>
+                                    <div>
+                                        <input type="checkbox" v-model="projectsFilter.needsUpdate" />
+                                    </div>
+                                </div>
+                            </td>
+                            <td colspan="2">
+                                <div class="modal-control">
+                                    <label>Sub Projects</label>
+                                    @*{{projectsFilter.subProjectIds}}*@
+                                    <div class="modal-checkboxes">
+                                        <span v-for="item in subProjects.data" :key="item.id">
+                                            <span>
+                                                <input type="checkbox" :value="item.id" v-model="projectsFilter.subProjectIds" />
+                                            </span>
+                                            <span>{{item.name}}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="Button-Shared" v-on:click="resetFilterProject">Reset</button>
+                    <button type="button" class="Button-Shared" v-on:click="filterProject">Filter</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="ExportProjectsModal" class="modal fade" role="dialog">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Export Projects</h4>
+                </div>
+
+                <div class="modal-body ">
+                    <div class="double-tables">
+                        <table class="table table-borderless" border="0">
+                            <tr v-if="idx <= 8" v-for="(item ,idx) in projectExport.availableColumns">
+                                <td style="width:30px;">
+                                    <input  type="checkbox" v-bind:value="item.prop" v-model="projectExport.selectedColumns" />
+                                </td>
+                                <td>
+                                    <span >
+                                        {{item.name}}
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="table table-borderless" border="0">
+                            <tr v-if="idx> 8" v-for="(item ,idx) in projectExport.availableColumns">
+                                <td style="width:30px;">
+                                    <input type="checkbox" v-bind:value="item.prop" v-model="projectExport.selectedColumns" />
+                                </td>
+                                <td>
+                                    <span >
+                                        {{item.name}}
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="Button-Shared" v-on:click="exportToExcel">Export</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+
+    <script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
+    <script src="https://unpkg.com/vuejs-paginate@latest"></script>
+
+    <script src="~/services/CountriesService.js"></script>
+    <script src="~/services/InventoryTypesService.js"></script>
+    <script src="~/services/InventoryStatusesService.js"></script>
+    <script src="~/services/UpdateFrequenciesService.js"></script>
+    <script src="~/services/PublishingChannelsService.js"></script>
+    <script src="~/services/SubProjectsService.js"></script>
+
+    <script src="~/services/InventoryProjectsService.js"></script>
+
+    <script src="~/js/ProjectsInventory.js"></script>
+}
+
+@section styles{
+    <link href="~/css/ProjectsInventory.min.css" rel="stylesheet" />
+}

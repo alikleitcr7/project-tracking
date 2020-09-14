@@ -1,0 +1,68 @@
+﻿@import 'variables.less';
+
+#timeSheetProjectsModal .modal-dialog {
+    width: 776px;
+}
+
+.profile-header {
+    background-color: @main-dark;
+    border-radius: 15px;
+    padding: 5px 0;
+    .BoxShadow;
+    table {
+        margin: 0;
+        max-width:600px;
+        td, th {
+            border: none !important;
+            color: #fff !important;
+
+            &:first-child {
+                width: 150px;
+                padding-left: 10px;
+            }
+        }
+    }
+}
+
+.profile-content {
+    .nav-tabs {
+        li {
+            &.active {
+            }
+
+            a {
+                color: @main-dark !important;
+            }
+        }
+    }
+
+    .tab-content {
+        .tab-pane {
+            padding: 20px 0!important;
+        }
+    }
+}
+
+
+.activeActivity {
+
+    td {
+        color: darkred;
+        font-weight:600;
+    }
+}
+
+.disabled-project-info {
+    font-weight: lighter;
+    position:relative;
+    padding-left:15px;
+    &::before {
+        content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
+        color: darkred; 
+        font-weight: bold; 
+        position:absolute;
+        font-size:24px;
+        left:0;
+        top:-6px;
+    }
+}

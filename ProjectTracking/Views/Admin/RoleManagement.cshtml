@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Identity.EntityFrameworkCore
+@using Microsoft.AspNetCore.Identity;
+@model IEnumerable<IdentityRole>
+    <div class="px-5">
+        <h2>Role management</h2>
+
+        @if (!Model.Any())
+        {
+            <p>No roles defined yet. Please create the first role.</p>
+        }
+        else
+        {
+            <table class="table table-condensed mt-5 table-bordered">
+                <tr>
+                    <th>Role name</th>
+                    <th></th>
+                </tr>
+                @foreach (var role in Model)
+                {
+                    <tr>
+                        <td>@role.Name</td>
+                        <td>
+                            <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post">
+                                <a class="btn btn-sm btn-warning" asp-action="EditRole" asp-route-id="@role.Id">Manage</a>
+                                @*<button type="submit" class="btn btn-sm Button-Shared" onclick="return confirm('Do you really want to delete this role?');">
+                                    Delete
+                                </button>*@
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        <p>
+            <a class="btn Button-Shared" asp-action="AddNewRole">Add new role</a>
+        </p>
+    </div>

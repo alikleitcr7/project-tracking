@@ -1,0 +1,45 @@
+﻿
+<div id="UserInsights">
+
+    <section class="top-controls">
+        <table class="table" border="0">
+            <tr>
+                <td>
+                    <label>Year</label>
+                    <select class="form-control" v-model="year" v-on:change="handleYearChange($event)">
+                        <option v-for="item in years" v-bind:value="item">{{item}}</option>
+                    </select>
+                </td>
+                <td v-show="months && months.length">
+                    <label>Month</label>
+                    <select class="form-control" v-model="month" v-on:change="handleMonthChange($event)">
+                        <option v-bind:value="null" >-</option>
+                        <option v-for="item in months" v-bind:value="item">{{displayMonth(item)}}</option>
+                    </select>
+                </td>
+            </tr>
+           
+        </table>
+    </section>
+
+    <section class="flex-visualize">
+        <div>
+            <canvas id="UserMonthlyInsights"></canvas>
+        </div>
+        <div>
+            <canvas v-show="months && months.length && month" id="UserDailyInsights"></canvas>
+        </div>
+    </section>
+
+</div>
+
+
+@section Styles{
+    <link href="~/css/UserInsights.min.css" rel="stylesheet" />
+}
+
+@section Scripts{
+    <script src="~/services/UserInsightsService.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="~/js/UserInsights.js"></script>
+}
