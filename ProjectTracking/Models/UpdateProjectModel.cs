@@ -9,8 +9,8 @@ namespace ProjectTracking.Models
         public int id { get; set; }
         public string title { get; set; }
         public string description { get; set; }
-        public int companyId { get; set; }
-        public int departmentId{ get; set; }
+        public int categoryId { get; set; }
+        public int teamId{ get; set; }
 
     }
 }

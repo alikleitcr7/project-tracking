@@ -11,33 +11,34 @@ using System.Threading.Tasks;
 
 namespace ProjectTracking.Data.Methods
 {
-    public class TeamsMethods : IDepartments
+    public class TeamsMethods : ITeamsMethods
     {
         private ApplicationDbContext _context;
         private readonly IMapper _mapper;
-    
-        public TeamsMethods ()
+
+        public TeamsMethods()
         {
 
         }
-        public Team Edit(int id, Team Department)
+        public Team Update(Team team)
         {
-            if (Department == null)
+            if (team == null)
             {
                 throw new ArgumentNullException();
             }
 
-            var DepartmentInDb = _context.Teams.FirstOrDefault(c => c.ID == id);
+            var dbRecord = _context.Teams.FirstOrDefault(c => c.ID == team.ID);
 
-            if (DepartmentInDb == null)
+            if (dbRecord == null)
             {
                 throw new NullReferenceException();
             }
 
-            _mapper.Map(Department, DepartmentInDb);
+            dbRecord.Name = team.Name;
+
             _context.SaveChanges();
 
-            return Department;
+            return _mapper.Map<Team>(dbRecord);
         }
 
 
@@ -53,14 +54,21 @@ namespace ProjectTracking.Data.Methods
         public List<Team> GetAll()
         {
             var Departments = _context.Teams.ToList()
-                                                  .Select(k => _mapper.Map< DataSets.Team, Team>(k))
+                                                  .Select(k => _mapper.Map<DataSets.Team, Team>(k))
                                                   .ToList();
             return Departments;
         }
 
+        public Team GetById(int id)
+        {
+            var dbTeam = _context.Teams.FirstOrDefault(k => k.ID == id);
+
+            return dbTeam != null ? _mapper.Map<Team>(dbTeam) : null;
+        }
+
         public Team Add(Team departmentdto)
         {
-            if (departmentdto != null )
+            if (departmentdto != null)
             {
                 var nameExists = _context.Teams.FirstOrDefault(c => c.Name == departmentdto.Name);
 
@@ -82,7 +90,7 @@ namespace ProjectTracking.Data.Methods
             }
 
         }
-        public Team EditDepartment(int id , Team department)
+        public Team EditDepartment(int id, Team department)
         {
             if (department == null)
             {
@@ -93,18 +101,24 @@ namespace ProjectTracking.Data.Methods
             {
                 throw new NullReferenceException();
             }
-                _mapper.Map(department, departmentInDb);
-            
+            _mapper.Map(department, departmentInDb);
+
             _context.SaveChanges();
             return department;
         }
-  
+
         public bool Delete(int id)
         {
-            var departmentinDb = _context.Teams.FirstOrDefault(c => c.ID == id);
-            _context.Remove(departmentinDb);
-            _context.SaveChanges();
-            return (departmentinDb == null);
+            var record = _context.Teams.FirstOrDefault(c => c.ID == id);
+
+            if (record == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            _context.Teams.Remove(record);
+
+            return _context.SaveChanges() > 0;
         }
     }
 }

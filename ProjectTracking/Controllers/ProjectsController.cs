@@ -14,8 +14,8 @@ namespace ProjectTracking.Controllers
 
     public class ProjectsController : Controller
     {
-        private readonly IDepartments _departments;
-        //private readonly ICompanies _companies;
+        private readonly ITeamsMethods _teams;
+        private readonly ICategoriesMethods _categoriesMethods;
         private readonly IProjectFilesMethods _file;
         private readonly IProjectsStatistics _projectsStatistics;
         private readonly IUserMethods _users;
@@ -23,11 +23,13 @@ namespace ProjectTracking.Controllers
 
 
         private readonly IProjectsMethods _projects;
-        public ProjectsController(IDepartments departments, IUserMethods users, IProjectsMethods projects, IProjectsStatistics projectsStatistics,
+        public ProjectsController(ITeamsMethods teams, 
+            ICategoriesMethods categoriesMethods,
+            IUserMethods users, IProjectsMethods projects, IProjectsStatistics projectsStatistics,
              IProjectFilesMethods file)
         {
-            _departments = departments;
-            //_companies = companies;
+            _teams = teams;
+            _categoriesMethods = categoriesMethods;
             _projects = projects;
             _file = file;
             _users = users;
@@ -190,7 +192,10 @@ namespace ProjectTracking.Controllers
             return View();
         }
 
-
+        public JsonResult GetCategories()
+        {
+            return Json(_categoriesMethods.GetAll());
+        }
 
 
         [Authorize(Policy = "Administration")]
@@ -239,11 +244,11 @@ namespace ProjectTracking.Controllers
         #region Methods
 
         [HttpGet]
-        public List<Team> GetDepartments()
+        public List<Team> GetTeams()
         {
-            return _departments.GetAll();
+            return _teams.GetAll();
         }
-        //public List<Category> GetCompanies()
+        //public List<Category> GetCategories()
         //{
         //    return _companies.GetAll();
         //}
@@ -257,14 +262,14 @@ namespace ProjectTracking.Controllers
                 return Json(new { success = false, error = errors });
             }
 
-            return Json(new { Added = _projects.Add(model.title, model.description, model.departmentId, model.companyId, model.parentId), success = true });
+            return Json(new { Added = _projects.Add(model.title, model.description, model.teamId, model.categoryId, model.parentId), success = true });
         }
 
         [HttpGet]
-        public JsonResult Get(int departmentId, int companyId, int page, int countPerPage)
+        public JsonResult Get(int teamId, int categoryId, int page, int countPerPage)
         {
 
-            var records = _projects.Get(departmentId, companyId, page, countPerPage, out int totalCount);
+            var records = _projects.Get(teamId, categoryId, page, countPerPage, out int totalCount);
 
             object oRetval = new
             {
@@ -285,7 +290,7 @@ namespace ProjectTracking.Controllers
         [HttpPut]
         public bool Update([FromBody] UpdateProjectModel model)
         {
-            return _projects.Update(model.id, model.title, model.description, model.companyId, model.departmentId);
+            return _projects.Update(model.id, model.title, model.description, model.categoryId, model.teamId);
         }
 
 

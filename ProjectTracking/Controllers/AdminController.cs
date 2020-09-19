@@ -18,10 +18,10 @@ namespace ProjectTracking.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         //private readonly ICompanies _comapnyDto;
-        private readonly IDepartments _departmentDto;
+        private readonly ITeamsMethods _departmentDto;
         private readonly ApplicationDbContext _context;
 
-        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IDepartments departmentDto, ApplicationDbContext context
+        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ITeamsMethods departmentDto, ApplicationDbContext context
             )
         {
             _userManager = userManager;
@@ -322,7 +322,7 @@ namespace ProjectTracking.Controllers
             }
             else
             {
-                return Json(new { success = true, Update = _departmentDto.Edit(Obj.ID, Obj) });
+                return Json(new { success = true, Update = _departmentDto.Update(Obj) });
             }
         }
         //[HttpDelete]

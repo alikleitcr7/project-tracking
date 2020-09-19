@@ -8,7 +8,7 @@
 }
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Project Tracking - Login";
 }
 
 @model LoginViewModel
@@ -40,12 +40,13 @@
                 </div>
 
                 <p class=" MiddleLinks LinksSection">
-                    
+
                     <a href="/Identity/Account/ForgotPassword" id="ForgotPassword">Forgot Password?</a>
                 </p>
 
-                <button class="Button-Shared Button-Block" type="submit">Sign In</button>
-
+                <button class="s-btn s-btn-md s-btn-primary s-btn-block mb-3" type="submit">Sign In</button>
+                <a href="~/identity/account/register"
+                   class="s-btn s-btn-md s-btn-block s-btn-outline">Register</a>
 
                 <div>
 
@@ -55,9 +56,9 @@
 
                 </div>
 
-                <p class="BottomLinks LinksSection">
-                    <a href="~/identity/account/register">Register</a>
-                </p>
+                @*<p class="BottomLinks LinksSection">
+
+                </p>*@
 
             </div>
         </div>
@@ -68,6 +69,6 @@
 
 
 @section Styles {
-    <link href="~/Content/Login.min.css" rel="stylesheet" />
+    <link href="/css/login.min.css" rel="stylesheet" />
 }
 

@@ -90,7 +90,6 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
             //public int DepartmentID { get; set; }
             [Display(Name = "Secret Key")]
             public string RoleKey { get; set; }
-            public string RoleName { get; set; }
         }
         public void OnGet(string returnUrl = null)
         {
@@ -102,53 +101,69 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
         }
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            var ManagerToken = _configuration.GetSection($"Tokens:{Input.RoleName}").Value;
-            if (ManagerToken != Input.RoleKey)
+            var secretToken = _configuration.GetSection($"Tokens:ApplicationUser").Value;
+
+            if (secretToken != Input.RoleKey)
             {
-                ViewData["ErrorMessage"] = "your are not authorized to register ";
+                ViewData["ErrorMessage"] = "your are not authorized to register";
+
                 return Page();
             }
+
             returnUrl = returnUrl ?? Url.Content("~/");
+
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
                 {
-
                     UserName = Input.Email,
+                    NormalizedUserName = Input.Email.ToUpper(),
                     Email = Input.Email,
+                    NormalizedEmail = Input.Email.ToUpper(),
                     EmailConfirmed = false,
                     //CompanyID = Input.CompanyID,
                     //DepartmentID = Input.DepartmentID,
                     DateOfBirth = DateTime.Parse(Input.DateOfBirth),
                     FirstName = Input.FirstName,
-                    LastName = Input.LastName
+                    LastName = Input.LastName,
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
                     var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
+                        "/account/confirmemail",
                         pageHandler: null,
-                        values: new { userId = user.Id, code = code },
+                        values: new { userId = user.Id, code },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        $"Please confirm your account by <br /> <a href=\"{HtmlEncoder.Default.Encode(callbackUrl)}\">clicking here</a>.");
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    var RoleName = _context.Roles.FirstOrDefault(c => c.Name == Input.RoleName);
-                    if (RoleName != null)
-                    {
-                        await _userManager.AddToRoleAsync(user, RoleName.Name);
-                    }
+                    ViewData["Message"] = "Thank you for registering! a confirmation link was sent to your email";
+
+                    //await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    //var role = _context.Roles.FirstOrDefault(c => c.Name == "User");
+
+                    //if (role != null)
+                    //{
+                    //    await _userManager.AddToRoleAsync(user, role.Name);
+                    //}
+
+                    //Using LocalRedirect ensures that the "return URL" is a route actually on your site, 
+                    //instead of some malicious third-party bad actor's.
                     return LocalRedirect(returnUrl);
                 }
+
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError("RegistrationError", error.Description);
                 }
             }
 

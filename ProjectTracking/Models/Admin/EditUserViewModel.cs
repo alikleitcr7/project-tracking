@@ -19,7 +19,7 @@ namespace ProjectTracking.Models.Admin
             ErrorMessage = "The email address is not entered in a correct format")]
         public string Email { get; set; }
         public int? CompanyID { get; set; }
-        public int? DepartmentID { get; set; }
+        public int? TeamID { get; set; }
         public List<string> UserClaims { get; set; }
         [Required]
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Please insert a proper Name")]

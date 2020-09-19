@@ -10,12 +10,7 @@ const Modals = {
         }
     },
     MeasurementUnits: {
-        Show: () => {
-            $('#MeasurementUnitsModal').modal('show')
-        },
-        Hide: () => {
-            $('#MeasurementUnitsModal').hide('show')
-        }
+
     },
 }
 

@@ -1,130 +1,150 @@
 ﻿
+//function handleAddTeam() {
 
-$(document).ready(function () {
+//    Add({
+//        obj: 'Company',
+//        Name: $("#CompInput").val()
+//    });
+//}
 
+//function handleAddCategory() {
 
-    $(".addDept").on('click', function () {
-        var T = { obj: 'Department', Name: $("#DeptInput").val() }
-        Add(T); 
-    });
-    $(".addComp").on('click', function () {
+//    const model = {
+//        Name: $("#CompInput").val()
+//    }
 
-        var T = { obj: 'Company', Name: $("#CompInput").val() }
-        Add(T);
-    });
+//    if (!model.Name) {
+//        alert('Name required')
+//        return;
+//    }
 
-});
+//    CategoriesService.Add(model)
+//        .then(r => {
+//            console.log('addr', r)
 
+//            $(`#${T.obj}sTbody`).append(DeptCompTemplate(response));
 
-function Delete(T) {
-    $.ajax({
-        url: `Delete${T.obj}/${T.btn.attr('data-id')}`,
-        method: 'DELETE',
-        contentType: 'application/json',
-        success: function (result) {
-            T.btn.parents('tr').remove();
-        },
-        error: function (request, msg, error) {
+//        })
+//        .catch(e => {
+//            console.error('err',e)
+//        })
+//        .then(() => {
 
-        }
-    });
-}
-
-function Edit(T) {
-    if (!T.Name || !T.id) {
-        alert('please insert correct information');
-        return;
-    }
-    var Obje = { ID: T.id, Name: T.Name }
-    var ObjColumn = $(`td[data-obj='${T.type}'][data-id='${T.id}']`);
-
-    $.ajax({
-        type: "PUT",
-        url: `Edit${T.type}/`,
-        data: JSON.stringify(Obje),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function (e) {
-            ObjColumn.html(T.Name);
-            ObjColumn.attr("data-Name", T.Name);
-            alert('item has been edited successfully');
-
-        }, error: function (er) {
-            console.log(er.responseText);
-        }
-    });
-
-}
+//        })
+//}
 
 
-function Add(T) {
+//function Delete(T) {
+//    $.ajax({
+//        url: `Delete${T.obj}/${T.btn.attr('data-id')}`,
+//        method: 'DELETE',
+//        contentType: 'application/json',
+//        success: function (result) {
+//            T.btn.parents('tr').remove();
+//        },
+//        error: function (request, msg, error) {
 
-    if (!T.Name)  {
-        alert("please insert a name");
-        return;
-    }
+//        }
+//    });
+//}
 
-    if (!confirm('are you sure you want to add a new ' + T.obj)) {
-        return;
-    }
-    var Obje = {"ID":T.id, "Name": T.Name };
-    $.ajax({
-        type: "POST",
-        url: `Add${T.obj}/`,
-        data: JSON.stringify(Obje),
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
+//function Edit(T) {
+//    if (!T.Name || !T.id) {
+//        alert('please insert correct information');
+//        return;
+//    }
+//    var Obje = { ID: T.id, Name: T.Name }
+//    var ObjColumn = $(`td[data-obj='${T.type}'][data-id='${T.id}']`);
 
-        success: function (response) {
-            $(`#${T.obj}sTbody`).append(DeptCompTemplate(response));
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert(`please insert the Name of the ${T.obj} in the correct form and check if it doesn't already exist`);
-        }
-    });
-}
+//    $.ajax({
+//        type: "PUT",
+//        url: `Edit${T.type}/`,
+//        data: JSON.stringify(Obje),
+//        dataType: "json",
+//        contentType: "application/json; charset=utf-8",
+//        success: function (e) {
+//            ObjColumn.html(T.Name);
+//            ObjColumn.attr("data-Name", T.Name);
+//            alert('item has been edited successfully');
 
-function DeptCompTemplate(obj) {
-    return `
-        <tr >
-                    <td>${obj.name}</td>
-                        <td>
-                           <button class="btn btn-danger deleteDepartment" data-id="${obj.id}">delete</button>
-                           </td>
-                   </tr>
+//        }, error: function (er) {
+//            console.log(er.responseText);
+//        }
+//    });
 
-`;
-}
+//}
 
-$(document).on('click', '.Edit', function () {
+//function Add(T) {
+
+//    if (!T.Name) {
+//        alert("please insert a name");
+//        return;
+//    }
+
+//    if (!confirm('are you sure you want to add a new ' + T.obj)) {
+//        return;
+//    }
+
+//    var Obje = { "ID": T.id, "Name": T.Name };
+
+//    $.ajax({
+//        type: "POST",
+//        url: `Add${T.obj}/`,
+//        data: JSON.stringify(Obje),
+//        dataType: "json",
+//        contentType: "application/json; charset=utf-8",
+
+//        success: function (response) {
+//        },
+//        error: function (jqXHR, textStatus, errorThrown) {
+//            alert(`please insert the Name of the ${T.obj} in the correct form and check if it doesn't already exist`);
+//        }
+//    });
+//}
 
 
-    var ApplyBtn = $(this).closest(".modal-body").find(".ApplyEdit");
-    var ApplyInput = $(this).closest(".modal-body").find("Input");
-    ApplyInput.val($(this).attr('data-Name'));
 
-    ApplyBtn.attr("data-id", $(this).attr('data-Id'));
-});
+//function DeptCompTemplate(obj) {
+//    return `
+//        <tr >
+//                    <td>${obj.name}</td>
+//                        <td>
+//                           <button class="btn btn-danger deleteDepartment" data-id="${obj.id}">delete</button>
+//                           </td>
+//                   </tr>
 
-$(document).on('click', '.ApplyEdit', function () {
-    var ApplyInput = $(this).closest(".modal-body").find("Input");
+//`;
+//}
 
-    var Obj = { id: $(this).attr('data-id'), Name: ApplyInput.val(), type: $(this).attr('data-Obj')}
-    Edit(Obj);
+//$(document).on('click', '.Edit', function () {
 
-});
 
-$(document).on('click', '.deleteDepartment', function () {
-    var Department = {};
-    Department.obj = 'Department';
-    Department.btn = $(this);
-    Delete(Department);
+//    var ApplyBtn = $(this).closest(".modal-body").find(".ApplyEdit");
+//    var ApplyInput = $(this).closest(".modal-body").find("Input");
+//    ApplyInput.val($(this).attr('data-Name'));
 
-});
+//    ApplyBtn.attr("data-id", $(this).attr('data-Id'));
+//});
 
-$(document).on('click', '.deleteCompany', function () {
-    var Company = {};
-    Company.obj = 'Company';
-    Company.btn = $(this);
-    Delete(Company);
-});
+//$(document).on('click', '.ApplyEdit', function () {
+//    var ApplyInput = $(this).closest(".modal-body").find("Input");
+
+//    var Obj = { id: $(this).attr('data-id'), Name: ApplyInput.val(), type: $(this).attr('data-Obj') }
+//    Edit(Obj);
+
+//});
+
+//$(document).on('click', '.deleteDepartment', function () {
+//    var Department = {};
+//    Department.obj = 'Department';
+//    Department.btn = $(this);
+//    Delete(Department);
+
+//});
+
+//$(document).on('click', '.deleteCompany', function () {
+//    var Company = {};
+//    Company.obj = 'Company';
+//    Company.btn = $(this);
+//    Delete(Company);
+//});

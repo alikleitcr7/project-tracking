@@ -1,11 +1,9 @@
-﻿
-
-@page-padding: 20px;
-@main-color: #c80000;
-@main-dark: #b00000;
-@main-light: #e65a5a;
-@main-xlight: rgba(235, 109, 109, 0.64);
-@main-xxlight: rgba(225, 0, 0, 0.47);
+﻿@page-padding: 20px;
+@main-color: #2286c3;
+@main-dark: #1776b0;
+@main-light: #5bcbee;
+@main-xlight: #6bcfee;
+@main-xxlight: #73d3f1;
 @light-gray: rgba(243, 241, 241, 0.90);
 @gray: rgba(122, 122, 122, 0.93);
 
@@ -13,8 +11,12 @@
 @sidebar-width-sm: 50px;
 @border-radius: 0.35rem;
 @dark-gray: #333;
-@primary-color: #8d0000;
-@primary-color-dark: #6d0000;
+@color-danger: #b00808;
+@color-danger-dark: #860707;
+@color-warning: #ce8400;
+@text-primary: #212121;
+@primary-color: @main-color;
+@primary-color-dark: @main-dark;
 @border-color: @dark-gray;
 
 @box-shadow-sm: 0 0.125rem 0.25rem 0 @dark-gray;
@@ -38,18 +40,21 @@
 }
 
 
-.scrollable-container-200{
-    overflow-y:auto;
-    max-height:200px;
+.scrollable-container-200 {
+    overflow-y: auto;
+    max-height: 200px;
 }
-.scrollable-container-300{
-    overflow-y:auto;
-    max-height:300px;
+
+.scrollable-container-300 {
+    overflow-y: auto;
+    max-height: 300px;
 }
-.scrollable-container-400{
-    overflow-y:auto;
-    max-height:400px;
+
+.scrollable-container-400 {
+    overflow-y: auto;
+    max-height: 400px;
 }
+
 .scrollable-container-500 {
     overflow-y: auto;
     max-height: 400px;
@@ -134,7 +139,6 @@
 
 .main-light-background {
     background-color: @main-xxlight
-
 }
 
 .table-child {
@@ -143,14 +147,14 @@
 
     th {
         font-weight: 600;
-        padding: 3px!important;
+        padding: 3px !important;
     }
 
     th, td {
     }
 
     td {
-        padding: 3px!important;
+        padding: 3px !important;
     }
 }
 
@@ -179,16 +183,9 @@
     border: 1px solid red !important;
 }
 
-.Button-Small {
-    padding: 3px 10px;
-}
 
 .Button {
-
-    &:not(.Button-Small) {
-        padding: 7px 10px;
-    }
-
+    padding: .5em 1em;
     border-radius: 5px;
     border: none;
     text-decoration: none;
@@ -196,18 +193,94 @@
 
 .Button-Shared {
     .Button;
-    line-height:16px;
-    background-color: @main-dark;
+    /*line-height:16px;*/
+    background-color: @main-color;
     color: #fff !important;
 
     &:hover {
-        background-color: fade(@main-dark,85%);
+        background-color: @main-dark;
     }
 
     &:disabled {
         opacity: 0.5;
     }
+
+    &.Button-Small {
+        padding: 3px 10px;
+    }
+
+    &.Button-Large {
+        padding: 1.5em;
+    }
 }
+
+
+
+
+.s-btn {
+    border-radius: 5px;
+    border: none;
+    padding: .5em 1em;
+    text-decoration: none;
+    background-color: @main-color;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    text-align: center;
+
+    &:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+
+    &.s-btn-primary {
+        color: #fff;
+
+        &:hover {
+            background-color: @main-dark;
+        }
+    }
+
+    &.s-btn-outline {
+        background-color: transparent;
+        border: 1px solid @main-color;
+        color: @main-dark;
+
+        &:hover {
+            background-color: rgba(212, 212, 212, 0.34);
+        }
+    }
+
+    &.s-btn-danger {
+        background-color: @color-danger;
+        border:1px solid @color-danger;
+        color: #fff;
+
+        &:hover {
+            background-color: @color-danger-dark;
+        }
+    }
+
+    &.s-btn-lg {
+        padding: 1em 1.3em;
+    }
+
+    &.s-btn-sm {
+        padding: .3em .5em;
+    }
+
+    &.s-btn-md {
+        padding: .7em 1em;
+    }
+
+    &.s-btn-block {
+        display: block;
+        width: 100%;
+    }
+}
+
 
 
 .Button-Danger {
@@ -220,8 +293,6 @@
         background-color: fade(lighten(@main-light,27%),85%);
     }
 }
-
-
 
 .TextCenter {
     text-align: center;
@@ -280,8 +351,8 @@
 
 .Button-Block {
     width: 100%;
-    padding: 15px 20px;
 }
+
 
 .t {
     border: 1px solid red !important;
@@ -298,15 +369,14 @@ select:-moz-focusring {
 
 .MiddleBoxContainerTemplate {
     padding: 40px 40px;
+    @border-radius: 5px;
 
     .MiddleBox {
         max-width: 650px;
         margin: auto;
-        border-radius: 20px;
+        border-radius: @border-radius;
         background-color: #fff;
         .BoxShadow;
-
-        @border-radius: 20px;
 
         h3 {
             border-top-left-radius: @border-radius;
@@ -318,18 +388,18 @@ select:-moz-focusring {
         }
 
         .MiddleBoxContent {
-            padding: 20px;
+            padding: 1em 1.5em;
             position: relative;
 
             input, select {
-                margin: 10px 0;
+                margin: 5px 0;
             }
 
 
 
             input[type=email], input[type=text], input[type=password], select {
                 border: none;
-                padding: 10px 20px;
+                padding: 10px 15px;
                 background-color: @light-gray;
                 width: 100%;
                 border-radius: @border-radius;
@@ -369,7 +439,7 @@ select:-moz-focusring {
         }
 
         .MiddleLinks {
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             .TextRight;
         }
 

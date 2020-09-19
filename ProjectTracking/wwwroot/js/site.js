@@ -153,6 +153,143 @@ var tableToExcel = (function () {
     }
 })()
 
+
+const DATA_TYPES = {
+    TEXT: 0,
+    NUMBER: 1,
+    DATE: 2,
+    OBJECT: 3,
+    ARRAY: 4
+}
+
+class CoreValidator {
+    constructor(name, value, isRequired = true, dataType, min = undefined, max = undefined, displayName = undefined) {
+        this.name = name
+        this.displayName = displayName
+        this.value = value
+        this.min = min
+        this.max = max
+        this.dataType = dataType
+        this.isRequired = isRequired
+    }
+
+    validate() {
+        switch (this.dataType) {
+            case DATA_TYPES.NUMBER:
+                return this.number()
+            case DATA_TYPES.TEXT:
+                return this.text()
+            case DATA_TYPES.OBJECT:
+                return this.object()
+            case DATA_TYPES.ARRAY:
+                return this.arrayValidation()
+            default:
+                return true;
+        }
+    }
+
+    text() {
+        const { value, min, max, isRequired } = this
+
+        const valid_criteria_1 = isRequired ? this.hasValue(value) : true
+        const valid_criteria_2 = this.hasValue(value) && value.length >= min && value.length <= max
+
+        return valid_criteria_1 || valid_criteria_2
+    }
+
+    number() {
+        const { value, min, max, isRequired } = this
+
+        console.log({ value, min, max, isRequired })
+
+        const valid_criteria_1 = isRequired ? this.hasValue(value) : true
+        const valid_criteria_2 = this.hasValue(value) && !isNaN(value) && value >= min && value <= max
+
+        return valid_criteria_1 || valid_criteria_2
+    }
+
+    object() {
+        const { value, min, max, isRequired } = this
+
+        const valid_criteria_1 = isRequired ? this.hasValue(value) : true
+        const valid_criteria_2 = this.hasValue(value)
+
+        return valid_criteria_1 || valid_criteria_2
+    }
+
+    arrayValidation() {
+        const { value, min, max, isRequired } = this
+
+        if (!isRequired) {
+            return true
+        }
+
+        const len = value.length
+
+        let isValid = false;
+
+        if (len >= min) {
+            isValid = true
+        }
+
+        if (max && len > max) {
+            isValid = false
+        }
+
+        return isValid
+    }
+
+    email() {
+        return validateEmail(this.value)
+    }
+
+    hasValue() {
+        const { value } = this
+
+        return !(value === undefined || value === null)
+    }
+
+    message() {
+
+        const isArabic = core_config.lang === 'ar'
+
+        const { name, displayName, value, dataType, min, max, isRequired } = this
+
+        const min_hasValue = hasValue(min)
+        const max_hasValue = hasValue(max)
+
+        let finalText = `${displayName || name}`
+
+        if (isRequired) {
+            finalText += isArabic ? " خانة ضرورية " : ' is required'
+        }
+
+
+        if (min_hasValue && max_hasValue) {
+            switch (dataType) {
+                case DATA_TYPES.NUMBER:
+                    finalText += isArabic ? ` يجب أن تكون القيمة بين (${min} و ${max})` : ` value should be between (${min} and ${max})`
+
+                    break;
+                case DATA_TYPES.TEXT:
+                    finalText += isArabic ? ` يجب أن تكون الكلمة بين (${min} و ${max})` : ` length should be between (${min} and ${max})`
+
+                    break;
+                case DATA_TYPES.ARRAY:
+
+                    finalText += isArabic ? ` يجب  اختيار (${min} و ${max}) ${finalText}` : ` you must choose between (${min} and ${max}) ${finalText}`
+                    break;
+                default:
+                    break
+            }
+        }
+
+
+        return finalText
+
+    }
+}
+
 //#endregion 
 
 //#region Moment Extensions
@@ -342,4 +479,6 @@ const GetRoles = () => {
 //    },
 //}
 //#endregion 
+
+
 

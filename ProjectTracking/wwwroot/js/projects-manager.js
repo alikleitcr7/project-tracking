@@ -1,10 +1,8 @@
 ﻿const AddQuest = 'are you sure you want to Add this item?';
 const EditQuest = 'are you sure you want to Edit this item?';
 const deleteQuest = 'are you sure you want to delete this item?';
+
 Vue.component('paginate', VuejsPaginate)
-//app
-
-
 Vue.component('file-object-modal', {
     data: function () {
         return {
@@ -70,9 +68,7 @@ Vue.component('file-object-modal', {
     `
 })
 
-
 const Modals = {
-
     ProjectFiles: {
         Show: () => {
             $('#ProjectFilesModal').modal('show')
@@ -81,10 +77,17 @@ const Modals = {
             $('#ProjectFilesModal').hide('show')
         }
     },
+    CreateProjModal: {
+        Show: () => {
+            $('#CreateProjModal').modal('show')
+        },
+        Hide: () => {
+            $('#CreateProjModal').hide('show')
+        }
+    }
 }
 
 var projectFilesMethods = {
-
     openProjectFilesModal: function (projectId) {
 
         this.ProjectIdOfProjectFile = projectId;
@@ -208,7 +211,6 @@ var projectFilesMethods = {
     }
 }
 
-
 new Vue({
     el: '#ProjectManager',
     data: {
@@ -223,30 +225,32 @@ new Vue({
             next: 'Next',
         },
         ProjectIdOfProjectFile: '',
-        departments: [],
-        companies: [],
+        teams: [],
+        categories: [],
 
-        departmentId: 0,
-        companyId: 0,
+        categoryId: null,
 
-        projects: [], test: false,
+        projects: [],
+        test: false,
         isLoading: true,
         project: {
             id: '',
             title: '',
             description: '',
             parentId: null,
-            departmentId: '',
-            companyId: '',
+            teamId: '',
+            categoryId: '',
 
             activities: [],
+            teamsIds: [],
             dateadded: '',
             isExpanded: false
 
-        }, errors: [],
-        activeParent: null
-        , areExpandAll: false
-        , projectsLoading: false
+        },
+        errors: [],
+        activeParent: null,
+        areExpandAll: false,
+        projectsLoading: false
     },
     methods: {
         ...projectFilesMethods,
@@ -256,8 +260,8 @@ new Vue({
 
         openAddModal: function (parent) {
             this.activeParent = parent
+            Modals.CreateProjModal.Show()
         },
-
         addProject: function () {
             AddProject(this);
         },
@@ -301,16 +305,16 @@ new Vue({
             deep: true
         },
 
-        departmentId: {
+        teamId: {
             handler: function (newVal, oldVal) {
                 this.projectsLoading = true;
                 GetProjects(this, 0, this.dataPaging.length);
             }
         }
         ,
-        companyId: {
+        categoryId: {
             handler: function (newVal, oldVal) {
-                if (this.departmentId == 0)
+                if (this.teamId == 0)
                     return;
                 this.projectsLoading = true;
                 GetProjects(this, 0, this.dataPaging.length);
@@ -318,8 +322,8 @@ new Vue({
         }
     },
     mounted: function () {
-        getDepartments(this);
-        getCompanies(this);
+        getTeams(this);
+        getCategories(this);
 
     }
 });
@@ -331,8 +335,8 @@ function addEditModeToProjects(projectsList) {
             id: project.id,
             title: project.title,
             description: project.description,
-            departmentId: project.departmentId,
-            companyId: project.companyId
+            teamId: project.teamId,
+            categoryId: project.categoryId
             , active: false
         }
         project.activities.forEach(function (activity) {
@@ -340,8 +344,8 @@ function addEditModeToProjects(projectsList) {
                 id: activity.id,
                 title: activity.title,
                 description: activity.description,
-                departmentId: activity.departmentId,
-                companyId: activity.companyId
+                teamId: activity.teamId,
+                categoryId: activity.categoryId
                 , active: false
             }
         });
@@ -349,18 +353,19 @@ function addEditModeToProjects(projectsList) {
     return projectsList;
 }
 
-function getDepartments(application) {
-    axios.get('Projects/GetDepartments').then(
+function getTeams(application) {
+    return TeamsService.GetAll().then(
         function (response) {
-            application.departments = response.data;
+            application.teams = response.data;
         }
     )
 }
-function getCompanies(application) {
-    axios.get('Projects/GetCompanies').then(
+
+function getCategories(application) {
+    axios.get('/Projects/GetCategories').then(
         function (response) {
-            console.log('companies', response.data);
-            application.companies = response.data;
+            console.log('categories', response.data);
+            application.categories = response.data;
             application.isLoading = false;
         }
     )
@@ -369,8 +374,8 @@ function getCompanies(application) {
 
 function AddProject(app) {
 
-    if (app.departmentId == 0 || app.companyId == 0) {
-        alert('please chose a company and a department correctly');
+    if (app.teamId == 0 || app.categoryId == 0) {
+        alert('please chose a category and a team correctly');
         return;
     }
 
@@ -379,8 +384,8 @@ function AddProject(app) {
     }
 
     let dataTransfer = {
-        departmentId: app.departmentId,
-        companyId: app.companyId,
+        teamId: app.teamId,
+        categoryId: app.categoryId,
         parentId: null,
         title: app.project.title,
         description: app.project.description,
@@ -406,15 +411,15 @@ function AddProject(app) {
             }
 
             let newProj = projectData.added;
-            newProj.departmentId = app.departmentId;
-            newProj.companyId = app.companyId;
+            newProj.teamId = app.teamId;
+            newProj.categoryId = app.categoryId;
 
             newProj.editMode = {
                 id: newProj.id,
                 title: app.project.title,
                 description: app.project.description,
-                departmentId: app.departmentId,
-                companyId: app.companyId,
+                teamId: app.teamId,
+                categoryId: app.categoryId,
 
                 active: false
             }
@@ -433,7 +438,7 @@ function AddProject(app) {
 }
 
 function GetProjects(application, page, countPerPage) {
-    axios.get(`Projects/Get?departmentId=${application.departmentId}&companyId=${application.companyId}&page=${page}&countPerPage=${countPerPage}`).then(
+    axios.get(`Projects/Get?teamId=${application.teamId}&categoryId=${application.categoryId}&page=${page}&countPerPage=${countPerPage}`).then(
         function (response) {
             const { data } = response
             console.log('projects', data);
@@ -466,13 +471,13 @@ function EditProject(project, app) {
     if (!confirm(EditQuest)) {
         return;
     }
-    if (project.editMode.title.length < 2 ) {
+    if (project.editMode.title.length < 2) {
         alert('please insert correct information')
         return;
     }
     axios.put(`Projects/Update`, project.editMode).then(function () {
-        let changedProjectDepartmentOrCompany = project.companyId != project.editMode.companyId || project.departmentId != project.editMode.departmentId;
-        if (changedProjectDepartmentOrCompany) {
+        let changedProjectTeamOrCategory = project.categoryId != project.editMode.categoryId || project.teamId != project.editMode.teamId;
+        if (changedProjectTeamOrCategory) {
             app.projects = app.projects.filter(appProject => appProject.id != project.id);
             return
         }

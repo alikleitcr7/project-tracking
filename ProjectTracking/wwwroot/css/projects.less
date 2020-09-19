@@ -1,18 +1,54 @@
 ﻿.buttons-cell {
     span {
-        cursor:pointer;
+        cursor: pointer;
 
         img {
             width: 20px;
         }
     }
-
 }
 
-.top-controls{
-    table{
-        td,th{
-            padding:5px;
+.teams-container {
+    max-height: 350px;
+    overflow-y: auto;
+
+    > p {
+        margin: 0;
+        padding: 5px;
+    }
+}
+
+.project-container {
+    display: flex;
+
+    .left-container {
+        flex: 1;
+    }
+
+    .right-container {
+        flex: 1;
+    }
+}
+
+#CreateProjModal {
+    .modal-footer {
+        text-align: center !important;
+    }
+}
+
+.input-group-container {
+    display: flex;
+
+    .input-group-item {
+        flex: 1;
+        padding: .5em;
+    }
+}
+
+.top-controls {
+    table {
+        td, th {
+            padding: 5px;
         }
     }
 }

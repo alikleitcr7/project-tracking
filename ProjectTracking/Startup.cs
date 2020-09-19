@@ -121,8 +121,8 @@ namespace ProjectTracking
 
             services.AddTransient<INotificationMethods, Data.Methods.NotificationMethods>();
             services.AddScoped<ITimeSheetsMethods, Data.Methods.TimeSheets>();
-            //services.AddTransient<ICompanies, Data.Methods.CompaniesMethods>();
-            services.AddTransient<IDepartments, Data.Methods.TeamsMethods>();
+            services.AddTransient<ICategoriesMethods, Data.Methods.CategoriesMethods>();
+            services.AddTransient<ITeamsMethods, Data.Methods.TeamsMethods>();
             services.AddTransient<IUserMethods, Data.Methods.Users>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -184,8 +184,7 @@ namespace ProjectTracking
                 options.Password.RequireNonAlphanumeric = false;
             });
 
-
-            //services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddSingleton<IDataAccess, DataAccess>(k => new DataAccess(Setting.ConnectionString));
 

@@ -1,5 +1,5 @@
 ﻿@model EditUserViewModel
-@inject ProjectTracking.Data.Methods.Interfaces.IDepartments departmentDtos
+@inject ProjectTracking.Data.Methods.Interfaces.ITeamsMethods teamsMethods
 @*@inject ProjectTracking.Data.Methods.Interfaces.ICompanies CompanyDtos*@
 @using ProjectTracking.DataContract
 
@@ -69,27 +69,33 @@
 
         <div class="row">
             <div class="form-group col-md-6">
-                <label class="col-md-2">Department</label>
+                <label class="col-md-2">Team</label>
                 <div class="col-md-10">
-                    <select class="form-control" asp-for="DepartmentID">
-                        @foreach (var dept in departmentDtos.GetAll())
+
+                    <select class="form-control" asp-for="TeamID">
+
+                        @foreach (var team in teamsMethods.GetAll())
                         {
-                            <option value="@dept.ID">@dept.Name</option>
+                            <option value="@team.ID">@team.Name</option>
                         }
+
                     </select>
+
                 </div>
             </div>
             <div class="form-group col-md-6">
                 @*<label class="col-md-2">Company</label>
-                <div class="col-md-10">
-                    <select class="form-control" asp-for="CompanyID">
-                        @foreach (var comp in CompanyDtos.GetAll())
-                        {
-                            <option value="@comp.ID">@comp.Name</option>
-                        }
-                    </select>
-                </div>
-            </div>*@
+                        <div class="col-md-10">
+                            <select class="form-control" asp-for="CompanyID">
+                                @foreach (var comp in CompanyDtos.GetAll())
+                                {
+                                    <option value="@comp.ID">@comp.Name</option>
+                                }
+                            </select>
+                        </div>
+                    </div>*@
+            </div>
+
         </div>
         <div class="row">
 
@@ -143,18 +149,7 @@
         <a href="../usermanagement" class="btn Button-Shared ">Add Companies / Departments </a>
         <a asp-controller="Employees" asp-action="index" class="btn Button-Shared ">All Employees </a>
     </div>
-    @*<h3>Claims for this user</h3>
-        <ul>
-            @foreach (var claim in Model.UserClaims)
-            {
-                <li>
-                    @claim
-                </li>
-            }
-        </ul>
 
-
-        <a asp-action="ManageClaimsForUser" asp-route-userId="@Model.Id" class="btn btn-primary">Manage claims for this user</a>*@
 </div>
 @section Scripts{
 

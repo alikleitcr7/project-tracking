@@ -17,7 +17,7 @@ namespace ProjectTracking.Controllers
     public class EmployeesController : Controller
     {
         private readonly IUserMethods _users;
-        private readonly IDepartments _departments;
+        private readonly ITeamsMethods _departments;
         private readonly ITimeSheetsMethods _timeSheets;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
@@ -28,7 +28,7 @@ namespace ProjectTracking.Controllers
         public EmployeesController(IUserMethods users, ApplicationDbContext context,
                                   UserManager<ApplicationUser> userManager,
                                   RoleManager<IdentityRole> roleManager,
-                                  IDepartments departments,
+                                  ITeamsMethods departments,
                                   ITimeSheetsMethods timeSheets,
                                   SignInManager<ApplicationUser> signInManager,
                                   IProjectsMethods projects)

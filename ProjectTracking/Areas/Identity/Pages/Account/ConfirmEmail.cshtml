@@ -1,12 +1,17 @@
 ﻿@page
 @model ConfirmEmailModel
 @{
-    ViewData["Title"] = "Confirm email";
+    ViewData["Title"] = "Email Confirmation";
 }
 
-<h2>@ViewData["Title"]</h2>
-<div>
+<div class="container text-center">
+    <h2>@ViewData["Title"]</h2>
     <p>
-        Thank you for confirming your email.
+        Thank you for confirming your email!
     </p>
+    <p>
+        <br />
+        <a href="/login" class="s-btn s-btn-primary s-btn-lg">Go to Login</a>
+    </p>
+
 </div>

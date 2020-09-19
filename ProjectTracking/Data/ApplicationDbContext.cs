@@ -217,6 +217,14 @@ namespace ProjectTracking.Data
             {
                 Id = ADMIN_ROLE_ID,
                 Name = "Admin",
+                NormalizedName = "ADMIN"
+            });
+
+            builder.Entity<IdentityRole>().HasData(new IdentityRole
+            {
+                Id = USER_ROLE_ID,
+                Name = "User",
+                NormalizedName = "USER",
             });
 
             var hasher = new PasswordHasher<ApplicationUser>();
@@ -225,9 +233,9 @@ namespace ProjectTracking.Data
             {
                 Id = ADMIN_ID,
                 UserName = "admin",
-                NormalizedUserName = "admin",
+                NormalizedUserName = "ADMIN",
                 Email = "admin@sys.com",
-                NormalizedEmail = "admin@sys.com",
+                NormalizedEmail = "ADMIN@SYS.COM",
                 EmailConfirmed = true,
                 PasswordHash = hasher.HashPassword(null, "123123"),
                 SecurityStamp = string.Empty

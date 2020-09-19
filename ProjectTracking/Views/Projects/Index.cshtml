@@ -1,76 +1,41 @@
 ﻿@{
     ViewData["Title"] = "Projects Management";
 }
-@*@inject ProjectTracking.Data.Methods.Companies*@
+@*@inject ProjectTracking.Data.Methods.Categories*@
 @using ProjectTracking.Data.Methods.Interfaces
 
-@*@inject ICompanies CompanyDtos*@
+@*@inject ICategories CategoryDtos*@
 
 <div class="main-container">
-    <h3 class="my-0">Projects</h3>
+
+    <h3>Projects</h3>
     <hr />
+
     <div id="ProjectManager" v-cloak>
-        <div class="top-controls mb-5 " v-if="!isLoading">
-            <table class="">
-                <tr>
-                    <td>
-                        <label>Company</label>
-                        <select v-model="companyId" class="form-control " style="max-width:200px">
-                            <option value="0" disabled>Choose a Company</option>
-                            <option v-for="company in companies" v-bind:value="company.id">
-                                {{company.name}}
-                            </option>
-                            <option value="-1">Other</option>
 
-                        </select>
+        <div class="top-controls mb-5" v-if="!isLoading">
+            
+            <select v-if="categories.length" v-model="categoryId" class="form-control " style="max-width:200px">
+                <option value="0" disabled>Choose a Category</option>
+                <option v-for="category in categories" v-bind:value="category.id">
+                    {{category.name}}
+                </option>
+            </select>
 
-                    </td>
-                    <td>
-                        <label>Department</label>
+            <button class="s-btn s-btn-primary " v-on:click="openAddModal(null)">
+                Create
+            </button>
+         
+            <a asp-action="ProjectsProgress" class="s-btn s-btn-primary"> Projects Progress</a>
+     
+        </div>
+       
 
-                        <select v-model="departmentId" class="form-control " style="max-width:200px">
-                            <option value="0" disabled>Choose a Department</option>
-                            <option v-for="department in departments" v-bind:value="department.id">
-                                {{department.name}}
-                            </option>
-                            <option value="-1">Other</option>
-
-                        </select>
-
-                    </td>
-                    <td>
-                        <label></label>
-                        <div>
-                            <button class="btn Button-Shared "
-                                    data-toggle="modal"
-                                    :disabled="departmentId==0"
-                                    data-target="#CreateProjModal"
-                                    v-on:click="openAddModal(null)">
-                                Create
-                            </button>
-                            <a asp-action="ProjectsProgress" class="Button-Shared"> Projects Progress</a>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <span v-show="companyId==0">
-                            <small class="text-warning">
-                                please choose a Company
-                            </small>
-                        </span>
-
-                        <span v-show="departmentId==0 && companyId!=0">
-                            <small class="text-warning">
-                                please choose a department
-                            </small>
-                        </span>
-                    </td>
-                </tr>
-            </table>
+        <div v-show="!projects.length">
+            This section is empty, <a class=" clickable-link" v-on:click="openAddModal(null)" >Click Here</a> to add new projects!
         </div>
 
-        <div v-show="departmentId!=0 && !projectsLoading" class="table-controls" style="height:360px; overflow-y:scroll;">
+        <div v-show="categoryId && !projectsLoading" class="table-controls" style="height:360px; overflow-y:scroll;">
 
             <section v-show="!projectsLoading" id="Pagination" v-bind:class="{ 'd-none':(dataPaging.totalPages < 2 )}">
                 <div class="container">
@@ -100,13 +65,11 @@
                     <tr>
                         <td>Activities</td>
                         <td>Title</td>
-                        <td>Description</td>
                         <td>Date Added</td>
-                        <td>Company</td>
-                        <td>Department</td>
+                        <td>Category</td>
+                        <td>Team</td>
                         <td>Project Files</td>
                         <td></td>
-
                     </tr>
                 </thead>
                 <tbody>
@@ -125,17 +88,17 @@
                                 <span>{{project.displayDate}}</span>
                             </td>
                             <td>
-                                <select v-model="project.editMode.companyId" class="form-control " v-bind:disabled="!project.editMode.active">
-                                    <option v-for="projectCompany in companies" v-bind:value="projectCompany.id" v-bind:selected="projectCompany.id==project.companyId">
-                                        {{projectCompany.name}}
+                                <select v-model="project.editMode.categoryId" class="form-control " v-bind:disabled="!project.editMode.active">
+                                    <option v-for="projectCategory in categories" v-bind:value="projectCategory.id" v-bind:selected="projectCategory.id==project.categoryId">
+                                        {{projectCategory.name}}
                                     </option>
                                 </select>
 
                             </td>
                             <td>
-                                <select v-model="project.editMode.departmentId" class="form-control " v-bind:disabled="!project.editMode.active">
-                                    <option v-for="projectDepartment in departments" v-bind:value="projectDepartment.id" v-bind:selected="projectDepartment.id==project.departmentId">
-                                        {{projectDepartment.name}}
+                                <select v-model="project.editMode.teamId" class="form-control " v-bind:disabled="!project.editMode.active">
+                                    <option v-for="projectTeam in teams" v-bind:value="projectTeam.id" v-bind:selected="projectTeam.id==project.teamId">
+                                        {{projectTeam.name}}
                                     </option>
                                 </select>
                             </td>
@@ -156,7 +119,7 @@
                                     <img src="~/icons/delete-button.svg" />
                                 </span>
 
-                                <a v-bind:href="`/projects/projectTrack?projectId=${project.id}`" class="Button-Shared Button-Small" >Track</a>
+                                <a v-bind:href="`/projects/projectTrack?projectId=${project.id}`" class="Button-Shared Button-Small">Track</a>
 
                             </td>
 
@@ -172,8 +135,8 @@
                                             <td>title</td>
                                             <td>Description</td>
                                             <td>dateAdded</td>
-                                            <td>company</td>
-                                            <td>department</td>
+                                            <td>category</td>
+                                            <td>team</td>
                                             <td>Activity Files</td>
                                             <td></td>
 
@@ -196,23 +159,23 @@
                                                         {{activity.description}}
                                                     </span>
                                                     <textarea v-show="activity.editMode.active"
-                                                           v-model="activity.editMode.description"></textarea>
+                                                              v-model="activity.editMode.description"></textarea>
                                                 </td>
                                                 <td>
                                                     <span>{{activity.displayDate}}</span>
                                                 </td>
                                                 <td>
-                                                    <select v-model="activity.editMode.companyId" class="form-control " v-bind:disabled="!activity.editMode.active">
-                                                        <option v-for="activityCompany in companies" v-bind:value="activityCompany.id" v-bind:selected="activityCompany.id==activity.companyId">
-                                                            {{activityCompany.name}}
+                                                    <select v-model="activity.editMode.categoryId" class="form-control " v-bind:disabled="!activity.editMode.active">
+                                                        <option v-for="activityCategory in categories" v-bind:value="activityCategory.id" v-bind:selected="activityCategory.id==activity.categoryId">
+                                                            {{activityCategory.name}}
                                                         </option>
                                                     </select>
 
                                                 </td>
                                                 <td>
-                                                    <select v-model="activity.editMode.departmentId" class="form-control " v-bind:disabled="!activity.editMode.active">
-                                                        <option v-for="activityDepartment in departments" v-bind:value="activityDepartment.id" v-bind:selected="activityDepartment.id==activity.departmentId">
-                                                            {{activityDepartment.name}}
+                                                    <select v-model="activity.editMode.teamId" class="form-control " v-bind:disabled="!activity.editMode.active">
+                                                        <option v-for="activityTeam in teams" v-bind:value="activityTeam.id" v-bind:selected="activityTeam.id==activity.teamId">
+                                                            {{activityTeam.name}}
                                                         </option>
                                                     </select>
                                                 </td>
@@ -243,7 +206,7 @@
 
                         <button class="btn Button-Shared ml-2 mb-3"
                                 data-toggle="modal"
-                                :disabled="departmentId==0"
+                                :disabled="teamId==0"
                                 data-target="#CreateProjModal"
                                 type="button"
                                 v-show="project.isExpanded"
@@ -253,52 +216,23 @@
                     </template>
                 </tbody>
             </table>
-
         </div>
 
         <div id="ProjectContents">
             <p v-if="isLoading">Loading...</p>
             <div v-if="!isLoading"></div>
         </div>
-        <file-object-modal id="ProjectFilesModal" title="Project Files" v-bind:model="projectFiles"
-                           v-on:add-click="addProjectFile" v-on:edit-click="editProjectFile"
-                           v-on:cancel-click="cancelProjectFileEdit" v-on:update-click="updateProjectFile"
+
+        <file-object-modal id="ProjectFilesModal" title="Project Files"
+                           v-bind:model="projectFiles"
+                           v-on:add-click="addProjectFile"
+                           v-on:edit-click="editProjectFile"
+                           v-on:cancel-click="cancelProjectFileEdit"
+                           v-on:update-click="updateProjectFile"
                            v-on:delete-click="deleteProjectFile">
         </file-object-modal>
-        <!--Create Proj Modal -->
-        <div id="CreateProjModal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title"></h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="usr">Title</label>
-                            <input type="text" class="form-control" v-model="project.title">
-                        </div>
-                        <div class="form-group">
-                            <label for="usr">Description</label>
-                            <input type="text" class="form-control" v-model="project.description">
-                        </div>
-                        <div class="form-group">
-                            <div v-show="errors.length>0">
-                                <div v-for="error in errors" class="text-danger">
-                                    {{error}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" v-on:click="addProject">Add Project</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
 
+        <partial name="~/views/projects/forms/ProjectForm.cshtml" />
 
     </div>
 </div>
@@ -312,6 +246,9 @@
 @section scripts{
 
     <script src="https://unpkg.com/vuejs-paginate@latest"></script>
+
+    <script src="~/services/TeamsService.js"></script>
+
     <script src="~/services/ProjectFilesService.js"></script>
     <script src="~/js/projects-manager.js"></script>
 }

@@ -1,0 +1,103 @@
+﻿<div id="Categories" class="Categories v-container" v-cloak=v-cloak>
+
+    <div class="buttons mb-2">
+        <button type="button" v-on:click="categories_openModal" class="s-btn s-btn-primary">New Category &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
+    </div>
+
+    <h4 v-show="!categories.isLoading && !categories.data.length ">
+        <br />
+        <span class="c-clickable-link" v-on:click="categories_openModal">Click Here</span> to add
+    </h4>
+
+    <section id="Pagination" class="c-pagination" v-show="categoriesTotalPages > 1">
+        <div class="container">
+            <paginate v-bind:page-count="categoriesTotalPages"
+                      v-bind:container-class="categories.dataPaging.pagination"
+                      v-bind:prev-text="categories.dataPaging.prev"
+                      v-bind:next-text="categories.dataPaging.next" v-bind:click-handler="categories_pageClick">
+            </paginate>
+        </div>
+    </section>
+
+    <p class="c-display-message">{{categories.isLoading ? 'Loading...':'&nbsp;'}}</p>
+
+    <div v-show="categories.data.length" class="Categories c-table-data-container"
+         v-bind:class="{'lock-controls': categories.isProcessing }">
+
+        <table class="table ">
+
+            <thead>
+                <tr>
+                    <th style="width: 50px">-</th>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <template v-for="(item ,idx) in categories.data">
+
+                    <tr>
+                        <td>
+                            {{item.id}}
+                        </td>
+
+                        <td>
+                            {{item.name}}
+                        </td>
+
+                        <td>
+                            <button class="s-btn s-btn-sm s-btn-outline" type="button"
+                                    v-on:click="categories_edit(idx)">
+                                Edit
+                            </button>
+                            <button class="s-btn s-btn-sm s-btn-danger" type="button"
+                                    v-on:click="categories_delete(idx)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+
+                </template>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal" id="CategoryModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+
+                    <table class="c-table-data c-table-controls is-arabic"
+                           v-bind:class="{'lock-controls': categories.form.isLoading || categories.form.isSaving }">
+                        <tr>
+                            <td>
+                                <label>Name</label>
+                                <input type="text" class="form-control" v-model="categories.form.record.name" />
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+                <div class="modal-footer modal-footer-centered">
+                    <p class="f-display-message">{{ categories.form.message}}</p>
+                    <div class="modal-buttons-container">
+                        <button v-bind:disabled="categories.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="categories_save">
+                            Save
+                        </button>
+                        <button type="button" class="s-btn s-btn-outline" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

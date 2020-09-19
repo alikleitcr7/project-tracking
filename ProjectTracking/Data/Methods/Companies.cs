@@ -31,7 +31,7 @@ namespace ProjectTracking.Data.Methods
         public int ID { get; set; }
         [DataType(DataType.Text)]
         [Required(ErrorMessage = "Please enter name"), MaxLength(30), MinLength(2)]
-       
+
         public string Name { get; set; }
 
         public List<Category> GetAll()
@@ -39,22 +39,28 @@ namespace ProjectTracking.Data.Methods
             var Categories = _context.Categories.ToList().Select(k => _mapper.Map<Data.DataSets.Category, Category>(k)).ToList(); ;
             return Categories;
         }
-        public Category Edit(int id, Category Company)
+        public Category GetById(int id)
         {
-            if (Company == null)
-            {
-                throw new ArgumentNullException();
-            }
-            var CompanyInDb = _context.Categories.FirstOrDefault(c => c.ID == id);
-            if (CompanyInDb == null)
-            {
-                throw new NullReferenceException();
-            }
-            _mapper.Map(Company, CompanyInDb);
+            var record = _context.Categories.FirstOrDefault(k => k.ID == id);
 
-            _context.SaveChanges();
-            return Company;
+            return record != null ? _mapper.Map<Category>(record) : null;
         }
+        //public Category Edit(int id, Category Company)
+        //{
+        //    if (Company == null)
+        //    {
+        //        throw new ArgumentNullException();
+        //    }
+        //    var CompanyInDb = _context.Categories.FirstOrDefault(c => c.ID == id);
+        //    if (CompanyInDb == null)
+        //    {
+        //        throw new NullReferenceException();
+        //    }
+        //    _mapper.Map(Company, CompanyInDb);
+
+        //    _context.SaveChanges();
+        //    return Company;
+        //}
         public Category Add(Category company)
         {
             if (company != null)
@@ -80,11 +86,37 @@ namespace ProjectTracking.Data.Methods
         }
         public bool Delete(int id)
         {
-            var CompanyinDb = _context.Categories.FirstOrDefault(c => c.ID == id);
-            _context.Remove(CompanyinDb);
-            _context.SaveChanges();
-            return (_mapper.Map<Category>(CompanyinDb) == null);
+            var record = _context.Categories.FirstOrDefault(c => c.ID == id);
 
+            if (record == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            _context.Categories.Remove(record);
+
+            return _context.SaveChanges() > 0;
+        }
+
+        public Category Update(Category category)
+        {
+            if (category == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            var dbCategory = _context.Categories.FirstOrDefault(c => c.ID == category.ID);
+
+            if (dbCategory == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            dbCategory.Name = category.Name;
+
+            _context.SaveChanges();
+
+            return _mapper.Map<Category>(dbCategory);
         }
     }
 }

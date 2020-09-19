@@ -7,18 +7,28 @@ a {
     font-family: 'Arial';
 }
 
-table {
-    th{
+.v-container{
+    padding-top:1em;
+    padding-bottom:1em;
+}
 
+.h-container{
+    padding-left:1em;
+    padding-right:1em;
+}
+
+table {
+    th {
         font-weight: 600;
     }
-    th,td {
-        position:relative;
+
+    th, td {
+        position: relative;
     }
 }
 
-.table-fixed{
-    table-layout:fixed;
+.table-fixed {
+    table-layout: fixed;
 }
 /*.main-light-background {
     background-color: rgba(161, 161, 161, 0.55);
@@ -48,9 +58,9 @@ table {
     }
 }
 
-.table-controls{
-    th,td{
-        position:relative;
+.table-controls {
+    th, td {
+        position: relative;
     }
 }
 
@@ -226,7 +236,8 @@ a {
 
 /*@font-face {
     font-family: 'Glyphicons Halflings';
-    src: url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.eot');
+    src: url('../lib/bootstrap/dist/fonts/glyphicons-
+    halflings-regular.eot');
     src: url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2') format('woff'), url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
 }*/
 
@@ -268,45 +279,48 @@ a {
 body {
     position: relative;
 
-    &:not(.sidebar-collapsed) {
-        padding-left: calc(@sidebar-width + 10px);
+    &:not(.is-logon) {
 
-        .side-bar {
-            width: @sidebar-width;
+        &:not(.sidebar-collapsed) {
+            padding-left: calc(@sidebar-width + 10px);
 
-            .title {
-                margin-bottom: 30px;
-            }
+            .side-bar {
+                width: @sidebar-width;
 
-            .side-bar-item {
-                .icon {
-                    display: none !important;
+                .title {
+                    margin-bottom: 30px;
+                }
+
+                .side-bar-item {
+                    .icon {
+                        display: none !important;
+                    }
                 }
             }
         }
-    }
 
-    &.sidebar-collapsed {
-        padding-left: @sidebar-width-sm + 10px;
+        &.sidebar-collapsed {
+            padding-left: @sidebar-width-sm + 10px;
 
-        .side-bar {
-            width: @sidebar-width-sm;
+            .side-bar {
+                width: @sidebar-width-sm;
 
-            > .title {
-                display: none;
-            }
-
-            .buttons {
-                padding: 0;
-            }
-
-            .side-bar-arrow {
-                transform: rotate(180deg);
-            }
-
-            .side-bar-item {
-                .name {
+                > .title {
                     display: none;
+                }
+
+                .buttons {
+                    padding: 0;
+                }
+
+                .side-bar-arrow {
+                    transform: rotate(180deg);
+                }
+
+                .side-bar-item {
+                    .name {
+                        display: none;
+                    }
                 }
             }
         }
@@ -600,18 +614,19 @@ textarea {
 
 
 @media print {
-    #SideBar{
-        display:none;
+    #SideBar {
+        display: none;
     }
+
     body {
-        padding: 10px!important;
+        padding: 10px !important;
     }
 
-    .top-buttons{
-        display:none;
+    .top-buttons {
+        display: none;
     }
 
-    button{
-        display:none;
+    button {
+        display: none;
     }
 }

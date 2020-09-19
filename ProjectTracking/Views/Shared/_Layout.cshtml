@@ -21,7 +21,7 @@
     @RenderSection("Styles", required: false)
 
 </head>
-<body class="Fill-Background">
+<body class=" @(User.Identity.IsAuthenticated ? "":"is-logon" )">
     @*<nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">

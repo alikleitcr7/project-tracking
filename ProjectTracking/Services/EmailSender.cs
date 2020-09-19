@@ -20,14 +20,11 @@ namespace ProjectTracking.Services
     {
 
         private readonly EmailSettings _emailSettings;
-        private readonly IHostingEnvironment _env;
 
         public EmailSender(
-            IOptions<EmailSettings> emailSettings,
-            IHostingEnvironment env)
+            IOptions<EmailSettings> emailSettings)
         {
             _emailSettings = emailSettings.Value;
-            _env = env;
         }
 
         public async Task SendEmailAsync(string email, string subject, string message)
@@ -35,20 +32,27 @@ namespace ProjectTracking.Services
             try
             {
                 SmtpClient client = new SmtpClient();
-                client.Port = 587;
-                client.Host = "myhost";
+                client.Port = _emailSettings.Port;
+                client.Host = _emailSettings.Host;
                 client.EnableSsl = true;
                 //client.Timeout = 10000;
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
                 client.UseDefaultCredentials = false;
-                client.Credentials = new NetworkCredential("myemail@outlook.com", "mypass");
+                client.Credentials = new NetworkCredential(_emailSettings.SenderEmail, _emailSettings.Password);
 
                 ServicePointManager.ServerCertificateValidationCallback =
             delegate (object sender, X509Certificate certificate, X509Chain chain,
            SslPolicyErrors sslPolicyErrors)
             { return true; };
 
-                client.Send("myemail@outlook.com", email, subject, message);
+                var mailMessage = new MailMessage(_emailSettings.SenderEmail, email)
+                {
+                    Body = message,
+                    Subject = subject,
+                    IsBodyHtml = true,
+                };
+
+                client.Send(mailMessage);
             }
             catch (Exception ex)
             {
@@ -60,10 +64,10 @@ namespace ProjectTracking.Services
 
     public class EmailSettings
     {
-        public string MailServer { get; set; }
-        public int MailPort { get; set; }
+        public string Host { get; set; }
+        public int Port { get; set; }
         public string SenderName { get; set; }
-        public string Sender { get; set; }
+        public string SenderEmail { get; set; }
         public string Password { get; set; }
     }
 

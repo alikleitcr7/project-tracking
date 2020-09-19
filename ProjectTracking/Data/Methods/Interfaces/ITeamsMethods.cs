@@ -3,11 +3,12 @@ using System.Collections.Generic;
 
 namespace ProjectTracking.Data.Methods.Interfaces
 {
-    public interface IDepartments
+    public interface ITeamsMethods
     {
         Team Add(Team department);
         bool Delete(int id);
         List<Team> GetAll();
-        Team Edit(int id, Team Departmentdto);
+        Team Update(Team Departmentdto);
+        Team GetById(int id);
     }
 }

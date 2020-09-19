@@ -8,13 +8,13 @@ namespace ProjectTracking.Models
 {
     public class AddProjectModel
     {
-        public int departmentId { get; set; }
+        public int teamId { get; set; }
         public int? parentId { get; set; }
         [Required]
         [MinLength(2, ErrorMessage = "Project Title can not be less than 2 letters")]
         public string title { get; set; }
         public string description { get; set; }
-        public int companyId { get; set; }
+        public int categoryId { get; set; }
 
     }
 }

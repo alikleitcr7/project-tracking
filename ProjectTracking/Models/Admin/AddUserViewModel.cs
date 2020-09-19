@@ -25,7 +25,7 @@ namespace ProjectTracking.Models.Admin
         [Required]
         public int CompanyID { get; set; }
         [Required]
-        public int DepartmentID { get; set; }
+        public int TeamID { get; set; }
         [Required]
 
         public string Role { get; set; }
