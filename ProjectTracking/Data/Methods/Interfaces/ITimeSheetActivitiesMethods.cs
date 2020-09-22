@@ -9,7 +9,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
     {
         TimeSheetActivity Add(TimeSheetActivity activity);
         User GetActivityUser(int id);
-        Project GetActivityProject(int id);
+        ProjectTask GetActivityProjectTask(int id);
         TimeSheetActivity Get(int id);
         List<TimeSheetActivity> GetByTimeSheet(int timesheetId);
         TimeSheetActivity Update(TimeSheetActivity activity);

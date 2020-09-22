@@ -78,11 +78,7 @@ namespace ProjectTracking.Data.Methods.Statistics
         public List<TimeSheetActivity> GetOnGoingActivities()
         {
             List<TimeSheetActivity> records = _db.TimeSheetActivities
-                      .Include(k => k.MeasurementUnit)
-                      .Include(k => k.TypeOfWork)
-                      .Include(k => k.ProjectFile)
-                      .Include(k => k.TimeSheetProject)
-                      .ThenInclude(k => k.Project)
+                      .Include(k => k.TimeSheetTask)
                       .Where(k => !k.ToDate.HasValue)
                       .ToList()
                       .Select(_mapper.Map<TimeSheetActivity>)

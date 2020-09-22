@@ -25,7 +25,7 @@ namespace ProjectTracking
 
         //public virtual List<Superviser> Supervisors { get; set; }
         public ICollection<Superviser> Supervising { get; set; }
-        public ICollection<Superviser> Supervisors { get; set; }
+        //public ICollection<Superviser> Supervisors { get; set; }
         //public ICollection<RequestedPermission> RequestedPermissions { get; set; }
         public ICollection<TimeSheet> TimeSheets { get; set; }
         //public ICollection<RequestedPermissionsStatus> RequestedPermissionsStatuses { get; set; }

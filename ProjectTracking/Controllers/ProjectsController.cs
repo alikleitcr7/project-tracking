@@ -7,31 +7,29 @@ using ProjectTracking.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ProjectTracking.Models.Projects;
 
 namespace ProjectTracking.Controllers
 {
     //[Authorize(Policy = "Administration")]
-
     public class ProjectsController : Controller
     {
         private readonly ITeamsMethods _teams;
         private readonly ICategoriesMethods _categoriesMethods;
-        private readonly IProjectFilesMethods _file;
+        //private readonly IProjectFilesMethods _file;
         private readonly IProjectsStatistics _projectsStatistics;
         private readonly IUserMethods _users;
 
 
 
         private readonly IProjectsMethods _projects;
-        public ProjectsController(ITeamsMethods teams, 
+        public ProjectsController(ITeamsMethods teams,
             ICategoriesMethods categoriesMethods,
-            IUserMethods users, IProjectsMethods projects, IProjectsStatistics projectsStatistics,
-             IProjectFilesMethods file)
+            IUserMethods users, IProjectsMethods projects, IProjectsStatistics projectsStatistics)
         {
             _teams = teams;
             _categoriesMethods = categoriesMethods;
             _projects = projects;
-            _file = file;
             _users = users;
             _projectsStatistics = projectsStatistics;
         }
@@ -40,80 +38,6 @@ namespace ProjectTracking.Controllers
         {
             return View();
         }
-
-        public IActionResult Files(int fileId, int? year, int? month)
-        {
-            ViewData["FileId"] = fileId;
-
-            ProjectFile file = _file.GetFileWithActivities(fileId);
-
-            ViewData["File"] = file;
-
-            ViewData["Year"] = year;
-            ViewData["Month"] = month;
-
-            //ViewData["Years"] = file;
-
-            List<int> years = new List<int>();
-            List<int> months = new List<int>();
-
-            years = file.TimeSheetActivities.Select(k => k.FromDate.Year).Distinct().ToList();
-
-            ViewData["Years"] = years;
-
-            if (year.HasValue && year.Value != 0)
-            {
-                file.TimeSheetActivities = file.TimeSheetActivities.Where(k => k.FromDate.Year == year).ToList();
-
-                months = file.TimeSheetActivities
-                    .Where(k => k.FromDate.Year == year.Value)
-                    .Select(k => k.FromDate.Month).Distinct().ToList();
-
-            }
-
-
-            if (!year.HasValue)
-            {
-                year = DateTime.Now.Year;
-            }
-
-            ViewData["Months"] = months;
-
-
-
-            List<KeyValuePair<string, string>> insights = new List<KeyValuePair<string, string>>();
-
-            List<KeyValuePair<string, string>> measurmentUnitInsights = file.TimeSheetActivities
-                .Where(k => k.MeasurementUnit != null)
-                .GroupBy(g => new { g.MeasurementUnit.ID })
-                .Select(g => new KeyValuePair<string, string>(g.First().MeasurementUnit.Name, g.Where(k => k.Number.HasValue).Sum(k => k.Number).Value.ToString()))
-                .ToList();
-
-            insights.AddRange(measurmentUnitInsights);
-            insights.Add(new KeyValuePair<string, string>("Total Activities", file.TimeSheetActivities.Count.ToString()));
-
-            TimeSheetActivity latestActivity = file.TimeSheetActivities.OrderByDescending(k => k.FromDate).FirstOrDefault();
-
-            string latestActivityDisplay = latestActivity == null ? "-" :
-                $"<p>Type: {(latestActivity.TypeOfWork == null ? "-" : latestActivity.TypeOfWork.Name)}</p>" +
-                $"<p>M.Unit: {(latestActivity.MeasurementUnit == null ? "-" : latestActivity.MeasurementUnit.Name)}</p>" +
-                $"<p>Number: {latestActivity.Number}</p>";
-            string timeSheetUrl = latestActivity == null ? "Latest Activity" : $"<a target=\"_blank\" class=\"Button-Shared\" href=\"/timesheets/TimeSheetActivityLog?activityId={latestActivity.ID}\">Latest Activity</a>";
-            ;
-            insights.Add(new KeyValuePair<string, string>(timeSheetUrl, latestActivityDisplay));
-
-            ViewData["Insights"] = insights;
-
-
-            return View();
-        }
-
-
-        //public DateFilterModel GetProjectWithActivitiesFilterOptions(int projectId, int? year, int? month)
-        //{
-        //    return _projects.GetProjectWithActivities(projectId, year, month);
-        //}
-
 
         public IActionResult ProjectTrack(int projectId, int? year, int? month, int? day)
         {
@@ -125,9 +49,9 @@ namespace ProjectTracking.Controllers
 
             List<TimeSheetActivity> activities = new List<TimeSheetActivity>();
 
-            foreach (Project projectActivity in project.Activities)
+            foreach (ProjectTask projectActivity in project.Tasks)
             {
-                foreach (TimeSheetProject timeSheetProject in projectActivity.TimeSheetProjects)
+                foreach (TimeSheetTask timeSheetProject in projectActivity.TimeSheetProjects)
                 {
                     activities.AddRange(timeSheetProject.Activities.ToList());
                 }
@@ -153,17 +77,16 @@ namespace ProjectTracking.Controllers
 
             List<KeyValuePair<string, string>> insights = new List<KeyValuePair<string, string>>();
 
-            List<KeyValuePair<string, string>> measurmentUnitInsights = activities
-                .Where(k => k.MeasurementUnit != null)
-                .GroupBy(g => new { g.MeasurementUnit.ID })
-                .Select(g => new KeyValuePair<string, string>(g.First().MeasurementUnit.Name, g.Where(k => k.Number.HasValue).Sum(k => k.Number).Value.ToString()))
-                .ToList();
+            //List<KeyValuePair<string, string>> measurmentUnitInsights = activities
+            //    .GroupBy(g => new { g.MeasurementUnit.ID })
+            //    .Select(g => new KeyValuePair<string, string>(g.First().MeasurementUnit.Name, g.Where(k => k.Number.HasValue).Sum(k => k.Number).Value.ToString()))
+            //    .ToList();
 
-            insights.AddRange(measurmentUnitInsights);
+            //insights.AddRange(measurmentUnitInsights);
             insights.Add(new KeyValuePair<string, string>("Total Activities", activities.Count.ToString()));
 
 
-            long totalTicks = activities.Where(k=>k.ToDate.HasValue).Select(k => (k.ToDate.Value - k.FromDate).Ticks).ToList().Sum();
+            long totalTicks = activities.Where(k => k.ToDate.HasValue).Select(k => (k.ToDate.Value - k.FromDate).Ticks).ToList().Sum();
             TimeSpan timeSpan = new TimeSpan(totalTicks);
 
             string totalTimeDisplay = "";
@@ -179,13 +102,13 @@ namespace ProjectTracking.Controllers
 
             TimeSheetActivity latestActivity = activities.OrderByDescending(k => k.FromDate).FirstOrDefault();
 
-            string latestActivityDisplay = latestActivity == null ? "-" :
-                $"<p>Type: {(latestActivity.TypeOfWork == null ? "-" : latestActivity.TypeOfWork.Name)}</p>" +
-                $"<p>M.Unit: {(latestActivity.MeasurementUnit == null ? "-" : latestActivity.MeasurementUnit.Name)}</p>" +
-                $"<p>Number: {latestActivity.Number}</p>";
+            //string latestActivityDisplay = latestActivity == null ? "-" :
+            //    $"<p>Type: {(latestActivity.TypeOfWork == null ? "-" : latestActivity.TypeOfWork.Name)}</p>" +
+            //    $"<p>M.Unit: {(latestActivity.MeasurementUnit == null ? "-" : latestActivity.MeasurementUnit.Name)}</p>" +
+            //    $"<p>Number: {latestActivity.Number}</p>";
             string timeSheetUrl = latestActivity == null ? "Latest Activity" : $"<a target=\"_blank\" class=\"Button-Shared\" href=\"/timesheets/TimeSheetActivityLog?activityId={latestActivity.ID}\">Latest Activity</a>";
 
-            insights.Add(new KeyValuePair<string, string>(timeSheetUrl, latestActivityDisplay));
+            //insights.Add(new KeyValuePair<string, string>(timeSheetUrl, latestActivityDisplay));
 
             ViewData["Insights"] = insights;
 
@@ -280,19 +203,35 @@ namespace ProjectTracking.Controllers
             return Json(oRetval);
         }
 
+        [HttpPost]
+        public JsonResult Save(ProjectSaveModel model)
+        {
+            return Json(_projects.Save(model));
+        }
+
+        [HttpGet]
+        public JsonResult GetById(int id)
+        {
+            return Json(_projects.GetById(id));
+        }
+
+        [HttpGet]
+        public JsonResult Search(int? categoryId, string keyword, int page, int countPerPage)
+        {
+            var record = _projects.Search(categoryId, keyword, page, countPerPage, out int totalCount);
+
+            return Json(new
+            {
+                record,
+                totalCount
+            });
+        }
 
         [HttpDelete]
         public bool Delete(int id)
         {
             return _projects.Delete(id);
         }
-
-        [HttpPut]
-        public bool Update([FromBody] UpdateProjectModel model)
-        {
-            return _projects.Update(model.id, model.title, model.description, model.categoryId, model.teamId);
-        }
-
 
         #endregion
 

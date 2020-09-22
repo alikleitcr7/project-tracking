@@ -9,10 +9,12 @@ namespace ProjectTracking.Data.Methods.Interfaces
     {
         int ID { get; set; }
     }
+
     public class Entity : IEntity
     {
         public int ID { get; set; }
     }
+
     public interface IGenericRepository<TEntity> where TEntity : IEntity
     {
         TEntity Create(TEntity entity);

@@ -505,6 +505,12 @@ body,
 a {
   font-family: 'Arial';
 }
+.s-btn-group {
+  display: flex;
+}
+.s-btn-group .s-btn {
+  margin-left: 0.2em;
+}
 .v-container {
   padding-top: 1em;
   padding-bottom: 1em;

@@ -26,7 +26,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
 
         List<string> GetSupervisorsIds(string forUserId);
         List<string> GetSupervisorsIdsIncludingParents(string forUserId, int levels);
-        List<string> GetSupervisingIds(string forUserId);
+        List<int> GetSupervisingIds(string forUserId);
         List<string> GetUsersInRole(string role);
 
         #region SupervisingOperations

@@ -18,9 +18,6 @@ namespace ProjectTracking.Data.Methods
 
         public TimeSheetActivitiesMethods(IMapper mapper, ITimeSheetActivityLogsMethods activityLogs, ApplicationDbContext context)
         {
-            //var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            //optionsBuilder.UseSqlServer(Setting.ConnectionString);
-            //db = new ApplicationDbContext(optionsBuilder.Options);
             db = context;
             _mapper = mapper;
             _activityLogs = activityLogs;
@@ -30,39 +27,12 @@ namespace ProjectTracking.Data.Methods
         {
             try
             {
-                if (activity.TimeSheetProjectId == 0)
+                if (activity.TimeSheetTaskId == 0)
                 {
                     return null;
                 }
 
                 var dbActivity = _mapper.Map<DataSets.TimeSheetActivity>(activity);
-
-                if (dbActivity.ProjectFile != null && dbActivity.ProjectFile.ID == 0)
-                {
-                    var dbTimeSheetProject = db.TimeSheetProjects.FirstOrDefault(k => k.ID == activity.TimeSheetProjectId);
-
-                    if (dbTimeSheetProject == null)
-                    {
-                        return null;
-                    }
-
-                    var dbProjectFile = new DataSets.ProjectReference()
-                    {
-                        Name = dbActivity.ProjectFile.Name,
-                        ProjectId = dbTimeSheetProject.ProjectId
-                    };
-
-                    db.ProjectReference.Add(dbProjectFile);
-
-                    if (db.SaveChanges() > 0)
-                    {
-                        dbActivity.ProjectFileId = dbProjectFile.ID;
-                    }
-                }
-                else
-                {
-                    dbActivity.ProjectFile = null;
-                }
 
                 var record_pending = db.TimeSheetActivities.Add(dbActivity);
 
@@ -82,40 +52,35 @@ namespace ProjectTracking.Data.Methods
         public TimeSheetActivity Get(int id)
         {
             DataSets.TimeSheetActivity dbActivity = db.TimeSheetActivities
-                                                      .Include(k => k.ProjectFile)
-                                                      .Include(k => k.MeasurementUnit)
-                                                      .Include(k => k.TypeOfWork)
-                                                      .Include(k => k.TimeSheetProject)
+                                                      .Include(k => k.TimeSheetTask)
                                                       .FirstOrDefault(k => k.ID == id);
 
-            if (dbActivity != null)
+            if (dbActivity == null)
             {
-                TimeSheetActivity activity = _mapper.Map<TimeSheetActivity>(dbActivity);
-
-                if (dbActivity.IpAddress != null)
-                {
-                    DataSets.IpAddress address = db.IpAddresses.FirstOrDefault(k => k.Address == dbActivity.IpAddress);
-
-                    if (address != null)
-                    {
-                        activity.IpAddressTitle = address.Title;
-                    }
-                }
-
-                return activity;
+                return null;
             }
 
-            return null;
+            TimeSheetActivity activity = _mapper.Map<TimeSheetActivity>(dbActivity);
+
+            // get ip title
+            if (dbActivity.IpAddress != null)
+            {
+                DataSets.IpAddress address = db.IpAddresses.FirstOrDefault(k => k.Address == dbActivity.IpAddress);
+
+                if (address != null)
+                {
+                    activity.IpAddressTitle = address.Title;
+                }
+            }
+
+            return activity;
         }
 
         public List<TimeSheetActivity> GetByTimeSheet(int timesheetId)
         {
             List<DataSets.TimeSheetActivity> dbActivities = db.TimeSheetActivities
-                                                              .Include(k => k.MeasurementUnit)
-                                                              .Include(k => k.ProjectFile)
-                                                              .Include(k => k.TypeOfWork)
-                                                              .Include(k => k.TimeSheetProject)
-                                                              .Where(k => k.TimeSheetProject != null && k.TimeSheetProject.TimeSheetId == timesheetId)
+                                                              .Include(k => k.TimeSheetTask)
+                                                              .Where(k => k.TimeSheetTask.TimeSheetId == timesheetId)
                                                               .ToList();
 
             if (dbActivities == null)
@@ -142,37 +107,6 @@ namespace ProjectTracking.Data.Methods
                 }
 
 
-                #region PROJECT FILE 
-
-                if (activity.ProjectFile != null && activity.ProjectFile.ID == 0)
-                {
-                    var dbTimeSheetProject = db.TimeSheetProjects.FirstOrDefault(k => k.ID == activity.TimeSheetProjectId);
-
-                    if (dbTimeSheetProject == null)
-                    {
-                        return null;
-                    }
-
-                    var dbProjectFile = new DataSets.ProjectReference()
-                    {
-                        Name = activity.ProjectFile.Name,
-                        ProjectId = dbTimeSheetProject.ProjectId
-                    };
-
-                    db.ProjectReference.Add(dbProjectFile);
-
-                    if (db.SaveChanges() > 0)
-                    {
-                        activity.ProjectFileId = dbProjectFile.ID;
-                    }
-                }
-                else
-                {
-                    activity.ProjectFile = null;
-                }
-
-                #endregion
-
                 #region ACTIVITY LOG
 
 
@@ -184,15 +118,10 @@ namespace ProjectTracking.Data.Methods
 
                 #endregion
 
-                dbActivity.Number = activity.Number;
                 dbActivity.IpAddress = activity.IpAddress;
                 dbActivity.FromDate = activity.FromDate;
                 dbActivity.ToDate = activity.ToDate;
                 dbActivity.Comment = activity.Comment;
-
-                dbActivity.MeasurementUnitId = activity.MeasurementUnitId;
-                dbActivity.TypeOfWorkId = activity.TypeOfWorkId;
-                dbActivity.ProjectFileId = activity.ProjectFileId;
 
                 db.SaveChanges();
 
@@ -227,7 +156,7 @@ namespace ProjectTracking.Data.Methods
                 return null;
             }
 
-            var dbTimeSheetProject = db.TimeSheetProjects.First(k => k.ID == activity.TimeSheetProjectId);
+            var dbTimeSheetProject = db.TimeSheetTasks.First(k => k.ID == activity.TimeSheetTaskId);
 
             string userId = db.TimeSheets.First(k => k.ID == dbTimeSheetProject.TimeSheetId).UserId;
 
@@ -237,7 +166,7 @@ namespace ProjectTracking.Data.Methods
 
         }
 
-        public Project GetActivityProject(int id)
+        public ProjectTask GetActivityTask(int id)
         {
             //db.SaveChanges();
 
@@ -248,24 +177,23 @@ namespace ProjectTracking.Data.Methods
                 return null;
             }
 
-            var dbTimeSheetProject = db.TimeSheetProjects.First(k => k.ID == activity.TimeSheetProjectId);
+            var dbTimeSheetTask = db.TimeSheetTasks.First(k => k.ID == activity.TimeSheetTaskId);
 
-            var dbProject = db.Projects.AsNoTracking().Include(k => k.Parent).First(k => k.ID == dbTimeSheetProject.ProjectId);
+            var dbProject = db.ProjectTasks.AsNoTracking()
+                .First(k => k.ID == dbTimeSheetTask.ProjectTaskId);
 
+            //dbProject.Team = null;
+            //dbProject.Category = null;
+            //dbProject.Tasks = null;
 
-            dbProject.Team = null;
-            dbProject.Category = null;
-            dbProject.Activities = null;
+            //if (dbProject.Parent != null)
+            //{
+            //    dbProject.Parent.Team = null;
+            //    dbProject.Parent.Category = null;
+            //    dbProject.Parent.Tasks = null;
+            //}
 
-
-            if (dbProject.Parent != null)
-            {
-                dbProject.Parent.Team = null;
-                dbProject.Parent.Category = null;
-                dbProject.Parent.Activities = null;
-            }
-
-            return _mapper.Map<Project>(dbProject);
+            return _mapper.Map<ProjectTask>(dbProject);
         }
 
         #region STATIC
@@ -319,6 +247,13 @@ namespace ProjectTracking.Data.Methods
                     PopulateIpAddress(activity, ips);
                 }
             }
+        }
+
+        public ProjectTask GetActivityProjectTask(int id)
+        {
+            var activity = db.TimeSheetActivities.First(k => k.ID == id);
+
+            return _mapper.Map<ProjectTask>(db.ProjectTasks.Include(k=>k.Project).First(k => k.ID == activity.TimeSheetProjectTaskId));
         }
 
         #endregion

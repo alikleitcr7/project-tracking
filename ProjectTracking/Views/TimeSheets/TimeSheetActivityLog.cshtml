@@ -10,12 +10,12 @@
 
     ProjectTracking.DataContract.TimeSheetActivity activity = activitiesMethods.Get(activityId);
     ProjectTracking.DataContract.User user = null;
-    ProjectTracking.DataContract.Project project = null;
+    ProjectTracking.DataContract.ProjectTask projectTask = null;
 
     if (activity != null)
     {
         user = activitiesMethods.GetActivityUser(activityId);
-        project = activitiesMethods.GetActivityProject(activityId);
+        projectTask = activitiesMethods.GetActivityProjectTask(activityId);
         logs = logsMethods.GetByActivity(activityId);
     }
 
@@ -35,7 +35,7 @@ else
 
     <div class="main-container">
 
-        <h2>Activity log for "@project.Title" in Project "@(project.Parent == null ? "-" : project.Parent.Title)" </h2>
+        <h2>Activity log for "@projectTask.Title" in Project "@(projectTask.Project == null ? "-" : projectTask.Project.Title)" </h2>
         <hr />
         <h4>Employee</h4>
         <table class="table table-sm">
@@ -62,20 +62,12 @@ else
             <tr>
                 <th>From</th>
                 <th>To</th>
-                <th>Type Of Work</th>
-                <th>Measurement Unit</th>
-                <th>File</th>
-                <th>Number</th>
-                <th>Comment</th>
+                <th>Message</th>
                 <th>Address</th>
             </tr>
             <tr>
                 <td>@activity.FromDateDisplay</td>
                 <td>@activity.ToDateDisplay</td>
-                <td>@activity.TypeOfWorkDisplay</td>
-                <td>@activity.MeasurementUnitDisplay</td>
-                <td>@activity.ProjectFileDisplay</td>
-                <td>@activity.Number</td>
                 <td>@activity.Comment</td>
                 <td>@(activity.IpAddressTitle ?? activity.IpAddress)</td>
             </tr>
@@ -92,11 +84,7 @@ else
                 <tr>
                     <th>From</th>
                     <th>To</th>
-                    <th>Type Of Work</th>
-                    <th>Measurement Unit</th>
-                    <th>File</th>
-                    <th>Number</th>
-                    <th>Comment</th>
+                    <th>Message</th>
                     <th>Address</th>
                 </tr>
                 @foreach (var item in logs)
@@ -104,10 +92,6 @@ else
                     <tr>
                         <td>@item.FromDateDisplay</td>
                         <td>@item.ToDateDisplay</td>
-                        <td>@item.TypeOfWorkDisplay</td>
-                        <td>@item.MeasurementUnitDisplay</td>
-                        <td>@item.ProjectFileDisplay</td>
-                        <td>@item.Number</td>
                         <td>@item.Comment</td>
                         <td>@(item.IpAddressTitle ?? item.IpAddress)</td>
                     </tr>

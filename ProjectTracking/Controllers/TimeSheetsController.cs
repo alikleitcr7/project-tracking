@@ -99,28 +99,28 @@ namespace ProjectTracking.Controllers
 
             return model;
         }
-        public Models.TimeSheet.TimeSheetModel GetTimeSheetModel(int timeSheetId)
-        {
-            var timeSheet = _timeSheets.Get(timeSheetId, out List<Project> project);
+        //public Models.TimeSheet.TimeSheetModel GetTimeSheetModel(int timeSheetId)
+        //{
+        //    var timeSheet = _timeSheets.Get(timeSheetId, out List<Project> project);
 
-            if (timeSheet == null)
-            {
-                return null;
-            }
+        //    if (timeSheet == null)
+        //    {
+        //        return null;
+        //    }
 
-            var model = Models.TimeSheet.TimeSheetModel.GenerateModel(timeSheet, project);
+        //    var model = Models.TimeSheet.TimeSheetModel.GenerateModel(timeSheet, project);
 
-            return model;
-        }
+        //    return model;
+        //}
 
         public List<TimeSheetActivity> GetActivities(int timesheetId)
         {
             return _timeSheets.GetTimeSheetActivities(timesheetId);
         }
 
-        public List<TimeSheetProject> GetTimeSheetProjects(int timesheetId)
+        public List<TimeSheetTask> GetTimeSheetProjects(int timesheetId)
         {
-            return _timeSheets.GetTimeSheetProjects(timesheetId);
+            return _timeSheets.GetTimeSheetTasks(timesheetId);
         }
 
         public List<TimeSheetActivity> GetActivitiesByDate(int timesheetId, DateTime date)

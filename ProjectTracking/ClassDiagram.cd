@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ProjectTracking.Data.DataSets.Category">
+    <Position X="1.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAQAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Data\DataSets\Category.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.Team">
+    <Position X="9.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAQAAAAAAAAAAAAEAAAAAQA=</HashCode>
+      <FileName>Data\DataSets\Team.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.IpAddress">
+    <Position X="17" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Data\DataSets\IpAddress.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.Notification">
+    <Position X="17" Y="4" Width="1.5" />
+    <AssociationLine Name="ToUser" Type="ProjectTracking.ApplicationUser" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17" Y="4.788" />
+        <Point X="16.625" Y="4.788" />
+        <Point X="16.625" Y="3.625" />
+        <Point X="15.475" Y="3.625" Type="JumpStart" />
+        <Point X="15.308" Y="3.625" Type="JumpEnd" />
+        <Point X="13.75" Y="3.625" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.092" Y="-0.809" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="FromUser" Type="ProjectTracking.ApplicationUser" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17" Y="5.688" />
+        <Point X="13.188" Y="5.688" />
+        <Point X="13.188" Y="4.04" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.435" Y="0.606" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAwAAgAAIAgAAAAAAAEAAAAAAAAAAAAEAAICAAAAA=</HashCode>
+      <FileName>Data\DataSets\Notification.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ToUser" />
+      <Property Name="FromUser" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.Project">
+    <Position X="4.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAIAAAAggkAAAAAAAAACAAAAAAAAIwAIAEAACAA=</HashCode>
+      <FileName>Data\DataSets\Project.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Category" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.Superviser">
+    <Position X="17" Y="2.25" Width="1.5" />
+    <AssociationLine Name="Team" Type="ProjectTracking.Data.DataSets.Team" ManuallyRouted="true">
+      <Path>
+        <Point X="17" Y="2.543" />
+        <Point X="15.391" Y="2.543" />
+        <Point X="15.391" Y="5.234" />
+        <Point X="13.271" Y="5.234" Type="JumpStart" />
+        <Point X="13.104" Y="5.234" Type="JumpEnd" />
+        <Point X="12.74" Y="5.234" Type="JumpStart" />
+        <Point X="12.573" Y="5.234" Type="JumpEnd" />
+        <Point X="10.5" Y="5.234" />
+        <Point X="10.5" Y="3.43" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAACAAAAAAAAEQAAAAAAAAA=</HashCode>
+      <FileName>Data\DataSets\Superviser.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Supervisor" />
+      <Property Name="Team" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.TimeSheet">
+    <Position X="0.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAgAAAAAAAAAgAAAAAAAAAAQAABAABQAA=</HashCode>
+      <FileName>Data\DataSets\TimeSheet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.TimeSheetActivityBase">
+    <Position X="2.25" Y="13.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAACAAAAAAAAAAAAAAQAABAABCAA=</HashCode>
+      <FileName>Data\DataSets\TimeSheetActivity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.TimeSheetActivity">
+    <Position X="2.5" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAQCAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Data\DataSets\TimeSheetActivity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="TimeSheetProject" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.TimeSheetActivityLog">
+    <Position X="4.25" Y="11.75" Width="1.75" />
+    <AssociationLine Name="TimeSheetActivity" Type="ProjectTracking.Data.DataSets.TimeSheetActivity" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.062" Y="11.75" />
+        <Point X="5.062" Y="10.963" />
+        <Point X="4" Y="10.963" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Data\DataSets\TimeSheetActivity.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="TimeSheetActivity" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.TimeSheetTask">
+    <Position X="2.5" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAgAAAAAAAAAAAgAAAAAAEAAAIBAAAA=</HashCode>
+      <FileName>Data\DataSets\TimeSheetProject.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="TimeSheet" />
+      <Property Name="Task" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.UserLog" BaseTypeListCollapsed="true">
+    <Position X="12" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAgAAAAAAAAAgAAAAAAAAAAAAABAADIAA=</HashCode>
+      <FileName>Data\DataSets\UserLog.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="User" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.Task">
+    <Position X="4.25" Y="5.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAACAIAAAAggEAAAAgACAAABAAAAAAAIQAAAEAAAAA=</HashCode>
+      <FileName>Data\DataSets\Task.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Project" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjectTracking.Data.DataSets.TeamsProjects">
+    <Position X="7.25" Y="3" Width="1.5" />
+    <AssociationLine Name="Team" Type="ProjectTracking.Data.DataSets.Team" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8.75" Y="3.812" />
+        <Point X="9.125" Y="3.812" />
+        <Point X="9.125" Y="2.59" />
+        <Point X="9.75" Y="2.59" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAACBAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Data\DataSets\TeamsProjects.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Project" />
+      <Property Name="Team" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjectTracking.ApplicationUser">
+    <Position X="12.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACEEAAAAACCAAAAAUEAACAEAQAAAAEAAAAACAAAg=</HashCode>
+      <FileName>Models\ApplicationUser.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Team" />
+    </ShowAsAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

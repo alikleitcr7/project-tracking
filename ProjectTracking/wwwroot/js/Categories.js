@@ -27,7 +27,7 @@ const Modals_Categories = {
 const categoryFormObject = (obj) => {
 
     let record = obj || {
-        name: null,
+        title: null,
     }
 
     return {

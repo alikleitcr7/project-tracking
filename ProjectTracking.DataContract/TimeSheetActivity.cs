@@ -8,11 +8,20 @@ namespace ProjectTracking.DataContract
     {
         public DateTime FromDate { get; set; }
         public DateTime? ToDate { get; set; }
+        public DateTime DateAdded { get; set; }
+
         public string Comment { get; set; }
-        public int? Number { get; set; }
         public string IpAddress { get; set; }
         public string IpAddressTitle { get; set; }
 
+
+        public string DateAddedDisplay
+        {
+            get
+            {
+                return DateAdded.ToString();
+            }
+        }
 
         public string FromDateDisplay
         {
@@ -73,47 +82,14 @@ namespace ProjectTracking.DataContract
             }
         }
 
-        public string TypeOfWorkDisplay
-        {
-            get
-            {
-                return TypeOfWork == null ? "-" : TypeOfWork.Name;
-            }
-        }
-        public string MeasurementUnitDisplay
-        {
-            get
-            {
-                return MeasurementUnit == null ? "-" : MeasurementUnit.Name;
-            }
-        }
 
-        public string ProjectFileDisplay
-        {
-            get
-            {
-                return ProjectFile == null ? "-" : ProjectFile.Name;
-            }
-        }
-
-        //public int TimeSheetId { get; set; }
-        public int TimeSheetProjectId { get; set; }
-        public int? TypeOfWorkId { get; set; }
-        public int? MeasurementUnitId { get; set; }
-        public int? ProjectFileId { get; set; }
-
-
-
-        public virtual ProjectFile ProjectFile { get; set; }
-        public virtual TypeOfWork TypeOfWork { get; set; }
-        public virtual MeasurementUnit MeasurementUnit { get; set; }
-
-
+        public int TimeSheetTaskId { get; set; }
     }
+
     public class TimeSheetActivity : TimeSheetActivityBase
     {
         public int ID { get; set; }
-        public virtual TimeSheetProject TimeSheetProject { get; set; }
+        public virtual TimeSheetTask TimeSheetTask { get; set; }
 
         public virtual List<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
     }
@@ -122,7 +98,6 @@ namespace ProjectTracking.DataContract
     {
         public int ID { get; set; }
         public int TimeSheetActivityId { get; set; }
-        public DateTime DateAdded { get; set; }
         public virtual TimeSheetActivity TimeSheetActivity { get; set; }
     }
 

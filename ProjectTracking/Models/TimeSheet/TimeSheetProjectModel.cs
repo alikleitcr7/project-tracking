@@ -33,37 +33,38 @@ namespace ProjectTracking.Models.TimeSheet
 
         public static TimeSheetProjectModel GenerateModel(DataContract.TimeSheet ts, List<DataContract.Project> parents)
         {
-            TimeSheetProjectModel model = new TimeSheetProjectModel();
+            throw new NotImplementedException();
+            //TimeSheetProjectModel model = new TimeSheetProjectModel();
 
-            model.Projects = parents.Select(k => new Project()
-            {
-                ID = k.ID,
-                Title = k.Title,
-                Description = k.Description,
-            }).ToList();
+            //model.Projects = parents.Select(k => new Project()
+            //{
+            //    ID = k.ID,
+            //    Title = k.Title,
+            //    Description = k.Description,
+            //}).ToList();
 
-            foreach (Project parent in model.Projects)
-            {
+            //foreach (Project project in model.Projects)
+            //{
 
-                var subprojects = ts.TimeSheetProjects
-                    .Where(k => k.Project.ParentId == parent.ID)
-                    .ToList();
+            //    var projectTasks = ts.TimeSheetTasks
+            //        .Where(k => k.Project.ParentId == project.ID)
+            //        .ToList();
 
-                if (subprojects != null)
-                {
-                    parent.SubProjects = subprojects.Select(k => new SubProject()
-                    {
-                        ID = k.ID,
-                        ProjectId = k.Project.ID,
-                        ParentId = parent.ID,
-                        Title = k.Project.Title,
-                        Description = k.Project.Description,
-                        //Activities = k.Activities
-                    }).ToList();
-                }
-            }
+            //    if (projectTasks != null)
+            //    {
+            //        project.SubProjects = projectTasks.Select(k => new SubProject()
+            //        {
+            //            ID = k.ID,
+            //            ProjectId = k.Project.ID,
+            //            ParentId = project.ID,
+            //            Title = k.Project.Title,
+            //            Description = k.Project.Description,
+            //            //Activities = k.Activities
+            //        }).ToList();
+            //    }
+            //}
 
-            return model;
+            //return model;
         }
     }
 }

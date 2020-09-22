@@ -185,10 +185,8 @@ namespace ProjectTracking.Controllers
 
             if (user != null)
             {
-                var supervise = _context.Supervisers.Where(c => c.UserId == Id || c.SupervisorId == Id).ToList();
-                _context.RemoveRange(supervise);
-                _context.SaveChanges();
                 IdentityResult result = await _userManager.DeleteAsync(user);
+
                 if (result.Succeeded)
                     return RedirectToAction("UserManagement");
                 else
@@ -198,6 +196,7 @@ namespace ProjectTracking.Controllers
             {
                 ModelState.AddModelError("", "This user can't be found");
             }
+
             return View("UserManagement", _userManager.Users);
         }
 

@@ -7,11 +7,11 @@ namespace ProjectTracking.Data.DataSets
 {
     public class Superviser
     {
-        public string SupervisorId { get; set; }
-        public  ApplicationUser Supervisor { get; set; }
-
         public string UserId { get; set; }
-        public  ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; }
+
+        public int TeamId { get; set; }
+        public Team Team { get; set; }
 
         //public virtual List<RequestedPermissionsStatus> RequestedPermissionsStatuses { get; set; }
     }

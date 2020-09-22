@@ -93,34 +93,14 @@ namespace ProjectTracking
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<IProjectsMethods, Data.Methods.Projects>();
-
-            services.AddScoped<IProjectFilesMethods, Data.Methods.ProjectFilesMethods>();
-
             services.AddScoped<IProjectsStatistics, Data.Methods.Statistics.ProjectsProgresses>();
-
-
-            services.AddScoped<IMeasurementUnitsMethods, Data.Methods.MeasurementUnitsMethods>();
             services.AddScoped<ITimeSheetActivityLogsMethods, Data.Methods.TimeSheetActivityLogsMethods>();
             services.AddScoped<IInsightsMethods, Data.Methods.Statistics.InsightsMethods>();
-
-            //services.AddScoped<IInventoryProjectsMethods, Data.Methods.InventoryProjectsMethods>();
-            //services.AddScoped<IPermissionsMethods, Data.Methods.Permissions>();
-            //services.AddScoped<IRequestedPermissions, RequestedPermissionsMethods>();
-            //services.AddScoped<IInventoryTypesMethods, Data.Methods.InventoryTypesMethods>();
-            //services.AddScoped<IInventoryStatusesMethods, Data.Methods.InventoryStatusesMethods>();
-            //services.AddScoped<ICountriesMethods, Data.Methods.CountriesMethods>();
-            //services.AddScoped<IUpdateFrequenciesMethods, Data.Methods.UpdateFrequenciesMethods>();
-            //services.AddScoped<IPublishingChannelsMethods, Data.Methods.PublishingChannelsMethods>();
-            //services.AddScoped<ISubProjectsMethods, Data.Methods.SubProjectsMethods>();
-            //services.AddScoped<IHolidaysMethods, HolidaysMethods>();
-            //services.AddScoped<INotificationsHub, NotificationsHub>();
-
             services.AddScoped<ITimeSheetActivitiesMethods, Data.Methods.TimeSheetActivitiesMethods>();
-            services.AddScoped<ITypeOfWorkMethods, Data.Methods.TypeOfWorkMethods>();
             services.AddScoped<IIpAddressMethods, Data.Methods.IpAddressesMethods>();
 
             services.AddTransient<INotificationMethods, Data.Methods.NotificationMethods>();
-            services.AddScoped<ITimeSheetsMethods, Data.Methods.TimeSheets>();
+            services.AddScoped<ITimeSheetsMethods, Data.Methods.TimeSheetsMethods>();
             services.AddTransient<ICategoriesMethods, Data.Methods.CategoriesMethods>();
             services.AddTransient<ITeamsMethods, Data.Methods.TeamsMethods>();
             services.AddTransient<IUserMethods, Data.Methods.Users>();

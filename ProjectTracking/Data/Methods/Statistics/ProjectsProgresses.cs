@@ -141,8 +141,8 @@ namespace ProjectTracking.Data.Methods.Statistics
         #region progressYearsMonthsDays
         public List<int> GetProjectProgressYears()
         {
-            var dbProjects = db.TimeSheetProjects.Join(db.TimeSheetActivities,
-                                                       tsp => tsp.ID, tsa => tsa.TimeSheetProject.ID,
+            var dbProjects = db.TimeSheetTasks.Join(db.TimeSheetActivities,
+                                                       tsp => tsp.ID, tsa => tsa.TimeSheetTask.ID,
                                                        (tsp, tsa) => new { tsp, tsa })
                                                  .Join(db.TimeSheets,
                                                         tsRelation => tsRelation.tsp.TimeSheetId,
@@ -155,8 +155,8 @@ namespace ProjectTracking.Data.Methods.Statistics
         }
         public List<int> GetProjectProgressYearsByUser(string userId)
         {
-            var dbProjects = db.TimeSheetProjects.Join(db.TimeSheetActivities,
-                                                       tsp => tsp.ID, tsa => tsa.TimeSheetProject.ID,
+            var dbProjects = db.TimeSheetTasks.Join(db.TimeSheetActivities,
+                                                       tsp => tsp.ID, tsa => tsa.TimeSheetTask.ID,
                                                        (tsp, tsa) => new { tsp, tsa })
                                                  .Join(db.TimeSheets,
                                                         tsRelation => tsRelation.tsp.TimeSheetId,
@@ -173,8 +173,8 @@ namespace ProjectTracking.Data.Methods.Statistics
         }
         public List<int> GetProjectProgressMonthsByYear(int year)
         {
-            var dbProjects = db.TimeSheetProjects.Join(db.TimeSheetActivities,
-                                                       tsp => tsp.ID, tsa => tsa.TimeSheetProject.ID,
+            var dbProjects = db.TimeSheetTasks.Join(db.TimeSheetActivities,
+                                                       tsp => tsp.ID, tsa => tsa.TimeSheetTask.ID,
                                                        (tsp, tsa) => new { tsp, tsa })
                                                  .Join(db.TimeSheets,
                                                         tsRelation => tsRelation.tsp.TimeSheetId,
@@ -187,8 +187,8 @@ namespace ProjectTracking.Data.Methods.Statistics
         }
         public List<int> GetProjectProgressMonthsByYearAndUser(string userId, int year)
         {
-            var dbProjects = db.TimeSheetProjects.Join(db.TimeSheetActivities,
-                                                       tsp => tsp.ID, tsa => tsa.TimeSheetProject.ID,
+            var dbProjects = db.TimeSheetTasks.Join(db.TimeSheetActivities,
+                                                       tsp => tsp.ID, tsa => tsa.TimeSheetTask.ID,
                                                        (tsp, tsa) => new { tsp, tsa })
                                                  .Join(db.TimeSheets,
                                                         tsRelation => tsRelation.tsp.TimeSheetId,
@@ -205,8 +205,8 @@ namespace ProjectTracking.Data.Methods.Statistics
         }
         public List<int> GetProjectProgressDaysByMonthAndYear(int year, int month)
         {
-            var dbProjects = db.TimeSheetProjects.Join(db.TimeSheetActivities,
-                                                       tsp => tsp.ID, tsa => tsa.TimeSheetProject.ID,
+            var dbProjects = db.TimeSheetTasks.Join(db.TimeSheetActivities,
+                                                       tsp => tsp.ID, tsa => tsa.TimeSheetTask.ID,
                                                        (tsp, tsa) => new { tsp, tsa })
                                                  .Join(db.TimeSheets,
                                                         tsRelation => tsRelation.tsp.TimeSheetId,
@@ -219,8 +219,8 @@ namespace ProjectTracking.Data.Methods.Statistics
         }
         public List<int> GetProjectProgressDaysByMonthAndYearAndUser(string userId, int year, int month)
         {
-            var dbProjects = db.TimeSheetProjects.Join(db.TimeSheetActivities,
-                                                       tsp => tsp.ID, tsa => tsa.TimeSheetProject.ID,
+            var dbProjects = db.TimeSheetTasks.Join(db.TimeSheetActivities,
+                                                       tsp => tsp.ID, tsa => tsa.TimeSheetTask.ID,
                                                        (tsp, tsa) => new { tsp, tsa })
                                                  .Join(db.TimeSheets,
                                                         tsRelation => tsRelation.tsp.TimeSheetId,

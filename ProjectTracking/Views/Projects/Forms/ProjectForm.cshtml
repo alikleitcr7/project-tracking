@@ -1,4 +1,4 @@
-﻿<div id="CreateProjModal" class="modal  fade" role="dialog">
+﻿<div id="ProjectModal" class="modal  fade" role="dialog">
 
     <div class="modal-dialog modal-lg">
         <!-- Modal content-->
@@ -18,15 +18,16 @@
                                 <label for="usr">Title</label>
                                 <input type="text"
                                        maxlength="100"
-                                       class="form-control" v-model="project.title">
+                                       class="form-control" v-model="projects.form.record.title">
 
                             </div>
                             <div class="input-group-item">
                                 <label>Category</label>
-                                <p v-show="!categories.length">No categories added!</p>
-                                <select v-if="categories.length" v-model="categoryId" class="form-control " style="max-width:200px">
-                                    <option value="0" disabled>Choose a Category</option>
-                                    <option v-for="category in categories" v-bind:value="category.id">
+                                <p v-show="categories.isLoading">Loading Categories...</p>
+                                <p v-show="!categories.isLoading && !categories.data.length">No categories added!</p>
+                                <select v-if="categories.data.length" v-model="projects.form.record.categoryId" class="form-control " style="max-width:200px">
+                                    <option :value="oNull" disabled>Choose a Category</option>
+                                    <option v-for="category in categories.data" v-bind:value="category.id">
                                         {{category.name}}
                                     </option>
                                 </select>
@@ -37,7 +38,7 @@
                             <div class="input-group-item">
                                 <label>Description</label>
                                 <textarea maxlength="255"
-                                          class="form-control" v-model="project.description"></textarea>
+                                          class="form-control" v-model="projects.form.record.description"></textarea>
                             </div>
                         </div>
 
@@ -48,7 +49,7 @@
                         <div class="teams-container">
                             <p v-show="!teams.length">There are currently no teams added!</p>
                             <p v-for="(team, idx) in teams">
-                                <input type="checkbox" :value="team.id" v-model="project.teamsIds" />
+                                <input type="checkbox" :value="team.id" v-model="projects.form.record.teamsIds" />
                                 {{team.name}}
                             </p>
                         </div>
@@ -67,7 +68,11 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" v-on:click="addProject">Add</button>
+                <p class="f-display-message">{{ projects.form.message}}</p>
+
+                <button v-bind:disabled="projects.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="projects_save">
+                    Save
+                </button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>

@@ -13,17 +13,17 @@ namespace ProjectTracking.Data.Methods.Interfaces
         TimeSheet Add(string userId, DateTime fromDate, DateTime toDate);
         TimeSheet Get(int id, out List<Project> projects, bool includeActivities = true);
         List<TimeSheet> GetByUser(string userId);
-        List<TimeSheetProject> GetTimeSheetProjects(int timeSheetId);
+        List<TimeSheetTask> GetTimeSheetTasks(int timeSheetId);
         List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId);
         List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, DateTime date);
-        bool AddProjects(int timeSheetId, List<int> projectIds);
-        bool AddProjects(int timeSheetId, int projectId);
-        bool RemoveProjects(int timeSheetId, List<int> projectIds);
-        bool RemoveProjects(int timeSheetId, int projectId);
+        bool AddTasks(int timeSheetId, List<int> projectIds);
+        bool AddTasks(int timeSheetId, int projectId);
+        bool RemoveTasks(int timeSheetId, List<int> projectIds);
+        bool RemoveTasks(int timeSheetId, int projectId);
         bool Delete(int id);
         bool SignTimeSheet(string userId, int timeSheetId);
         bool PermitTimeSheetStatus(PermitModel permitModel);
         TimeSheet GetLatest(string userId);
-        List<TimeSheetStatus> GetSubordinatesTimeSheets(string supervisorId, int page, int countPerPage, out int totalPages);
+        List<TimeSheetTask> GetSubordinatesTimeSheets(string supervisorId, int page, int countPerPage, out int totalPages);
     }
 }

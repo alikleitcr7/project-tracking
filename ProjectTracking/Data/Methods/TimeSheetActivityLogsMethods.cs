@@ -28,7 +28,7 @@ namespace ProjectTracking.Data.Methods
         {
             try
             {
-                var activeActivity = db.TimeSheetActivities.FirstOrDefault(k => k.TimeSheetProjectId == activity.TimeSheetProjectId && !k.ToDate.HasValue);
+                var activeActivity = db.TimeSheetActivities.FirstOrDefault(k => k.TimeSheetProjectTaskId == activity.TimeSheetTaskId && !k.ToDate.HasValue);
 
                 if (activeActivity != null)
                 {
@@ -55,9 +55,6 @@ namespace ProjectTracking.Data.Methods
         public TimeSheetActivityLog Get(int id)
         {
             DataSets.TimeSheetActivityLog dbActivity = db.TimeSheetActivityLogs
-                                                      .Include(k => k.ProjectFile)
-                                                      .Include(k => k.MeasurementUnit)
-                                                      .Include(k => k.TypeOfWork)
                                                       .FirstOrDefault(k => k.ID == id);
 
             return dbActivity == null ? null : _mapper.Map<TimeSheetActivityLog>(dbActivity);
@@ -66,9 +63,6 @@ namespace ProjectTracking.Data.Methods
         public List<TimeSheetActivityLog> GetByActivity(int activityId)
         {
             List<DataSets.TimeSheetActivityLog> dbActivities = db.TimeSheetActivityLogs
-                                                              .Include(k => k.MeasurementUnit)
-                                                              .Include(k => k.ProjectFile)
-                                                              .Include(k => k.TypeOfWork)
                                                               .Where(k => k.TimeSheetActivityId == activityId)
                                                               .OrderByDescending(k => k.DateAdded)
                                                               .ToList();

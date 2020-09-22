@@ -105,21 +105,21 @@ namespace ProjectTracking.Controllers
         {
             return _timeSheets.Add(timeSheet.UserId, timeSheet.FromDate, timeSheet.ToDate);
         }
-        public List<TimeSheetProject> GetTimeSheetProjects(int timeSheetId)
+        public List<TimeSheetTask> GetTimeSheetProjects(int timeSheetId)
         {
-            return _timeSheets.GetTimeSheetProjects(timeSheetId);
+            return _timeSheets.GetTimeSheetTasks(timeSheetId);
         }
 
         [HttpPost]
         public bool AddProjectToTimeSheet([FromBody]ProjectAssignModel model)
         {
-            return _timeSheets.AddProjects(model.timeSheetId, model.projectIds);
+            return _timeSheets.AddTasks(model.timeSheetId, model.projectIds);
         }
 
         [HttpPost]
         public bool RemoveProjectFromTimeSheet([FromBody]ProjectAssignModel model)
         {
-            return _timeSheets.RemoveProjects(model.timeSheetId, model.projectIds);
+            return _timeSheets.RemoveTasks(model.timeSheetId, model.projectIds);
         }
 
         public List<int> GetTimeSheetYears(string userId)

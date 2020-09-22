@@ -45,6 +45,7 @@ namespace ProjectTracking.Data.Methods
 
             return record != null ? _mapper.Map<Category>(record) : null;
         }
+
         //public Category Edit(int id, Category Company)
         //{
         //    if (Company == null)

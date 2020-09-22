@@ -24,12 +24,6 @@ namespace ProjectTracking.AppStart
             CreateMap<TimeSheetActivity, DataContract.TimeSheetActivity>().ForAllMembers(k => k.AllowNull());
             CreateMap<DataContract.TimeSheetActivity, TimeSheetActivity>().ForAllMembers(k => k.AllowNull());
 
-            CreateMap<TimeSheetStatus, DataContract.TimeSheetStatus>().ForAllMembers(k => k.AllowNull());
-            CreateMap<DataContract.TimeSheetStatus, TimeSheetStatus>().ForAllMembers(k => k.AllowNull());
-
-            CreateMap<TimeSheetProject, DataContract.TimeSheetProject>().ForAllMembers(k => k.AllowNull());
-            CreateMap<DataContract.TimeSheetProject, TimeSheetProject>().ForAllMembers(k => k.AllowNull());
-
             CreateMap<Team, DataContract.Team>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.Team, Team>().ForAllMembers(opt => opt.AllowNull());
 
@@ -39,60 +33,8 @@ namespace ProjectTracking.AppStart
             CreateMap<UserLog, DataContract.UserLog>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.UserLog, UserLog>().ForAllMembers(opt => opt.AllowNull());
 
-            //CreateMap<Permission, DataContract.Permission>();
-            //CreateMap<DataContract.Permission, Permission>().ForMember(c => c.ID, opt => opt.Ignore());
-
-            CreateMap<TimeSheetStatus, DataContract.TimeSheetStatus>();
-            CreateMap<DataContract.TimeSheetStatus, TimeSheetStatus>().ForMember(c => c.ID, opt => opt.Ignore());
-
-            //CreateMap<RequestedPermissionsStatusCode, DataContract.RequestedPermissionsStatusCode>();
-            //CreateMap<DataContract.RequestedPermissionsStatusCode, RequestedPermissionsStatusCode>();
-
-            //CreateMap<RequestedPermission, DataContract.RequestedPermission>();
-            //CreateMap<DataContract.RequestedPermission, RequestedPermission>().ForMember(c => c.ID, opt => opt.Ignore());//RequestedPermissionsStatus
-
-            //CreateMap<DataContract.RequestedPermissionsStatus, RequestedPermissionsStatus>().ForMember(c => c.Id, opt => opt.Ignore());//RequestedPermissionsStatus
-            //CreateMap<RequestedPermissionsStatus, DataContract.RequestedPermissionsStatus>();
-
-            CreateMap<ProjectReference, DataContract.ProjectFile>().ForAllMembers(opt => opt.AllowNull());
-            CreateMap<DataContract.ProjectFile, ProjectReference>().ForAllMembers(opt => opt.AllowNull());
-
             CreateMap<IpAddress, DataContract.IpAddress>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.IpAddress, IpAddress>().ForAllMembers(opt => opt.AllowNull());
-
-
-            //CreateMap<Country, DataContract.Country>().ForAllMembers(opt => opt.AllowNull());
-            //CreateMap<DataContract.Country, Country>().ForAllMembers(opt => opt.AllowNull());
-
-            //CreateMap<DataContract.InventoryType, InventoryType>().ForAllMembers(opt => opt.AllowNull());
-            //CreateMap<InventoryType, DataContract.InventoryType>().ForAllMembers(opt => opt.AllowNull());
-
-            //CreateMap<DataContract.InventoryStatus, InventoryStatus>().ForAllMembers(opt => opt.AllowNull());
-            //CreateMap<InventoryStatus, DataContract.InventoryStatus>().ForAllMembers(opt => opt.AllowNull());
-
-            //CreateMap<DataContract.UpdateFrequency, UpdateFrequency>().ForAllMembers(opt => opt.AllowNull());
-            //CreateMap<UpdateFrequency, DataContract.UpdateFrequency>().ForAllMembers(opt => opt.AllowNull());
-
-            //CreateMap<DataContract.PublishingChannel, PublishingChannel>().ForAllMembers(opt => opt.AllowNull());
-            //CreateMap<PublishingChannel, DataContract.PublishingChannel>().ForAllMembers(opt => opt.AllowNull());
-
-            //CreateMap<DataContract.InventoryProject, InventoryProject>().ForAllMembers(opt => opt.AllowNull());
-            //CreateMap<InventoryProject, DataContract.InventoryProject>().ForAllMembers(opt => opt.AllowNull());
-
-            //CreateMap<InventoryProjectPublishingChannel, DataContract.InventoryProjectPublishingChannel>().ForAllMembers(opt => opt.AllowNull());
-            //CreateMap<DataContract.InventoryProjectPublishingChannel, InventoryProjectPublishingChannel>().ForAllMembers(opt => opt.AllowNull());
-
-            //CreateMap<InventorySubProject, DataContract.InventorySubProject>().ForAllMembers(opt => opt.AllowNull());
-            //CreateMap<DataContract.InventorySubProject, InventorySubProject>().ForAllMembers(opt => opt.AllowNull());
-
-            CreateMap<TypeOfWork, DataContract.TypeOfWork>().ForAllMembers(opt => opt.AllowNull());
-            CreateMap<DataContract.TypeOfWork, TypeOfWork>().ForAllMembers(opt => opt.AllowNull());
-
-            CreateMap<MeasurementUnit, DataContract.MeasurementUnit>().ForAllMembers(opt => opt.AllowNull());
-            CreateMap<DataContract.MeasurementUnit, MeasurementUnit>().ForAllMembers(opt => opt.AllowNull());
-
-            //CreateMap<InventoryProjectSubProjects, DataContract.InventoryProjectSubProjects>().ForAllMembers(opt => opt.AllowNull());
-            //CreateMap<DataContract.InventoryProjectSubProjects, InventoryProjectSubProjects>().ForAllMembers(opt => opt.AllowNull());
 
             CreateMap<DataContract.TimeSheetActivityLog, TimeSheetActivityLog>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<TimeSheetActivityLog, DataContract.TimeSheetActivityLog>().ForAllMembers(opt => opt.AllowNull());
@@ -102,9 +44,15 @@ namespace ProjectTracking.AppStart
 
             CreateMap<Notification, DataContract.Notification>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.Notification, Notification>().ForAllMembers(opt => opt.AllowNull());
-
-            //CreateMap<Holiday, DataContract.Holiday>().ForAllMembers(opt => opt.AllowNull());
-            //CreateMap<DataContract.Holiday, Holiday>().ForAllMembers(opt => opt.AllowNull());
+            
+            CreateMap<ProjectTask, DataContract.ProjectTask>().ForAllMembers(opt => opt.AllowNull());
+            CreateMap<DataContract.ProjectTask, ProjectTask>().ForAllMembers(opt => opt.AllowNull());
+            
+            CreateMap<TeamsProjects, DataContract.TeamsProjects>().ForAllMembers(opt => opt.AllowNull());
+            CreateMap<DataContract.TeamsProjects, TeamsProjects>().ForAllMembers(opt => opt.AllowNull());
+            
+            CreateMap<TimeSheetTask, DataContract.TimeSheetTask>().ForAllMembers(opt => opt.AllowNull());
+            CreateMap<DataContract.TimeSheetTask, TimeSheetTask>().ForAllMembers(opt => opt.AllowNull());
         }
     }
 }

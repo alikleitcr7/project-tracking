@@ -11,34 +11,20 @@ namespace ProjectTracking.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<string>, string>
     {
-        //public DbSet<Permission> Permissions { get; set; }
         public DbSet<Superviser> Supervisers { get; set; }
         public DbSet<Project> Projects { get; set; }
-        //public DbSet<RequestedPermission> RequestedPermissions { get; set; }
-        //public DbSet<RequestedPermissionsStatus> RequestedPermissionsStatuses { get; set; }
+        public DbSet<TeamsProjects> TeamsProjects { get; set; }
+        public DbSet<ProjectTask> ProjectTasks { get; set; }
         public DbSet<TimeSheet> TimeSheets { get; set; }
         public DbSet<TimeSheetActivity> TimeSheetActivities { get; set; }
-        public DbSet<TimeSheetStatus> TimeSheetStatuses { get; set; }
-        public DbSet<TimeSheetProject> TimeSheetProjects { get; set; }
+        public DbSet<TimeSheetTask> TimeSheetTasks { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<IdentityRole> ApplicationRoles { get; set; }
         public DbSet<UserLog> UserLogging { get; set; }
-
-        public DbSet<ProjectReference> ProjectReference { get; set; }
-        //public DbSet<InventoryType> InventoryType { get; set; }
-        //public DbSet<InventoryStatus> InventoryStatus { get; set; }
-        //public DbSet<Country> Country { get; set; }
-        //public DbSet<UpdateFrequency> UpdateFrequency { get; set; }
-        //public DbSet<PublishingChannel> PublishingChannel { get; set; }
-        //public DbSet<InventoryProject> InventoryProject { get; set; }
-
-        public DbSet<TypeOfWork> TypeOfWork { get; set; }
-        public DbSet<MeasurementUnit> MeasurementUnit { get; set; }
         public DbSet<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
         public DbSet<IpAddress> IpAddresses { get; set; }
         public DbSet<Notification> Notifications { get; set; }
-        //public DbSet<Holiday> Holidays { get; set; }
 
         private readonly IConfiguration _config;
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration config)
@@ -52,14 +38,14 @@ namespace ProjectTracking.Data
             #region Team
 
             builder.Entity<Team>()
-                   .HasMany(c => c.Employees)
+                   .HasMany(c => c.Members)
                    .WithOne(c => c.Team)
                    .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<Team>()
-                  .HasMany(c => c.Projects)
+                  .HasMany(c => c.TeamsProjects)
                   .WithOne(c => c.Team)
-                  .OnDelete(DeleteBehavior.SetNull);
+                  .OnDelete(DeleteBehavior.Cascade);
 
             #endregion
 
@@ -73,14 +59,17 @@ namespace ProjectTracking.Data
             #endregion
 
             #region Project
-            builder.Entity<Project>()
-.HasOne(c => c.Team).WithMany(c => c.Projects)
-   .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<Project>()
-           .HasOne(c => c.Category)
-           .WithMany(c => c.Projects)
-         .OnDelete(DeleteBehavior.SetNull);
+                .HasMany(c => c.TeamsProjects)
+                .WithOne(c => c.Project)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Project>()
+                   .HasOne(c => c.Category)
+                   .WithMany(c => c.Projects)
+                   .OnDelete(DeleteBehavior.SetNull);
+
             #endregion
 
             #region TimeSheetActivity
@@ -92,16 +81,32 @@ namespace ProjectTracking.Data
 
             #endregion
 
+            builder.Entity<TeamsProjects>()
+                   .HasKey(k => new { k.ProjectId, k.TeamId });
+
+
+            builder.Entity<TeamsProjects>()
+                   .HasOne(k => k.Project)
+                   .WithMany(k => k.TeamsProjects)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<TeamsProjects>()
+                   .HasOne(k => k.Team)
+                   .WithMany(k => k.TeamsProjects)
+                   .OnDelete(DeleteBehavior.Cascade);
+
             #region Supervisor
 
             builder.Entity<Superviser>()
-                   .HasKey(k => new { k.UserId, k.SupervisorId });
+                   .HasKey(k => new { k.TeamId, k.UserId });
 
-            builder.Entity<Superviser>()
-                   .HasOne(x => x.Supervisor)
-                   .WithMany(m => m.Supervising)
-                   .HasForeignKey(x => x.SupervisorId)
-                   .OnDelete(DeleteBehavior.Restrict);
+
+            //builder.Entity<Superviser>()
+            //       .HasOne(x => x.Supervisor)
+            //       .WithMany(m => m.Supervising)
+            //       .HasForeignKey(x => x.SupervisorId)
+            //       .OnDelete(DeleteBehavior.Restrict);
+
             #endregion
 
             #region IdentityUserRole

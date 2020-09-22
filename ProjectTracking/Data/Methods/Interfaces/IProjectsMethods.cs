@@ -9,6 +9,10 @@ namespace ProjectTracking.Data.Methods.Interfaces
 {
     public interface IProjectsMethods
     {
+        Project GetById(int id);
+        List<Project> Search(int? categoryId, string keyword, int page, int countPerPage, out int totalCount);
+        Project Save(Models.Projects.ProjectSaveModel model);
+
         List<Project> Get(int departmentId, int companyId, bool includeActivities = true);
         List<Project> Get(bool includeActivities = true);
         Project Add(string title, string description, int departmentId, int companyId, int? parentId = null);

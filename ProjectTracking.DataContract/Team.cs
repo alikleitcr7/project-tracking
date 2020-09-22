@@ -12,12 +12,8 @@ namespace ProjectTracking.DataContract
         public int ID { get; set; }
         public string Name { get; set; }
 
-        public string NameDisplay
-        {
-            get
-            {
-                return "this is a naming case test";
-            }
-        }
+
+        public ICollection<User> Members { get; set; }
+        public ICollection<TeamsProjects> TeamsProjects { get; set; }
     }
 }

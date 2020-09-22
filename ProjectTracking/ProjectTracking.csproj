@@ -39,14 +39,19 @@
     <Compile Remove="Controllers\PublishingChannelsController.cs" />
     <Compile Remove="Controllers\SubProjectsController.cs" />
     <Compile Remove="Controllers\UpdateFrequenciesController.cs" />
+    <Compile Remove="Data\ApplicationDbInitializer.cs" />
     <Compile Remove="Data\DataSets\Holiday.cs" />
     <Compile Remove="Data\DataSets\InventoryProject.cs" />
     <Compile Remove="Data\DataSets\InventoryProjectPublishingChannel.cs" />
     <Compile Remove="Data\DataSets\InventoryProjectSubProjects.cs" />
+    <Compile Remove="Data\DataSets\MeasurementUnit.cs" />
     <Compile Remove="Data\DataSets\Permission.cs" />
+    <Compile Remove="Data\DataSets\ProjectReference.cs" />
     <Compile Remove="Data\DataSets\RequestedPermission.cs" />
     <Compile Remove="Data\DataSets\RequestedPermissionsStatus.cs" />
     <Compile Remove="Data\DataSets\RequestedPermissionsStatusCode.cs" />
+    <Compile Remove="Data\DataSets\TimeSheetStatus.cs" />
+    <Compile Remove="Data\DataSets\TypeOfWork.cs" />
     <Compile Remove="Data\Methods\CountriesMethods.cs" />
     <Compile Remove="Data\Methods\HolidaysMethods.cs" />
     <Compile Remove="Data\Methods\Interfaces\ICountriesMethods.cs" />
@@ -67,6 +72,11 @@
     <Compile Remove="Data\Methods\RequestedPermissionsMethods.cs" />
     <Compile Remove="Data\Methods\SubProjectsMethods.cs" />
     <Compile Remove="Data\Methods\UpdateFrequenciesMethods.cs" />
+    <Compile Remove="Migrations\20200922183050_init.cs" />
+    <Compile Remove="Migrations\20200922183050_init.Designer.cs" />
+    <Compile Remove="Migrations\20200922183307_init.cs" />
+    <Compile Remove="Migrations\20200922183307_init.Designer.cs" />
+    <Compile Remove="Models\TimeSheet\TimeSheetModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -102,7 +112,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Projects\" />
+    <Folder Include="Models\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -142,6 +152,12 @@
     <None Include="wwwroot\lib\jquery\dist\jquery.js" />
     <None Include="wwwroot\lib\jquery\dist\jquery.min.js" />
     <None Include="wwwroot\lib\jquery\dist\jquery.min.map" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Projects\Index2 - Copy.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
 
 </Project>

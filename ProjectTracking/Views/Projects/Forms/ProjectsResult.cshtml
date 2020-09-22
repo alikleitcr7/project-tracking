@@ -1,0 +1,87 @@
+﻿
+<div class="buttons mb-2">
+    <button type="button" v-on:click="projects_openModal" class="s-btn s-btn-primary">New Project &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
+
+    <div>
+        <table class="table table-borderless" style="max-width:500px;">
+            <tr>
+                <td>
+                    <select class="form-control" v-model="projects.filterBy.categoryId">
+                        <option v-show="categories.isLoading" disabled="disabled">Loading...</option>
+                        <option v-for="opt in categoriesToFilter" :value="opt.id">{{opt.name}}</option>
+                    </select>
+                </td>
+                <td>
+                    <input class="form-control" v-model="projects.filterBy.keyword" />
+
+                </td>
+                <td>
+                    <button class="s-btn s-btn-primary" v-on:click="projects_getAll()">Search</button>
+
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>
+
+<h4 v-show="!projects.isLoading && !projects.data.length ">
+    <br />
+    <span class="clickable-link" v-on:click="projects_openModal">Click Here</span> to add
+</h4>
+
+<section id="Pagination" class="c-pagination" v-show="projectsTotalPages > 1">
+    <div class="container">
+        <paginate v-bind:page-count="projectsTotalPages"
+                  v-bind:container-class="projects.dataPaging.pagination"
+                  v-bind:prev-text="projects.dataPaging.prev"
+                  v-bind:next-text="projects.dataPaging.next" v-bind:click-handler="projects_pageClick">
+        </paginate>
+    </div>
+</section>
+
+<p class="c-display-message">{{projects.isLoading ? 'Loading...':'&nbsp;'}}</p>
+
+<div v-show="projects.data.length" class="Projects c-table-data-container"
+     v-bind:class="{'lock-controls': projects.isProcessing }">
+
+    <table class="table ">
+
+        <thead>
+            <tr>
+                <th style="width: 50px">-</th>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <template v-for="(item ,idx) in projects.data">
+
+                <tr>
+                    <td>
+                        {{item.id}}
+                    </td>
+
+                    <td>
+                        {{item.name}}
+                    </td>
+
+                    <td>
+                        <button class="s-btn s-btn-sm s-btn-outline" type="button"
+                                v-on:click="projects_edit(idx)">
+                            Edit
+                        </button>
+                        <button class="s-btn s-btn-sm s-btn-danger" type="button"
+                                v-on:click="projects_delete(idx)">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+
+            </template>
+
+        </tbody>
+    </table>
+</div>

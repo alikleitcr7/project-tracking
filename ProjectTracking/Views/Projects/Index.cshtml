@@ -1,254 +1,33 @@
 ﻿@{
-    ViewData["Title"] = "Projects Management";
+    ViewData["Title"] = "Projects";
 }
-@*@inject ProjectTracking.Data.Methods.Categories*@
+
 @using ProjectTracking.Data.Methods.Interfaces
 
-@*@inject ICategories CategoryDtos*@
+<div id="Projects" class="v-container">
 
-<div class="main-container">
 
-    <h3>Projects</h3>
-    <hr />
+    <partial name="~/views/projects/forms/ProjectsResult.cshtml" />
 
-    <div id="ProjectManager" v-cloak>
+    <partial name="~/views/projects/forms/projectform.cshtml" />
 
-        <div class="top-controls mb-5" v-if="!isLoading">
-            
-            <select v-if="categories.length" v-model="categoryId" class="form-control " style="max-width:200px">
-                <option value="0" disabled>Choose a Category</option>
-                <option v-for="category in categories" v-bind:value="category.id">
-                    {{category.name}}
-                </option>
-            </select>
-
-            <button class="s-btn s-btn-primary " v-on:click="openAddModal(null)">
-                Create
-            </button>
-         
-            <a asp-action="ProjectsProgress" class="s-btn s-btn-primary"> Projects Progress</a>
-     
-        </div>
-       
-
-        <div v-show="!projects.length">
-            This section is empty, <a class=" clickable-link" v-on:click="openAddModal(null)" >Click Here</a> to add new projects!
-        </div>
-
-        <div v-show="categoryId && !projectsLoading" class="table-controls" style="height:360px; overflow-y:scroll;">
-
-            <section v-show="!projectsLoading" id="Pagination" v-bind:class="{ 'd-none':(dataPaging.totalPages < 2 )}">
-                <div class="container">
-
-                    <paginate :page-count="dataPaging.totalPages"
-                              :container-class="dataPaging.pagination"
-                              :prev-text="dataPaging.prev"
-                              :next-text="dataPaging.next"
-                              :click-handler="clickCallback">
-                    </paginate>
-
-                </div>
-            </section>
-
-            <div class="mb-4">
-                <span v-on:click="expanddAll">
-                    <img class="cell-arrow"
-                         v-bind:class="{'rotate-Arrow' : areExpandAll}"
-                         src="~/icons/arrow-down.svg" />
-                </span><span><small class="ml-2">Expand/Collapse</small></span>
-            </div>
-
-            <span class="d-none">{{test}}</span>
-
-            <table class="table border bg-light">
-                <thead>
-                    <tr>
-                        <td>Activities</td>
-                        <td>Title</td>
-                        <td>Date Added</td>
-                        <td>Category</td>
-                        <td>Team</td>
-                        <td>Project Files</td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template v-for="project in projects">
-                        <tr>
-                            <td width="5px;"><span v-on:click="expandProject(project)"><img class="cell-arrow" v-bind:class="{'rotate-Arrow' : project.isExpanded }" src="~/icons/arrow-down.svg" /></span></td>
-                            <td>
-                                <span v-show="project.editMode && !project.editMode.active">{{project.title}}</span>
-                                <input v-show="project.editMode &&  project.editMode.active" v-model="project.editMode.title">
-                            </td>
-                            <td>
-                                <span v-show="!project.editMode.active">{{project.description}}</span>
-                                <textarea v-show="project.editMode.active" v-model="project.editMode.description"></textarea>
-                            </td>
-                            <td>
-                                <span>{{project.displayDate}}</span>
-                            </td>
-                            <td>
-                                <select v-model="project.editMode.categoryId" class="form-control " v-bind:disabled="!project.editMode.active">
-                                    <option v-for="projectCategory in categories" v-bind:value="projectCategory.id" v-bind:selected="projectCategory.id==project.categoryId">
-                                        {{projectCategory.name}}
-                                    </option>
-                                </select>
-
-                            </td>
-                            <td>
-                                <select v-model="project.editMode.teamId" class="form-control " v-bind:disabled="!project.editMode.active">
-                                    <option v-for="projectTeam in teams" v-bind:value="projectTeam.id" v-bind:selected="projectTeam.id==project.teamId">
-                                        {{projectTeam.name}}
-                                    </option>
-                                </select>
-                            </td>
-                            <td>
-                                <button class="Button-Shared" type="button" v-on:click="openProjectFilesModal(project.id)">Files</button>
-                            </td>
-                            <td class="buttons-cell">
-                                <span v-show="!project.editMode.active" v-on:click="toggleEditMode(project)">
-                                    <img src="~/icons/edit(1).svg" />
-                                </span>
-                                <span v-show="project.editMode.active" v-on:click="editProject(project)">
-                                    <img src="~/icons/check.svg" />
-                                </span>
-                                <span v-show="project.editMode.active" v-on:click="toggleEditMode(project)">
-                                    <img src="~/icons/letter-x.svg" />
-                                </span>
-                                <span v-on:click="deleteProject(project.id)">
-                                    <img src="~/icons/delete-button.svg" />
-                                </span>
-
-                                <a v-bind:href="`/projects/projectTrack?projectId=${project.id}`" class="Button-Shared Button-Small">Track</a>
-
-                            </td>
-
-                        </tr>
-
-                        <tr v-show="project.isExpanded && project.activities.length>0">
-                            <td colspan="8">
-                                <table class="table mb-1 border border-danger bg-transparent text-dark">
-                                    <thead>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td>title</td>
-                                            <td>Description</td>
-                                            <td>dateAdded</td>
-                                            <td>category</td>
-                                            <td>team</td>
-                                            <td>Activity Files</td>
-                                            <td></td>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <template v-for="activity in project.activities">
-                                            <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td>
-                                                    <span v-show="activity.editMode && !activity.editMode.active">
-                                                        {{activity.title}}
-                                                    </span>
-                                                    <input v-show="activity.editMode &&  activity.editMode.active"
-                                                           v-model="activity.editMode.title">
-                                                </td>
-                                                <td>
-                                                    <span v-show="!activity.editMode.active">
-                                                        {{activity.description}}
-                                                    </span>
-                                                    <textarea v-show="activity.editMode.active"
-                                                              v-model="activity.editMode.description"></textarea>
-                                                </td>
-                                                <td>
-                                                    <span>{{activity.displayDate}}</span>
-                                                </td>
-                                                <td>
-                                                    <select v-model="activity.editMode.categoryId" class="form-control " v-bind:disabled="!activity.editMode.active">
-                                                        <option v-for="activityCategory in categories" v-bind:value="activityCategory.id" v-bind:selected="activityCategory.id==activity.categoryId">
-                                                            {{activityCategory.name}}
-                                                        </option>
-                                                    </select>
-
-                                                </td>
-                                                <td>
-                                                    <select v-model="activity.editMode.teamId" class="form-control " v-bind:disabled="!activity.editMode.active">
-                                                        <option v-for="activityTeam in teams" v-bind:value="activityTeam.id" v-bind:selected="activityTeam.id==activity.teamId">
-                                                            {{activityTeam.name}}
-                                                        </option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <button class="Button-Shared" type="button" v-on:click="openProjectFilesModal(activity.id)">Files</button>
-                                                </td>
-                                                <td class="buttons-cell">
-                                                    <span v-show="!activity.editMode.active" v-on:click="toggleEditMode(activity)">
-                                                        <img src="~/icons/edit(1).svg" />
-                                                    </span>
-                                                    <span v-show="activity.editMode.active" v-on:click="editProject(activity)">
-                                                        <img src="~/icons/check.svg" />
-                                                    </span>
-                                                    <span v-show="activity.editMode.active" v-on:click="toggleEditMode(activity)">
-                                                        <img src="~/icons/letter-x.svg" />
-                                                    </span>
-                                                    <span v-on:click="deleteProject(activity.id,project)">
-                                                        <img src="~/icons/delete-button.svg" />
-                                                    </span>
-                                                </td>
-
-                                            </tr>
-                                        </template>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-
-                        <button class="btn Button-Shared ml-2 mb-3"
-                                data-toggle="modal"
-                                :disabled="teamId==0"
-                                data-target="#CreateProjModal"
-                                type="button"
-                                v-show="project.isExpanded"
-                                v-on:click="openAddModal(project)">
-                            add Activity
-                        </button>
-                    </template>
-                </tbody>
-            </table>
-        </div>
-
-        <div id="ProjectContents">
-            <p v-if="isLoading">Loading...</p>
-            <div v-if="!isLoading"></div>
-        </div>
-
-        <file-object-modal id="ProjectFilesModal" title="Project Files"
-                           v-bind:model="projectFiles"
-                           v-on:add-click="addProjectFile"
-                           v-on:edit-click="editProjectFile"
-                           v-on:cancel-click="cancelProjectFileEdit"
-                           v-on:update-click="updateProjectFile"
-                           v-on:delete-click="deleteProjectFile">
-        </file-object-modal>
-
-        <partial name="~/views/projects/forms/ProjectForm.cshtml" />
-
-    </div>
 </div>
 
 
 @section styles{
     <link href="~/css/Dashboard.min.css" rel="stylesheet" />
-
     <link href="~/css/projects.min.css" rel="stylesheet" />
 }
+
 @section scripts{
 
+    @* Plugins *@
     <script src="https://unpkg.com/vuejs-paginate@latest"></script>
 
+    @* Services *@
+    <script src="~/services/ProjectsService.js"></script>
+    <script src="~/services/CategoriesService.js"></script>
     <script src="~/services/TeamsService.js"></script>
 
-    <script src="~/services/ProjectFilesService.js"></script>
-    <script src="~/js/projects-manager.js"></script>
+    <script src="~/js/projects.js"></script>
 }
