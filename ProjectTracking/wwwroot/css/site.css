@@ -148,57 +148,6 @@
 .Button-Shared.Button-Large {
   padding: 1.5em;
 }
-.s-btn {
-  border-radius: 5px;
-  border: none;
-  padding: 0.5em 1em;
-  text-decoration: none;
-  background-color: #2286c3;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  text-align: center;
-}
-.s-btn:disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-.s-btn.s-btn-primary {
-  color: #fff;
-}
-.s-btn.s-btn-primary:hover {
-  background-color: #1776b0;
-}
-.s-btn.s-btn-outline {
-  background-color: transparent;
-  border: 1px solid #2286c3;
-  color: #1776b0;
-}
-.s-btn.s-btn-outline:hover {
-  background-color: rgba(212, 212, 212, 0.34);
-}
-.s-btn.s-btn-danger {
-  background-color: #b00808;
-  border: 1px solid #b00808;
-  color: #fff;
-}
-.s-btn.s-btn-danger:hover {
-  background-color: #860707;
-}
-.s-btn.s-btn-lg {
-  padding: 1em 1.3em;
-}
-.s-btn.s-btn-sm {
-  padding: 0.3em 0.5em;
-}
-.s-btn.s-btn-md {
-  padding: 0.7em 1em;
-}
-.s-btn.s-btn-block {
-  display: block;
-  width: 100%;
-}
 .Button-Danger {
   padding: 0.5em 1em;
   border-radius: 5px;
@@ -511,6 +460,71 @@ a {
 .s-btn-group .s-btn {
   margin-left: 0.2em;
 }
+.input-group-container {
+  display: flex;
+}
+.input-group-container .input-group-item {
+  flex: 1;
+  padding: 0.5em;
+}
+.s-btn {
+  border-radius: 5px;
+  border: none;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  background-color: #2286c3;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  display: inline-block;
+  text-align: center;
+}
+.s-btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.s-btn.s-btn-primary {
+  color: #fff;
+}
+.s-btn.s-btn-primary:hover {
+  background-color: #1776b0;
+}
+.s-btn.s-btn-outline {
+  background-color: transparent;
+  border: 1px solid #2286c3;
+  color: #1776b0;
+}
+.s-btn.s-btn-outline:hover {
+  background-color: rgba(212, 212, 212, 0.34);
+}
+.s-btn.s-btn-danger {
+  background-color: #b00808;
+  border: 1px solid #b00808;
+  color: #fff;
+}
+.s-btn.s-btn-danger:hover {
+  background-color: #860707;
+}
+.s-btn.s-btn-lg {
+  padding: 1em 1.3em;
+}
+.s-btn.s-btn-sm {
+  padding: 0.3em 0.5em;
+}
+.s-btn.s-btn-md {
+  padding: 0.7em 1em;
+}
+.s-btn.s-btn-block {
+  display: block;
+  width: 100%;
+}
+.s-table-controls {
+  margin: 0.5em 0;
+}
+.s-table-controls tr td {
+  padding: 5px 5px 5px 0;
+}
 .v-container {
   padding-top: 1em;
   padding-bottom: 1em;
@@ -547,6 +561,9 @@ table td {
 }
 .modal {
   z-index: 99999999;
+}
+.modal .modal-footer {
+  text-align: center;
 }
 .modal-controls label {
   font-weight: lighter;
@@ -954,6 +971,16 @@ textarea {
 .d-flex-controls__buttons button,
 .d-flex-controls__buttons a {
   display: inline;
+}
+@media (max-width: 767px) {
+  .input-group-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .input-group-container .input-group-item {
+    flex: 1;
+    padding: 0.5em;
+  }
 }
 @media print {
   #SideBar {

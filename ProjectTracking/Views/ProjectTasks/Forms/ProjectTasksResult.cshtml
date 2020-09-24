@@ -2,23 +2,16 @@
 <div class="buttons mb-2">
 
     <div>
-        <button type="button" v-on:click="projects_openModal" class="s-btn s-btn-primary">New Project &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
+        <button type="button" v-on:click="projectTasks_openModal" class="s-btn s-btn-primary">New Task &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
     </div>
 
     <table class="s-table-controls">
         <tr>
             <td>
-                <select class="form-control" v-model="projects.filterBy.categoryId">
-                    <option v-show="categories.isLoading" disabled="disabled">Loading...</option>
-                    <option v-for="opt in categoriesToFilter" :value="opt.id">{{opt.name}}</option>
-                </select>
+                <input class="form-control" v-model="projectTasks.filterBy.keyword" />
             </td>
             <td>
-                <input class="form-control" v-model="projects.filterBy.keyword" />
-
-            </td>
-            <td>
-                <button class="s-btn s-btn-primary" v-on:click="projects_getAll()">Search
+                <button class="s-btn s-btn-primary" v-on:click="projectTasks_getAll()">Search
                 <i class="glyphicon glyphicon-search"></i>
                 </button>
 
@@ -29,25 +22,25 @@
 
 </div>
 
-<h4 v-show="!projects.isLoading && !projects.data.length ">
+<h4 v-show="!projectTasks.isLoading && !projectTasks.data.length ">
     <br />
-    <span class="clickable-link" v-on:click="projects_openModal">Click Here</span> to add
+    <span class="clickable-link" v-on:click="projectTasks_openModal">Click Here</span> to add
 </h4>
 
-<section id="Pagination" class="c-pagination" v-show="projectsTotalPages > 1">
+<section id="Pagination" class="c-pagination" v-show="projectTasksTotalPages > 1">
     <div class="container">
-        <paginate v-bind:page-count="projectsTotalPages"
-                  v-bind:container-class="projects.dataPaging.pagination"
-                  v-bind:prev-text="projects.dataPaging.prev"
-                  v-bind:next-text="projects.dataPaging.next" v-bind:click-handler="projects_pageClick">
+        <paginate v-bind:page-count="projectTasksTotalPages"
+                  v-bind:container-class="projectTasks.dataPaging.pagination"
+                  v-bind:prev-text="projectTasks.dataPaging.prev"
+                  v-bind:next-text="projectTasks.dataPaging.next" v-bind:click-handler="projectTasks_pageClick">
         </paginate>
     </div>
 </section>
 
-<p class="c-display-message">{{projects.isLoading ? 'Loading...':'&nbsp;'}}</p>
+<p class="c-display-message">{{projectTasks.isLoading ? 'Loading...':'&nbsp;'}}</p>
 
-<div v-show="projects.data.length" class="Projects c-table-data-container"
-     v-bind:class="{'lock-controls': projects.isProcessing }">
+<div v-show="projectTasks.data.length" class="ProjectTasks c-table-data-container"
+     v-bind:class="{'lock-controls': projectTasks.isProcessing }">
 
     <table class="table ">
 
@@ -58,7 +51,6 @@
                 <th>Start Date</th>
                 <th>Planned End</th>
                 <th>Actual End</th>
-                <th>Teams</th>
                 <th>Status</th>
                 <th></th>
             </tr>
@@ -66,7 +58,7 @@
 
         <tbody>
 
-            <template v-for="(item ,idx) in projects.data">
+            <template v-for="(item ,idx) in projectTasks.data">
 
                 <tr>
 
@@ -90,25 +82,22 @@
                         {{item.actualEndDisplay}}
                     </td>
 
-                    <td>
-                        {{item.teamsProjects ? item.teamsProjects.length : 0}}
-                    </td>
                     
                     <td>
                         {{item.statusDisplay}}
                     </td>
 
                     <td>
-                        <a class="s-btn s-btn-sm s-btn-outline" :href="`/projects/${item.id}/tasks`">
+                        @*<a class="s-btn s-btn-sm s-btn-outline" :href="`/projectTasktasks/${item.id}`">
                             Tasks
-                        </a>
+                        </a>*@
 
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
-                                v-on:click="projects_edit(idx)">
+                                v-on:click="projectTasks_edit(idx)">
                             Edit
                         </button>
                         <button class="s-btn s-btn-sm s-btn-danger" type="button"
-                                v-on:click="projects_delete(idx)">
+                                v-on:click="projectTasks_delete(idx)">
                             Delete
                         </button>
                     </td>

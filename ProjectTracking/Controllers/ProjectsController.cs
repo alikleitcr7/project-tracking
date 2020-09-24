@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProjectTracking.Models.Projects;
+using ProjectTracking.Exceptions;
 
 namespace ProjectTracking.Controllers
 {
@@ -51,7 +52,7 @@ namespace ProjectTracking.Controllers
 
             foreach (ProjectTask projectActivity in project.Tasks)
             {
-                foreach (TimeSheetTask timeSheetProject in projectActivity.TimeSheetProjects)
+                foreach (TimeSheetTask timeSheetProject in projectActivity.TimeSheetTasks)
                 {
                     activities.AddRange(timeSheetProject.Activities.ToList());
                 }
@@ -204,9 +205,26 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
-        public JsonResult Save(ProjectSaveModel model)
+        public IActionResult Save([FromBody]ProjectSaveModel model)
         {
-            return Json(_projects.Save(model));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                return Ok(_projects.Save(model));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
         }
 
         [HttpGet]
@@ -216,21 +234,49 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
-        public JsonResult Search(int? categoryId, string keyword, int page, int countPerPage)
+        public IActionResult GetProjectStatuses()
         {
-            var record = _projects.Search(categoryId, keyword, page, countPerPage, out int totalCount);
+            return Ok(Enum.GetNames(typeof(ProjectStatus)).Select((key, value) => new KeyValuePair<int, string>(value, key)).ToList());
+        }
 
-            return Json(new
+        [HttpGet]
+        public IActionResult Search(int? categoryId, string keyword, int page, int countPerPage)
+        {
+            try
             {
-                record,
-                totalCount
-            });
+                var record = _projects.Search(categoryId, keyword, page, countPerPage, out int totalCount);
+
+                return Ok(new
+                {
+                    record,
+                    totalCount
+                });
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpDelete]
-        public bool Delete(int id)
+        public IActionResult Delete(int id)
         {
-            return _projects.Delete(id);
+            try
+            {
+                return Ok(_projects.Delete(id));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         #endregion

@@ -11,12 +11,12 @@ using System.Linq;
 
 namespace ProjectTracking.Data.Methods
 {
-    public class Projects : IProjectsMethods
+    public class ProjectsMethods : IProjectsMethods
     {
         private readonly ApplicationDbContext db;
         private readonly IMapper _mapper;
 
-        public Projects(IMapper mapper, ApplicationDbContext context)
+        public ProjectsMethods(IMapper mapper, ApplicationDbContext context)
         {
             //var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             //optionsBuilder.UseSqlServer(Setting.ConnectionString);
@@ -58,7 +58,7 @@ namespace ProjectTracking.Data.Methods
 
             DataSets.Project project = db.Projects.AsNoTracking()
                                .Include(k => k.Tasks)
-                               .ThenInclude(k => k.TimeSheetProjects)
+                               .ThenInclude(k => k.TimeSheetTasks)
                                .ThenInclude(k => k.Activities)
                                .Where(k => k.ID == projectId)
                                .FirstOrDefault();
@@ -72,7 +72,7 @@ namespace ProjectTracking.Data.Methods
 
             foreach (DataSets.ProjectTask item in project.Tasks)
             {
-                foreach (DataSets.TimeSheetTask timeSheetProject in item.TimeSheetProjects)
+                foreach (DataSets.TimeSheetTask timeSheetProject in item.TimeSheetTasks)
                 {
                     foreach (DataSets.TimeSheetActivity timeSheetActivity in timeSheetProject.Activities)
                     {
@@ -113,10 +113,10 @@ namespace ProjectTracking.Data.Methods
         {
             DataSets.Project project = db.Projects.AsNoTracking()
                               .Include(k => k.Tasks)
-                              .ThenInclude(k => k.TimeSheetProjects)
+                              .ThenInclude(k => k.TimeSheetTasks)
                               .ThenInclude(k => k.Activities)
                               .Include(k => k.Tasks)
-                              .ThenInclude(k => k.TimeSheetProjects)
+                              .ThenInclude(k => k.TimeSheetTasks)
                               .ThenInclude(k => k.Activities)
                               .Where(k => k.ID == projectId).FirstOrDefault();
 
@@ -173,43 +173,30 @@ namespace ProjectTracking.Data.Methods
 
                 // get project
 
-                var dbProject = db.Projects.FirstOrDefault(k => k.ID == model.id.Value);
+                var dbProject = db.Projects.Include(k => k.TeamsProjects).FirstOrDefault(k => k.ID == model.id.Value);
 
                 if (dbProject == null)
                 {
-                    throw new KeyNotFoundException("record not found");
+                    throw new ClientException("record not found");
                 }
 
                 dbProject.Title = model.title;
                 dbProject.Description = model.description;
                 dbProject.CategoryId = model.categoryId;
+                dbProject.StartDate = model.startDate;
+                dbProject.PlannedEnd = model.plannedEnd;
+                dbProject.ActualEnd = model.actualEnd;
+                dbProject.StatusCode = model.statusCode;
 
-                if (db.SaveChanges() == 0)
-                {
-                    throw new Exception("record not saved");
-                }
+                AddRemoveTeamsProjects(model, dbProject);
 
-                var teamProjects = db.TeamsProjects.Where(k => k.TeamId == dbProject.ID);
-
-                db.TeamsProjects.RemoveRange(teamProjects);
-
-                db.TeamsProjects.AddRange(model.teamsIds.Select(k => new DataSets.TeamsProjects()
-                {
-                    ProjectId = dbProject.ID,
-                    TeamId = k
-                }));
-
-                if (db.SaveChanges() == 0)
-                {
-                    throw new Exception("teams were not saved");
-                }
+                db.SaveChanges();
 
                 return _mapper.Map<Project>(dbProject);
             }
             else
             {
                 // check title if exist
-
                 bool nameExist = db.Projects.Any(k => k.Title == model.title);
 
                 if (nameExist)
@@ -223,33 +210,54 @@ namespace ProjectTracking.Data.Methods
                     Description = model.description,
                     DateAdded = DateTime.Now,
                     CategoryId = model.categoryId,
+                    StartDate = model.startDate,
+                    PlannedEnd = model.plannedEnd,
+                    ActualEnd = model.actualEnd,
+                    StatusCode = model.statusCode
                 };
 
+                // add the project
                 db.Projects.Add(dbProject);
 
-                if (db.SaveChanges() == 0)
-                {
-                    throw new Exception("record not saved");
-                }
+                // save changes on project
+                db.SaveChanges();
 
+                // add the teams to the saved project
                 db.TeamsProjects.AddRange(model.teamsIds.Select(k => new DataSets.TeamsProjects()
                 {
                     ProjectId = dbProject.ID,
                     TeamId = k
                 }));
 
-                if (db.SaveChanges() == 0)
-                {
-                    throw new Exception("teams were not saved");
-                }
+                // save changes on teamsprojects
+                db.SaveChanges();
 
                 return _mapper.Map<Project>(dbProject);
             }
         }
-
-        public List<Project> Search(int? categoryId, string keyword, int page, int countPerPage, out int totalCount )
+      
+        private void AddRemoveTeamsProjects(ProjectSaveModel model, DataSets.Project dbProject)
         {
-            IQueryable<DataSets.Project> query = db.Projects;
+            // remove all items not in the model
+            dbProject.TeamsProjects.RemoveAll(k => !model.teamsIds.Contains(k.TeamId));
+
+            // remove all items in the model that are already in db
+            model.teamsIds.RemoveAll(k => dbProject.TeamsProjects.Any(t => t.TeamId == k));
+
+            // add the rest
+            if (model.teamsIds.Count > 0)
+            {
+                dbProject.TeamsProjects.AddRange(model.teamsIds.Select(k => new DataSets.TeamsProjects()
+                {
+                    ProjectId = dbProject.ID,
+                    TeamId = k
+                }));
+            }
+        }
+
+        public List<Project> Search(int? categoryId, string keyword, int page, int countPerPage, out int totalCount)
+        {
+            IQueryable<DataSets.Project> query = db.Projects.Include(k => k.TeamsProjects);
 
             if (categoryId.HasValue)
             {
@@ -263,7 +271,8 @@ namespace ProjectTracking.Data.Methods
 
             totalCount = query.Count();
 
-            return query.Skip(page * countPerPage)
+            return query.OrderByDescending(k => k.ID)
+                .Skip(page * countPerPage)
                 .Take(countPerPage)
                 .ToList()
                 .Select(_mapper.Map<Project>)
@@ -293,7 +302,7 @@ namespace ProjectTracking.Data.Methods
 
         public Project GetById(int id)
         {
-            var record = db.Projects.FirstOrDefault(k => k.ID == id);
+            var record = db.Projects.Include(k => k.TeamsProjects).FirstOrDefault(k => k.ID == id);
 
             return record != null ? _mapper.Map<Project>(record) : null;
         }

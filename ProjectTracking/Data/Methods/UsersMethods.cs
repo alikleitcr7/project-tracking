@@ -14,13 +14,13 @@ using ProjectTracking.AppStart;
 
 namespace ProjectTracking.Data.Methods
 {
-    public class Users : IUserMethods
+    public class UsersMethods : IUserMethods
     {
         private ApplicationDbContext db;
         private readonly IMapper _mapper;
         private readonly IDataAccess dataAccess;
 
-        public Users(IMapper mapper, IConfiguration config, IDataAccess dataAccess)
+        public UsersMethods(IMapper mapper, IConfiguration config, IDataAccess dataAccess)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             optionsBuilder.UseSqlServer(Setting.ConnectionString);
@@ -30,10 +30,18 @@ namespace ProjectTracking.Data.Methods
             this.dataAccess = dataAccess;
         }
 
-        public List<IdentityRole<string>> GetAll()
+        public List<IdentityRole<string>> GetAllRoles()
         {
             return db.Roles.ToList();
         }
+
+
+        public List<KeyValuePair<string, string>> GetAllUsersKeyValues()
+        {
+            return db.Users.ToList().Select(k => new KeyValuePair<string, string>(k.Id, k.FirstName + " " + k.LastName)).ToList();
+        }
+
+       
 
         public UserLog AddStartLog(string userId, string ipAddress, string comments = null)
         {
@@ -65,7 +73,6 @@ namespace ProjectTracking.Data.Methods
 
             return dbLogs.Select(k => _mapper.Map<UserLog>(k)).ToList();
         }
-
 
         public List<string> GetSupervisorsIds(string forUserId)
         {

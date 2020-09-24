@@ -8,7 +8,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
     public interface IUserMethods
     {
         List<DataContract.UserLog> GetUsersLogs(int page, int countPerPage, string fromDate, string toDate, out int totalPages);
-        List<IdentityRole<string>> GetAll();
+        List<IdentityRole<string>> GetAllRoles();
         UserLog AddStartLog(string userId, string ipAddress, string comments = null);
         List<UserLog> GetActiveLogs();
         List<User> GetEmployees();
@@ -41,6 +41,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         bool AddSupervisors(string userId, List<string> superVisedIds);
         bool RemoveSuperVisors(string userId, List<string> superVisedIds);
         Object GetSupervisors(string Id);
+        List<KeyValuePair<string, string>> GetAllUsersKeyValues();
         #endregion
     }
 }

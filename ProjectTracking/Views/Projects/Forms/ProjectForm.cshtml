@@ -11,7 +11,7 @@
 
                 <div class="project-container">
 
-                    <div class="left-container">
+                    <div class="left-container scrollable-container-400" >
 
                         <div class="input-group-container">
                             <div class="input-group-item">
@@ -25,12 +25,38 @@
                                 <label>Category</label>
                                 <p v-show="categories.isLoading">Loading Categories...</p>
                                 <p v-show="!categories.isLoading && !categories.data.length">No categories added!</p>
-                                <select v-if="categories.data.length" v-model="projects.form.record.categoryId" class="form-control " style="max-width:200px">
+                                <select v-if="categories.data.length" v-model="projects.form.record.categoryId" class="form-control ">
                                     <option :value="oNull" disabled>Choose a Category</option>
                                     <option v-for="category in categories.data" v-bind:value="category.id">
                                         {{category.name}}
                                     </option>
                                 </select>
+                            </div>
+                            <div class="input-group-item">
+                                <label>Status</label>
+                                <p v-show="projects.statuses.isLoading">Loading Statuses...</p>
+                                <select v-if="projects.statuses.data.length" v-model="projects.form.record.statusCode" class="form-control " >
+                                    <option :value="oNull" >Choose a Status</option>
+                                    <option v-for="opt in projects.statuses.data" v-bind:value="opt.key">
+                                        {{opt.value}}
+                                    </option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="input-group-container">
+                            <div class="input-group-item">
+                                <label>Start Date</label>
+                                <date-picker v-model="projects.form.record.startDate" v-bind:config="dateTimeOptions"></date-picker>
+                            </div>
+                            <div class="input-group-item">
+                                <label>Planned End Date</label>
+                                <date-picker v-model="projects.form.record.plannedEnd" v-bind:config="dateTimeOptions"></date-picker>
+                            </div>
+                            <div class="input-group-item">
+                                <label>Actual End Date</label>
+                                <date-picker v-model="projects.form.record.actualEnd" v-bind:config="dateTimeOptions"></date-picker>
                             </div>
                         </div>
 
@@ -46,9 +72,10 @@
 
                     <div class="right-container">
                         <label>Teams</label>
-                        <div class="teams-container">
-                            <p v-show="!teams.length">There are currently no teams added!</p>
-                            <p v-for="(team, idx) in teams">
+                        <div class="teams-container scrollable-container-400">
+                            <p v-show="teams.isLoading">Loading teams....</p>
+                            <p v-show="!teams.isLoading && !teams.data.length">There are currently no teams added!</p>
+                            <p v-for="(team, idx) in teams.data">
                                 <input type="checkbox" :value="team.id" v-model="projects.form.record.teamsIds" />
                                 {{team.name}}
                             </p>
@@ -71,7 +98,7 @@
                 <p class="f-display-message">{{ projects.form.message}}</p>
 
                 <button v-bind:disabled="projects.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="projects_save">
-                    Save
+                    {{projects.form.record.id ?'Save':'Add' }}
                 </button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>

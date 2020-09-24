@@ -1,0 +1,112 @@
+﻿<div id="ProjectTaskModal" class="modal  fade" role="dialog">
+
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Task</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="projectTask-container">
+
+                    <div class=" scrollable-container-400">
+
+                        <div class="input-group-container">
+                            <div class="input-group-item">
+                                <label for="usr">Title</label>
+                                <input type="text"
+                                       maxlength="100"
+                                       class="form-control" v-model="projectTasks.form.record.title">
+
+                            </div>
+                            <div class="input-group-item">
+                                <label>Status</label>
+                                <p v-show="projectTasks.statuses.isLoading">Loading Statuses...</p>
+                                <select v-if="projectTasks.statuses.data.length" v-model="projectTasks.form.record.statusCode" class="form-control ">
+                                    <option :value="oNull" disabled>Choose a Status</option>
+                                    <option v-for="opt in projectTasks.statuses.data" v-bind:value="opt.key">
+                                        {{opt.value}}
+                                    </option>
+                                </select>
+                            </div>
+                            @*<div class="input-group-item">
+                                    <label>Category</label>
+                                    <p v-show="categories.isLoading">Loading Categories...</p>
+                                    <p v-show="!categories.isLoading && !categories.data.length">No categories added!</p>
+                                    <select v-if="categories.data.length" v-model="projectTasks.form.record.categoryId" class="form-control ">
+                                        <option :value="oNull" disabled>Choose a Category</option>
+                                        <option v-for="category in categories.data" v-bind:value="category.id">
+                                            {{category.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="input-group-item">
+                                    <label>Status</label>
+                                    <p v-show="projectTasks.statuses.isLoading">Loading Statuses...</p>
+                                    <select v-if="projectTasks.statuses.data.length" v-model="projectTasks.form.record.statusCode" class="form-control " >
+                                        <option :value="oNull" >Choose a Status</option>
+                                        <option v-for="opt in projectTasks.statuses.data" v-bind:value="opt.key">
+                                            {{opt.value}}
+                                        </option>
+                                    </select>
+                                </div>*@
+
+                        </div>
+
+                        <div class="input-group-container">
+                            <div class="input-group-item">
+                                <label>Start Date</label>
+                                <date-picker v-model="projectTasks.form.record.startDate" v-bind:config="dateTimeOptions"></date-picker>
+                            </div>
+                            <div class="input-group-item">
+                                <label>Planned End Date</label>
+                                <date-picker v-model="projectTasks.form.record.plannedEnd" v-bind:config="dateTimeOptions"></date-picker>
+                            </div>
+                            <div class="input-group-item">
+                                <label>Actual End Date</label>
+                                <date-picker v-model="projectTasks.form.record.actualEnd" v-bind:config="dateTimeOptions"></date-picker>
+                            </div>
+                        </div>
+
+                        <div class="input-group-container">
+                            <div class="input-group-item">
+                                <label>Description</label>
+                                <textarea maxlength="255"
+                                          class="form-control" v-model="projectTasks.form.record.description"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <div v-show="errors.length">
+                        <div v-for="error in errors" class="text-danger">
+                            {{error}}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <p class="f-display-message">{{ projectTasks.form.message}}</p>
+
+                <button v-bind:disabled="projectTasks.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="projectTasks_save">
+                    {{projectTasks.form.record.id ?'Save':'Add' }}
+                </button>
+
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

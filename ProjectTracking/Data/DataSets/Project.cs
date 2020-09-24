@@ -27,8 +27,8 @@ namespace ProjectTracking.Data.DataSets
         public DateTime? ActualEnd { get; set; }
 
 
-        public IEnumerable<TeamsProjects> TeamsProjects { get; set; }
-        public IEnumerable<ProjectTask> Tasks { get; set; }
+        public List<TeamsProjects> TeamsProjects { get; set; }
+        public List<ProjectTask> Tasks { get; set; }
     }
 
 }

@@ -7,11 +7,97 @@ a {
     font-family: 'Arial';
 }
 
-.s-btn-group{
-    display:flex;
+.s-btn-group {
+    display: flex;
 
-    .s-btn{
-        margin-left:.2em;
+    .s-btn {
+        margin-left: .2em;
+    }
+}
+
+
+.input-group-container {
+    display: flex;
+
+    .input-group-item {
+        flex: 1;
+        padding: .5em;
+    }
+}
+
+
+
+.s-btn {
+    border-radius: 5px;
+    border: none;
+    padding: .5em 1em;
+    text-decoration: none;
+    background-color: @main-color;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    display:inline-block;
+    text-align: center;
+
+    &:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+
+    &.s-btn-primary {
+        color: #fff;
+
+        &:hover {
+            background-color: @main-dark;
+        }
+    }
+
+    &.s-btn-outline {
+        background-color: transparent;
+        border: 1px solid @main-color;
+        color: @main-dark;
+
+        &:hover {
+            background-color: rgba(212, 212, 212, 0.34);
+        }
+    }
+
+    &.s-btn-danger {
+        background-color: @color-danger;
+        border: 1px solid @color-danger;
+        color: #fff;
+
+        &:hover {
+            background-color: @color-danger-dark;
+        }
+    }
+
+    &.s-btn-lg {
+        padding: 1em 1.3em;
+    }
+
+    &.s-btn-sm {
+        padding: .3em .5em;
+    }
+
+    &.s-btn-md {
+        padding: .7em 1em;
+    }
+
+    &.s-btn-block {
+        display: block;
+        width: 100%;
+    }
+}
+
+
+
+.s-table-controls {
+    margin:.5em 0;
+    tr td {
+        padding: 5px 5px 5px 0;
     }
 }
 
@@ -20,9 +106,9 @@ a {
     padding-bottom: 1em;
 }
 
-.h-container{
-    padding-left:1em;
-    padding-right:1em;
+.h-container {
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 table {
@@ -58,6 +144,10 @@ table {
 
 .modal {
     z-index: 99999999;
+
+    .modal-footer {
+        text-align: center;
+    }
 }
 
 .modal-controls {
@@ -616,6 +706,20 @@ textarea {
         button,
         a {
             display: inline;
+        }
+    }
+}
+
+
+@media (max-width: 767px) {
+
+    .input-group-container {
+        display: flex;
+        flex-direction: column;
+
+        .input-group-item {
+            flex: 1;
+            padding: .5em;
         }
     }
 }

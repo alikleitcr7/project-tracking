@@ -109,7 +109,7 @@ const serialize = (obj) => {
     var str = [];
     for (var p in obj)
         if (obj.hasOwnProperty(p)) {
-            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p] === null || obj[p] === undefined ? '' : obj[p]));
         }
     return str.join("&");
 }
@@ -203,7 +203,7 @@ class CoreValidator {
         console.log({ value, min, max, isRequired })
 
         const valid_criteria_1 = isRequired ? this.hasValue(value) : true
-        const valid_criteria_2 = this.hasValue(value) && !isNaN(value) && value >= min && value <= max
+        const valid_criteria_2 = this.hasValue(value) && !isNaN(value) && value >= min && (this.hasValue(max) ? value <= max : true)
 
         return valid_criteria_1 || valid_criteria_2
     }
@@ -251,33 +251,31 @@ class CoreValidator {
 
     message() {
 
-        const isArabic = core_config.lang === 'ar'
-
         const { name, displayName, value, dataType, min, max, isRequired } = this
 
-        const min_hasValue = hasValue(min)
-        const max_hasValue = hasValue(max)
+        const min_hasValue = this.hasValue(min)
+        const max_hasValue = this.hasValue(max)
 
         let finalText = `${displayName || name}`
 
         if (isRequired) {
-            finalText += isArabic ? " خانة ضرورية " : ' is required'
+            finalText += ' is required'
         }
 
 
         if (min_hasValue && max_hasValue) {
             switch (dataType) {
                 case DATA_TYPES.NUMBER:
-                    finalText += isArabic ? ` يجب أن تكون القيمة بين (${min} و ${max})` : ` value should be between (${min} and ${max})`
+                    finalText += ` value should be between (${min} and ${max})`
 
                     break;
                 case DATA_TYPES.TEXT:
-                    finalText += isArabic ? ` يجب أن تكون الكلمة بين (${min} و ${max})` : ` length should be between (${min} and ${max})`
+                    finalText += ` length should be between (${min} and ${max})`
 
                     break;
                 case DATA_TYPES.ARRAY:
 
-                    finalText += isArabic ? ` يجب  اختيار (${min} و ${max}) ${finalText}` : ` you must choose between (${min} and ${max}) ${finalText}`
+                    finalText += ` you must choose between (${min} and ${max}) ${finalText}`
                     break;
                 default:
                     break
@@ -288,6 +286,21 @@ class CoreValidator {
         return finalText
 
     }
+}
+
+function getAxiosErrorMessage(e) {
+    if (e.response) {
+        if (e.response.status === 500) {
+            console.log('internal error', e.response.data)
+            return 'Internal Error Occured'
+        }
+
+        if (e.response.status === 400) {
+            return e.response.data ? (e.response.data.message ? e.response.data.message : e.response.data) : 'Bad request'
+        }
+    }
+
+    return 'Something went wrong, check your connecttion and try again!.'
 }
 
 //#endregion 

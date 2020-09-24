@@ -351,7 +351,7 @@ const teamsMethods = {
             })
             .catch((e) => {
                 console.error('teams getall', e)
-                this.teams_setMessage(BASIC_ERROR_MESSAGE)
+                this.teams_setMessage(getAxiosErrorMessage(e))
             })
             .then(() => {
                 this.teams_setLoading(false)

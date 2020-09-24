@@ -1,0 +1,15 @@
+﻿using System.Collections.Generic;
+using ProjectTracking.DataContract;
+using ProjectTracking.Models.Projects;
+
+namespace ProjectTracking.Data.Methods.Interfaces
+{
+    public interface ITasksMethods
+    {
+        void ChangeStatus(int taskId, int? statusCode);
+        bool Delete(int id);
+        ProjectTask GetById(int id);
+        ProjectTask Save(TaskSaveModel model);
+        List<ProjectTask> Search(string keyword, int page, int countPerPage, out int totalCount);
+    }
+}

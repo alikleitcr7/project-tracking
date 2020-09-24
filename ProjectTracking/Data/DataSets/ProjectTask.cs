@@ -25,7 +25,7 @@ namespace ProjectTracking.Data.DataSets
 
 
         public Project Project { get; set; }
-        public IEnumerable<TimeSheetTask> TimeSheetProjects { get; set; }
+        public List<TimeSheetTask> TimeSheetTasks { get; set; }
     }
 
 }

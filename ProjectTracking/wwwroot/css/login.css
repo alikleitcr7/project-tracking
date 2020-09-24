@@ -148,57 +148,6 @@
 .Button-Shared.Button-Large {
   padding: 1.5em;
 }
-.s-btn {
-  border-radius: 5px;
-  border: none;
-  padding: 0.5em 1em;
-  text-decoration: none;
-  background-color: #2286c3;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  text-align: center;
-}
-.s-btn:disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-.s-btn.s-btn-primary {
-  color: #fff;
-}
-.s-btn.s-btn-primary:hover {
-  background-color: #1776b0;
-}
-.s-btn.s-btn-outline {
-  background-color: transparent;
-  border: 1px solid #2286c3;
-  color: #1776b0;
-}
-.s-btn.s-btn-outline:hover {
-  background-color: rgba(212, 212, 212, 0.34);
-}
-.s-btn.s-btn-danger {
-  background-color: #b00808;
-  border: 1px solid #b00808;
-  color: #fff;
-}
-.s-btn.s-btn-danger:hover {
-  background-color: #860707;
-}
-.s-btn.s-btn-lg {
-  padding: 1em 1.3em;
-}
-.s-btn.s-btn-sm {
-  padding: 0.3em 0.5em;
-}
-.s-btn.s-btn-md {
-  padding: 0.7em 1em;
-}
-.s-btn.s-btn-block {
-  display: block;
-  width: 100%;
-}
 .Button-Danger {
   padding: 0.5em 1em;
   border-radius: 5px;

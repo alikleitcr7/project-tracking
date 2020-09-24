@@ -52,7 +52,7 @@ namespace ProjectTracking.Controllers
         [Route("/login")]
         public IActionResult Login()
         {
-            List<IdentityRole<string>> roles = _users.GetAll();
+            List<IdentityRole<string>> roles = _users.GetAllRoles();
 
             ViewData["Roles"] = roles;
 
@@ -63,7 +63,7 @@ namespace ProjectTracking.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            List<IdentityRole<string>> roles = _users.GetAll();
+            List<IdentityRole<string>> roles = _users.GetAllRoles();
 
             ViewData["Roles"] = roles;
 

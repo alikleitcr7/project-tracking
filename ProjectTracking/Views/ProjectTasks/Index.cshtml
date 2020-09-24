@@ -1,0 +1,33 @@
+﻿@using ProjectTracking.DataContract
+@model Project
+@{
+    ViewData["Title"] = $"{Model.Title} Tasks";
+}
+
+<div id="ProjectTasks" class="v-container" data-project="@Model.ID" v-cloak>
+
+    <h2>@ViewData["Title"]</h2>
+
+    <hr />
+
+    <partial name="~/views/projectTasks/forms/ProjectTasksResult.cshtml" />
+    <partial name="~/views/projectTasks/forms/ProjectTaskform.cshtml" />
+
+</div>
+
+
+@section styles{
+    <link href="~/css/Dashboard.min.css" rel="stylesheet" />
+    <link href="~/css/ProjectTasks.min.css" rel="stylesheet" />
+}
+
+@section scripts{
+
+    @* Plugins *@
+    <script src="https://unpkg.com/vuejs-paginate@latest"></script>
+
+    @* Services *@
+    <script src="~/services/ProjectTasksService.js"></script>
+    
+    <script src="~/js/projectTasks.js"></script>
+}

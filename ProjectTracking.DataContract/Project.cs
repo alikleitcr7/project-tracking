@@ -6,6 +6,7 @@ using System.Text;
 
 namespace ProjectTracking.DataContract
 {
+    public enum ProjectStatus { Proposed, InProgress, Done, Failed, Terminated }
     public class Project
     {
         public int ID { get; set; }
@@ -33,7 +34,37 @@ namespace ProjectTracking.DataContract
             }
         }
 
-        public IEnumerable<TeamsProjects> Teams { get; set; }
-        public IEnumerable<ProjectTask> Tasks { get; set; }
+        public string StartDateDisplay
+        {
+            get
+            {
+                return StartDate.HasValue ? StartDate.Value.ToString("dd-MM-yyyy") : "-";
+            }
+        }
+        public string PlannedEndDisplay
+        {
+            get
+            {
+                return PlannedEnd.HasValue ? PlannedEnd.Value.ToString("dd-MM-yyyy") : "-";
+            }
+        }
+        public string ActualEndDisplay
+        {
+            get
+            {
+                return ActualEnd.HasValue ? ActualEnd.Value.ToString("dd-MM-yyyy") : "-";
+            }
+        }
+
+        public string StatusDisplay
+        {
+            get
+            {
+                return StatusCode.HasValue ? ((ProjectStatus)StatusCode.Value).ToString() : "NoStatus";
+            }
+        }
+
+        public List<TeamsProjects> TeamsProjects { get; set; }
+        public List<ProjectTask> Tasks { get; set; }
     }
 }

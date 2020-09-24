@@ -30,21 +30,24 @@ namespace ProjectTracking.Controllers
             _departmentDto = departmentDto;
         }
 
+
+        public IActionResult UserManagement()
+        {
+            //UserManagerViewModel _userManagerViewModel = new UserManagerViewModel();
+            //_userManagerViewModel._departmentDto = _departmentDto.GetAll();
+            ////_userManagerViewModel._comapnyDto = _comapnyDto.GetAll();
+            //_userManagerViewModel._userManager = _userManager.Users;
+            //return View(_userManagerViewModel);
+            return View();
+        }
+
+
         // GET: /<controller>/
         public IActionResult Index()
         {
             return View();
         }
 
-
-        public IActionResult UserManagement()
-        {
-            UserManagerViewModel _userManagerViewModel = new UserManagerViewModel();
-            _userManagerViewModel._departmentDto = _departmentDto.GetAll();
-            //_userManagerViewModel._comapnyDto = _comapnyDto.GetAll();
-            _userManagerViewModel._userManager = _userManager.Users;
-            return View(_userManagerViewModel);
-        }
         public IActionResult GetUsers()
         {
             return Json(_userManager.Users);

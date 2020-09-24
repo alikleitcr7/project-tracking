@@ -1,4 +1,5 @@
 ﻿Vue.component('paginate', VuejsPaginate)
+Vue.component('date-picker', VueBootstrapDatetimePicker)
 
 const debugProjects = true;
 
@@ -9,7 +10,7 @@ const projectFields = [
         min: 0,
         max: 255,
         type: DATA_TYPES.TEXT,
-        required: false,
+        required: true,
     },
     {
         name: 'categoryId',
@@ -32,13 +33,28 @@ const Modals_Projects = {
 }
 
 const projectFormObject = (obj) => {
+    console.log({ obj })
+    let record = obj ? {
+        id: obj.id,
+        title: obj.title,
+        categoryId: obj.categoryId,
+        description: obj.description,
+        startDate: obj.startDate,
+        plannedEnd: obj.plannedEnd,
+        actualEnd: obj.actualEnd,
+        statusCode: obj.statusCode,
+        teamsIds: obj.teamsProjects ? obj.teamsProjects.map(k => k.teamId) : []
+    } : {
+            title: null,
+            categoryId: null,
+            description: null,
+            startDate: null,
+            plannedEnd: null,
+            actualEnd: null,
+            statusCode: null,
+            teamsIds: [],
+        }
 
-    let record = obj || {
-        title: null,
-        categoryId: null,
-        description: null,
-        teamsIds: [],
-    }
 
     return {
         record,
@@ -68,6 +84,10 @@ const projectObject = () => {
         isProcessing: false,
         message: '',
         form: projectFormObject(),
+        statuses: {
+            data: [],
+            isLoading: false
+        }
     }
 }
 
@@ -85,14 +105,24 @@ const projectsMethods = {
 
             const field = projectFields[i]
             const fieldValue = form[field.name];
+
+            console.log('field validation', { field, fieldValue })
+
             const validator = new CoreValidator(field.name, fieldValue, field.required, field.type, field.min, field.max)
             isValid = validator.validate()
 
+
             if (!isValid) {
+
                 finalMessage = validator.message();
+                console.log(' validation 3')
+
                 break;
             }
         }
+
+        console.log('end validation')
+
 
         if (!isValid) {
             this.projects_setFormMessage(finalMessage || 'Fill Required Fields to Continue')
@@ -187,6 +217,8 @@ const projectsMethods = {
             return;
         }
 
+        console.log('sending')
+
         const sendForm = () => {
 
             // START UPDATE/CREATE REQUEST
@@ -270,10 +302,7 @@ const projectsMethods = {
 
                 })
                 .catch((e) => {
-
-                    console.error('create', e)
-
-                    this.projects_setFormMessage(BASIC_ERROR_MESSAGE)
+                    this.projects_setFormMessage(getAxiosErrorMessage(e))
                 })
                 .then(() => {
                     this.projects_setFormSaving(false)
@@ -344,7 +373,7 @@ const projectsMethods = {
         const { keyword, categoryId } = this.projects.filterBy
         const { length } = this.projects.dataPaging
 
-        return ProjectsService.Search(keyword, categoryId, page, length)
+        return ProjectsService.Search(categoryId, keyword, page, length)
             .then((r) => {
 
                 /** @type {IClientResponseModel<ISubject>} */
@@ -373,6 +402,41 @@ const projectsMethods = {
     },
     projects_pageClick: function (pageNum) {
         this.projects_getAll(pageNum - 1)
+    },
+
+
+    projects_setStatusesLoading: function (isLoading) {
+        this.projects.statuses.isLoading = isLoading
+    },
+    projects_getAllStatuses: function () {
+
+        this.projects_setStatusesLoading(true)
+
+        return ProjectsService.GetProjectStatuses()
+            .then((r) => {
+
+                /** @type {IClientResponseModel<ISubject>} */
+                const record = r.data
+
+                if (debugProjects) {
+                    console.log('getall project response', r)
+                }
+
+                if (record) {
+                    this.projects.statuses.data = [...record]
+                }
+                else {
+                    this.projects_setMessage(BASIC_ERROR_MESSAGE)
+                }
+            })
+            .catch((e) => {
+                console.error('projects getall', e)
+                this.projects_setMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.projects_setStatusesLoading(false)
+            })
+
     },
 }
 
@@ -430,6 +494,65 @@ const categoriesMethods = {
     },
 }
 
+const teamObject = () => {
+    return {
+        data: [],
+        dataPaging: {
+            page: 0,
+            totalPages: 0,
+            length: 5,
+            totalCount: 0,
+            pagination: 'custom-pagination',
+            prev: 'Prev',
+            next: 'Next',
+        },
+        isLoading: false,
+        isProcessing: false,
+        message: '',
+    }
+}
+
+const teamsMethods = {
+    teams_setLoading: function (isLoading) {
+        this.teams.isLoading = isLoading
+    },
+    teams_setMessage: function (message) {
+        this.teams.message = message
+    },
+    teams_getAll: function (page = 0) {
+
+        this.teams_setLoading(true)
+        this.teams_setMessage('Loading...')
+
+        return TeamsService.GetAll()
+            .then((r) => {
+
+                /** @type {IClientResponseModel<ISubject>} */
+                const record = r.data
+
+                //if (debugTeams) {
+                //    console.log('getall team response', r)
+                //}
+
+                if (record) {
+                    this.teams.data = [...record]
+                    //this.teams.dataPaging.totalCount = extraData.totalCount
+                }
+                else {
+                    this.teams_setMessage(BASIC_ERROR_MESSAGE)
+                }
+            })
+            .catch((e) => {
+                console.error('teams getall', e)
+                this.teams_setMessage(BASIC_ERROR_MESSAGE)
+            })
+            .then(() => {
+                this.teams_setLoading(false)
+            })
+
+    },
+}
+
 var projects_app = new Vue({
     el: "#Projects",
     data: {
@@ -437,9 +560,9 @@ var projects_app = new Vue({
         dateTimeOptions,
         categories: categoryObject(),
         projects: projectObject(),
-        teams: [],
+        teams: teamObject(),
         errors: '',
-        oNull:null
+        oNull: null,
     },
     computed: {
         projectsTotalPages: function () {
@@ -459,15 +582,18 @@ var projects_app = new Vue({
             }
 
             return [{ id: null, name: 'all' }, ...this.categories.data]
-        }
+        },
     },
     methods: {
         ...projectsMethods,
-        ...categoriesMethods
+        ...categoriesMethods,
+        ...teamsMethods,
     },
     mounted: function () {
         this.projects_getAll()
         this.categories_getAll()
+        this.teams_getAll()
+        this.projects_getAllStatuses()
     }
 })
 

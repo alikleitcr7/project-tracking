@@ -10,5 +10,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         List<Team> GetAll();
         Team Update(Team Departmentdto);
         Team GetById(int id);
+        System.Threading.Tasks.Task AddRemoveTeamsUsers(int teamId, List<string> userIds);
     }
 }

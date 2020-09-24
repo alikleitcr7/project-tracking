@@ -2,11 +2,10 @@
     ViewData["Title"] = "Projects";
 }
 
-@using ProjectTracking.Data.Methods.Interfaces
+<div id="Projects" class="v-container" v-cloak>
 
-<div id="Projects" class="v-container">
-
-
+    <h2>@ViewData["Title"]</h2>
+    <hr />
     <partial name="~/views/projects/forms/ProjectsResult.cshtml" />
 
     <partial name="~/views/projects/forms/projectform.cshtml" />

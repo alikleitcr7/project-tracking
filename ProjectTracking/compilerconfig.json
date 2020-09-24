@@ -14,5 +14,13 @@
   {
     "outputFile": "wwwroot/css/projects.css",
     "inputFile": "wwwroot/css/projects.less"
+  },
+  {
+    "outputFile": "wwwroot/css/project-tasks.css",
+    "inputFile": "wwwroot/css/project-tasks.less"
+  },
+  {
+    "outputFile": "wwwroot/css/ProjectTasks.css",
+    "inputFile": "wwwroot/css/ProjectTasks.less"
   }
 ]

@@ -1,4 +1,5 @@
 ﻿.buttons-cell {
+
     span {
         cursor: pointer;
 
@@ -9,9 +10,8 @@
 }
 
 .teams-container {
-    max-height: 350px;
-    overflow-y: auto;
-
+    /*max-height: 350px;
+    overflow-y: auto;*/
     > p {
         margin: 0;
         padding: 5px;
@@ -22,11 +22,11 @@
     display: flex;
 
     .left-container {
-        flex: 1;
+        flex: 65%;
     }
 
     .right-container {
-        flex: 1;
+        flex: 35%;
     }
 }
 
@@ -36,19 +36,18 @@
     }
 }
 
-.input-group-container {
-    display: flex;
-
-    .input-group-item {
-        flex: 1;
-        padding: .5em;
-    }
-}
-
 .top-controls {
     table {
         td, th {
             padding: 5px;
         }
+    }
+}
+
+
+@media (max-width: 767px) {
+
+    .project-container {
+        flex-direction: column;
     }
 }

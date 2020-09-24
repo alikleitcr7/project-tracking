@@ -92,7 +92,8 @@ namespace ProjectTracking
             services.AddSingleton(mapper);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            services.AddScoped<IProjectsMethods, Data.Methods.Projects>();
+            services.AddScoped<IProjectsMethods, Data.Methods.ProjectsMethods>();
+            services.AddScoped<ITasksMethods, Data.Methods.TasksMethods>();
             services.AddScoped<IProjectsStatistics, Data.Methods.Statistics.ProjectsProgresses>();
             services.AddScoped<ITimeSheetActivityLogsMethods, Data.Methods.TimeSheetActivityLogsMethods>();
             services.AddScoped<IInsightsMethods, Data.Methods.Statistics.InsightsMethods>();
@@ -103,7 +104,7 @@ namespace ProjectTracking
             services.AddScoped<ITimeSheetsMethods, Data.Methods.TimeSheetsMethods>();
             services.AddTransient<ICategoriesMethods, Data.Methods.CategoriesMethods>();
             services.AddTransient<ITeamsMethods, Data.Methods.TeamsMethods>();
-            services.AddTransient<IUserMethods, Data.Methods.Users>();
+            services.AddTransient<IUserMethods, Data.Methods.UsersMethods>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             //register identity roles 

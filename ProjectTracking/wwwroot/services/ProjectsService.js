@@ -26,4 +26,10 @@ const ProjectsService = {
 
         return axios.delete(url);
     },
+    GetProjectStatuses: function () {
+
+        const url = PROJECTS_SERVICE_URI(`GetProjectStatuses`)
+
+        return axios.get(url);
+    },
 }
