@@ -21,6 +21,14 @@ const Modals_Teams = {
         Hide: function () {
             $('#TeamModal').modal('hide');
         }
+    },
+    TeamUsers: {
+        Show: function () {
+            $('#TeamUsersModal').modal('show');
+        },
+        Hide: function () {
+            $('#TeamUsersModal').modal('hide');
+        }
     }
 }
 
@@ -126,8 +134,6 @@ const teamsMethods = {
         // GET RECORD
         const record = this.teams.data[idx]
 
-
-
         // OPEN MODAL
         Modals_Teams.Team.Show();
         this.teams.form.isLoading = true
@@ -135,9 +141,7 @@ const teamsMethods = {
         this.teams_setFormLoading(true)
         this.teams_setFormMessage('Loading...');
 
-
         // GET REQUEST
-
         TeamsService.GetById(record.id)
             .then(r => {
 
@@ -363,6 +367,157 @@ const teamsMethods = {
     },
 }
 
+
+const userFormObject = (teamId = null, userIds = []) => {
+
+    let record = {
+        teamId,
+        userIds
+    }
+
+    return {
+        record,
+        message: '',
+        image: null,
+        isLoading: false,
+        isSaving: false,
+    }
+}
+
+const userObject = () => {
+    return {
+        data: [],
+        isLoading: false,
+        isProcessing: false,
+        form: userFormObject(),
+        message: '',
+    }
+}
+
+const usersMethods = {
+    users_setFormMessage: function (message) {
+
+        this.users.form.message = message
+    },
+    users_setFormLoading: function (isLoading) {
+        this.users.form.isLoading = isLoading
+    },
+    users_setFormSaving: function (isSaving) {
+        this.users.form.isSaving = isSaving
+    },
+    users_edit: function (teamId) {
+
+        // OPEN MODAL
+        Modals_Teams.TeamUsers.Show();
+        this.users.form.isLoading = true
+
+        this.users_setFormLoading(true)
+        this.users_setFormMessage('Loading...');
+
+        this.users_getAll(teamId)
+
+        // GET REQUEST
+        TeamsService.GetTeamUsers(teamId)
+            .then(r => {
+
+                const record = r.data
+
+                if (!record) {
+                    this.users_setFormMessage(BASIC_ERROR_MESSAGE);
+                    return
+                }
+
+                this.users_setFormMessage('');
+
+                this.users.form = userFormObject(teamId, record);
+
+            })
+            .catch(e => {
+
+                console.error('get error', e)
+
+                this.users_setFormMessage(BASIC_ERROR_MESSAGE);
+            })
+            .then(() => {
+                this.users_setFormLoading(false)
+            })
+    },
+    users_save: function () {
+
+        this.users_setFormMessage('');
+
+        let pendingRecord = { ...this.users.form.record }
+
+        // START UPDATE/CREATE REQUEST
+        this.users_setFormSaving(true)
+
+        // UPDATE
+        TeamsService.AddRemoveTeamsUsers(pendingRecord)
+            .then((r) => {
+
+                const record = r.data
+
+                if (record) {
+
+                    // update members count (teams)
+                    let data = [...this.teams.data]
+
+                    let teamToUpdate = data.find(k => k.id === pendingRecord.teamId)
+
+                    teamToUpdate.membersCount = pendingRecord.userIds.length
+
+                    this.teams.data = data
+
+                    // saved feeback (users)
+                    this.users_setFormMessage('Saved!')
+                }
+                else {
+                    this.users_setFormMessage(BASIC_ERROR_MESSAGE)
+                }
+
+            })
+            .catch((e) => {
+                console.error('save team users', e)
+                this.users_setFormMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.users_setFormSaving(false)
+            });
+    },
+    users_setLoading: function (isLoading) {
+        this.users.isLoading = isLoading
+    },
+    users_setMessage: function (message) {
+        this.users.message = message
+    },
+    users_getAll: function (teamId) {
+
+        this.users_setLoading(true)
+        this.users_setMessage('Loading...')
+
+        return AdminsService.GetAllUsersExecludeTeamSupervisors(teamId)
+            .then((r) => {
+
+                const record = r.data
+
+                if (record) {
+                    this.users.data = [...record]
+                }
+                else {
+                    this.users_setMessage(BASIC_ERROR_MESSAGE)
+                }
+            })
+            .catch((e) => {
+                console.error('users getall', e)
+                this.users_setMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.users_setLoading(false)
+            })
+    },
+}
+
+
 var teams_app = new Vue({
     el: "#Teams",
     data: {
@@ -370,6 +525,7 @@ var teams_app = new Vue({
         dateTimeOptions,
 
         teams: teamObject(),
+        users: userObject(),
     },
     computed: {
         teamsTotalPages: function () {
@@ -385,14 +541,12 @@ var teams_app = new Vue({
         }
     },
     methods: {
-        ...teamsMethods
+        ...teamsMethods,
+        ...usersMethods
     },
     mounted: function () {
 
         this.teams_getAll()
-
-
-
     }
 })
 

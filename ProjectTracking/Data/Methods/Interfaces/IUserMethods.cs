@@ -42,6 +42,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         bool RemoveSuperVisors(string userId, List<string> superVisedIds);
         Object GetSupervisors(string Id);
         List<KeyValuePair<string, string>> GetAllUsersKeyValues();
+        List<KeyValuePair<string, string>> GetAllUsersExecludeTeamSupervisors(int teamId);
         #endregion
     }
 }

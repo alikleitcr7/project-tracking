@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ProjectTracking.Exceptions;
 
 namespace ProjectTracking.Controllers
 {
@@ -19,15 +20,18 @@ namespace ProjectTracking.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         //private readonly ICompanies _comapnyDto;
         private readonly ITeamsMethods _departmentDto;
+        private readonly IUserMethods _userMethods;
         private readonly ApplicationDbContext _context;
 
         public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ITeamsMethods departmentDto, ApplicationDbContext context
+            , IUserMethods userMethods
             )
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
             _departmentDto = departmentDto;
+            _userMethods = userMethods;
         }
 
 
@@ -39,6 +43,44 @@ namespace ProjectTracking.Controllers
             //_userManagerViewModel._userManager = _userManager.Users;
             //return View(_userManagerViewModel);
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult GetAllUsersKeyValues()
+        {
+            try
+            {
+                var record = _userMethods.GetAllUsersKeyValues();
+
+                return Ok(record);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+        
+        [HttpGet]
+        public IActionResult GetAllUsersExecludeTeamSupervisors(int teamId)
+        {
+            try
+            {
+                var record = _userMethods.GetAllUsersExecludeTeamSupervisors(teamId);
+
+                return Ok(record);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
 

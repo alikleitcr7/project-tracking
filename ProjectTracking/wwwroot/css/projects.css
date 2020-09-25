@@ -4,14 +4,6 @@
 .buttons-cell span img {
   width: 20px;
 }
-.teams-container {
-  /*max-height: 350px;
-    overflow-y: auto;*/
-}
-.teams-container > p {
-  margin: 0;
-  padding: 5px;
-}
 .project-container {
   display: flex;
 }

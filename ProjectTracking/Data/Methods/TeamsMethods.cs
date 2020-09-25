@@ -94,7 +94,7 @@ namespace ProjectTracking.Data.Methods
             // update the rest's team id
             if (userIds.Count > 0)
             {
-                await existingUsersUnderTeam.Where(k => userIds.Contains(k.Id)).ForEachAsync(k => k.TeamId = teamId);
+                await _context.Users.Where(k => userIds.Contains(k.Id)).ForEachAsync(k => k.TeamId = teamId);
             }
 
             _context.SaveChanges();
@@ -114,9 +114,22 @@ namespace ProjectTracking.Data.Methods
             return _context.SaveChanges() > 0;
         }
 
-        public List<Team> GetAll()
+        public List<Team> GetAll(bool includeMembersCount = false)
         {
-            return _context.Teams.ToList()
+            if (includeMembersCount)
+            {
+                return _context.Teams
+                               .Select(k => new Team()
+                               {
+                                   ID = k.ID,
+                                   Name = k.Name,
+                                   MembersCount = k.Members.Count()
+                               })
+                               .ToList();
+            }
+
+            return _context.Teams
+                .ToList()
                 .Select(k => _mapper.Map<Team>(k))
                 .ToList();
         }
@@ -126,6 +139,14 @@ namespace ProjectTracking.Data.Methods
             var dbTeam = _context.Teams.FirstOrDefault(k => k.ID == id);
 
             return dbTeam != null ? _mapper.Map<Team>(dbTeam) : null;
+        }
+
+        public List<string> GetTeamUsers(int teamId)
+        {
+            return _context.Users
+                .Where(k => k.TeamId == teamId)
+                .Select(k => k.Id)
+                .ToList();
         }
 
         //public Team EditDepartment(int id, Team department)

@@ -7,9 +7,10 @@ namespace ProjectTracking.Data.Methods.Interfaces
     {
         Team Add(Team department);
         bool Delete(int id);
-        List<Team> GetAll();
+        List<Team> GetAll(bool includeMembersCount = true);
         Team Update(Team Departmentdto);
         Team GetById(int id);
         System.Threading.Tasks.Task AddRemoveTeamsUsers(int teamId, List<string> userIds);
+        List<string> GetTeamUsers(int teamId);
     }
 }

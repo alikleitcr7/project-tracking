@@ -18,11 +18,25 @@ const TeamsService = {
 
         return axios.put(url, team);
     },
-    GetAll: function () {
+    GetAll: function (includeMembersCount) {
 
-        const url = TEAMS_SERVICE_URI(`GetAll`)
+        const query = serialize({ includeMembersCount })
+
+        const url = TEAMS_SERVICE_URI(`GetAll?${query}`)
 
         return axios.get(url);
+    },
+    GetTeamUsers: function (teamId) {
+
+        const url = TEAMS_SERVICE_URI(`GetTeamUsers?teamId=${teamId}`)
+
+        return axios.get(url);
+    },
+    AddRemoveTeamsUsers: function (model) {
+
+        const url = TEAMS_SERVICE_URI(`AddRemoveTeamsUsers`)
+
+        return axios.post(url, model);
     },
     Delete: function (id) {
 

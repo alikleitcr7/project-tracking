@@ -6,22 +6,30 @@
 <div class="v-container">
 
     <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#CategoriesTab"> <i class="glyphicon glyphicon-th-large" ></i> Categories </a></li>
+        <li class="active"><a data-toggle="tab" href="#UsersTab"> <i class="glyphicon glyphicon-user" ></i> Users </a></li>
+        <li ><a data-toggle="tab" href="#CategoriesTab"> <i class="glyphicon glyphicon-th-large" ></i> Categories </a></li>
         <li><a data-toggle="tab" href="#TeamsTab"><i class="glyphicon glyphicon-user"></i> Teams</a></li>
         <li><a data-toggle="tab" href="#SettingsTab"><i class="glyphicon glyphicon-list-alt"></i> Settings</a></li>
     </ul>
 
     <div class="tab-content">
 
+        <div id="UsersTab" class="tab-pane  in active">
+            <partial name="~/views/admin/forms/usersform.cshtml" />
+        </div>
+
         <div id="CategoriesTab" class="tab-pane  in active">
             <partial name="~/views/admin/forms/categoriesform.cshtml" />
         </div>
+
         <div id="TeamsTab" class="tab-pane ">
             <partial name="~/views/admin/forms/teamsform.cshtml" />
         </div>
+
         <div id="SettingsTab" class="tab-pane ">
             <partial name="~/views/admin/forms/settingsform.cshtml" />
         </div>
+
     </div>
 
 </div>
@@ -36,7 +44,11 @@
 
     <script src="~/services/TeamsService.js">
     </script>
+
     <script src="~/services/CategoriesService.js">
+    </script>
+
+    <script src="~/services/AdminService.js">
     </script>
 
     <script src="~/js/Categories.js">

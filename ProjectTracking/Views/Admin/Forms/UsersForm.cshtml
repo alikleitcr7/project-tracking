@@ -1,0 +1,103 @@
+﻿<div id="Users" class="Users v-container" v-cloak=v-cloak>
+
+    <div class="buttons mb-2">
+        <button type="button" v-on:click="users_openModal" class="s-btn s-btn-primary">New User &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
+    </div>
+
+    <h4 v-show="!users.isLoading && !users.data.length ">
+        <br />
+        <span class="c-clickable-link" v-on:click="users_openModal">Click Here</span> to add
+    </h4>
+
+    <section id="Pagination" class="c-pagination" v-show="usersTotalPages > 1">
+        <div class="container">
+            <paginate v-bind:page-count="usersTotalPages"
+                      v-bind:container-class="users.dataPaging.pagination"
+                      v-bind:prev-text="users.dataPaging.prev"
+                      v-bind:next-text="users.dataPaging.next" v-bind:click-handler="users_pageClick">
+            </paginate>
+        </div>
+    </section>
+
+    <p class="c-display-message">{{users.isLoading ? 'Loading...':'&nbsp;'}}</p>
+
+    <div v-show="users.data.length" class="Users c-table-data-container"
+         v-bind:class="{'lock-controls': users.isProcessing }">
+
+        <table class="table ">
+
+            <thead>
+                <tr>
+                    <th style="width: 50px">-</th>
+                    <th>Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <template v-for="(item ,idx) in users.data">
+
+                    <tr>
+                        <td>
+                            {{item.id}}
+                        </td>
+
+                        <td>
+                            {{item.name}}
+                        </td>
+
+                        <td>
+                            <button class="s-btn s-btn-sm s-btn-outline" type="button"
+                                    v-on:click="users_edit(idx)">
+                                Edit
+                            </button>
+                            <button class="s-btn s-btn-sm s-btn-danger" type="button"
+                                    v-on:click="users_delete(idx)">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+
+                </template>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal" id="UserModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+
+                    <table class="c-table-data c-table-controls is-arabic"
+                           v-bind:class="{'lock-controls': users.form.isLoading || users.form.isSaving }">
+                        <tr>
+                            <td>
+                                <label>Name</label>
+                                <input type="text" class="form-control" v-model="users.form.record.name" />
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+                <div class="modal-footer modal-footer-centered">
+                    <p class="f-display-message">{{ users.form.message}}</p>
+                    <div class="modal-buttons-container">
+                        <button v-bind:disabled="users.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="users_save">
+                            Save
+                        </button>
+                        <button type="button" class="s-btn s-btn-outline" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

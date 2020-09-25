@@ -12,8 +12,9 @@ namespace ProjectTracking.DataContract
         public int ID { get; set; }
         public string Name { get; set; }
 
+        public int? MembersCount { get; set; }
 
-        public ICollection<User> Members { get; set; }
-        public ICollection<TeamsProjects> TeamsProjects { get; set; }
+        public List<User> Members { get; set; }
+        public List<TeamsProjects> TeamsProjects { get; set; }
     }
 }

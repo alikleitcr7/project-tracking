@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
+using ProjectTracking.Exceptions;
 
 namespace ProjectTracking.Controllers
 {
@@ -30,6 +31,37 @@ namespace ProjectTracking.Controllers
         public JsonResult GetAll()
         {
             return Json(_teamsMethods.GetAll());
+        }
+
+        [HttpGet]
+        public JsonResult GetTeamUsers(int teamId)
+        {
+            return Json(_teamsMethods.GetTeamUsers(teamId));
+        }
+
+        public class AddRemoveTeamsUsersParam
+        {
+            public int teamId { get; set; }
+            public List<string> userIds { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddRemoveTeamsUsers([FromBody]AddRemoveTeamsUsersParam model)
+        {
+            try
+            {
+                await _teamsMethods.AddRemoveTeamsUsers(model.teamId, model.userIds);
+
+                return Ok(true);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpPost]

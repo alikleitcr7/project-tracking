@@ -81,6 +81,18 @@
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
+    <Content Remove="wwwroot\services\CountriesService.js" />
+    <Content Remove="wwwroot\services\HolidaysService.js" />
+    <Content Remove="wwwroot\services\InventoryProjectsService.js" />
+    <Content Remove="wwwroot\services\InventoryStatusesService.js" />
+    <Content Remove="wwwroot\services\InventoryTypesService.js" />
+    <Content Remove="wwwroot\services\MeasurementUnitsService.js" />
+    <Content Remove="wwwroot\services\PermissionRequests.js" />
+    <Content Remove="wwwroot\services\ProjectFilesService.js" />
+    <Content Remove="wwwroot\services\PublishingChannelsService.js" />
+    <Content Remove="wwwroot\services\SubProjectsService.js" />
+    <Content Remove="wwwroot\services\TypeOfWorkService.js" />
+    <Content Remove="wwwroot\services\UpdateFrequenciesService.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -109,10 +121,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectTracking.DataContract\ProjectTracking.DataContract.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -155,6 +163,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\Admin\Forms\UsersForm.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Projects\Index2 - Copy.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

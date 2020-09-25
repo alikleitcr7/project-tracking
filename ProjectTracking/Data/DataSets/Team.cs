@@ -15,7 +15,7 @@ namespace ProjectTracking.Data.DataSets
         public string Name { get; set; }
 
 
-        public ICollection<ApplicationUser> Members { get; set; }
-        public ICollection<TeamsProjects> TeamsProjects { get; set; }
+        public List<ApplicationUser> Members { get; set; }
+        public List<TeamsProjects> TeamsProjects { get; set; }
     }
 }

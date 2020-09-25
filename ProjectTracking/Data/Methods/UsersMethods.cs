@@ -38,10 +38,15 @@ namespace ProjectTracking.Data.Methods
 
         public List<KeyValuePair<string, string>> GetAllUsersKeyValues()
         {
-            return db.Users.ToList().Select(k => new KeyValuePair<string, string>(k.Id, k.FirstName + " " + k.LastName)).ToList();
+            return db.Users.ToList().Select(k => new KeyValuePair<string, string>(k.Id, k.FirstName + " " + k.LastName + $" ({k.UserName})")).ToList();
         }
 
-       
+        public List<KeyValuePair<string, string>> GetAllUsersExecludeTeamSupervisors(int teamId)
+        {
+            // users that ARE NOT SUPERVISING the TEAM
+            return db.Users.Where(k => !k.Supervising.Any(s => s.TeamId == teamId)).ToList().Select(k => new KeyValuePair<string, string>(k.Id, k.FirstName + " " + k.LastName + $" ({k.UserName})")).ToList();
+        }
+
 
         public UserLog AddStartLog(string userId, string ipAddress, string comments = null)
         {
