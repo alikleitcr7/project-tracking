@@ -38,7 +38,7 @@ const Modals_Users = {
             $('#UserModal').modal('hide');
         }
     },
-    Supervisor: {
+    Supervisors: {
         Show: function () {
             $('#SupervisorsModal').modal('show');
         },
@@ -49,10 +49,10 @@ const Modals_Users = {
     },
     UserRole: {
         Show: function () {
-            $('#UserRoleModal').modal('show');
+            $('#UserRolesModal').modal('show');
         },
         Hide: function () {
-            $('#UserRoleModal').modal('hide');
+            $('#UserRolesModal').modal('hide');
         }
     },
 }
@@ -507,7 +507,7 @@ const supervisorsMethods = {
     supervisors_edit: function (userId) {
 
         // OPEN MODAL
-        Modals_Teams.Supervisors.Show();
+        Modals_Users.Supervisors.Show();
         this.supervisors.form.isLoading = true
 
         this.supervisors_setFormLoading(true)
@@ -516,7 +516,7 @@ const supervisorsMethods = {
         this.supervisors_getAll(userId)
 
         // GET REQUEST
-        TeamsService.GetAllExecludingSupervising(userId)
+        TeamsService.GetAllSupervisingTeamIds(userId)
             .then(r => {
 
                 const record = r.data
@@ -528,7 +528,7 @@ const supervisorsMethods = {
 
                 this.supervisors_setFormMessage('');
 
-                this.supervisors.form = supervisorFormObject(teamId, record);
+                this.supervisors.form = supervisorFormObject(userId, record);
 
             })
             .catch(e => {
@@ -551,7 +551,7 @@ const supervisorsMethods = {
         this.supervisors_setFormSaving(true)
 
         // UPDATE
-        TeamsService.AddRemoveTeamsUsers(pendingRecord)
+        UsersService.AddRemoveTeamsFromSupervisor(pendingRecord)
             .then((r) => {
 
                 const record = r.data
@@ -559,13 +559,13 @@ const supervisorsMethods = {
                 if (record) {
 
                     // update members count (teams)
-                    let data = [...this.teams.data]
+                    let data = [...this.users.data]
 
-                    let teamToUpdate = data.find(k => k.id === pendingRecord.teamId)
+                    let recordToUpdate = data.find(k => k.id === pendingRecord.userId)
 
-                    teamToUpdate.membersCount = pendingRecord.userIds.length
+                    recordToUpdate.supervisingCount = pendingRecord.teamIds.length
 
-                    this.teams.data = data
+                    this.users.data = data
 
                     // saved feeback (supervisors)
                     this.supervisors_setFormMessage('Saved!')
@@ -595,7 +595,7 @@ const supervisorsMethods = {
         this.supervisors_setMessage('Loading...')
         this.supervisors.data = []
 
-        return TeamsService.GetAllExecludingSupervising(userId)
+        return TeamsService.GetAllSupervisableTeams(userId)
             .then((r) => {
 
                 /** @type {IClientResponseModel<ISubject>} */
@@ -659,7 +659,7 @@ const userRolesMethods = {
     userRoles_edit: function (userId) {
 
         // OPEN MODAL
-        Modals_Teams.UserRole.Show();
+        Modals_Users.UserRole.Show();
 
         this.userRoles.form.isLoading = true
 
@@ -672,10 +672,10 @@ const userRolesMethods = {
 
                 const record = r.data
 
-                if (!record) {
-                    this.userRoles_setFormMessage(BASIC_ERROR_MESSAGE);
-                    return
-                }
+                //if (!record) {
+                //    this.userRoles_setFormMessage(BASIC_ERROR_MESSAGE);
+                //    return
+                //}
 
                 this.userRoles_setFormMessage('');
 
@@ -711,14 +711,14 @@ const userRolesMethods = {
 
                 if (record) {
 
-                    // update members count (teams)
-                    let data = [...this.users.data]
+                    //// update members count (teams)
+                    //let data = [...this.users.data]
 
-                    let recordToUpdate = data.find(k => k.id === pendingRecord.id)
+                    //let recordToUpdate = data.find(k => k.id === userId)
 
-                    recordToUpdate.role = role
+                    //recordToUpdate.role = role
 
-                    this.users.data = data
+                    //this.users.data = data
 
                     // saved feeback (userRoles)
                     this.userRoles_setFormMessage('Saved!')

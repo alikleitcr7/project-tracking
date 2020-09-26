@@ -15,6 +15,7 @@ using ProjectTracking.Models.Users;
 using ProjectTracking.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using ProjectTracking.Utils;
+using System.Threading.Tasks;
 
 namespace ProjectTracking.Data.Methods
 {
@@ -91,11 +92,12 @@ namespace ProjectTracking.Data.Methods
             {
                 Id = k.Id,
                 FirstName = k.FirstName,
-                LastName = k.FirstName,
+                LastName = k.LastName,
                 Email = k.Email,
-                Role = k.Roles.FirstOrDefault().RoleId,
+                //Role = k.Roles.FirstOrDefault().RoleId,
                 DateOfBirth = k.DateOfBirth,
-                UserName = k.UserName
+                UserName = k.UserName,
+                SupervisingCount = k.Supervising.Count()
             });
 
 
@@ -144,6 +146,35 @@ namespace ProjectTracking.Data.Methods
 
             return record != null ? _mapper.Map<User>(record) : null;
         }
+
+        public void AddRemoveTeamsFromSupervisor(string userId, List<int> teamIds)
+        {
+            var dbUser = db.Users.Include(k => k.Supervising).FirstOrDefault(k => k.Id == userId);
+
+            if (dbUser == null)
+            {
+                throw new ClientException("user dont exist");
+            }
+
+            // remove all teams supervising from db that are not in the model
+            dbUser.Supervising.RemoveAll(k => !teamIds.Contains(k.TeamId));
+
+            // remove all items in the model that are already in db
+            teamIds.RemoveAll(k => dbUser.Supervising.Any(u => u.TeamId == k));
+
+            // add the rest
+            if (teamIds.Count > 0)
+            {
+                dbUser.Supervising.AddRange(teamIds.Select(k => new DataSets.Superviser()
+                {
+                    UserId = userId,
+                    TeamId = k
+                }));
+            }
+
+            db.SaveChanges();
+        }
+
 
 
         public List<IdentityRole<string>> GetAllRoles()

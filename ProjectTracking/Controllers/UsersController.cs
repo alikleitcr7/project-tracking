@@ -153,6 +153,32 @@ namespace ProjectTracking.Controllers
             }
         }
 
+
+        public class AddRemoveTeamsFromSupervisorParam
+        {
+            public string userId { get; set; }
+            public List<int> teamIds { get; set; }
+        }
+
+        [HttpPost]
+        public IActionResult AddRemoveTeamsFromSupervisor([FromBody]AddRemoveTeamsFromSupervisorParam model)
+        {
+            try
+            {
+                _usersMethods.AddRemoveTeamsFromSupervisor(model.userId, model.teamIds);
+
+                return Ok(true);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
         [HttpPost]
         public IActionResult Save([FromBody]UserSaveModel user)
         {

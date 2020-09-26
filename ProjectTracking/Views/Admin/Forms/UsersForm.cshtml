@@ -33,17 +33,16 @@
 
     <p class="c-display-message">{{users.isLoading ? 'Loading...':'&nbsp;'}}</p>
 
-    <div v-show="users.data.length" class="Users c-table-data-container"
+    <div v-show="users.data.length" class="Users c-table-data-container table-responsive"
          v-bind:class="{'lock-controls': users.isProcessing }">
 
-        <table class="table ">
+        <table class="table">
 
             <thead>
                 <tr>
                     <th style="width: 50px">Name</th>
                     <th>Email</th>
                     <th>Date of Birth</th>
-                    <th>Role</th>
                     <th></th>
                 </tr>
             </thead>
@@ -63,15 +62,35 @@
                         {{users_isAdmin(item) ? '-': item.dateOfBirthDisplay}}
                     </td>
 
-                    <td>{{item.role}}</td>
+                    <td v-show="users_isAdmin(item)">
+                     
+                    </td>
 
-                    <td>
-                        <button v-show="!users_isAdmin(item)" class="s-btn s-btn-sm s-btn-outline" type="button"
+                    <td v-show="!users_isAdmin(item)">
+                        <button class="s-btn s-btn-sm s-btn-outline" type="button"
+                                v-on:click="userRoles_edit(item.id)">
+                            <i class="glyphicon glyphicon-file"></i>
+
+                            Role
+                        </button>
+                        
+                        <button class="s-btn s-btn-sm s-btn-outline" type="button"
+                                v-on:click="supervisors_edit(item.id)">
+
+                            <i class="glyphicon glyphicon-user"></i>
+                            Supervising Teams ({{item.supervisingCount}})
+                        </button>
+
+                        <button class="s-btn s-btn-sm s-btn-outline" type="button"
                                 v-on:click="users_edit(idx)">
+
+                            <i class="glyphicon glyphicon-edit"></i>
                             Edit
                         </button>
-                        <button v-show="!users_isAdmin(item)" class="s-btn s-btn-sm s-btn-danger" type="button"
+                        <button class="s-btn s-btn-sm s-btn-danger" type="button"
                                 v-on:click="users_delete(idx)">
+
+                            <i class="glyphicon glyphicon-trash"></i>
                             Delete
                         </button>
                     </td>
@@ -135,13 +154,13 @@
                 </div>
 
                 <div class="modal-body">
-                    <label>Team Users</label>
+                    <label>Teams</label>
                     <div class="checklist-container scrollable-container-400">
 
                         <p v-show="supervisors.isLoading">Loading teams....</p>
                         <p v-show="!supervisors.isLoading && !supervisors.data.length">There are Currently No Teams Added!</p>
                         <p v-for="(team, idx) in supervisors.data">
-                            <input type="checkbox" :value="user.id" v-model="supervisors.form.record.teamIds" />
+                            <input type="checkbox" :value="team.id" v-model="supervisors.form.record.teamIds" />
                             {{team.name}}
                         </p>
                     </div>
@@ -178,8 +197,8 @@
                         <p v-show="userRoles.isLoading">Loading roles....</p>
                         <p v-show="!userRoles.isLoading && !userRoles.data.length">-</p>
                         <p v-for="(role, idx) in userRoles.data">
-                            <input type="radio" :value="role" v-model="userRoles.form.record.role" />
-                            {{role.role}}
+                            <input type="radio" :value="role.name" v-model="userRoles.form.record.role" />
+                            {{role.name}}
                         </p>
                     </div>
                 </div>

@@ -34,6 +34,12 @@ const UsersService = {
 
         return axios.get(url);
     },
+    AddRemoveTeamsFromSupervisor: function (model) {
+
+        const url = USERS_SERVICE_URI(`AddRemoveTeamsFromSupervisor`)
+
+        return axios.post(url, model);
+    },
     SetRole: function (userId, role) {
 
         const query = serialize({ userId, role })

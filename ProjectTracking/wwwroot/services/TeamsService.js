@@ -26,11 +26,27 @@ const TeamsService = {
 
         return axios.get(url);
     },
-    GetAllExecludingSupervising: function (userId) {
+    //GetAllExecludingSupervising: function (userId) {
+
+    //    const query = serialize({ userId })
+
+    //    const url = TEAMS_SERVICE_URI(`GetAllExecludingSupervising?${query}`)
+
+    //    return axios.get(url);
+    //},
+    GetAllSupervisableTeams: function (userId) {
 
         const query = serialize({ userId })
 
-        const url = TEAMS_SERVICE_URI(`GetAllExecludingSupervising?${query}`)
+        const url = TEAMS_SERVICE_URI(`GetAllSupervisableTeams?${query}`)
+
+        return axios.get(url);
+    },
+    GetAllSupervisingTeamIds: function (userId) {
+
+        const query = serialize({ userId })
+
+        const url = TEAMS_SERVICE_URI(`GetAllSupervisingTeamIds?${query}`)
 
         return axios.get(url);
     },

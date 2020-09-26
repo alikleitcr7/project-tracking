@@ -40,9 +40,42 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetAllExecludingSupervising(string userId)
+        public IActionResult GetAllSupervisableTeams(string userId)
         {
-            return Json(_teamsMethods.GetAllExecludingSupervising(userId));
+            try
+            {
+                var supervisable = _teamsMethods.GetAllSupervisableTeams(userId);
+                //var supervised = includeSupervisedTeamsIds ? _teamsMethods.GetAllSupervisingTeamIds(userId) : null;
+
+                return Ok(supervisable);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetAllSupervisingTeamIds(string userId)
+        {
+            try
+            {
+                var supervised = _teamsMethods.GetAllSupervisingTeamIds(userId);
+
+                return Ok(supervised);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         public class AddRemoveTeamsUsersParam

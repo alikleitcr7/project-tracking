@@ -47,6 +47,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         void Delete(string id);
         List<User> Search(string keyword, int page, int countPerPage, out int totalCount);
         User Save(Models.Users.UserSaveModel model);
+        void AddRemoveTeamsFromSupervisor(string userId, List<int> teamIds);
         #endregion
     }
 }

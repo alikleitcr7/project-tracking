@@ -149,12 +149,12 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
 
                     //await _signInManager.SignInAsync(user, isPersistent: false);
 
-                    //var role = _context.Roles.FirstOrDefault(c => c.Name == "User");
+                    var role = _context.Roles.FirstOrDefault(c => c.Name == "User");
 
-                    //if (role != null)
-                    //{
-                    //    await _userManager.AddToRoleAsync(user, role.Name);
-                    //}
+                    if (role != null)
+                    {
+                        await _userManager.AddToRoleAsync(user, role.Name);
+                    }
 
                     //Using LocalRedirect ensures that the "return URL" is a route actually on your site, 
                     //instead of some malicious third-party bad actor's.

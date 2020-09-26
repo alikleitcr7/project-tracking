@@ -17,7 +17,7 @@ namespace ProjectTracking.DataContract
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MiddleName { get; set; }
-        public string Role { get; set; }
+        //public string Role { get; set; }
 
         public string FullName
         {
@@ -58,6 +58,9 @@ namespace ProjectTracking.DataContract
         public int HourlyRate { get; set; }
         public int HoursPerDay { get; set; }
         public EmploymentType? AgreementType { get; set; }
+
+
+        public int? SupervisingCount { get; set; }
     }
 
     public enum EmploymentType

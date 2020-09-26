@@ -12,6 +12,8 @@ namespace ProjectTracking.Data.Methods.Interfaces
         Team GetById(int id);
         System.Threading.Tasks.Task AddRemoveTeamsUsers(int teamId, List<string> userIds);
         List<string> GetTeamUsers(int teamId);
-        List<Team> GetAllExecludingSupervising(string userId);
+        //List<Team> GetAllExecludingSupervising(string userId);
+        List<int> GetAllSupervisingTeamIds(string userId);
+        List<Team> GetAllSupervisableTeams(string userId);
     }
 }

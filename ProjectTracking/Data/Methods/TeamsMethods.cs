@@ -100,6 +100,7 @@ namespace ProjectTracking.Data.Methods
             _context.SaveChanges();
         }
 
+
         public bool Delete(int id)
         {
             var record = _context.Teams.FirstOrDefault(c => c.ID == id);
@@ -114,11 +115,16 @@ namespace ProjectTracking.Data.Methods
             return _context.SaveChanges() > 0;
         }
 
-        public List<Team> GetAllExecludingSupervising(string userId)
+        public List<int> GetAllSupervisingTeamIds(string userId)
         {
-            // get all teams where TEAM IS NOT SUPERVISED BY USER
+            return _context.Supervisers.Where(k => k.UserId == userId).Select(k => k.TeamId).ToList();
+        }
+
+        public List<Team> GetAllSupervisableTeams(string userId)
+        {
+            // teams where the USER is NOT a member in that team
             return _context.Teams
-              .Where(k => !k.Supervisers.Any(s => s.TeamId == k.ID && s.UserId == userId))
+              .Where(k => !k.Members.Any(s => s.TeamId == k.ID && s.Id == userId))
               .Select(k => _mapper.Map<Team>(k))
               .ToList();
         }
