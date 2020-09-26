@@ -40,13 +40,21 @@ const Modals_Users = {
     },
     Supervisor: {
         Show: function () {
-            $('#SupervisorModal').modal('show');
+            $('#SupervisorsModal').modal('show');
         },
         Hide: function () {
-            $('#SupervisorModal').modal('hide');
+            $('#SupervisorsModal').modal('hide');
         }
 
-    }
+    },
+    UserRole: {
+        Show: function () {
+            $('#UserRoleModal').modal('show');
+        },
+        Hide: function () {
+            $('#UserRoleModal').modal('hide');
+        }
+    },
 }
 
 const userFormObject = (obj) => {
@@ -610,6 +618,160 @@ const supervisorsMethods = {
     },
 }
 
+
+const userRoleFormObject = (userId = null, role = null) => {
+
+    let record = {
+        userId,
+        role
+    }
+
+    return {
+        record,
+        message: '',
+        image: null,
+        isLoading: false,
+        isSaving: false,
+    }
+}
+
+const userRoleObject = () => {
+    return {
+        data: [],
+        form: userRoleFormObject(),
+        isLoading: false,
+        isProcessing: false,
+        message: '',
+    }
+}
+
+const userRolesMethods = {
+    userRoles_setFormMessage: function (message) {
+
+        this.userRoles.form.message = message
+    },
+    userRoles_setFormLoading: function (isLoading) {
+        this.userRoles.form.isLoading = isLoading
+    },
+    userRoles_setFormSaving: function (isSaving) {
+        this.userRoles.form.isSaving = isSaving
+    },
+    userRoles_edit: function (userId) {
+
+        // OPEN MODAL
+        Modals_Teams.UserRole.Show();
+
+        this.userRoles.form.isLoading = true
+
+        this.userRoles_setFormLoading(true)
+        this.userRoles_setFormMessage('Loading...');
+
+        // GET REQUEST
+        UsersService.GetUserRole(userId)
+            .then(r => {
+
+                const record = r.data
+
+                if (!record) {
+                    this.userRoles_setFormMessage(BASIC_ERROR_MESSAGE);
+                    return
+                }
+
+                this.userRoles_setFormMessage('');
+
+                this.userRoles.form = userRoleFormObject(userId, record);
+
+            })
+            .catch(e => {
+
+                console.error('get error', e)
+
+                this.userRoles_setFormMessage(BASIC_ERROR_MESSAGE);
+            })
+            .then(() => {
+                this.userRoles_setFormLoading(false)
+            })
+    },
+    userRoles_save: function () {
+
+        this.userRoles_setFormMessage('');
+
+        let pendingRecord = { ...this.userRoles.form.record }
+
+        // START UPDATE/CREATE REQUEST
+        this.userRoles_setFormSaving(true)
+
+        const { userId, role } = pendingRecord
+
+        // UPDATE
+        UsersService.SetRole(userId, role)
+            .then((r) => {
+
+                const record = r.data
+
+                if (record) {
+
+                    // update members count (teams)
+                    let data = [...this.users.data]
+
+                    let recordToUpdate = data.find(k => k.id === pendingRecord.id)
+
+                    recordToUpdate.role = role
+
+                    this.users.data = data
+
+                    // saved feeback (userRoles)
+                    this.userRoles_setFormMessage('Saved!')
+                }
+                else {
+                    this.userRoles_setFormMessage(BASIC_ERROR_MESSAGE)
+                }
+
+            })
+            .catch((e) => {
+                console.error('save team userRoles', e)
+                this.userRoles_setFormMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.userRoles_setFormSaving(false)
+            });
+    },
+    userRoles_setLoading: function (isLoading) {
+        this.userRoles.isLoading = isLoading
+    },
+    userRoles_setMessage: function (message) {
+        this.userRoles.message = message
+    },
+    userRoles_getAll: function () {
+
+        this.userRoles_setLoading(true)
+        this.userRoles_setMessage('Loading...')
+        this.userRoles.data = []
+
+        return UsersService.GetRoles()
+            .then((r) => {
+
+                /** @type {IClientResponseModel<ISubject>} */
+                const record = r.data
+
+                if (record) {
+                    this.userRoles.data = [...record]
+                }
+                else {
+                    this.userRoles_setMessage(BASIC_ERROR_MESSAGE)
+                }
+            })
+            .catch((e) => {
+                console.error('userRoles getall', e)
+                this.userRoles_setMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.userRoles_setLoading(false)
+            })
+    },
+}
+
+
 var users_app = new Vue({
     el: "#Users",
     data: {
@@ -617,6 +779,7 @@ var users_app = new Vue({
         dateTimeOptions,
         users: userObject(),
         supervisors: supervisorObject(),
+        userRoles: userRoleObject(),
         errors: '',
         oNull: null,
     },
@@ -643,9 +806,11 @@ var users_app = new Vue({
     methods: {
         ...usersMethods,
         ...supervisorsMethods,
+        ...userRolesMethods,
     },
     mounted: function () {
         this.users_getAll()
+        this.userRoles_getAll()
         //this.supervisors_getAll()
     }
 })

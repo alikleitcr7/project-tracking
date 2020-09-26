@@ -55,7 +55,7 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException($"email already exist!");
             }
 
-            if (model.id != null) 
+            if (model.id != null)
             {
                 // save user
 
@@ -87,7 +87,16 @@ namespace ProjectTracking.Data.Methods
 
         public List<User> Search(string keyword, int page, int countPerPage, out int totalCount)
         {
-            IQueryable<ApplicationUser> query = db.Users;
+            IQueryable<User> query = db.Users.Select(k => new User()
+            {
+                Id = k.Id,
+                FirstName = k.FirstName,
+                LastName = k.FirstName,
+                Email = k.Email,
+                Role = k.Roles.FirstOrDefault().RoleId,
+                DateOfBirth = k.DateOfBirth,
+                UserName = k.UserName
+            });
 
 
             if (!string.IsNullOrEmpty(keyword))
@@ -99,8 +108,6 @@ namespace ProjectTracking.Data.Methods
 
             return query.Skip(page * countPerPage)
                 .Take(countPerPage)
-                .ToList()
-                .Select(_mapper.Map<User>)
                 .ToList();
         }
 

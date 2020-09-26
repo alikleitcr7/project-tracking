@@ -78,6 +78,5 @@ namespace ProjectTracking.Controllers
                 return BadRequest();
             }
         }
-
     }
 }

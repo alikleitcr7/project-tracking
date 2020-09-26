@@ -20,6 +20,28 @@ const UsersService = {
 
         return axios.get(url);
     },
+    GetRoles: function () {
+
+        const url = USERS_SERVICE_URI(`GetRoles`)
+
+        return axios.get(url);
+    },
+    GetUserRole: function (userId) {
+
+        const query = serialize({ userId })
+
+        const url = USERS_SERVICE_URI(`GetUserRole?${query}`)
+
+        return axios.get(url);
+    },
+    SetRole: function (userId, role) {
+
+        const query = serialize({ userId, role })
+
+        const url = USERS_SERVICE_URI(`SetRole?${query}`)
+
+        return axios.put(url);
+    },
     Delete: function (id) {
 
         const url = USERS_SERVICE_URI(`Delete?id=${id}`)
