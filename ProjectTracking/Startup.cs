@@ -24,6 +24,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ProjectTracking.Managers;
+using ProjectTracking.Utils;
 
 namespace ProjectTracking
 {
@@ -99,6 +100,8 @@ namespace ProjectTracking
             services.AddScoped<IInsightsMethods, Data.Methods.Statistics.InsightsMethods>();
             services.AddScoped<ITimeSheetActivitiesMethods, Data.Methods.TimeSheetActivitiesMethods>();
             services.AddScoped<IIpAddressMethods, Data.Methods.IpAddressesMethods>();
+
+            services.AddSingleton<Utils.IValidationExtensions, Utils.ValidationExtensions>();
 
             services.AddTransient<INotificationMethods, Data.Methods.NotificationMethods>();
             services.AddScoped<ITimeSheetsMethods, Data.Methods.TimeSheetsMethods>();

@@ -114,6 +114,15 @@ namespace ProjectTracking.Data.Methods
             return _context.SaveChanges() > 0;
         }
 
+        public List<Team> GetAllExecludingSupervising(string userId)
+        {
+            // get all teams where TEAM IS NOT SUPERVISED BY USER
+            return _context.Teams
+              .Where(k => !k.Supervisers.Any(s => s.TeamId == k.ID && s.UserId == userId))
+              .Select(k => _mapper.Map<Team>(k))
+              .ToList();
+        }
+
         public List<Team> GetAll(bool includeMembersCount = false)
         {
             if (includeMembersCount)

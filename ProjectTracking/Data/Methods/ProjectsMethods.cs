@@ -25,6 +25,156 @@ namespace ProjectTracking.Data.Methods
             _mapper = mapper;
         }
 
+        public Project Save(ProjectSaveModel model)
+        {
+            if (model.categoryId == 0 || string.IsNullOrEmpty(model.title))
+            {
+                throw new ClientException("title and category are required");
+            }
+
+            // check if title already exist under the selected category
+            bool nameExist = db.Projects.Any(k => k.Title == model.title && k.CategoryId == model.categoryId);
+
+            if (nameExist)
+            {
+                throw new ClientException($"project exist under title {model.title} and the selected category");
+            }
+
+            if (model.id.HasValue)
+            {
+                // save project
+
+                // get project
+
+                var dbProject = db.Projects.Include(k => k.TeamsProjects).FirstOrDefault(k => k.ID == model.id.Value);
+
+                if (dbProject == null)
+                {
+                    throw new ClientException("record not found");
+                }
+
+                dbProject.Title = model.title;
+                dbProject.Description = model.description;
+                dbProject.CategoryId = model.categoryId;
+                dbProject.StartDate = model.startDate;
+                dbProject.PlannedEnd = model.plannedEnd;
+                dbProject.ActualEnd = model.actualEnd;
+                dbProject.StatusCode = model.statusCode;
+
+                AddRemoveTeamsProjects(model, dbProject);
+
+                db.SaveChanges();
+
+                return _mapper.Map<Project>(dbProject);
+            }
+            else
+            {
+                DataSets.Project dbProject = new DataSets.Project()
+                {
+                    Title = model.title,
+                    Description = model.description,
+                    DateAdded = DateTime.Now,
+                    CategoryId = model.categoryId,
+                    StartDate = model.startDate,
+                    PlannedEnd = model.plannedEnd,
+                    ActualEnd = model.actualEnd,
+                    StatusCode = model.statusCode
+                };
+
+                // add the project
+                db.Projects.Add(dbProject);
+
+                // save changes on project
+                db.SaveChanges();
+
+                // add the teams to the saved project
+                db.TeamsProjects.AddRange(model.teamsIds.Select(k => new DataSets.TeamsProjects()
+                {
+                    ProjectId = dbProject.ID,
+                    TeamId = k
+                }));
+
+                // save changes on teamsprojects
+                db.SaveChanges();
+
+                return _mapper.Map<Project>(dbProject);
+            }
+        }
+
+        private void AddRemoveTeamsProjects(ProjectSaveModel model, DataSets.Project dbProject)
+        {
+            // remove all items not in the model
+            dbProject.TeamsProjects.RemoveAll(k => !model.teamsIds.Contains(k.TeamId));
+
+            // remove all items in the model that are already in db
+            model.teamsIds.RemoveAll(k => dbProject.TeamsProjects.Any(t => t.TeamId == k));
+
+            // add the rest
+            if (model.teamsIds.Count > 0)
+            {
+                dbProject.TeamsProjects.AddRange(model.teamsIds.Select(k => new DataSets.TeamsProjects()
+                {
+                    ProjectId = dbProject.ID,
+                    TeamId = k
+                }));
+            }
+        }
+
+        public List<Project> Search(int? categoryId, string keyword, int page, int countPerPage, out int totalCount)
+        {
+            IQueryable<DataSets.Project> query = db.Projects.Include(k => k.TeamsProjects);
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(k => k.CategoryId.HasValue && k.CategoryId.Value == categoryId.Value);
+            }
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(k => k.Title.Contains(keyword) || k.Description.Contains(keyword));
+            }
+
+            totalCount = query.Count();
+
+            return query.OrderByDescending(k => k.ID)
+                .Skip(page * countPerPage)
+                .Take(countPerPage)
+                .ToList()
+                .Select(_mapper.Map<Project>)
+                .ToList();
+        }
+
+        public bool Delete(int id)
+        {
+            //DataSets.Project dbProject = new DataSets.Project() { ID = id };
+
+            var dbProject = db.Projects.Include(k => k.Tasks).FirstOrDefault(k => k.ID == id);
+
+            if (dbProject != null)
+            {
+                foreach (var dbTask in dbProject.Tasks)
+                {
+                    db.ProjectTasks.Remove(dbTask);
+                }
+
+                db.Projects.Remove(dbProject);
+
+                return db.SaveChanges() > 0;
+            }
+
+            return false;
+        }
+
+        public Project GetById(int id)
+        {
+            var record = db.Projects.Include(k => k.TeamsProjects).FirstOrDefault(k => k.ID == id);
+
+            return record != null ? _mapper.Map<Project>(record) : null;
+        }
+
+
+        // OTHER
+
         public List<Project> Get(int? teamId, int? categoryId, int page, int countPerPage, out int totalPages)
         {
             totalPages = 0;
@@ -164,148 +314,6 @@ namespace ProjectTracking.Data.Methods
 
         //    return records;
         //}
-
-        public Project Save(ProjectSaveModel model)
-        {
-            if (model.id.HasValue)
-            {
-                // save project
-
-                // get project
-
-                var dbProject = db.Projects.Include(k => k.TeamsProjects).FirstOrDefault(k => k.ID == model.id.Value);
-
-                if (dbProject == null)
-                {
-                    throw new ClientException("record not found");
-                }
-
-                dbProject.Title = model.title;
-                dbProject.Description = model.description;
-                dbProject.CategoryId = model.categoryId;
-                dbProject.StartDate = model.startDate;
-                dbProject.PlannedEnd = model.plannedEnd;
-                dbProject.ActualEnd = model.actualEnd;
-                dbProject.StatusCode = model.statusCode;
-
-                AddRemoveTeamsProjects(model, dbProject);
-
-                db.SaveChanges();
-
-                return _mapper.Map<Project>(dbProject);
-            }
-            else
-            {
-                // check title if exist
-                bool nameExist = db.Projects.Any(k => k.Title == model.title);
-
-                if (nameExist)
-                {
-                    throw new ClientException($"project exist under title {model.title}");
-                }
-
-                DataSets.Project dbProject = new DataSets.Project()
-                {
-                    Title = model.title,
-                    Description = model.description,
-                    DateAdded = DateTime.Now,
-                    CategoryId = model.categoryId,
-                    StartDate = model.startDate,
-                    PlannedEnd = model.plannedEnd,
-                    ActualEnd = model.actualEnd,
-                    StatusCode = model.statusCode
-                };
-
-                // add the project
-                db.Projects.Add(dbProject);
-
-                // save changes on project
-                db.SaveChanges();
-
-                // add the teams to the saved project
-                db.TeamsProjects.AddRange(model.teamsIds.Select(k => new DataSets.TeamsProjects()
-                {
-                    ProjectId = dbProject.ID,
-                    TeamId = k
-                }));
-
-                // save changes on teamsprojects
-                db.SaveChanges();
-
-                return _mapper.Map<Project>(dbProject);
-            }
-        }
-      
-        private void AddRemoveTeamsProjects(ProjectSaveModel model, DataSets.Project dbProject)
-        {
-            // remove all items not in the model
-            dbProject.TeamsProjects.RemoveAll(k => !model.teamsIds.Contains(k.TeamId));
-
-            // remove all items in the model that are already in db
-            model.teamsIds.RemoveAll(k => dbProject.TeamsProjects.Any(t => t.TeamId == k));
-
-            // add the rest
-            if (model.teamsIds.Count > 0)
-            {
-                dbProject.TeamsProjects.AddRange(model.teamsIds.Select(k => new DataSets.TeamsProjects()
-                {
-                    ProjectId = dbProject.ID,
-                    TeamId = k
-                }));
-            }
-        }
-
-        public List<Project> Search(int? categoryId, string keyword, int page, int countPerPage, out int totalCount)
-        {
-            IQueryable<DataSets.Project> query = db.Projects.Include(k => k.TeamsProjects);
-
-            if (categoryId.HasValue)
-            {
-                query = query.Where(k => k.CategoryId.HasValue && k.CategoryId.Value == categoryId.Value);
-            }
-
-            if (!string.IsNullOrEmpty(keyword))
-            {
-                query = query.Where(k => k.Title.Contains(keyword) || k.Description.Contains(keyword));
-            }
-
-            totalCount = query.Count();
-
-            return query.OrderByDescending(k => k.ID)
-                .Skip(page * countPerPage)
-                .Take(countPerPage)
-                .ToList()
-                .Select(_mapper.Map<Project>)
-                .ToList();
-        }
-
-        public bool Delete(int id)
-        {
-            //DataSets.Project dbProject = new DataSets.Project() { ID = id };
-
-            var dbProject = db.Projects.Include(k => k.Tasks).FirstOrDefault(k => k.ID == id);
-
-            if (dbProject != null)
-            {
-                foreach (var dbTask in dbProject.Tasks)
-                {
-                    db.ProjectTasks.Remove(dbTask);
-                }
-
-                db.Projects.Remove(dbProject);
-
-                return db.SaveChanges() > 0;
-            }
-
-            return false;
-        }
-
-        public Project GetById(int id)
-        {
-            var record = db.Projects.Include(k => k.TeamsProjects).FirstOrDefault(k => k.ID == id);
-
-            return record != null ? _mapper.Map<Project>(record) : null;
-        }
 
         public List<Project> Get(int departmentId, int companyId, bool includeActivities = true)
         {

@@ -74,10 +74,25 @@ namespace ProjectTracking.Data
 
             #region TimeSheetActivity
 
+            builder.Entity<TimeSheet>()
+                  .HasMany(c => c.TimeSheetTasks)
+                  .WithOne(c => c.TimeSheet)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<TimeSheetTask>()
+                  .HasMany(c => c.Activities)
+                  .WithOne(c => c.TimeSheetTask)
+                  .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<TimeSheetActivity>()
                   .HasMany(c => c.TimeSheetActivityLogs)
                   .WithOne(c => c.TimeSheetActivity)
                   .OnDelete(DeleteBehavior.Cascade);
+            
+            //builder.Entity<TimeSheetActivity>()
+            //      .HasMany(c => c.TimeSheetActivityLogs)
+            //      .WithOne(c => c.TimeSheetActivity)
+            //      .OnDelete(DeleteBehavior.Cascade);
 
             #endregion
 

@@ -43,6 +43,10 @@ namespace ProjectTracking.Data.Methods.Interfaces
         Object GetSupervisors(string Id);
         List<KeyValuePair<string, string>> GetAllUsersKeyValues();
         List<KeyValuePair<string, string>> GetAllUsersExecludeTeamSupervisors(int teamId);
+        User GetById(string id);
+        void Delete(string id);
+        List<User> Search(string keyword, int page, int countPerPage, out int totalCount);
+        User Save(Models.Users.UserSaveModel model);
         #endregion
     }
 }

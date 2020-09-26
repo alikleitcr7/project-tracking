@@ -1,60 +1,67 @@
 ﻿Vue.component('paginate', VuejsPaginate)
 Vue.component('date-picker', VueBootstrapDatetimePicker)
 
-const debugProjects = true;
+const debugUsers = true;
 
-const projectFields = [
+const userFields = [
     {
-        name: 'title',
-        displayName: 'title',
+        name: 'firstName',
+        displayName: 'First Name',
         min: 0,
         max: 255,
         type: DATA_TYPES.TEXT,
         required: true,
     },
     {
-        name: 'categoryId',
-        displayName: 'Category',
+        name: 'lastName',
+        displayName: 'Last Name',
+        min: 0,
+        max: 255,
+        type: DATA_TYPES.TEXT,
+        required: true,
+    },
+    {
+        name: 'email',
+        displayName: 'Email',
         min: 1,
-        type: DATA_TYPES.NUMBER,
+        type: DATA_TYPES.TEXT,
         required: true,
     },
 ]
 
-const Modals_Projects = {
-    Project: {
+const Modals_Users = {
+    User: {
         Show: function () {
-            $('#ProjectModal').modal('show');
+            $('#UserModal').modal('show');
         },
         Hide: function () {
-            $('#ProjectModal').modal('hide');
+            $('#UserModal').modal('hide');
         }
+    },
+    Supervisor: {
+        Show: function () {
+            $('#SupervisorModal').modal('show');
+        },
+        Hide: function () {
+            $('#SupervisorModal').modal('hide');
+        }
+
     }
 }
 
-const projectFormObject = (obj) => {
-    console.log({ obj })
+const userFormObject = (obj) => {
+
     let record = obj ? {
         id: obj.id,
-        title: obj.title,
-        categoryId: obj.categoryId,
-        description: obj.description,
-        startDate: obj.startDate,
-        plannedEnd: obj.plannedEnd,
-        actualEnd: obj.actualEnd,
-        statusCode: obj.statusCode,
-        teamsIds: obj.teamsProjects ? obj.teamsProjects.map(k => k.teamId) : []
+        firstName: obj.firstName,
+        lastName: obj.lastName,
+        email: obj.email,
     } : {
-            title: null,
-            categoryId: null,
-            description: null,
-            startDate: null,
-            plannedEnd: null,
-            actualEnd: null,
-            statusCode: null,
-            teamsIds: [],
+            id: null,
+            firstName: null,
+            lastName: null,
+            email: null,
         }
-
 
     return {
         record,
@@ -64,7 +71,7 @@ const projectFormObject = (obj) => {
     }
 }
 
-const projectObject = () => {
+const userObject = () => {
     return {
         data: [],
         filterBy: {
@@ -83,7 +90,7 @@ const projectObject = () => {
         isLoading: false,
         isProcessing: false,
         message: '',
-        form: projectFormObject(),
+        form: userFormObject(),
         statuses: {
             data: [],
             isLoading: false
@@ -91,19 +98,19 @@ const projectObject = () => {
     }
 }
 
-const projectsMethods = {
-    projects_validateForm: function (obj) {
+const usersMethods = {
+    users_validateForm: function (obj) {
 
-        const form = obj || this.projects.form.record
+        const form = obj || this.users.form.record
 
         console.log({ form })
 
         var isValid = true
         let finalMessage = '';
 
-        for (var i = 0; i < projectFields.length; i++) {
+        for (var i = 0; i < userFields.length; i++) {
 
-            const field = projectFields[i]
+            const field = userFields[i]
             const fieldValue = form[field.name];
 
             console.log('field validation', { field, fieldValue })
@@ -125,95 +132,98 @@ const projectsMethods = {
 
 
         if (!isValid) {
-            this.projects_setFormMessage(finalMessage || 'Fill Required Fields to Continue')
+            this.users_setFormMessage(finalMessage || 'Fill Required Fields to Continue')
         }
 
         return isValid;
     },
-    projects_setFormMessage: function (message) {
+    users_setFormMessage: function (message) {
 
-        this.projects.form.message = message
+        this.users.form.message = message
     },
-    projects_setFormLoading: function (isLoading) {
-        this.projects.form.isLoading = isLoading
+    users_setFormLoading: function (isLoading) {
+        this.users.form.isLoading = isLoading
     },
-    projects_setFormSaving: function (isSaving) {
-        this.projects.form.isSaving = isSaving
+    users_setFormSaving: function (isSaving) {
+        this.users.form.isSaving = isSaving
     },
-    projects_setProcessing: function (isProcessing) {
-        this.projects.isProcessing = isProcessing
+    users_setProcessing: function (isProcessing) {
+        this.users.isProcessing = isProcessing
     },
-    projects_setLoading: function (isLoading) {
-        this.projects.isLoading = isLoading
+    users_setLoading: function (isLoading) {
+        this.users.isLoading = isLoading
     },
-    projects_setMessage: function (message) {
-        this.projects.message = message
+    users_setMessage: function (message) {
+        this.users.message = message
     },
-    projects_openModal: function () {
+    users_openModal: function () {
 
-        this.projects.message = ''
-        this.projects.form = projectFormObject()
+        this.users.message = ''
+        this.users.form = userFormObject()
 
 
-        Modals_Projects.Project.Show()
+        Modals_Users.User.Show()
     },
-    projects_edit: function (idx) {
+    users_edit: function (idx) {
 
         // INDEX VALIDATION if (idx < 0 || idx>
 
-        if (idx > this.projects.data.length - 1) {
-            console.warn(`INVALID INDEX ${idx}, TOTAL RECORDS ARE ${this.projects.data.length}`)
+        if (idx > this.users.data.length - 1) {
+            console.warn(`INVALID INDEX ${idx}, TOTAL RECORDS ARE ${this.users.data.length}`)
             return
         }
 
         // GET RECORD
-        const record = this.projects.data[idx]
+        const record = this.users.data[idx]
 
         // OPEN MODAL
-        Modals_Projects.Project.Show();
-        this.projects.form.isLoading = true
+        Modals_Users.User.Show();
+        this.users.form.isLoading = true
 
-        this.projects_setFormLoading(true)
-        this.projects_setFormMessage('Loading...');
+        this.users_setFormLoading(true)
+        this.users_setFormMessage('Loading...');
 
         // GET REQUEST
 
-        ProjectsService.GetById(record.id)
+        UsersService.GetById(record.id)
             .then(r => {
 
                 const record = r.data
 
                 if (!record) {
-                    this.projects_setFormMessage(BASIC_ERROR_MESSAGE);
+                    this.users_setFormMessage(BASIC_ERROR_MESSAGE);
                     return
                 }
 
-                this.projects_setFormMessage('');
+                this.users_setFormMessage('');
 
-                this.projects.form = projectFormObject(record);
+                this.users.form = userFormObject(record);
             })
             .catch(e => {
 
                 console.error('get error', e)
 
-                this.projects_setFormMessage(BASIC_ERROR_MESSAGE);
+                this.users_setFormMessage(BASIC_ERROR_MESSAGE);
             })
             .then(() => {
-                this.projects_setFormLoading(false)
+                this.users_setFormLoading(false)
             })
     },
 
-    projects_save: function () {
+    users_isAdmin: function (user) {
+        return user ? user.userName === 'admin' : false
+    },
+    users_save: function () {
 
-        this.projects_setFormMessage('');
+        this.users_setFormMessage('');
 
-        let pendingRecord = { ...this.projects.form.record }
+        let pendingRecord = { ...this.users.form.record }
 
         // required fields validation
 
-        if (!this.projects_validateForm()) {
+        if (!this.users_validateForm()) {
 
-            //this.projects_setFormMessage('Fill the required fields to continue')
+            //this.users_setFormMessage('Fill the required fields to continue')
             return;
         }
 
@@ -222,101 +232,101 @@ const projectsMethods = {
         const sendForm = () => {
 
             // START UPDATE/CREATE REQUEST
-            this.projects_setFormSaving(true)
+            this.users_setFormSaving(true)
 
 
             // EXISTING RECORD
             if (pendingRecord.id) {
 
-                ProjectsService.Save(pendingRecord)
+                UsersService.Save(pendingRecord)
                     .then((r) => {
 
                         /** @type {IClientResponseModel<ISubject>} */
                         const record = r.data
 
-                        if (debugProjects) {
+                        if (debugUsers) {
                             console.log('update response', r)
                         }
 
                         if (record) {
 
                             // feedback
-                            this.projects_setFormMessage('Updated!')
+                            this.users_setFormMessage('Updated!')
 
                             // update data array
-                            let data = [...this.projects.data]
+                            let data = [...this.users.data]
 
                             const idx = data.findIndex(k => k.id === record.id)
 
                             if (idx !== -1) {
 
                                 data[idx] = { ...record }
-                                this.projects.data = data;
+                                this.users.data = data;
                             }
                             else {
                                 location.reload()
                             }
                         }
                         else {
-                            this.projects_setFormMessage(BASIC_ERROR_MESSAGE)
+                            this.users_setFormMessage(BASIC_ERROR_MESSAGE)
                         }
                     })
                     .catch((e) => {
 
                         console.error('Updated!', e)
 
-                        this.projects_setFormMessage(BASIC_ERROR_MESSAGE)
+                        this.users_setFormMessage(getAxiosErrorMessage(e))
 
                     })
                     .then(() => {
-                        this.projects_setFormSaving(false)
+                        this.users_setFormSaving(false)
                     });
 
                 return
             }
 
             // NEW RECORD
-            ProjectsService.Save(pendingRecord)
+            UsersService.Save(pendingRecord)
                 .then((r) => {
 
                     const record = r.data
 
-                    if (debugProjects) {
+                    if (debugUsers) {
                         console.log('add response', r)
                     }
 
 
                     if (record) {
 
-                        let data = [...this.projects.data]
+                        let data = [...this.users.data]
                         data.unshift(record)
 
-                        this.projects.data = data
-                        this.projects.form = projectFormObject();
+                        this.users.data = data
+                        this.users.form = userFormObject();
 
-                        this.projects_setFormMessage('Added!')
+                        this.users_setFormMessage('Added!')
                     }
                     else {
-                        this.projects_setFormMessage(BASIC_ERROR_MESSAGE)
+                        this.users_setFormMessage(BASIC_ERROR_MESSAGE)
                     }
 
                 })
                 .catch((e) => {
-                    this.projects_setFormMessage(getAxiosErrorMessage(e))
+                    this.users_setFormMessage(getAxiosErrorMessage(e))
                 })
                 .then(() => {
-                    this.projects_setFormSaving(false)
+                    this.users_setFormSaving(false)
                 });
 
         }
 
         sendForm()
     },
-    projects_delete: function (idx) {
+    users_delete: function (idx) {
 
         // INDEX VALIDATION
-        if (idx < 0 || idx > this.projects.data.length - 1) {
-            console.warn(`INVALID INDEX ${idx}, TOTAL RECORDS ARE ${this.projects.data.length}`)
+        if (idx < 0 || idx > this.users.data.length - 1) {
+            console.warn(`INVALID INDEX ${idx}, TOTAL RECORDS ARE ${this.users.data.length}`)
             return
         }
 
@@ -326,121 +336,137 @@ const projectsMethods = {
         }
 
         /** @type {Array<ISubject>} */
-        let data = [...this.projects.data];
+        let data = [...this.users.data];
 
         // set deleting
         let record = data[idx];
 
-        this.projects_setProcessing(true)
+        this.users_setProcessing(true)
 
-        ProjectsService.Delete(record.id)
+        UsersService.Delete(record.id)
             .then((r) => {
 
                 const record = r.data
 
-                if (debugProjects) {
+                if (debugUsers) {
                     console.log('delete response', r)
                 }
 
                 if (record) {
 
                     data.splice(idx, 1);
-                    this.projects.data = data
-                    this.projects_getAll(0)
-                    this.projects_setMessage('Subject deleted!')
+                    this.users.data = data
+                    this.users_getAll(0)
+                    this.users_setMessage('Subject deleted!')
                 }
                 else {
-                    this.projects_setMessage(BASIC_ERROR_MESSAGE)
+                    this.users_setMessage(BASIC_ERROR_MESSAGE)
                 }
             })
             .catch((e) => {
 
                 console.error('delete', e)
 
-                this.projects_setMessage(BASIC_ERROR_MESSAGE)
+                this.users_setMessage(BASIC_ERROR_MESSAGE)
 
             })
             .then(() => {
 
-                this.projects_setProcessing(false)
+                this.users_setProcessing(false)
             });
     },
-    projects_getAll: function (page = 0) {
+    users_getAll: function (page = 0) {
 
-        this.projects_setLoading(true)
-        this.projects_setMessage('Loading...')
+        this.users_setLoading(true)
+        this.users_setMessage('Loading...')
 
-        const { keyword, categoryId } = this.projects.filterBy
-        const { length } = this.projects.dataPaging
+        const { keyword } = this.users.filterBy
+        const { length } = this.users.dataPaging
 
-        return ProjectsService.Search(categoryId, keyword, page, length)
+        return UsersService.Search(keyword, page, length)
             .then((r) => {
 
                 /** @type {IClientResponseModel<ISubject>} */
                 const { record, totalCount } = r.data
 
-                if (debugProjects) {
-                    console.log('getall project response', r)
+                if (debugUsers) {
+                    console.log('getall user response', r)
                 }
 
                 if (record) {
-                    this.projects.data = [...record]
-                    this.projects.dataPaging.totalCount = totalCount
+                    this.users.data = [...record]
+                    this.users.dataPaging.totalCount = totalCount
                 }
                 else {
-                    this.projects_setMessage(BASIC_ERROR_MESSAGE)
+                    this.users_setMessage(BASIC_ERROR_MESSAGE)
                 }
             })
             .catch((e) => {
-                console.error('projects getall', e)
-                this.projects_setMessage(BASIC_ERROR_MESSAGE)
+                console.error('users getall', e)
+                this.users_setMessage(BASIC_ERROR_MESSAGE)
             })
             .then(() => {
-                this.projects_setLoading(false)
+                this.users_setLoading(false)
             })
 
     },
-    projects_pageClick: function (pageNum) {
-        this.projects_getAll(pageNum - 1)
+    users_pageClick: function (pageNum) {
+        this.users_getAll(pageNum - 1)
     },
 
 
-    projects_setStatusesLoading: function (isLoading) {
-        this.projects.statuses.isLoading = isLoading
+    users_setStatusesLoading: function (isLoading) {
+        this.users.statuses.isLoading = isLoading
     },
-    projects_getAllStatuses: function () {
+    users_getAllStatuses: function () {
 
-        this.projects_setStatusesLoading(true)
+        this.users_setStatusesLoading(true)
 
-        return ProjectsService.GetProjectStatuses()
+        return UsersService.GetUserStatuses()
             .then((r) => {
 
                 /** @type {IClientResponseModel<ISubject>} */
                 const record = r.data
 
-                if (debugProjects) {
-                    console.log('getall project response', r)
+                if (debugUsers) {
+                    console.log('getall user response', r)
                 }
 
                 if (record) {
-                    this.projects.statuses.data = [...record]
+                    this.users.statuses.data = [...record]
                 }
                 else {
-                    this.projects_setMessage(BASIC_ERROR_MESSAGE)
+                    this.users_setMessage(BASIC_ERROR_MESSAGE)
                 }
             })
             .catch((e) => {
-                console.error('projects getall', e)
-                this.projects_setMessage(getAxiosErrorMessage(e))
+                console.error('users getall', e)
+                this.users_setMessage(getAxiosErrorMessage(e))
             })
             .then(() => {
-                this.projects_setStatusesLoading(false)
+                this.users_setStatusesLoading(false)
             })
 
     },
 }
 
-const categoryObject = () => {
+const supervisorFormObject = (userId = null, teamIds = []) => {
+
+    let record = {
+        userId,
+        teamIds
+    }
+
+    return {
+        record,
+        message: '',
+        image: null,
+        isLoading: false,
+        isSaving: false,
+    }
+}
+
+const supervisorObject = () => {
     return {
         data: [],
         dataPaging: {
@@ -452,122 +478,152 @@ const categoryObject = () => {
             prev: 'Prev',
             next: 'Next',
         },
+        form: supervisorFormObject(),
         isLoading: false,
         isProcessing: false,
         message: '',
     }
 }
 
-const categoriesMethods = {
-    categories_setLoading: function (isLoading) {
-        this.categories.isLoading = isLoading
-    },
-    categories_setMessage: function (message) {
-        this.categories.message = message
-    },
-    categories_getAll: function (page = 0) {
+const supervisorsMethods = {
+    supervisors_setFormMessage: function (message) {
 
-        this.categories_setLoading(true)
-        this.categories_setMessage('Loading...')
+        this.supervisors.form.message = message
+    },
+    supervisors_setFormLoading: function (isLoading) {
+        this.supervisors.form.isLoading = isLoading
+    },
+    supervisors_setFormSaving: function (isSaving) {
+        this.supervisors.form.isSaving = isSaving
+    },
+    supervisors_edit: function (userId) {
 
-        return CategoriesService.GetAll()
+        // OPEN MODAL
+        Modals_Teams.Supervisors.Show();
+        this.supervisors.form.isLoading = true
+
+        this.supervisors_setFormLoading(true)
+        this.supervisors_setFormMessage('Loading...');
+
+        this.supervisors_getAll(userId)
+
+        // GET REQUEST
+        TeamsService.GetAllExecludingSupervising(userId)
+            .then(r => {
+
+                const record = r.data
+
+                if (!record) {
+                    this.supervisors_setFormMessage(BASIC_ERROR_MESSAGE);
+                    return
+                }
+
+                this.supervisors_setFormMessage('');
+
+                this.supervisors.form = supervisorFormObject(teamId, record);
+
+            })
+            .catch(e => {
+
+                console.error('get error', e)
+
+                this.supervisors_setFormMessage(BASIC_ERROR_MESSAGE);
+            })
+            .then(() => {
+                this.supervisors_setFormLoading(false)
+            })
+    },
+    supervisors_save: function () {
+
+        this.supervisors_setFormMessage('');
+
+        let pendingRecord = { ...this.supervisors.form.record }
+
+        // START UPDATE/CREATE REQUEST
+        this.supervisors_setFormSaving(true)
+
+        // UPDATE
+        TeamsService.AddRemoveTeamsUsers(pendingRecord)
+            .then((r) => {
+
+                const record = r.data
+
+                if (record) {
+
+                    // update members count (teams)
+                    let data = [...this.teams.data]
+
+                    let teamToUpdate = data.find(k => k.id === pendingRecord.teamId)
+
+                    teamToUpdate.membersCount = pendingRecord.userIds.length
+
+                    this.teams.data = data
+
+                    // saved feeback (supervisors)
+                    this.supervisors_setFormMessage('Saved!')
+                }
+                else {
+                    this.supervisors_setFormMessage(BASIC_ERROR_MESSAGE)
+                }
+
+            })
+            .catch((e) => {
+                console.error('save team supervisors', e)
+                this.supervisors_setFormMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.supervisors_setFormSaving(false)
+            });
+    },
+    supervisors_setLoading: function (isLoading) {
+        this.supervisors.isLoading = isLoading
+    },
+    supervisors_setMessage: function (message) {
+        this.supervisors.message = message
+    },
+    supervisors_getAll: function (userId) {
+
+        this.supervisors_setLoading(true)
+        this.supervisors_setMessage('Loading...')
+        this.supervisors.data = []
+
+        return TeamsService.GetAllExecludingSupervising(userId)
             .then((r) => {
 
                 /** @type {IClientResponseModel<ISubject>} */
                 const record = r.data
 
                 if (record) {
-                    this.categories.data = [...record]
-                    //this.categories.dataPaging.totalCount = extraData.totalCount
+                    this.supervisors.data = [...record]
                 }
                 else {
-                    this.categories_setMessage(BASIC_ERROR_MESSAGE)
+                    this.supervisors_setMessage(BASIC_ERROR_MESSAGE)
                 }
             })
             .catch((e) => {
-                console.error('categories getall', e)
-                this.categories_setMessage(BASIC_ERROR_MESSAGE)
+                console.error('supervisors getall', e)
+                this.supervisors_setMessage(BASIC_ERROR_MESSAGE)
             })
             .then(() => {
-                this.categories_setLoading(false)
+                this.supervisors_setLoading(false)
             })
     },
 }
 
-const teamObject = () => {
-    return {
-        data: [],
-        dataPaging: {
-            page: 0,
-            totalPages: 0,
-            length: 5,
-            totalCount: 0,
-            pagination: 'custom-pagination',
-            prev: 'Prev',
-            next: 'Next',
-        },
-        isLoading: false,
-        isProcessing: false,
-        message: '',
-    }
-}
-
-const teamsMethods = {
-    teams_setLoading: function (isLoading) {
-        this.teams.isLoading = isLoading
-    },
-    teams_setMessage: function (message) {
-        this.teams.message = message
-    },
-    teams_getAll: function (page = 0) {
-
-        this.teams_setLoading(true)
-        this.teams_setMessage('Loading...')
-
-        return TeamsService.GetAll()
-            .then((r) => {
-
-                /** @type {IClientResponseModel<ISubject>} */
-                const record = r.data
-
-                //if (debugTeams) {
-                //    console.log('getall team response', r)
-                //}
-
-                if (record) {
-                    this.teams.data = [...record]
-                    //this.teams.dataPaging.totalCount = extraData.totalCount
-                }
-                else {
-                    this.teams_setMessage(BASIC_ERROR_MESSAGE)
-                }
-            })
-            .catch((e) => {
-                console.error('teams getall', e)
-                this.teams_setMessage(BASIC_ERROR_MESSAGE)
-            })
-            .then(() => {
-                this.teams_setLoading(false)
-            })
-
-    },
-}
-
-var projects_app = new Vue({
-    el: "#Projects",
+var users_app = new Vue({
+    el: "#Users",
     data: {
         dateOptions,
         dateTimeOptions,
-        categories: categoryObject(),
-        projects: projectObject(),
-        teams: teamObject(),
+        users: userObject(),
+        supervisors: supervisorObject(),
         errors: '',
         oNull: null,
     },
     computed: {
-        projectsTotalPages: function () {
-            const totalCount = this.projects.dataPaging.totalCount
-            const length = this.projects.dataPaging.length
+        usersTotalPages: function () {
+            const totalCount = this.users.dataPaging.totalCount
+            const length = this.users.dataPaging.length
 
             const totalPages = Math.ceil(totalCount / length);
 
@@ -585,15 +641,12 @@ var projects_app = new Vue({
         },
     },
     methods: {
-        ...projectsMethods,
-        ...categoriesMethods,
-        ...teamsMethods,
+        ...usersMethods,
+        ...supervisorsMethods,
     },
     mounted: function () {
-        this.projects_getAll()
-        this.categories_getAll()
-        this.teams_getAll()
-        this.projects_getAllStatuses()
+        this.users_getAll()
+        //this.supervisors_getAll()
     }
 })
 

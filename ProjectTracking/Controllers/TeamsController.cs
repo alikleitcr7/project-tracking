@@ -39,6 +39,12 @@ namespace ProjectTracking.Controllers
             return Json(_teamsMethods.GetTeamUsers(teamId));
         }
 
+        [HttpGet]
+        public JsonResult GetAllExecludingSupervising(string userId)
+        {
+            return Json(_teamsMethods.GetAllExecludingSupervising(userId));
+        }
+
         public class AddRemoveTeamsUsersParam
         {
             public int teamId { get; set; }

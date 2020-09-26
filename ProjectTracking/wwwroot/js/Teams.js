@@ -368,7 +368,7 @@ const teamsMethods = {
 }
 
 
-const userFormObject = (teamId = null, userIds = []) => {
+const teamUserFormObject = (teamId = null, userIds = []) => {
 
     let record = {
         teamId,
@@ -384,37 +384,37 @@ const userFormObject = (teamId = null, userIds = []) => {
     }
 }
 
-const userObject = () => {
+const teamUserObject = () => {
     return {
         data: [],
         isLoading: false,
         isProcessing: false,
-        form: userFormObject(),
+        form: teamUserFormObject(),
         message: '',
     }
 }
 
-const usersMethods = {
-    users_setFormMessage: function (message) {
+const teamUsersMethods = {
+    teamUsers_setFormMessage: function (message) {
 
-        this.users.form.message = message
+        this.teamUsers.form.message = message
     },
-    users_setFormLoading: function (isLoading) {
-        this.users.form.isLoading = isLoading
+    teamUsers_setFormLoading: function (isLoading) {
+        this.teamUsers.form.isLoading = isLoading
     },
-    users_setFormSaving: function (isSaving) {
-        this.users.form.isSaving = isSaving
+    teamUsers_setFormSaving: function (isSaving) {
+        this.teamUsers.form.isSaving = isSaving
     },
-    users_edit: function (teamId) {
+    teamUsers_edit: function (teamId) {
 
         // OPEN MODAL
         Modals_Teams.TeamUsers.Show();
-        this.users.form.isLoading = true
+        this.teamUsers.form.isLoading = true
 
-        this.users_setFormLoading(true)
-        this.users_setFormMessage('Loading...');
+        this.teamUsers_setFormLoading(true)
+        this.teamUsers_setFormMessage('Loading...');
 
-        this.users_getAll(teamId)
+        this.teamUsers_getAll(teamId)
 
         // GET REQUEST
         TeamsService.GetTeamUsers(teamId)
@@ -423,33 +423,33 @@ const usersMethods = {
                 const record = r.data
 
                 if (!record) {
-                    this.users_setFormMessage(BASIC_ERROR_MESSAGE);
+                    this.teamUsers_setFormMessage(BASIC_ERROR_MESSAGE);
                     return
                 }
 
-                this.users_setFormMessage('');
+                this.teamUsers_setFormMessage('');
 
-                this.users.form = userFormObject(teamId, record);
+                this.teamUsers.form = teamUserFormObject(teamId, record);
 
             })
             .catch(e => {
 
                 console.error('get error', e)
 
-                this.users_setFormMessage(BASIC_ERROR_MESSAGE);
+                this.teamUsers_setFormMessage(BASIC_ERROR_MESSAGE);
             })
             .then(() => {
-                this.users_setFormLoading(false)
+                this.teamUsers_setFormLoading(false)
             })
     },
-    users_save: function () {
+    teamUsers_save: function () {
 
-        this.users_setFormMessage('');
+        this.teamUsers_setFormMessage('');
 
-        let pendingRecord = { ...this.users.form.record }
+        let pendingRecord = { ...this.teamUsers.form.record }
 
         // START UPDATE/CREATE REQUEST
-        this.users_setFormSaving(true)
+        this.teamUsers_setFormSaving(true)
 
         // UPDATE
         TeamsService.AddRemoveTeamsUsers(pendingRecord)
@@ -468,32 +468,34 @@ const usersMethods = {
 
                     this.teams.data = data
 
-                    // saved feeback (users)
-                    this.users_setFormMessage('Saved!')
+                    // saved feeback (teamUsers)
+                    this.teamUsers_setFormMessage('Saved!')
                 }
                 else {
-                    this.users_setFormMessage(BASIC_ERROR_MESSAGE)
+                    this.teamUsers_setFormMessage(BASIC_ERROR_MESSAGE)
                 }
 
             })
             .catch((e) => {
-                console.error('save team users', e)
-                this.users_setFormMessage(getAxiosErrorMessage(e))
+                console.error('save team teamUsers', e)
+                this.teamUsers_setFormMessage(getAxiosErrorMessage(e))
             })
             .then(() => {
-                this.users_setFormSaving(false)
+                this.teamUsers_setFormSaving(false)
             });
     },
-    users_setLoading: function (isLoading) {
-        this.users.isLoading = isLoading
+    teamUsers_setLoading: function (isLoading) {
+        this.teamUsers.isLoading = isLoading
     },
-    users_setMessage: function (message) {
-        this.users.message = message
+    teamUsers_setMessage: function (message) {
+        this.teamUsers.message = message
     },
-    users_getAll: function (teamId) {
+    teamUsers_getAll: function (teamId) {
 
-        this.users_setLoading(true)
-        this.users_setMessage('Loading...')
+        this.teamUsers_setLoading(true)
+        this.teamUsers_setMessage('Loading...')
+
+        this.teamUsers.data = []
 
         return AdminsService.GetAllUsersExecludeTeamSupervisors(teamId)
             .then((r) => {
@@ -501,18 +503,18 @@ const usersMethods = {
                 const record = r.data
 
                 if (record) {
-                    this.users.data = [...record]
+                    this.teamUsers.data = [...record]
                 }
                 else {
-                    this.users_setMessage(BASIC_ERROR_MESSAGE)
+                    this.teamUsers_setMessage(BASIC_ERROR_MESSAGE)
                 }
             })
             .catch((e) => {
-                console.error('users getall', e)
-                this.users_setMessage(getAxiosErrorMessage(e))
+                console.error('teamUsers getall', e)
+                this.teamUsers_setMessage(getAxiosErrorMessage(e))
             })
             .then(() => {
-                this.users_setLoading(false)
+                this.teamUsers_setLoading(false)
             })
     },
 }
@@ -525,7 +527,7 @@ var teams_app = new Vue({
         dateTimeOptions,
 
         teams: teamObject(),
-        users: userObject(),
+        teamUsers: teamUserObject(),
     },
     computed: {
         teamsTotalPages: function () {
@@ -542,7 +544,7 @@ var teams_app = new Vue({
     },
     methods: {
         ...teamsMethods,
-        ...usersMethods
+        ...teamUsersMethods
     },
     mounted: function () {
 

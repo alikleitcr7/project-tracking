@@ -40,10 +40,10 @@ namespace ProjectTracking.Services
                 client.UseDefaultCredentials = false;
                 client.Credentials = new NetworkCredential(_emailSettings.SenderEmail, _emailSettings.Password);
 
-                ServicePointManager.ServerCertificateValidationCallback =
-            delegate (object sender, X509Certificate certificate, X509Chain chain,
-           SslPolicyErrors sslPolicyErrors)
-            { return true; };
+           //     ServicePointManager.ServerCertificateValidationCallback =
+           // delegate (object sender, X509Certificate certificate, X509Chain chain,
+           //SslPolicyErrors sslPolicyErrors)
+           // { return true; };
 
                 var mailMessage = new MailMessage(_emailSettings.SenderEmail, email)
                 {

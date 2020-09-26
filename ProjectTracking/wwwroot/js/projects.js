@@ -519,7 +519,7 @@ const teamsMethods = {
     teams_setMessage: function (message) {
         this.teams.message = message
     },
-    teams_getAll: function (page = 0) {
+    teams_getAll: function (teamId) {
 
         this.teams_setLoading(true)
         this.teams_setMessage('Loading...')
@@ -549,7 +549,6 @@ const teamsMethods = {
             .then(() => {
                 this.teams_setLoading(false)
             })
-
     },
 }
 

@@ -26,6 +26,14 @@ const TeamsService = {
 
         return axios.get(url);
     },
+    GetAllExecludingSupervising: function (userId) {
+
+        const query = serialize({ userId })
+
+        const url = TEAMS_SERVICE_URI(`GetAllExecludingSupervising?${query}`)
+
+        return axios.get(url);
+    },
     GetTeamUsers: function (teamId) {
 
         const url = TEAMS_SERVICE_URI(`GetTeamUsers?teamId=${teamId}`)

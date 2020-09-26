@@ -11,6 +11,10 @@ using System.Data.SqlClient;
 using ProjectTracking.Data.DataAccess;
 using Microsoft.Extensions.Configuration;
 using ProjectTracking.AppStart;
+using ProjectTracking.Models.Users;
+using ProjectTracking.Exceptions;
+using System.ComponentModel.DataAnnotations;
+using ProjectTracking.Utils;
 
 namespace ProjectTracking.Data.Methods
 {
@@ -20,7 +24,10 @@ namespace ProjectTracking.Data.Methods
         private readonly IMapper _mapper;
         private readonly IDataAccess dataAccess;
 
-        public UsersMethods(IMapper mapper, IConfiguration config, IDataAccess dataAccess)
+        private readonly IValidationExtensions _validation;
+
+
+        public UsersMethods(IMapper mapper, IConfiguration config, IDataAccess dataAccess, IValidationExtensions validation)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             optionsBuilder.UseSqlServer(Setting.ConnectionString);
@@ -28,13 +35,114 @@ namespace ProjectTracking.Data.Methods
             //db = dbContext;
             _mapper = mapper;
             this.dataAccess = dataAccess;
+            _validation = validation;
         }
+
+        public User Save(UserSaveModel model)
+        {
+            ICollection<ValidationResult> results;
+
+            if (!_validation.ValidateAnnotations(model, out results))
+            {
+                throw new ClientException(string.Join(", ", results.Select(k => k.ErrorMessage)));
+            }
+
+            // check if title already exist under the selected category
+            bool emailExist = db.Users.Any(k => k.Email == model.email && k.Id != model.id);
+
+            if (emailExist)
+            {
+                throw new ClientException($"email already exist!");
+            }
+
+            if (model.id != null) 
+            {
+                // save user
+
+                // get user
+
+                var dbUser = db.Users.FirstOrDefault(k => k.Id == model.id);
+
+                if (dbUser == null)
+                {
+                    throw new ClientException("record not found");
+                }
+
+                dbUser.Email = model.email;
+                dbUser.NormalizedEmail = model.email.ToUpper();
+                dbUser.UserName = model.email;
+                dbUser.NormalizedUserName = model.email.ToUpper();
+                dbUser.FirstName = model.firstName;
+                dbUser.LastName = model.lastName;
+
+                db.SaveChanges();
+
+                return _mapper.Map<User>(dbUser);
+            }
+            else
+            {
+                throw new Exception("id not provided");
+            }
+        }
+
+        public List<User> Search(string keyword, int page, int countPerPage, out int totalCount)
+        {
+            IQueryable<ApplicationUser> query = db.Users;
+
+
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                query = query.Where(k => k.FirstName.Contains(keyword) || k.LastName.Contains(keyword) || k.Email.Contains(keyword));
+            }
+
+            totalCount = query.Count();
+
+            return query.Skip(page * countPerPage)
+                .Take(countPerPage)
+                .ToList()
+                .Select(_mapper.Map<User>)
+                .ToList();
+        }
+
+        public void Delete(string id)
+        {
+            //DataSets.User dbUser = new DataSets.User() { ID = id };
+
+            var dbUser = db.Users.FirstOrDefault(k => k.Id == id);
+
+            if (dbUser == null)
+            {
+                throw new ClientException("record not found or was already deleted");
+            }
+
+            // clear logs
+            db.UserLogging.RemoveRange(db.UserLogging.Where(k => k.UserId == id));
+            // clear supervisor
+            db.Supervisers.RemoveRange(db.Supervisers.Where(k => k.UserId == id));
+
+            // clear timesheets
+            db.TimeSheets.RemoveRange(db.TimeSheets.Where(k => k.UserId == id));
+
+            // clear notifications (from or to)
+            db.Notifications.RemoveRange(db.Notifications.Where(k => k.FromUserId == id || k.ToUserId == id));
+
+            db.Users.Remove(dbUser);
+
+            db.SaveChanges();
+        }
+
+        public User GetById(string id)
+        {
+            var record = db.Users.FirstOrDefault(k => k.Id == id);
+
+            return record != null ? _mapper.Map<User>(record) : null;
+        }
+
 
         public List<IdentityRole<string>> GetAllRoles()
         {
             return db.Roles.ToList();
         }
-
 
         public List<KeyValuePair<string, string>> GetAllUsersKeyValues()
         {
@@ -46,7 +154,6 @@ namespace ProjectTracking.Data.Methods
             // users that ARE NOT SUPERVISING the TEAM
             return db.Users.Where(k => !k.Supervising.Any(s => s.TeamId == teamId)).ToList().Select(k => new KeyValuePair<string, string>(k.Id, k.FirstName + " " + k.LastName + $" ({k.UserName})")).ToList();
         }
-
 
         public UserLog AddStartLog(string userId, string ipAddress, string comments = null)
         {

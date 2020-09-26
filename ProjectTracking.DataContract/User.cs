@@ -34,6 +34,13 @@ namespace ProjectTracking.DataContract
                 return Department == null ? "-" : Department.Name;
             }
         }
+        public string DateOfBirthDisplay
+        {
+            get
+            {
+                return DateOfBirth.ToString("dd/MM/yyyy");
+            }
+        }
         public Category Company { get; set; }
         public string CompanyDisplay
         {
