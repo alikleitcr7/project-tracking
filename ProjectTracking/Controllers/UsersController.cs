@@ -27,6 +27,19 @@ namespace ProjectTracking.Controllers
             _roleManager = roleManager;
         }
 
+        [Route("/profile/{userId}")]
+        public IActionResult Profile(string userId)
+        {
+            DataContract.User user = _usersMethods.GetById(userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
         [HttpGet]
         public IActionResult GetById(string id)
         {
@@ -214,5 +227,10 @@ namespace ProjectTracking.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult GetEmploymentTypes()
+        {
+            return Ok(Enum.GetNames(typeof(EmploymentType)).Select((key, value) => new KeyValuePair<int, string>(value, key)).ToList());
+        }
     }
 }

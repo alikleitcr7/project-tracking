@@ -49,6 +49,7 @@ const dateTimeOptions = {
 
 }
 
+
 var dtOptions = {
     pageLength: 20,
     paging: true,
@@ -202,10 +203,38 @@ class CoreValidator {
 
         console.log({ value, min, max, isRequired })
 
-        const valid_criteria_1 = isRequired ? this.hasValue(value) : true
-        const valid_criteria_2 = this.hasValue(value) && !isNaN(value) && value >= min && (this.hasValue(max) ? value <= max : true)
+        if (isNaN(value)) {
+            return false
+        }
 
-        return valid_criteria_1 || valid_criteria_2
+        if (isRequired) {
+
+            // check min max
+            if (this.hasValue(min) && this.hasValue(max)) {
+                return value >= min && value <= max
+            }
+
+            // check min 
+            if (this.hasValue(min)) {
+                return value >= min && value <= max
+            }
+
+            // check max
+            if (this.hasValue(max)) {
+                return value >= min && value <= max
+            }
+
+            // any nb allowed
+            return true
+        }
+
+        // not required?
+        return true;
+
+        //const valid_criteria_1 = isRequired ? this.hasValue(value) : true
+        //const valid_criteria_2 = this.hasValue(value) && !isNaN(value) && value >= min && (this.hasValue(max) ? value <= max : true)
+
+        //return valid_criteria_1 || valid_criteria_2
     }
 
     object() {
@@ -243,8 +272,7 @@ class CoreValidator {
         return validateEmail(this.value)
     }
 
-    hasValue() {
-        const { value } = this
+    hasValue(value) {
 
         return !(value === undefined || value === null)
     }
@@ -261,7 +289,6 @@ class CoreValidator {
         if (isRequired) {
             finalText += ' is required'
         }
-
 
         if (min_hasValue && max_hasValue) {
             switch (dataType) {
@@ -281,7 +308,17 @@ class CoreValidator {
                     break
             }
         }
+        else {
 
+            const requiredPrefix = isRequired ? ' and ' : ' '
+
+            switch (dataType) {
+                case DATA_TYPES.NUMBER:
+                    finalText += `${requiredPrefix}should be a number`
+                default:
+                    break
+            }
+        }
 
         return finalText
 
@@ -473,6 +510,41 @@ $.notify.addStyle('shared-notification', {
 const notify = (message) => {
     $.notify(message, { style: 'shared-notification', className: 'base', position: 'top right' });
 }
+//#endregion 
+
+//#region bootbox
+
+const bootboxExtension = {
+    confirmDeletion: (title, message, cancelCallBack, okCallBack) => {
+        bootbox.dialog({
+            title,
+            message,
+            size:'sm',
+            className: `bootbox-danger`,
+            buttons: {
+                cancel: {
+                    label: "Cancel",
+                    className: 'btn-default',
+                    callback: () => {
+                        if (cancelCallBack) {
+                            cancelCallBack();
+                        }
+                    }
+                },
+                ok: {
+                    label: "Delete",
+                    className: 'btn-danger',
+                    callback: () => {
+                        if (okCallBack) {
+                            okCallBack();
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
 //#endregion 
 
 //#region Shared Requests (Requires Axios)

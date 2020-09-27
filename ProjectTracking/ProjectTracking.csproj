@@ -166,6 +166,9 @@
     <Content Update="Views\Admin\Forms\UsersForm.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Error\Index.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Projects\Index2 - Copy.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

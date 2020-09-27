@@ -49,7 +49,7 @@ namespace ProjectTracking.Data.Methods
 
             team.ID = savedRecord.Entity.ID;
 
-            return team;
+            return GetById(savedRecord.Entity.ID);
         }
 
         public Team Update(Team team)
@@ -70,7 +70,7 @@ namespace ProjectTracking.Data.Methods
 
             _context.SaveChanges();
 
-            return _mapper.Map<Team>(dbRecord);
+            return GetById(dbRecord.ID);
         }
 
         public async Task AddRemoveTeamsUsers(int teamId, List<string> userIds)
@@ -151,9 +151,17 @@ namespace ProjectTracking.Data.Methods
 
         public Team GetById(int id)
         {
-            var dbTeam = _context.Teams.FirstOrDefault(k => k.ID == id);
+            var dbTeam = _context.Teams.Include(k => k.Members).FirstOrDefault(k => k.ID == id);
 
-            return dbTeam != null ? _mapper.Map<Team>(dbTeam) : null;
+            if (dbTeam == null)
+            {
+                return null;
+            }
+
+            Team pendingRecord = _mapper.Map<Team>(dbTeam);
+            pendingRecord.MembersCount = dbTeam.Members.Count;
+
+            return pendingRecord;
         }
 
         public List<string> GetTeamUsers(int teamId)

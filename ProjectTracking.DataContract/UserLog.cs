@@ -17,18 +17,19 @@ namespace ProjectTracking.DataContract
         public string Comments { get; set; }
         public string FullName { get; set; }
         public string UserName { get; set; }
+
         public string DisplayFromDate
         {
             get
             {
-                return FromDate.ToString("dd-MM-yyyy HH:MM:ss");
+                return FromDate.ToString("dd-MM-yyyy HH:mm:ss");
             }
         }
         public string DisplayToDate
         {
             get
             {
-                return !ToDate.HasValue ? "-" : ToDate.Value.ToString("dd-MM-yyyy HH:MM:ss");
+                return !ToDate.HasValue ? "-" : ToDate.Value.ToString("dd-MM-yyyy HH:mm:ss");
             }
         }
 

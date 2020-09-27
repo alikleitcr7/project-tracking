@@ -1,0 +1,31 @@
+﻿
+@model int
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="v-container error-container">
+
+    @if (Model == 404)
+    {
+        <h1 class="h1">404 Page Not Found!  <i class="far fa-meh-blank"></i> </h1>
+    }
+    else if (Model == 401)
+    {
+        <h1 class="h1">You are not authorized to get here!  <i class="far fa-grimace"></i> </h1>
+    }
+    else
+    {
+        <h1 class="h1">Something went wrong <i class="fa fa-sad-tear"></i> </h1>
+    }
+
+</div>
+
+@section styles{
+
+    <style>
+        .error-container {
+
+        }
+    </style>
+}

@@ -10,8 +10,8 @@ namespace ProjectTracking.Models.Users
     {
         public string id { get; set; }
 
-        [Required(ErrorMessage ="email is required")]
-        [DataType(DataType.EmailAddress,ErrorMessage = "not an email")]
+        [Required(ErrorMessage = "email is required")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "not an email")]
         [EmailAddress(ErrorMessage = "not an email")]
         public string email { get; set; }
 
@@ -20,5 +20,15 @@ namespace ProjectTracking.Models.Users
 
         [Required(ErrorMessage = "last name is requierd")]
         public string lastName { get; set; }
+
+        public string middleName { get; set; }
+
+        [Required(ErrorMessage = "title name is requierd")]
+        public string title { get; set; }
+
+        public float? monthlySalary { get; set; }
+        public float? hourlyRate { get; set; }
+        public float? hoursPerDay { get; set; }
+        public short? employmentTypeCode { get; set; }
     }
 }

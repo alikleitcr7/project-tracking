@@ -7,6 +7,33 @@ a {
     font-family: 'Arial';
 }
 
+.bootbox-danger {
+    .modal-header{
+        border-bottom:3px solid @color-danger;
+    }
+    .modal-footer{
+        border-top:none;
+    }
+}
+
+.bootbox-info {
+    .modal-header{
+        border-bottom:3px solid @gray;
+    }
+    .modal-footer{
+        border-top:none;
+    }
+}
+
+.bootbox-default {
+    .modal-header{
+        border-bottom:3px solid @main-color;
+    }
+    .modal-footer{
+        border-top:none;
+    }
+}
+
 .s-btn-group {
     display: flex;
 
@@ -15,6 +42,29 @@ a {
     }
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    > li > a {
+        color: @main-dark;
+        cursor: pointer;
+
+        &:hover {
+            color: @main-xdark;
+            cursor: pointer;
+        }
+
+        &.dropdown-item-danger {
+            color: @color-danger;
+
+            &:hover {
+                color: @color-danger-dark;
+            }
+        }
+    }
+}
 
 .input-group-container {
     display: flex;
@@ -46,7 +96,7 @@ a {
     -ms-user-select: none;
     -webkit-user-select: none;
     user-select: none;
-    display:inline-block;
+    display: inline-block;
     text-align: center;
 
     &:disabled {
@@ -104,7 +154,8 @@ a {
 
 
 .s-table-controls {
-    margin:.5em 0;
+    margin: .5em 0;
+
     tr td {
         padding: 5px 5px 5px 0;
     }
@@ -389,7 +440,7 @@ body {
     &:not(.is-logon) {
 
         &:not(.sidebar-collapsed) {
-            padding-left: calc(@sidebar-width + 10px);
+            padding-left: calc(@sidebar-width + 30px);
 
             .side-bar {
                 width: @sidebar-width;
@@ -407,7 +458,7 @@ body {
         }
 
         &.sidebar-collapsed {
-            padding-left: @sidebar-width-sm + 10px;
+            padding-left: @sidebar-width-sm + 30px;
 
             .side-bar {
                 width: @sidebar-width-sm;

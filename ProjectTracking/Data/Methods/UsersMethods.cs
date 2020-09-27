@@ -75,10 +75,15 @@ namespace ProjectTracking.Data.Methods
                 dbUser.NormalizedUserName = model.email.ToUpper();
                 dbUser.FirstName = model.firstName;
                 dbUser.LastName = model.lastName;
+                dbUser.MiddleName = model.middleName;
+                dbUser.Title = model.title;
+                dbUser.EmploymentTypeCode = model.employmentTypeCode;
+                dbUser.MonthlySalary = model.monthlySalary;
+                dbUser.HourlyRate = model.hourlyRate;
 
                 db.SaveChanges();
 
-                return _mapper.Map<User>(dbUser);
+                return GetById(dbUser.Id);
             }
             else
             {
@@ -92,12 +97,17 @@ namespace ProjectTracking.Data.Methods
             {
                 Id = k.Id,
                 FirstName = k.FirstName,
+                MiddleName = k.MiddleName,
                 LastName = k.LastName,
+                Title = k.Title,
                 Email = k.Email,
                 //Role = k.Roles.FirstOrDefault().RoleId,
                 DateOfBirth = k.DateOfBirth,
                 UserName = k.UserName,
-                SupervisingCount = k.Supervising.Count()
+                SupervisingCount = k.Supervising.Count(),
+                EmploymentTypeCode = k.EmploymentTypeCode,
+                MonthlySalary = k.MonthlySalary,
+                HourlyRate = k.HourlyRate
             });
 
 
@@ -142,9 +152,17 @@ namespace ProjectTracking.Data.Methods
 
         public User GetById(string id)
         {
-            var record = db.Users.FirstOrDefault(k => k.Id == id);
+            var record = db.Users.Include(k => k.Supervising).FirstOrDefault(k => k.Id == id);
 
-            return record != null ? _mapper.Map<User>(record) : null;
+            if (record == null)
+            {
+                return null;
+            }
+
+            User parsedRecord = _mapper.Map<User>(record);
+            parsedRecord.SupervisingCount = record.Supervising.Count;
+
+            return parsedRecord;
         }
 
         public void AddRemoveTeamsFromSupervisor(string userId, List<int> teamIds)
@@ -175,8 +193,6 @@ namespace ProjectTracking.Data.Methods
             db.SaveChanges();
         }
 
-
-
         public List<IdentityRole<string>> GetAllRoles()
         {
             return db.Roles.ToList();
@@ -190,7 +206,7 @@ namespace ProjectTracking.Data.Methods
         public List<KeyValuePair<string, string>> GetAllUsersExecludeTeamSupervisors(int teamId)
         {
             // users that ARE NOT SUPERVISING the TEAM
-            return db.Users.Where(k => !k.Supervising.Any(s => s.TeamId == teamId)).ToList().Select(k => new KeyValuePair<string, string>(k.Id, k.FirstName + " " + k.LastName + $" ({k.UserName})")).ToList();
+            return db.Users.Where(k => k.UserName != "admin" && !k.Supervising.Any(s => s.TeamId == teamId)).ToList().Select(k => new KeyValuePair<string, string>(k.Id, k.FirstName + " " + k.LastName + $" ({k.UserName})")).ToList();
         }
 
         public UserLog AddStartLog(string userId, string ipAddress, string comments = null)

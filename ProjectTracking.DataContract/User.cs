@@ -17,6 +17,7 @@ namespace ProjectTracking.DataContract
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MiddleName { get; set; }
+        public string Title { get; set; }
         //public string Role { get; set; }
 
         public string FullName
@@ -52,13 +53,29 @@ namespace ProjectTracking.DataContract
         }
         public List<TimeSheet> TimeSheets { get; set; }
         //public List<RequestedPermission> RequestedPermissions { get; set; }
-        public List<User> Supervisors { get; set; }
-        public List<User> Supervising { get; set; }
-        public int MonthlySalary { get; set; }
-        public int HourlyRate { get; set; }
-        public int HoursPerDay { get; set; }
-        public EmploymentType? AgreementType { get; set; }
+        //public List<Supervising> Supervisors { get; set; }
+        //public List<User> Supervising { get; set; }
 
+        public float? MonthlySalary { get; set; }
+        public float? HourlyRate { get; set; }
+        public float? HoursPerDay { get; set; }
+        public short? EmploymentTypeCode { get; set; }
+
+        public EmploymentType? EmploymentType
+        {
+            get
+            {
+                return EmploymentTypeCode.HasValue ? (EmploymentType?)EmploymentTypeCode.Value : null;
+            }
+        }
+
+        public string EmploymentTypeDisplay
+        {
+            get
+            {
+                return EmploymentType.HasValue ? EmploymentType.Value.ToString() : null;
+            }
+        }
 
         public int? SupervisingCount { get; set; }
     }

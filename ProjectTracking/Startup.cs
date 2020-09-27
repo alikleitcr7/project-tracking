@@ -190,22 +190,20 @@ namespace ProjectTracking
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime lifetime, UserManager<ApplicationUser> userManager)
         {
-
-
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+                app.UseStatusCodePages();
+                app.UseStatusCodePagesWithReExecute("/error", "?statusCode={0}");
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
 
             //lifetime
-
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

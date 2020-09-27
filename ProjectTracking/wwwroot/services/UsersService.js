@@ -34,6 +34,12 @@ const UsersService = {
 
         return axios.get(url);
     },
+    GetEmploymentTypes : function () {
+
+        const url = USERS_SERVICE_URI(`GetEmploymentTypes`)
+
+        return axios.get(url);
+    },
     AddRemoveTeamsFromSupervisor: function (model) {
 
         const url = USERS_SERVICE_URI(`AddRemoveTeamsFromSupervisor`)

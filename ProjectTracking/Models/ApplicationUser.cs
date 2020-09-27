@@ -10,6 +10,7 @@ namespace ProjectTracking
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string MiddleName { get; set; }
+        public string Title { get; set; }
 
         public DateTime DateOfBirth { get; set; }
 
@@ -20,8 +21,8 @@ namespace ProjectTracking
         public bool? IsTracked { get; set; }
         public float? MonthlySalary { get; set; }
         public float? HourlyRate { get; set; }
-        public float? HoursPerDay { get; set; }
-        public short? AgreementType { get; set; }
+        public float? HoursPerDay { get; set; } // to be removed
+        public short? EmploymentTypeCode { get; set; }
 
         //public virtual List<Superviser> Supervisors { get; set; }
         public List<Superviser> Supervising { get; set; }

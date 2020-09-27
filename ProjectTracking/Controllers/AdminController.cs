@@ -35,7 +35,8 @@ namespace ProjectTracking.Controllers
         }
 
 
-        public IActionResult UserManagement()
+        [Route("/manage")]
+        public IActionResult Manage()
         {
             //UserManagerViewModel _userManagerViewModel = new UserManagerViewModel();
             //_userManagerViewModel._departmentDto = _departmentDto.GetAll();
@@ -126,7 +127,7 @@ namespace ProjectTracking.Controllers
                 //TeamId = addUserViewModel.TeamId,
                 HourlyRate = addUserViewModel.HourlyRate,
                 MonthlySalary = addUserViewModel.MonthlySalary,
-                AgreementType = addUserViewModel.AgreementType.HasValue ? (short?)addUserViewModel.AgreementType.Value : null,
+                EmploymentTypeCode = addUserViewModel.AgreementType.HasValue ? (short?)addUserViewModel.AgreementType.Value : null,
                 HoursPerDay = addUserViewModel.HoursPerDay
 
             };
@@ -169,7 +170,7 @@ namespace ProjectTracking.Controllers
                 IsTracked = user.IsTracked,
                 HourlyRate = user.HourlyRate,
                 MonthlySalary = user.MonthlySalary,
-                AgreementType = (EmploymentType?)user.AgreementType,
+                AgreementType = (EmploymentType?)user.EmploymentTypeCode,
                 HoursPerDay = user.HoursPerDay
                 ,
                 MiddleName = user.MiddleName
@@ -208,7 +209,7 @@ namespace ProjectTracking.Controllers
                 user.IsTracked = editUserViewModel.IsTracked;
                 user.HourlyRate = editUserViewModel.HourlyRate;
                 user.MonthlySalary = editUserViewModel.MonthlySalary;
-                user.AgreementType = editUserViewModel.AgreementType.HasValue ? (short?)editUserViewModel.AgreementType.Value : null;
+                user.EmploymentTypeCode = editUserViewModel.AgreementType.HasValue ? (short?)editUserViewModel.AgreementType.Value : null;
                 user.HoursPerDay = editUserViewModel.HoursPerDay;
 
                 var result = await _userManager.UpdateAsync(user);

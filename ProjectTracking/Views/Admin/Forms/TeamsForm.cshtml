@@ -124,7 +124,7 @@
                     <div class="checklist-container scrollable-container-400">
 
                         <p v-show="teamUsers.isLoading">Loading teams....</p>
-                        <p v-show="!teamUsers.isLoading && !teamUsers.data.length">There are Currently No Users Registered!</p>
+                        <p v-show="!teamUsers.isLoading && !teamUsers.data.length">There are currently no assignable users under this team!</p>
                         <p v-for="(user, idx) in teamUsers.data">
                             <input type="checkbox" :value="user.key" v-model="teamUsers.form.record.userIds" />
                             {{user.value}}

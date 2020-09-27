@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectTracking.Data;
 
 namespace ProjectTracking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200927080003_user_refactor")]
+    partial class user_refactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,8 +193,6 @@ namespace ProjectTracking.Migrations
 
                     b.Property<int?>("TeamId");
 
-                    b.Property<string>("Title");
-
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
@@ -213,7 +213,7 @@ namespace ProjectTracking.Migrations
                     b.ToTable("AspNetUsers");
 
                     b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", AccessFailedCount = 0, ConcurrencyStamp = "21099f96-abec-431e-a767-45eb42f45fdd", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEPWHnt1RFa/olePzD81PeTxH3cJuoDYnkIE0LlPPjWKvOCKIMR/Lb0NxFY/XCERjcg==", PhoneNumberConfirmed = false, SecurityStamp = "", TwoFactorEnabled = false, UserName = "admin" }
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", AccessFailedCount = 0, ConcurrencyStamp = "176b607f-a2ed-44e8-874d-668fa7338b5c", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEAdMFndRZ2P+jsQvsUc/kLwL38hKgyNfDRkUUJA08quNFNx4FKHwwoiOtBdN+u1neg==", PhoneNumberConfirmed = false, SecurityStamp = "", TwoFactorEnabled = false, UserName = "admin" }
                     );
                 });
 
@@ -504,8 +504,8 @@ namespace ProjectTracking.Migrations
                     b.HasDiscriminator().HasValue("IdentityRole");
 
                     b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e572", ConcurrencyStamp = "6f378f90-1f13-4ca5-b78f-0eed88442ac7", Name = "Admin", NormalizedName = "ADMIN" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e590", ConcurrencyStamp = "2635f72a-97ec-44d9-99e2-dca4b8d89bb1", Name = "User", NormalizedName = "USER" }
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e572", ConcurrencyStamp = "73d52fbc-f1d8-46cd-8bca-00dc7fffe8ff", Name = "Admin", NormalizedName = "ADMIN" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e590", ConcurrencyStamp = "b7dbe09d-89de-44e7-af3e-c7c5e00efef2", Name = "User", NormalizedName = "USER" }
                     );
                 });
 

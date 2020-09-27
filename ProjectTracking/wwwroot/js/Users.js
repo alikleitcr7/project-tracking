@@ -13,6 +13,14 @@ const userFields = [
         required: true,
     },
     {
+        name: 'middleName',
+        displayName: 'Middle Name',
+        min: 0,
+        max: 255,
+        type: DATA_TYPES.TEXT,
+        required: false,
+    },
+    {
         name: 'lastName',
         displayName: 'Last Name',
         min: 0,
@@ -27,7 +35,32 @@ const userFields = [
         type: DATA_TYPES.TEXT,
         required: true,
     },
+    {
+        name: 'monthlySalary',
+        displayName: 'Monthly Salary',
+        type: DATA_TYPES.NUMBER,
+        required: false,
+    },
+    {
+        name: 'hourlyRate',
+        displayName: 'Hourly Rate',
+        type: DATA_TYPES.NUMBER,
+        required: false,
+    },
+    {
+        name: 'employmentTypeCode',
+        displayName: 'Employment Type',
+        type: DATA_TYPES.NUMBER,
+        required: false,
+    },
+    {
+        name: 'title',
+        displayName: 'Title',
+        type: DATA_TYPES.TEXT,
+        required: false,
+    },
 ]
+
 
 const Modals_Users = {
     User: {
@@ -62,13 +95,23 @@ const userFormObject = (obj) => {
     let record = obj ? {
         id: obj.id,
         firstName: obj.firstName,
+        middleName: obj.middleName,
         lastName: obj.lastName,
+        title: obj.title,
         email: obj.email,
+        monthlySalary: obj.monthlySalary,
+        hourlyRate: obj.hourlyRate,
+        employmentTypeCode: obj.employmentTypeCode,
     } : {
             id: null,
             firstName: null,
+            middleName: null,
             lastName: null,
+            title: null,
             email: null,
+            monthlySalary: null,
+            hourlyRate: null,
+            employmentTypeCode: null,
         }
 
     return {
@@ -99,7 +142,7 @@ const userObject = () => {
         isProcessing: false,
         message: '',
         form: userFormObject(),
-        statuses: {
+        employmentTypes: {
             data: [],
             isLoading: false
         }
@@ -123,7 +166,7 @@ const usersMethods = {
 
             console.log('field validation', { field, fieldValue })
 
-            const validator = new CoreValidator(field.name, fieldValue, field.required, field.type, field.min, field.max)
+            const validator = new CoreValidator(field.name, fieldValue, field.required, field.type, field.min, field.max, field.displayName)
             isValid = validator.validate()
 
 
@@ -267,7 +310,6 @@ const usersMethods = {
                             const idx = data.findIndex(k => k.id === record.id)
 
                             if (idx !== -1) {
-
                                 data[idx] = { ...record }
                                 this.users.data = data;
                             }
@@ -332,6 +374,14 @@ const usersMethods = {
     },
     users_delete: function (idx) {
 
+        const confirmCallBack = () => {
+            this.users_delete_confirmed(idx)
+        }
+
+        bootboxExtension.confirmDeletion('Confirm Deletion!', '<p>You are about to delete a system user.</p>', null, confirmCallBack)
+    },
+    users_delete_confirmed: function (idx) {
+
         // INDEX VALIDATION
         if (idx < 0 || idx > this.users.data.length - 1) {
             console.warn(`INVALID INDEX ${idx}, TOTAL RECORDS ARE ${this.users.data.length}`)
@@ -339,9 +389,9 @@ const usersMethods = {
         }
 
         // CONFIRMATION
-        if (!confirm('Confirm Deletion')) {
-            return;
-        }
+        //if (!confirm('Confirm Deletion')) {
+        //    return;
+        //}
 
         /** @type {Array<ISubject>} */
         let data = [...this.users.data];
@@ -421,8 +471,6 @@ const usersMethods = {
     users_pageClick: function (pageNum) {
         this.users_getAll(pageNum - 1)
     },
-
-
     users_setStatusesLoading: function (isLoading) {
         this.users.statuses.isLoading = isLoading
     },
@@ -456,7 +504,39 @@ const usersMethods = {
             })
 
     },
+
+    users_setEmploymentTypesLoading: function (isLoading) {
+        this.users.employmentTypes.isLoading = isLoading
+    },
+    users_setEmploymentTypesMessage: function (message) {
+        this.users.employmentTypes.message = message
+    },
+    users_getEmploymentTypes: function () {
+
+        this.users_setEmploymentTypesLoading(true)
+
+        return UsersService.GetEmploymentTypes()
+            .then((r) => {
+
+                const record = r.data
+
+                if (record) {
+                    this.users.employmentTypes.data = [...record]
+                }
+                else {
+                    this.users_setEmploymentTypesMessage(BASIC_ERROR_MESSAGE)
+                }
+            })
+            .catch((e) => {
+                console.error('users getall', e)
+                this.users_setEmploymentTypesMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.users_setEmploymentTypesLoading(false)
+            })
+    },
 }
+
 
 const supervisorFormObject = (userId = null, teamIds = []) => {
 
@@ -810,7 +890,9 @@ var users_app = new Vue({
     },
     mounted: function () {
         this.users_getAll()
+        this.users_getEmploymentTypes()
         this.userRoles_getAll()
+
         //this.supervisors_getAll()
     }
 })
