@@ -95,9 +95,11 @@ namespace ProjectTracking.Data.Methods
             db.SaveChanges();
         }
 
-        public List<ProjectTask> Search(string keyword, int page, int countPerPage, out int totalCount)
+        public List<ProjectTask> Search(string keyword, int projectId, int page, int countPerPage, out int totalCount)
         {
             IQueryable<DataSets.ProjectTask> query = db.ProjectTasks;
+
+            query = query.Where(k => k.ProjectId == projectId);
 
             if (!string.IsNullOrEmpty(keyword))
             {

@@ -216,12 +216,12 @@ class CoreValidator {
 
             // check min 
             if (this.hasValue(min)) {
-                return value >= min && value <= max
+                return value >= min 
             }
 
             // check max
             if (this.hasValue(max)) {
-                return value >= min && value <= max
+                return value <= max
             }
 
             // any nb allowed

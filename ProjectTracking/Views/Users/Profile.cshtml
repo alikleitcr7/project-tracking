@@ -5,7 +5,7 @@
     ViewData["Title"] = $"{Model.FullName} Profile";
 }
 
-<div id="Profile" class="v-container" data-user="@Model.Id">
+<div id="Profile" v-cloak class="v-container" data-user="@Model.Id" data-team="@Model.TeamId" >
 
     @*<h2>@Model.FullName Profile</h2>*@
 
@@ -30,19 +30,18 @@
         </ul>
 
         <div class="tab-content">
+
             <div id="ScheduleTab" class="tab-pane fade in active">
-                <h3>HOME</h3>
-                <p>Some content.</p>
+                <partial name="~/views/users/schedule.cshtml" />
             </div>
+
             <div id="ProgressTab" class="tab-pane fade">
-                <h3>Menu 1</h3>
-                <p>Some content in menu 1.</p>
+                @*<partial name="~/views/users/schedule.cshtml" />*@
             </div>
 
         </div>
 
     </div>
-
 
     <div id="UserMoreDetails" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -102,6 +101,11 @@
     <link href="~/css/profile.min.css" rel="stylesheet" />
 }
 
-@section scripts{
-    <link href="~/js/profile.js" rel="stylesheet" />
+@section Scripts {
+
+    <script src="~/services/UserProfileService.js" type="text/javascript" ></script>
+    <script src="~/services/ProjectsService.js"    type="text/javascript" ></script>
+
+
+    <script src="~/js/profile.js" type="text/javascript" ></script>
 }

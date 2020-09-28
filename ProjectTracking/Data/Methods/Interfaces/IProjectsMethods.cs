@@ -11,6 +11,8 @@ namespace ProjectTracking.Data.Methods.Interfaces
     {
         Project GetById(int id);
         List<Project> Search(int? categoryId, string keyword, int page, int countPerPage, out int totalCount);
+        List<Project> GetByTeam(int teamId);
+
         Project Save(Models.Projects.ProjectSaveModel model);
 
         List<Project> Get(int departmentId, int companyId, bool includeActivities = true);

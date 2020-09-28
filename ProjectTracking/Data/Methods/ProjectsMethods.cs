@@ -32,16 +32,16 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException("title and category are required");
             }
 
-            // check if title already exist under the selected category
-            bool nameExist = db.Projects.Any(k => k.Title == model.title && k.CategoryId == model.categoryId);
-
-            if (nameExist)
-            {
-                throw new ClientException($"project exist under title {model.title} and the selected category");
-            }
-
             if (model.id.HasValue)
             {
+                // check if title already exist under the selected category
+                bool nameExist = db.Projects.Any(k => k.ID != model.id.Value && k.Title == model.title && k.CategoryId == model.categoryId);
+
+                if (nameExist)
+                {
+                    throw new ClientException($"project exist under title {model.title} and the selected category");
+                }
+
                 // save project
 
                 // get project
@@ -69,6 +69,15 @@ namespace ProjectTracking.Data.Methods
             }
             else
             {
+
+                // check if title already exist under the selected category
+                bool nameExist = db.Projects.Any(k => k.Title == model.title && k.CategoryId == model.categoryId);
+
+                if (nameExist)
+                {
+                    throw new ClientException($"project exist under title {model.title} and the selected category");
+                }
+
                 DataSets.Project dbProject = new DataSets.Project()
                 {
                     Title = model.title,
@@ -139,6 +148,18 @@ namespace ProjectTracking.Data.Methods
             return query.OrderByDescending(k => k.ID)
                 .Skip(page * countPerPage)
                 .Take(countPerPage)
+                .ToList()
+                .Select(_mapper.Map<Project>)
+                .ToList();
+        }
+
+        public List<Project> GetByTeam(int teamId)
+        {
+            IQueryable<DataSets.Project> query = db.Projects
+                .Include(k => k.Tasks)
+                .Where(k => k.TeamsProjects.Any(t => t.TeamId == teamId));
+
+            return query.OrderByDescending(k => k.ID)
                 .ToList()
                 .Select(_mapper.Map<Project>)
                 .ToList();

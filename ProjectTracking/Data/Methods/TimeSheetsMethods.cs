@@ -48,7 +48,7 @@ namespace ProjectTracking.Data.Methods
 
                 if (db.SaveChanges() > 0)
                 {
-                    bool addedTimeSheetStatus = AddTimeSheetStatuses(userId, dbTimeSheet.ID);
+                    //bool addedTimeSheetStatus = AddTimeSheetStatuses(userId, dbTimeSheet.ID);
 
                     return _mapper.Map<TimeSheet>(dbTimeSheet);
                     //if (addedTimeSheetStatus)

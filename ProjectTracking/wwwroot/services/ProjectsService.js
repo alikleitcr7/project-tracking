@@ -20,6 +20,14 @@ const ProjectsService = {
 
         return axios.get(url);
     },
+    GetByTeam: function (teamId) {
+
+        const query = serialize({ teamId})
+
+        const url = PROJECTS_SERVICE_URI(`GetByTeam?${query}`)
+
+        return axios.get(url);
+    },
     Delete: function (id) {
 
         const url = PROJECTS_SERVICE_URI(`Delete?id=${id}`)

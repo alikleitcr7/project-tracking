@@ -1,0 +1,229 @@
+﻿
+<div class="schedule-container v-container">
+
+    <div>
+
+        <button type="button" v-show="!isCurrentUser"
+                class="btn Button-Shared mb-4"
+                data-toggle="modal" data-target="#AddTymeSheetModal">
+            Add TimeSheet
+        </button>
+
+        <a asp-controller="Projects"
+           asp-action="ProjectsProgress"
+           asp-route-userId="@Model.Id"
+           class="btn Button-Shared mb-4">
+            Projects Progress
+        </a>
+
+        <a class="btn Button-Shared mb-4"
+           target="_blank" v-show="isInAdministration"
+           href="/userinsights?userId=@Model.Id">Active Hours Insights</a>
+
+    </div>
+
+    <p v-if="timeSheetsLoading">Loading...</p>
+    <p v-if="!timeSheetsLoading && !timeSheets.length">Nothing here yet! <i class="far fa-smile"></i> </p>
+
+    <div v-show="!timeSheetsLoading && timeSheets.length > 0">
+
+        <div class="d-flex mb-2">
+            <select v-model="selectedTimeSheetYear" class="form-control " style="width:200px">
+                <option v-for="timeSheetYear in timeSheetYears" :value="timeSheetYear">{{timeSheetYear}}</option>
+            </select>
+            <button class="mx-5 Button-Shared" v-on:click="filterTimeSheets">Filter</button>
+        </div>
+    </div>
+
+    <div v-show="!timeSheetsLoading">
+
+        <table class="table table-striped" v-show="timeSheets.length">
+
+            <tr>
+                <th>From Date</th>
+                <th>To Date</th>
+                <th></th>
+            </tr>
+
+            <tr v-for="(timeSheet,idx) in timeSheets">
+                <td>{{timeSheet.fromDateDisplay}}</td>
+                <td>{{timeSheet.toDateDisplay}}</td>
+                <td>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-default" v-on:click="openTimeSheetProjectsModal(timeSheet)">Projects</button>
+                        <a class="btn btn-sm btn-default" v-bind:href="`/timesheets?id=${timeSheet.id}`">Time Sheet</a>
+                        <button v-show="!timeSheet.isSigned" type="button"
+                                v-if="userId && currentUserId && (userId=== currentUserId)"
+                                class="btn btn-sm btn-danger"
+                                v-on:click="openDeleteTimeSheetModal(idx)">
+                            Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="AddTymeSheetModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add Time Sheet</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="modal-buttons">
+                        <button class="Button-Shared Button-Small" type="button" v-on:click="changeDate(date)" v-for="(date,idx) in timesheetModel.dateList">{{nextDateDisplay(date)}}</button>
+                    </div>
+
+                    <div class="input-group-container">
+                        <div class="input-group-item">
+                            <label>From Date</label>
+                            <date-picker v-model="timesheetModel.fromDate" :config="dateOptions"></date-picker>
+                        </div>
+                        <div class="input-group-item">
+                            <label>To Date</label>
+                            <date-picker v-model="timesheetModel.toDate" :config="dateOptions"></date-picker>
+                        </div>
+                    </div>
+
+                    <div class="text-danger my-3">
+                        {{timesheetModel.timeSheetError}}
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" v-on:click="addTimeSheet" class="btn Button-Shared">Add</button>
+
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="timeSheetProjectsModal" class="modal fade" role="dialog">
+        <div class="modal-dialog ">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">
+                        <i class="fa fa-tasks"></i>&nbsp;
+                        {{timeSheetProjects.title}} Projects' Tasks
+                    </h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <p class="text-danger" v-show="timeSheetProjects.isFailed">Something went wrong, check your internet connection</p>
+                    <p class="text-info" v-show="timeSheetProjects.isLoading">Loading...</p>
+
+                    <div class="multi-group-section">
+                        <div class="left-group">
+                            <div class="group-container">
+
+                                <div class="group-header">
+                                    @*<h4>Available Projects</h4>*@
+                                    <input type="text" autocomplete="off" class="form-control" placeholder="Search Available Projects" v-model="availableProjectsSearchKey" />
+                                </div>
+
+                                <projects v-bind:records="timeSheetProjects.availableProjects"></projects>
+
+                            </div>
+                        </div>
+
+                        <div class="middle-group">
+
+
+                            <div class="btn-group-vertical">
+                                <button :disabled="!availableProjectsChecked || assignProjectsLoading"
+                                        v-on:click="assignProjects"
+                                        class="btn btn-sm btn-default">
+
+                                    <span v-show="!assignProjectsLoading">>></span>
+                                    <span v-show="assignProjectsLoading">...</span>
+                                </button>
+                                <button :disabled="!assignedProjectsChecked || assignProjectsLoading"
+                                        v-on:click="removeProjects"
+                                        class="btn btn-sm Button-Shared">
+
+                                    <span v-show="!assignProjectsLoading"><<</span>
+                                    <span v-show="assignProjectsLoading">...</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="right-group">
+                            <div class="group-container">
+
+                                <div class="group-header">
+                                    @*<h4>Assign Projects</h4>*@
+                                    <input type="text" class="form-control" placeholder="Search Assigned Projects" autocomplete="off" v-model="assignedProjectsSearchKey" />
+                                </div>
+
+                                <projects v-bind:records="timeSheetProjects.assignedProjects"></projects>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <div class="flex-right-left">
+                        <div class="left-side text-bold">
+                            <p class="disabled-project-info">locked assigned project is active and not removable</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div id="DeleteTimeSheetModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Delete TimeSheet</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <label>Enter Your Password</label>
+                    <input autocomplete="off" type="password" class="form-control" v-model="timesheetDeleteModal.password" />
+                    <hr />
+                    <p v-show="timesheetDeleteModal.isDeleting">Deleting...</p>
+                    <p v-show="!timesheetDeleteModal.isDeleting">{{timesheetDeleteModal.message}}</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" v-on:click="deleteTimeSheet">Delete</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>

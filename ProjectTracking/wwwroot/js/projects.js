@@ -265,7 +265,7 @@ const projectsMethods = {
 
                         console.error('Updated!', e)
 
-                        this.projects_setFormMessage(BASIC_ERROR_MESSAGE)
+                        this.projects_setFormMessage(getAxiosErrorMessage(e))
 
                     })
                     .then(() => {

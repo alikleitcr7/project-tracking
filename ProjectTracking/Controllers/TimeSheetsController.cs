@@ -39,52 +39,114 @@ namespace ProjectTracking.Controllers
             TimeSheet timeSheet = _timeSheets.Get(id, out _, false);
 
             ViewData["TimeSheet"] = timeSheet;
-            //ViewData["TimeSheetUser"] = _users.GetProfile(timeSheet.UserId);
 
             return View();
         }
+
         public IActionResult TimeSheetActivityLog(int activityId)
         {
             ViewData["ActivityId"] = activityId;
 
-
-
             return View();
         }
-        public IActionResult SubordinatesTimeSheets()
-        {
-            ViewData["SuperVisorId"] = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
-            return View();
-        }
-        public JsonResult GetSubordinatesTimeSheets(int page, int countPerPage)
-        {
-            string supervisorId = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value.ToString();
-            //string supervisorId = "6a3b5438-fd4a-4c67-a5ff-82b99e876503";
-            var records = _timeSheets.GetSubordinatesTimeSheets(supervisorId, page, countPerPage, out int totalPages);
-            object oRetval = new
-            {
-                records,
-                totalPages
-            };
 
-            return Json(oRetval);
-        }
+        //public IActionResult SubordinatesTimeSheets()
+        //{
+        //    ViewData["SuperVisorId"] = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
+        //    return View();
+        //}
+        //public JsonResult GetSubordinatesTimeSheets(int page, int countPerPage)
+        //{
+        //    string supervisorId = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value.ToString();
+        //    //string supervisorId = "6a3b5438-fd4a-4c67-a5ff-82b99e876503";
+        //    var records = _timeSheets.GetSubordinatesTimeSheets(supervisorId, page, countPerPage, out int totalPages);
+        //    object oRetval = new
+        //    {
+        //        records,
+        //        totalPages
+        //    };
+
+        //    return Json(oRetval);
+        //}
         //[Authorize]
+
         public IActionResult UserTimeSheets()
         {
-
             ViewData["ID"] = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
             return View();
         }
-        public JsonResult PermitTimeSheetStatus([FromBody] PermitModel permission)
+
+        //public JsonResult PermitTimeSheetStatus([FromBody] PermitModel permission)
+        //{
+        //    if (permission == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(permission));
+        //    }
+
+        //    return Json(_timeSheets.PermitTimeSheetStatus(permission));
+        //}
+    
+        //[HttpPost]
+        //public async Task<bool> SignTimeSheet(int timeSheetId)
+        //{
+        //    string currentUserId = "";
+
+        //    if (User.Identity.IsAuthenticated)
+        //    {
+        //        currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+
+        //    if (_timeSheets.SignTimeSheet(currentUserId, timeSheetId))
+        //    {
+        //        // SEND NOTIFICATION TO SUPERVISORS 
+
+        //        List<string> supervisorsIds = _users.GetSupervisorsIds(currentUserId);
+
+        //        User user = _users.GetEmployee(currentUserId);
+        //        TimeSheet timesheet = _timeSheets.Get(timeSheetId, out _, false);
+
+        //        foreach (string supervisorId in supervisorsIds)
+        //        {
+        //            var sent = await _notificationMethods.Send(currentUserId, supervisorId, $"Timesheet for {timesheet.FromDateDisplay}-{timesheet.ToDateDisplay} Signed", NotificationType.Information, true);
+
+        //            //await _notificationsHub.Clients.User(supervisorId).SendAsync("ReceiveNotification", sent);
+        //        }
+
+        //        return true;
+        //    }
+
+        //    return false;
+        //}
+
+
+        public object Add([FromBody]AddTimeSheetModel modal)
         {
-            if (permission == null)
+            TimeSheet timeSheet = _timeSheets.Add(modal.userId, modal.fromDate, modal.toDate, out string message);
+
+            return new
             {
-                throw new ArgumentNullException(nameof(permission));
-            }
+                message,
+                timeSheet
+            };
+        }
 
-            return Json(_timeSheets.PermitTimeSheetStatus(permission));
 
+        [HttpDelete]
+        public bool Delete([FromQuery]int id)
+        {
+            //return true;
+            return _timeSheets.Delete(id);
+        }
+
+        public TimeSheet GetLatest(string userId)
+        {
+            //string currentUserId = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
+
+            return _timeSheets.GetLatest(userId);
         }
         public Models.TimeSheet.TimeSheetProjectModel GetTimeSheetProjectModel(int timeSheetId)
         {
@@ -99,19 +161,6 @@ namespace ProjectTracking.Controllers
 
             return model;
         }
-        //public Models.TimeSheet.TimeSheetModel GetTimeSheetModel(int timeSheetId)
-        //{
-        //    var timeSheet = _timeSheets.Get(timeSheetId, out List<Project> project);
-
-        //    if (timeSheet == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    var model = Models.TimeSheet.TimeSheetModel.GenerateModel(timeSheet, project);
-
-        //    return model;
-        //}
 
         public List<TimeSheetActivity> GetActivities(int timesheetId)
         {
@@ -139,66 +188,6 @@ namespace ProjectTracking.Controllers
             return _timeSheets.GetByUser(userId);
         }
 
-        public TimeSheet GetLatest(string userId)
-        {
-            //string currentUserId = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
 
-            return _timeSheets.GetLatest(userId);
-
-        }
-
-        [HttpDelete]
-        public bool Delete([FromQuery]int id)
-        {
-            //return true;
-            return _timeSheets.Delete(id);
-        }
-
-        [HttpPost]
-        public async Task<bool> SignTimeSheet(int timeSheetId)
-        {
-            string currentUserId = "";
-
-            if (User.Identity.IsAuthenticated)
-            {
-                currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            }
-            else
-            {
-                return false;
-            }
-
-            if (_timeSheets.SignTimeSheet(currentUserId, timeSheetId))
-            {
-                // SEND NOTIFICATION TO SUPERVISORS 
-
-                List<string> supervisorsIds = _users.GetSupervisorsIds(currentUserId);
-
-                User user = _users.GetEmployee(currentUserId);
-                TimeSheet timesheet = _timeSheets.Get(timeSheetId, out _, false);
-
-                foreach (string supervisorId in supervisorsIds)
-                {
-                    var sent = await _notificationMethods.Send(currentUserId, supervisorId, $"Timesheet for {timesheet.FromDateDisplay}-{timesheet.ToDateDisplay} Signed", NotificationType.Information, true);
-
-                    //await _notificationsHub.Clients.User(supervisorId).SendAsync("ReceiveNotification", sent);
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
-        public object Add([FromBody]AddTimeSheetModel modal)
-        {
-            TimeSheet timeSheet = _timeSheets.Add(modal.userId, modal.fromDate, modal.toDate, out string message);
-
-            return new
-            {
-                message,
-                timeSheet
-            };
-        }
     }
 }

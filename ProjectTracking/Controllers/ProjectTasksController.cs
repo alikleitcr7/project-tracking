@@ -86,11 +86,11 @@ namespace ProjectTracking.Controllers
 
         [HttpGet]
         [Route("Search")]
-        public IActionResult Search(string keyword, int page, int countPerPage)
+        public IActionResult Search(string keyword, int projectId, int page, int countPerPage)
         {
             try
             {
-                var record = _tasksMethods.Search(keyword, page, countPerPage, out int totalCount);
+                var record = _tasksMethods.Search(keyword, projectId, page, countPerPage, out int totalCount);
 
                 return Ok(new
                 {

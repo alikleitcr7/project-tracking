@@ -267,6 +267,25 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+        
+        [HttpGet]
+        public IActionResult GetByTeam(int teamId)
+        {
+            try
+            {
+                var record = _projects.GetByTeam(teamId);
+
+                return Ok(record);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
 
         [HttpDelete]
         public IActionResult Delete(int id)

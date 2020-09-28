@@ -12,9 +12,9 @@ const ProjectTasksService = {
 
         return axios.post(url, projectTask);
     },
-    Search: function (keyword, page, countPerPage) {
+    Search: function (keyword, projectId, page, countPerPage) {
 
-        const query = serialize({ keyword, page, countPerPage })
+        const query = serialize({ keyword, projectId, page, countPerPage })
 
         const url = PROJECT_TASKS_SERVICE_URI(`Search?${query}`)
 

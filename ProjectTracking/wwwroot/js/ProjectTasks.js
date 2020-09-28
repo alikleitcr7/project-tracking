@@ -25,13 +25,13 @@ const Modals_ProjectTasks = {
     }
 }
 
-const getActiveProjectTaskId = () => parseInt($('#ProjectTasks').attr('data-project'))
+const getActiveProjectId = () => parseInt($('#ProjectTasks').attr('data-project'))
 
 const projectTaskFormObject = (obj) => {
 
     //console.log({ obj })
 
-    const projectId = getActiveProjectTaskId();
+    const projectId = getActiveProjectId();
 
     let record = obj ? {
         id: obj.id,
@@ -369,8 +369,9 @@ const projectTasksMethods = {
 
         const { keyword } = this.projectTasks.filterBy
         const { length } = this.projectTasks.dataPaging
+        const projectId = getActiveProjectId();
 
-        return ProjectTasksService.Search( keyword, page, length)
+        return ProjectTasksService.Search(keyword, projectId, page, length)
             .then((r) => {
 
                 /** @type {IClientResponseModel<ISubject>} */
@@ -443,7 +444,7 @@ var projectTasks_app = new Vue({
         dateOptions,
         dateTimeOptions,
         projectTasks: projectTaskObject(),
-        projectTaskId: getActiveProjectTaskId(),
+        projectTaskId: getActiveProjectId(),
         errors: '',
         oNull: null,
     },

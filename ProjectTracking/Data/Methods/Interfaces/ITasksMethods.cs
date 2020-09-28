@@ -10,6 +10,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         bool Delete(int id);
         ProjectTask GetById(int id);
         ProjectTask Save(TaskSaveModel model);
-        List<ProjectTask> Search(string keyword, int page, int countPerPage, out int totalCount);
+        List<ProjectTask> Search(string keyword, int projectId, int page, int countPerPage, out int totalCount);
     }
 }

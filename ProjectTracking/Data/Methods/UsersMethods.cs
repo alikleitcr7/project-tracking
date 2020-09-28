@@ -469,7 +469,7 @@ namespace ProjectTracking.Data.Methods
         {
             totalPages = 0;
             StringBuilder sqlGetUsersLogs = new StringBuilder();
-            sqlGetUsersLogs.Append(@"select CONCAT(FirstName,' ',LastName) as FullName, UserName ,FromDate ,ToDate ,Comments , UserLogging.IPAddress as IPAddress, Title as IPAddressTitle
+            sqlGetUsersLogs.Append(@"select CONCAT(FirstName,' ',LastName) as FullName, UserName ,FromDate ,ToDate ,Comments , UserLogging.IPAddress as IPAddress, ia.Title as IPAddressTitle
                                         from UserLogging inner join AspNetUsers anu on UserId=anu.Id
                                         left join IpAddresses ia on ia.Address = IPAddress
                                             where fromdate between @fromDate and @toDate
