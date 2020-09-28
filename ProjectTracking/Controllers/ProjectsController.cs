@@ -127,6 +127,7 @@ namespace ProjectTracking.Controllers
         {
             return View();
         }
+
         [HttpGet]
         [Route("Projects/ProjectsProgress/{UserId}")]
         public IActionResult ProjectsProgress(string userId)
@@ -136,10 +137,12 @@ namespace ProjectTracking.Controllers
 
             return View(user);
         }
+
         public JsonResult GetProjectsProgress(bool byYear, bool byYearAndMonth, string userId = null)
         {
             return Json(_projectsStatistics.GetProjectsProgress(byYear, byYearAndMonth, userId));
         }
+
         public JsonResult GetMeasurementUnitsTotalProgress(string userId, string year, string month, string day)
         {
             return Json(_projectsStatistics.GetMeasurementUnitsTotalProgress(userId, year, month, day));
@@ -152,12 +155,14 @@ namespace ProjectTracking.Controllers
             return Json(_projectsStatistics.GetProjectProgressYears());
 
         }
+
         public JsonResult GetProjectProgressMonthsByYear(int year, string userId)
         {
             if (!string.IsNullOrEmpty(userId))
                 return Json(_projectsStatistics.GetProjectProgressMonthsByYearAndUser(userId, year));
             return Json(_projectsStatistics.GetProjectProgressMonthsByYear(year));
         }
+
         public JsonResult GetProjectProgressDayByMonthAndYear(int year, int month, string userId)
         {
             if (!string.IsNullOrEmpty(userId))
@@ -165,6 +170,7 @@ namespace ProjectTracking.Controllers
             return Json(_projectsStatistics.GetProjectProgressDaysByMonthAndYear(year, month));
 
         }
+
         #region Methods
 
         [HttpGet]

@@ -28,12 +28,13 @@ namespace ProjectTracking.DataContract
             }
         }
         public DateTime DateOfBirth { get; set; }
-        public Team Department { get; set; }
-        public string DepartmentDisplay
+        public int? TeamId { get; set; }
+        public Team Team { get; set; }
+        public string TeamDisplay
         {
             get
             {
-                return Department == null ? "-" : Department.Name;
+                return Team == null ? "-" : Team.Name;
             }
         }
         public string DateOfBirthDisplay
@@ -43,14 +44,14 @@ namespace ProjectTracking.DataContract
                 return DateOfBirth.ToString("dd/MM/yyyy");
             }
         }
-        public Category Company { get; set; }
-        public string CompanyDisplay
-        {
-            get
-            {
-                return Company == null ? "-" : Company.Name;
-            }
-        }
+        //public Category Company { get; set; }
+        //public string CompanyDisplay
+        //{
+        //    get
+        //    {
+        //        return Company == null ? "-" : Company.Name;
+        //    }
+        //}
         public List<TimeSheet> TimeSheets { get; set; }
         //public List<RequestedPermission> RequestedPermissions { get; set; }
         //public List<Supervising> Supervisors { get; set; }
@@ -74,6 +75,19 @@ namespace ProjectTracking.DataContract
             get
             {
                 return EmploymentType.HasValue ? EmploymentType.Value.ToString() : null;
+            }
+        }
+
+        public string ProfileTwoLetters
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(FirstName))
+                {
+                    return null;
+                }
+
+                return FirstName[0] + " " + LastName[0];
             }
         }
 

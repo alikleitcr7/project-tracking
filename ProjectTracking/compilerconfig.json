@@ -22,5 +22,13 @@
   {
     "outputFile": "wwwroot/css/ProjectTasks.css",
     "inputFile": "wwwroot/css/ProjectTasks.less"
+  },
+  {
+    "outputFile": "wwwroot/css/core.css",
+    "inputFile": "wwwroot/css/core.less"
+  },
+  {
+    "outputFile": "wwwroot/css/profile.css",
+    "inputFile": "wwwroot/css/profile.less"
   }
 ]

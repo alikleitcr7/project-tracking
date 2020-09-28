@@ -17,7 +17,6 @@ namespace ProjectTracking
         public int? TeamId { get; set; }
         public Team Team { get; set; }
         //public int? CompanyID { get; set; }
-        //public Category Company { get; set; }
         public bool? IsTracked { get; set; }
         public float? MonthlySalary { get; set; }
         public float? HourlyRate { get; set; }

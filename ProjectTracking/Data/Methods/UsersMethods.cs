@@ -152,7 +152,9 @@ namespace ProjectTracking.Data.Methods
 
         public User GetById(string id)
         {
-            var record = db.Users.Include(k => k.Supervising).FirstOrDefault(k => k.Id == id);
+            var record = db.Users
+                .Include(k => k.Team)
+                .Include(k => k.Supervising).FirstOrDefault(k => k.Id == id);
 
             if (record == null)
             {

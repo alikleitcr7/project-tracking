@@ -1,3 +1,55 @@
-﻿#Profile{
+﻿@import 'variables.less';
 
+#Profile {
+    .top-intro {
+        display: flex;
+        font-size: 1.2em;
+
+        .top-intro-left {
+            display: flex;
+
+            .profile-circle {
+                width: 2.2em;
+                height: 2.2em;
+                display: block;
+                background-color: @main-color;
+                color: #fff;
+                border-radius: 50%;
+                margin-right: 10px;
+                text-align: center;
+                justify-content: center;
+                align-items: center;
+                padding-top: .4em;
+                text-transform: uppercase;
+                letter-spacing: -3px;
+                font-size: 2em;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+
+            .profile-title {
+
+                > span, > small {
+                    display: block;
+                }
+
+                > small {
+                    color: @main-color;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
+
+    .profile-content {
+        padding: 2em 0;
+    }
+
+    #UserMoreDetails {
+        .modal-header {
+            border-bottom: none;
+        }
+    }
 }

@@ -371,43 +371,44 @@
 .File-Control-Container input[type=file] {
   display: none;
 }
-#LoginContainer {
-  padding: 40px 40px;
+#Profile .top-intro {
+  display: flex;
+  font-size: 1.2em;
 }
-#LoginContainer .LoginBox {
-  max-width: 400px;
-  margin: auto;
-  border-radius: 20px;
-  -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
-  box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
+#Profile .top-intro .top-intro-left {
+  display: flex;
 }
-#LoginContainer .LoginBox h3 {
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  padding: 30px 0;
-  text-align: center;
-  background-color: #1776b0;
+#Profile .top-intro .top-intro-left .profile-circle {
+  width: 2.2em;
+  height: 2.2em;
+  display: block;
+  background-color: #2286c3;
   color: #fff;
-}
-#LoginContainer .LoginBox .LoginContent {
-  padding: 20px;
-  position: relative;
-}
-#LoginContainer .LoginBox .LoginContent input {
-  border: none;
-  padding: 10px 20px;
-  background-color: rgba(243, 241, 241, 0.9);
-  margin: 10px 0;
-  width: 100%;
-  border-radius: 20px;
-  font-size: 16px;
-}
-#LoginContainer .LoginBox .MiddleLinks {
-  margin-bottom: 40px;
-  text-align: right;
-}
-#LoginContainer .LoginBox .BottomLinks {
+  border-radius: 50%;
+  margin-right: 10px;
   text-align: center;
-  padding-top: 40px;
+  justify-content: center;
+  align-items: center;
+  padding-top: 0.4em;
+  text-transform: uppercase;
+  letter-spacing: -3px;
+  font-size: 2em;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+#Profile .top-intro .top-intro-left .profile-title > span,
+#Profile .top-intro .top-intro-left .profile-title > small {
+  display: block;
+}
+#Profile .top-intro .top-intro-left .profile-title > small {
+  color: #2286c3;
+  cursor: pointer;
+}
+#Profile .profile-content {
+  padding: 2em 0;
+}
+#Profile #UserMoreDetails .modal-header {
+  border-bottom: none;
 }

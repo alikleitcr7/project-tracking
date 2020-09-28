@@ -52,6 +52,11 @@ namespace ProjectTracking.Controllers
         [Route("/login")]
         public IActionResult Login()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return Redirect("/logout");
+            }
+
             List<IdentityRole<string>> roles = _users.GetAllRoles();
 
             ViewData["Roles"] = roles;

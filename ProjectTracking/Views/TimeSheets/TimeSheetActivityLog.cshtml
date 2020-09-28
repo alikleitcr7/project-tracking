@@ -49,8 +49,8 @@ else
             <tr>
                 <td>@user.FullName</td>
                 <td>@user.Email</td>
-                <td>@user.CompanyDisplay</td>
-                <td>@user.DepartmentDisplay</td>
+                <td>@*@user.CompanyDisplay*@</td>
+                <td>@user.TeamDisplay</td>
                 <td>
                     <a target="_blank" href="/employees/profile/@user.Id" class="Button-Shared Button-Shared">Profile</a>
                 </td>

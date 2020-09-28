@@ -2,20 +2,106 @@
 @model ProjectTracking.DataContract.User
 
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = $"{Model.FullName} Profile";
 }
 
-<div id="Profile" class="v-container">
+<div id="Profile" class="v-container" data-user="@Model.Id">
 
-    <h2>@Model.FullName Profile</h2>
+    @*<h2>@Model.FullName Profile</h2>*@
 
-    <div class="top-section">
+    <div class="top-intro">
+        <div class="top-intro-left">
+            <div class="profile-circle">
+                @Model.ProfileTwoLetters
+            </div>
+            <div class="profile-title">
+                <span>@Model.FullName</span>
+                <span>@Model.Title</span>
+                <small data-toggle="modal" data-target="#UserMoreDetails">More Details</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-content">
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#ScheduleTab">Schedule</a></li>
+            <li><a data-toggle="tab" href="#ProgressTab">Progress</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="ScheduleTab" class="tab-pane fade in active">
+                <h3>HOME</h3>
+                <p>Some content.</p>
+            </div>
+            <div id="ProgressTab" class="tab-pane fade">
+                <h3>Menu 1</h3>
+                <p>Some content in menu 1.</p>
+            </div>
+
+        </div>
 
     </div>
 
-    <div>
 
+    <div id="UserMoreDetails" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title main-color">
+                        <i class="far fa-address-card "></i>&nbsp;
+                    @Model.FullName</h4>
+                </div>
+                <div class="modal-body">
+
+                    <table class="table">
+
+                        @if (Model.Team != null)
+                        {
+                            <tr>
+                                <td>Team</td>
+                                <td>@Model.TeamDisplay</td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td>Date of Birth</td>
+                            <td>@Model.DateOfBirthDisplay</td>
+                        </tr>
+
+                        <tr>
+                            <td>Email</td>
+                            <td>@Model.Email</td>
+                        </tr>
+
+                        @if (Model.SupervisingCount.HasValue && Model.SupervisingCount.Value > 0)
+                        {
+                            <tr>
+                                <td>Supervising</td>
+                                <td>@Model.SupervisingCount.Value Team@(Model.SupervisingCount.Value > 1 ? "s":"")</td>
+                            </tr>
+                        }
+
+                        <tr>
+                            <td>Employment Type</td>
+                            <td>@Model.EmploymentTypeDisplay</td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
     </div>
-
 
 </div>
+
+@section styles{
+    <link href="~/css/profile.min.css" rel="stylesheet" />
+}
+
+@section scripts{
+    <link href="~/js/profile.js" rel="stylesheet" />
+}

@@ -103,7 +103,7 @@ Vue.component('projects', projectComponent)
 // services
 
 const GetProjectsByDepartment = (departmentId) => {
-    return axios.get('/Employees/GetProjectsByDepartment?departmentId=' + departmentId);
+    return axios.get('/Employees/?departmentId=' + departmentId);
 }
 
 const GetTimeSheetProjects = (timeSheetId) => {

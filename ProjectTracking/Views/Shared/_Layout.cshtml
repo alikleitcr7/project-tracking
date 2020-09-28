@@ -18,10 +18,10 @@
     @*<script src="~/lib/font-awesome/js/all.min.js"></script>*@
     <script src="https://kit.fontawesome.com/b154605e4d.js" crossorigin="anonymous"></script>
 
-
     @RenderSection("Styles", required: false)
 
 </head>
+
 <body class=" @(User.Identity.IsAuthenticated ? "":"is-logon" )">
     @*<nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
@@ -62,7 +62,6 @@
     </div>
 
 
-
     <script src="~/lib/jquery/dist/jquery.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.3.2/bootbox.min.js"></script>
@@ -84,7 +83,6 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/SideBar.js"></script>
 
-
     <script src="~/lib/axios/axios.js"></script>
     <script src="~/lib/signalr/wiredBrain.js"></script>
 
@@ -104,4 +102,5 @@
 
     @RenderSection("Scripts", required: false)
 </body>
+
 </html>

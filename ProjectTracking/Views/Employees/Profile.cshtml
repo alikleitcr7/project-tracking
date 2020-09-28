@@ -6,7 +6,7 @@
 @model User
 
 <input type="hidden" value="@Model.Id" name="userId" />
-<input type="hidden" value="@Model.Department?.ID" name="departmentId" />
+<input type="hidden" value="@Model.Team?.ID" name="departmentId" />
 <input type="hidden" value="@((User.IsInRole("Manager")||User.IsInRole("Admin")).ToString())" id="isInAdministration" />
 
 
@@ -20,13 +20,13 @@
                 <td>Name</td>
                 <td>@Model.FullName</td>
                 <td>Department</td>
-                <td>@Model.Department?.Name</td>
+                <td>@Model.Team?.Name</td>
             </tr>
             <tr>
                 <td>Email</td>
                 <td>@Model.Email</td>
                 <td>Company</td>
-                <td>@Model.Company?.Name</td>
+                <td>@*@Model.Company?.Name*@</td>
             </tr>
             <tr>
                 <td>D.O.B</td>

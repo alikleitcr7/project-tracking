@@ -7,6 +7,63 @@ a {
     font-family: 'Arial';
 }
 
+select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
+
+
+body {
+    position: relative;
+
+    &:not(.is-logon) {
+
+        &:not(.sidebar-collapsed) {
+            padding-left: calc(@sidebar-width + 30px);
+
+            .side-bar {
+                width: @sidebar-width;
+
+                .title {
+                    margin-bottom: 30px;
+                }
+
+                .side-bar-item {
+                    .icon {
+                        display: none !important;
+                    }
+                }
+            }
+        }
+
+        &.sidebar-collapsed {
+            padding-left: @sidebar-width-sm + 30px;
+
+            .side-bar {
+                width: @sidebar-width-sm;
+
+                > .title {
+                    display: none;
+                }
+
+                .buttons {
+                    padding: 0;
+                }
+
+                .side-bar-arrow {
+                    transform: rotate(180deg);
+                }
+
+                .side-bar-item {
+                    .name {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
 .bootbox-danger {
     .modal-header{
         border-bottom:3px solid @color-danger;
@@ -84,8 +141,6 @@ a {
     }
 }
 
-
-
 .s-btn {
     border-radius: 5px;
     border: none;
@@ -151,8 +206,6 @@ a {
     }
 }
 
-
-
 .s-table-controls {
     margin: .5em 0;
 
@@ -184,13 +237,7 @@ table {
 .table-fixed {
     table-layout: fixed;
 }
-/*.main-light-background {
-    background-color: rgba(161, 161, 161, 0.55);
 
-    > td, > th {
-        background-color: rgba(161, 161, 161, 0.55);
-    }
-}*/
 .modal-buttons {
     padding-bottom: 10px;
 
@@ -392,14 +439,6 @@ a {
 .table.shared-child-table {
 }
 
-/*@font-face {
-    font-family: 'Glyphicons Halflings';
-    src: url('../lib/bootstrap/dist/fonts/glyphicons-
-    halflings-regular.eot');
-    src: url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2') format('woff'), url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
-}*/
-
-
 [side-bar-tooltip] {
     position: relative;
 }
@@ -421,7 +460,6 @@ a {
     }
 }
 
-
 .body-container {
     /*margin-top:50px;*/
     /*display: flex;
@@ -434,56 +472,6 @@ a {
     position: relative;
 }
 
-body {
-    position: relative;
-
-    &:not(.is-logon) {
-
-        &:not(.sidebar-collapsed) {
-            padding-left: calc(@sidebar-width + 30px);
-
-            .side-bar {
-                width: @sidebar-width;
-
-                .title {
-                    margin-bottom: 30px;
-                }
-
-                .side-bar-item {
-                    .icon {
-                        display: none !important;
-                    }
-                }
-            }
-        }
-
-        &.sidebar-collapsed {
-            padding-left: @sidebar-width-sm + 30px;
-
-            .side-bar {
-                width: @sidebar-width-sm;
-
-                > .title {
-                    display: none;
-                }
-
-                .buttons {
-                    padding: 0;
-                }
-
-                .side-bar-arrow {
-                    transform: rotate(180deg);
-                }
-
-                .side-bar-item {
-                    .name {
-                        display: none;
-                    }
-                }
-            }
-        }
-    }
-}
 
 a,
 a:hover,
@@ -715,7 +703,6 @@ textarea {
     }
 }
 
-
 .modal-checkboxes {
     > span {
         margin: 5px;
@@ -733,7 +720,6 @@ textarea {
     border-radius: 50%;
     text-align: center;
 }
-
 
 .w-50-px {
     width: 50px !important;
@@ -770,7 +756,6 @@ textarea {
     }
 }
 
-
 @media (max-width: 767px) {
 
     .input-group-container {
@@ -783,7 +768,6 @@ textarea {
         }
     }
 }
-
 
 @media print {
     #SideBar {

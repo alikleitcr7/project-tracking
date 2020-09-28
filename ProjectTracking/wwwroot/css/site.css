@@ -1,6 +1,9 @@
 ﻿.t {
   border: 1px solid red !important;
 }
+.b {
+  border: 1px solid blue !important;
+}
 .Fill-Background {
   background-color: rgba(243, 241, 241, 0.9);
 }
@@ -216,16 +219,6 @@
 }
 .Button-Block {
   width: 100%;
-}
-.t {
-  border: 1px solid red !important;
-}
-.b {
-  border: 1px solid blue !important;
-}
-select:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 #000;
 }
 .MiddleBoxContainerTemplate {
   padding: 40px 40px;
@@ -452,6 +445,43 @@ body,
 a {
   font-family: 'Arial';
 }
+select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+}
+body {
+  position: relative;
+}
+body:not(.is-logon):not(.sidebar-collapsed) {
+  padding-left: calc(120px + 30px);
+}
+body:not(.is-logon):not(.sidebar-collapsed) .side-bar {
+  width: 120px;
+}
+body:not(.is-logon):not(.sidebar-collapsed) .side-bar .title {
+  margin-bottom: 30px;
+}
+body:not(.is-logon):not(.sidebar-collapsed) .side-bar .side-bar-item .icon {
+  display: none !important;
+}
+body:not(.is-logon).sidebar-collapsed {
+  padding-left: 80px;
+}
+body:not(.is-logon).sidebar-collapsed .side-bar {
+  width: 50px;
+}
+body:not(.is-logon).sidebar-collapsed .side-bar > .title {
+  display: none;
+}
+body:not(.is-logon).sidebar-collapsed .side-bar .buttons {
+  padding: 0;
+}
+body:not(.is-logon).sidebar-collapsed .side-bar .side-bar-arrow {
+  transform: rotate(180deg);
+}
+body:not(.is-logon).sidebar-collapsed .side-bar .side-bar-item .name {
+  display: none;
+}
 .bootbox-danger .modal-header {
   border-bottom: 3px solid #b00808;
 }
@@ -584,13 +614,6 @@ table td {
 .table-fixed {
   table-layout: fixed;
 }
-/*.main-light-background {
-    background-color: rgba(161, 161, 161, 0.55);
-
-    > td, > th {
-        background-color: rgba(161, 161, 161, 0.55);
-    }
-}*/
 .modal-buttons {
   padding-bottom: 10px;
 }
@@ -731,12 +754,6 @@ a:hover {
 .section-item .item-child-items table {
   margin-bottom: 0;
 }
-/*@font-face {
-    font-family: 'Glyphicons Halflings';
-    src: url('../lib/bootstrap/dist/fonts/glyphicons-
-    halflings-regular.eot');
-    src: url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2') format('woff'), url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../lib/bootstrap/dist/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
-}*/
 [side-bar-tooltip] {
   position: relative;
 }
@@ -766,39 +783,6 @@ a:hover {
   display: block;
   min-height: 100vh;
   position: relative;
-}
-body {
-  position: relative;
-}
-body:not(.is-logon):not(.sidebar-collapsed) {
-  padding-left: calc(120px + 30px);
-}
-body:not(.is-logon):not(.sidebar-collapsed) .side-bar {
-  width: 120px;
-}
-body:not(.is-logon):not(.sidebar-collapsed) .side-bar .title {
-  margin-bottom: 30px;
-}
-body:not(.is-logon):not(.sidebar-collapsed) .side-bar .side-bar-item .icon {
-  display: none !important;
-}
-body:not(.is-logon).sidebar-collapsed {
-  padding-left: 80px;
-}
-body:not(.is-logon).sidebar-collapsed .side-bar {
-  width: 50px;
-}
-body:not(.is-logon).sidebar-collapsed .side-bar > .title {
-  display: none;
-}
-body:not(.is-logon).sidebar-collapsed .side-bar .buttons {
-  padding: 0;
-}
-body:not(.is-logon).sidebar-collapsed .side-bar .side-bar-arrow {
-  transform: rotate(180deg);
-}
-body:not(.is-logon).sidebar-collapsed .side-bar .side-bar-item .name {
-  display: none;
 }
 a,
 a:hover,

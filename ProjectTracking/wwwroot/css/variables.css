@@ -1,6 +1,9 @@
 ﻿.t {
   border: 1px solid red !important;
 }
+.b {
+  border: 1px solid blue !important;
+}
 .Fill-Background {
   background-color: rgba(243, 241, 241, 0.9);
 }
@@ -216,16 +219,6 @@
 }
 .Button-Block {
   width: 100%;
-}
-.t {
-  border: 1px solid red !important;
-}
-.b {
-  border: 1px solid blue !important;
-}
-select:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 #000;
 }
 .MiddleBoxContainerTemplate {
   padding: 40px 40px;
