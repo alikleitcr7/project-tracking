@@ -15,12 +15,14 @@ namespace ProjectTracking.Data.Methods
         private ApplicationDbContext db;
         private readonly IMapper _mapper;
         private readonly ITimeSheetActivityLogsMethods _activityLogs;
+        private readonly IIpAddressMethods _ipAddressMethods;
 
-        public TimeSheetActivitiesMethods(IMapper mapper, ITimeSheetActivityLogsMethods activityLogs, ApplicationDbContext context)
+        public TimeSheetActivitiesMethods(IMapper mapper, ITimeSheetActivityLogsMethods activityLogs, IIpAddressMethods ipAddressMethods, ApplicationDbContext context)
         {
             db = context;
             _mapper = mapper;
             _activityLogs = activityLogs;
+            this._ipAddressMethods = ipAddressMethods;
         }
 
         public TimeSheetActivity Add(TimeSheetActivity activity)
@@ -53,6 +55,7 @@ namespace ProjectTracking.Data.Methods
         {
             DataSets.TimeSheetActivity dbActivity = db.TimeSheetActivities
                                                       .Include(k => k.TimeSheetTask)
+                                                      .Include(k => k.IpAddress)
                                                       .FirstOrDefault(k => k.ID == id);
 
             if (dbActivity == null)
@@ -63,15 +66,15 @@ namespace ProjectTracking.Data.Methods
             TimeSheetActivity activity = _mapper.Map<TimeSheetActivity>(dbActivity);
 
             // get ip title
-            if (dbActivity.IpAddress != null)
-            {
-                DataSets.IpAddress address = db.IpAddresses.FirstOrDefault(k => k.Address == dbActivity.IpAddress);
+            //if (dbActivity.IpAddress != null)
+            //{
+            //    DataSets.IpAddress address = db.IpAddresses.FirstOrDefault(k => k.Address == dbActivity.IpAddress);
 
-                if (address != null)
-                {
-                    activity.IpAddressTitle = address.Title;
-                }
-            }
+            //    if (address != null)
+            //    {
+            //        activity.IpAddressDisplay = address.Title;
+            //    }
+            //}
 
             return activity;
         }
@@ -106,7 +109,6 @@ namespace ProjectTracking.Data.Methods
                     return null;
                 }
 
-
                 #region ACTIVITY LOG
 
 
@@ -118,7 +120,9 @@ namespace ProjectTracking.Data.Methods
 
                 #endregion
 
-                dbActivity.IpAddress = activity.IpAddress;
+                bool ipAdded = _ipAddressMethods.AddIfNotExist(activity.IpAddress);
+
+                dbActivity.Address = ipAdded ? activity.IpAddress : null;
                 dbActivity.FromDate = activity.FromDate;
                 dbActivity.ToDate = activity.ToDate;
                 dbActivity.Comment = activity.Comment;
@@ -200,60 +204,60 @@ namespace ProjectTracking.Data.Methods
 
         public static void PopulateIpAddress(DataContract.TimeSheetActivity activity, List<DataSets.IpAddress> ips)
         {
-            if (activity != null && activity.IpAddress != null)
-            {
-                DataSets.IpAddress address = ips.FirstOrDefault(k => k.Address == activity.IpAddress);
+            //if (activity != null && activity.IpAddress != null)
+            //{
+            //    DataSets.IpAddress address = ips.FirstOrDefault(k => k.Address == activity.IpAddress);
 
-                if (address != null)
-                {
-                    activity.IpAddressTitle = address.Title;
-                }
-            }
+            //    if (address != null)
+            //    {
+            //        activity.IpAddressDisplay = address.Title;
+            //    }
+            //}
         }
 
         public static void PopulateIpAddress(DataContract.TimeSheetActivityLog activity, List<DataSets.IpAddress> ips)
         {
-            if (activity != null && activity.IpAddress != null)
-            {
-                DataSets.IpAddress address = ips.FirstOrDefault(k => k.Address == activity.IpAddress);
+            //if (activity != null && activity.IpAddress != null)
+            //{
+            //    DataSets.IpAddress address = ips.FirstOrDefault(k => k.Address == activity.IpAddress);
 
-                if (address != null)
-                {
-                    activity.IpAddressTitle = address.Title;
-                }
-            }
+            //    if (address != null)
+            //    {
+            //        activity.IpAddressDisplay = address.Title;
+            //    }
+            //}
         }
 
         public static void PopulateIpAddresses(List<DataContract.TimeSheetActivity> activities, List<DataSets.IpAddress> ips)
         {
-            if (activities.Count > 0)
-            {
-                //List<DataSets.IpAddress> ips = db.IpAddresses.ToList();
+            //if (activities.Count > 0)
+            //{
+            //    //List<DataSets.IpAddress> ips = db.IpAddresses.ToList();
 
-                foreach (DataContract.TimeSheetActivity activity in activities)
-                {
-                    PopulateIpAddress(activity, ips);
-                }
-            }
+            //    foreach (DataContract.TimeSheetActivity activity in activities)
+            //    {
+            //        PopulateIpAddress(activity, ips);
+            //    }
+            //}
         }
         public static void PopulateIpAddresses(List<DataContract.TimeSheetActivityLog> activities, List<DataSets.IpAddress> ips)
         {
-            if (activities.Count > 0)
-            {
-                //List<DataSets.IpAddress> ips = db.IpAddresses.ToList();
+            //if (activities.Count > 0)
+            //{
+            //    //List<DataSets.IpAddress> ips = db.IpAddresses.ToList();
 
-                foreach (DataContract.TimeSheetActivityLog activity in activities)
-                {
-                    PopulateIpAddress(activity, ips);
-                }
-            }
+            //    foreach (DataContract.TimeSheetActivityLog activity in activities)
+            //    {
+            //        PopulateIpAddress(activity, ips);
+            //    }
+            //}
         }
 
         public ProjectTask GetActivityProjectTask(int id)
         {
             var activity = db.TimeSheetActivities.First(k => k.ID == id);
 
-            return _mapper.Map<ProjectTask>(db.ProjectTasks.Include(k=>k.Project).First(k => k.ID == activity.TimeSheetProjectTaskId));
+            return _mapper.Map<ProjectTask>(db.ProjectTasks.Include(k => k.Project).First(k => k.ID == activity.TimeSheetProjectTaskId));
         }
 
         #endregion

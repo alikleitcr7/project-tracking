@@ -63,6 +63,7 @@ namespace ProjectTracking.Data.Methods
         public List<TimeSheetActivityLog> GetByActivity(int activityId)
         {
             List<DataSets.TimeSheetActivityLog> dbActivities = db.TimeSheetActivityLogs
+                                                              .Include(k => k.IpAddress)
                                                               .Where(k => k.TimeSheetActivityId == activityId)
                                                               .OrderByDescending(k => k.DateAdded)
                                                               .ToList();
@@ -76,7 +77,7 @@ namespace ProjectTracking.Data.Methods
 
             //db.IpAddresses.ToList()
 
-            TimeSheetActivitiesMethods.PopulateIpAddresses(logs, db.IpAddresses.ToList());
+            //TimeSheetActivitiesMethods.PopulateIpAddresses(logs, db.IpAddresses.ToList());
 
             return logs.ToList();
         }
@@ -127,7 +128,5 @@ namespace ProjectTracking.Data.Methods
 
             return _mapper.Map<TimeSheetActivity>(dbActivity);
         }
-
-
     }
 }

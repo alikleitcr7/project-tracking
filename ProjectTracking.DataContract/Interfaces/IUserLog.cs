@@ -8,7 +8,6 @@ namespace ProjectTracking.DataContract.Interfaces
     {
         int ID { get; set; }
         string UserId { get; set; }
-        string IPAddress { get; set; }
         //string ConnectionId { get; set; }
         DateTime FromDate { get; set; }
         DateTime? ToDate { get; set; }

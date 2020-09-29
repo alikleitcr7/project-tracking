@@ -6,18 +6,17 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using ProjectTracking.DataContract;
 using ProjectTracking.Data.Methods.Interfaces;
+using ProjectTracking.Exceptions;
 
 namespace ProjectTracking.Controllers
 {
     public class IpAddressesController : Controller
     {
         private readonly IIpAddressMethods _ipAddresses;
-        private readonly IMapper _mapper;
 
-        public IpAddressesController(IIpAddressMethods ipAddresses, IMapper mapper)
+        public IpAddressesController(IIpAddressMethods ipAddresses)
         {
             _ipAddresses = ipAddresses;
-            _mapper = mapper;
         }
 
         public IActionResult Index()
@@ -25,64 +24,101 @@ namespace ProjectTracking.Controllers
             return View();
         }
 
-        public List<string> GetUnlistedIps()
+        public IActionResult GetUnlistedIps()
         {
-            return _ipAddresses.UnListedIps();
+            try
+            {
+                return Ok(_ipAddresses.UnListedIps());
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpPost]
-        public IpAddress Create(string address, string title)
+        public IActionResult Create(string address, string title)
         {
-            var dbAddress = _ipAddresses.Create(new Data.DataSets.IpAddress()
+            try
             {
-                Address = address,
-                Title = title
-            });
+                IpAddress ipAddress = _ipAddresses.Add(new IpAddress()
+                {
+                    Address = address,
+                    Title = title
+                });
 
-            if (dbAddress != null)
-            {
-                return _mapper.Map<IpAddress>(dbAddress);
+                return Ok(ipAddress);
             }
-
-            return null;
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
-        public bool Delete(int id)
+        public IActionResult Delete(string ipAddress)
         {
-            var dbInventoryType = _ipAddresses.GetByID(id);
-
-            if (dbInventoryType != null)
+            try
             {
-                return _ipAddresses.Delete(dbInventoryType);
-            }
+                _ipAddresses.Delete(ipAddress);
 
-            return false;
+                return Ok(true);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
-        public bool Update(int id, string address, string title)
+        public IActionResult Update(string address, string title)
         {
-            var dbInventoryType = _ipAddresses.GetByID(id);
-
-            if (dbInventoryType != null)
+            try
             {
-                dbInventoryType.Address = address;
-                dbInventoryType.Title = title;
-                return _ipAddresses.Edit(dbInventoryType);
-            }
+                IpAddress ipAddress = _ipAddresses.Update(new IpAddress()
+                {
+                    Address = address,
+                    Title = title
+                });
 
-            return false;
+                return Ok(ipAddress);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
-        public List<IpAddress> GetAll()
+        public IActionResult GetAll()
         {
-            var dbIpAddresses = _ipAddresses.Filter().ToList();
-
-            if (dbIpAddresses != null)
+            try
             {
-                return dbIpAddresses.Select(k => _mapper.Map<IpAddress>(k)).ToList();
-            }
+                var dbIpAddresses = _ipAddresses.GetAll();
 
-            return new List<DataContract.IpAddress>();
+                return Ok(dbIpAddresses);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
     }
 }

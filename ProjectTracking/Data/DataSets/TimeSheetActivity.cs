@@ -10,10 +10,12 @@ namespace ProjectTracking.Data.DataSets
         public DateTime FromDate { get; set; }
         public DateTime? ToDate { get; set; }
         public string Comment { get; set; }
-        public string IpAddress { get; set; }
+        public string Address { get; set; }
 
         public int TimeSheetProjectTaskId { get; set; }
         public DateTime DateAdded { get; set; } = DateTime.Now;
+
+        public IpAddress IpAddress { get; set; }
     }
 
     public class TimeSheetActivity : TimeSheetActivityBase

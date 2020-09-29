@@ -12,8 +12,15 @@ namespace ProjectTracking.DataContract
 
         public string Comment { get; set; }
         public string IpAddress { get; set; }
-        public string IpAddressTitle { get; set; }
+        public string IpAddressDisplay
+        {
+            get
+            {
+                return IPAddress == null ? "-" : (IPAddress.Title ?? IPAddress.Address);
+            }
+        }
 
+        public IpAddress IPAddress { get; set; }
 
         public string DateAddedDisplay
         {

@@ -88,7 +88,7 @@ namespace ProjectTracking.Data
                   .HasMany(c => c.TimeSheetActivityLogs)
                   .WithOne(c => c.TimeSheetActivity)
                   .OnDelete(DeleteBehavior.Cascade);
-            
+
             //builder.Entity<TimeSheetActivity>()
             //      .HasMany(c => c.TimeSheetActivityLogs)
             //      .WithOne(c => c.TimeSheetActivity)
@@ -220,6 +220,25 @@ namespace ProjectTracking.Data
             //                .HasOne(sc => sc.Permission)
             //                .WithMany(s => s.RequestedPermissions)
             //                .HasForeignKey(sc => sc.PermissionId);
+
+            #endregion
+
+            #region IPAddress
+
+            builder.Entity<IpAddress>()
+                   .HasMany(k => k.TimeSheetActivities)
+                   .WithOne(k => k.IpAddress)
+                   .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<IpAddress>()
+                   .HasMany(k => k.TimeSheetActivityLogs)
+                   .WithOne(k => k.IpAddress)
+                   .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<IpAddress>()
+                   .HasMany(k => k.UserLogs)
+                   .WithOne(k => k.IpAddress)
+                   .OnDelete(DeleteBehavior.ClientSetNull);
 
             #endregion
 

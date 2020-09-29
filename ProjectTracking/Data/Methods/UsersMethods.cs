@@ -26,9 +26,9 @@ namespace ProjectTracking.Data.Methods
         private readonly IDataAccess dataAccess;
 
         private readonly IValidationExtensions _validation;
+        private readonly IIpAddressMethods _ipAddressesMethods;
 
-
-        public UsersMethods(IMapper mapper, IConfiguration config, IDataAccess dataAccess, IValidationExtensions validation)
+        public UsersMethods(IMapper mapper, IConfiguration config, IDataAccess dataAccess, IValidationExtensions validation, IIpAddressMethods ipAddressesMethods)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             optionsBuilder.UseSqlServer(Setting.ConnectionString);
@@ -37,6 +37,7 @@ namespace ProjectTracking.Data.Methods
             _mapper = mapper;
             this.dataAccess = dataAccess;
             _validation = validation;
+            this._ipAddressesMethods = ipAddressesMethods;
         }
 
         public User Save(UserSaveModel model)
@@ -220,10 +221,12 @@ namespace ProjectTracking.Data.Methods
                 return null;
             }
 
+            IpAddress address = _ipAddressesMethods.Add(new IpAddress() { Address = ipAddress });
+
             DataSets.UserLog dbLog = new DataSets.UserLog()
             {
                 Comments = comments,
-                IPAddress = ipAddress,
+                Address = address?.Address,
                 FromDate = DateTime.Now,
                 UserId = userId
             };

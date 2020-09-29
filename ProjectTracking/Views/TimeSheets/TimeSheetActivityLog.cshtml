@@ -69,7 +69,7 @@ else
                 <td>@activity.FromDateDisplay</td>
                 <td>@activity.ToDateDisplay</td>
                 <td>@activity.Comment</td>
-                <td>@(activity.IpAddressTitle ?? activity.IpAddress)</td>
+                <td>@(activity.IpAddressDisplay)</td>
             </tr>
         </table>
 
@@ -93,7 +93,7 @@ else
                         <td>@item.FromDateDisplay</td>
                         <td>@item.ToDateDisplay</td>
                         <td>@item.Comment</td>
-                        <td>@(item.IpAddressTitle ?? item.IpAddress)</td>
+                        <td>@(item.IpAddressDisplay)</td>
                     </tr>
                 }
             </table>
