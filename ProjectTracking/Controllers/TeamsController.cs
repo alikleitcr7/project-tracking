@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectTracking.Data.Methods.Interfaces;
@@ -12,6 +14,7 @@ namespace ProjectTracking.Controllers
 {
     //[Route("api/[controller]")]
     //[ApiController]
+    [Authorize]
     public class TeamsController : Controller
     {
         private readonly ITeamsMethods _teamsMethods;
@@ -20,6 +23,14 @@ namespace ProjectTracking.Controllers
         {
             _teamsMethods = teamsMethods;
         }
+
+        public IActionResult Index()
+        {
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            return View();
+        }
+
 
         [HttpGet]
         public JsonResult GetById(int id)

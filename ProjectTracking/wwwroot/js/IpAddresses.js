@@ -60,7 +60,10 @@ var ipAddressesMethods = {
 
         }).fail((e) => {
 
-            this.ipAddresses.message = BASIC_ERROR_MESSAGE;
+            console.log({ e })
+
+
+            this.ipAddresses.message = e.responseJSON && e.responseJSON.message ? e.responseJSON.message: BASIC_ERROR_MESSAGE;
 
         }).always(() => {
 
@@ -218,7 +221,7 @@ new Vue({
 
         this.ipAddresses.isLoading = true
 
-        IpAddressesService.GetAll()
+        IpAddressesService.GetListed()
             .done((r) => {
                 console.log({ r })
                 this.ipAddresses.data = r

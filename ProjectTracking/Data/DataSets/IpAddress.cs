@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectTracking.Data.DataSets
 {
-    public class IpAddress : Entity
+    public class IpAddress
     {
         public string Address { get; set; }
         public string Title { get; set; }

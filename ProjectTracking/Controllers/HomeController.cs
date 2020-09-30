@@ -22,6 +22,8 @@ namespace ProjectTracking.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _accessor;
         private readonly IUserMethods _users;
+        private readonly IIpAddressMethods _ipAddressMethods;
+
         //private readonly IProjectsMethods _projects;
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
@@ -29,6 +31,7 @@ namespace ProjectTracking.Controllers
         public HomeController(SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IUserMethods users,
+            IIpAddressMethods ipAddressMethods,
             IHttpContextAccessor accessor
             )
         {
@@ -36,6 +39,7 @@ namespace ProjectTracking.Controllers
             _userManager = userManager;
             _accessor = accessor;
             _users = users;
+            this._ipAddressMethods = ipAddressMethods;
             //_projects = projects;
         }
 
@@ -91,11 +95,27 @@ namespace ProjectTracking.Controllers
 
                     ApplicationContext.LogsLastUpdatedDate = DateTime.Now;
 
+
                     UserLog log = _users.AddStartLog(id, ip);
 
                     if (!ApplicationContext.ActiveLogs.Any(k => k.UserId == id))
                     {
                         ApplicationContext.ActiveLogs.Add(log);
+                    }
+
+                    if (Request.Headers["Referer"].Count != 0)
+                    {
+                        string uriQuery = new System.Uri(Request.Headers["Referer"].ToString()).Query;
+
+                        if (!string.IsNullOrEmpty(uriQuery))
+                        {
+                            var queryStr = System.Web.HttpUtility.ParseQueryString(uriQuery);
+
+                            if (queryStr["ReturnUrl"] != null)
+                            {
+                                return Redirect(queryStr["ReturnUrl"]);
+                            }
+                        }
                     }
 
                     return Redirect("~/");
@@ -140,7 +160,7 @@ namespace ProjectTracking.Controllers
 
             var user = await _userManager.FindByEmailAsync(User.Identity.Name);
 
-            if (user == null) 
+            if (user == null)
             {
                 user = await _userManager.FindByNameAsync(User.Identity.Name);
             }

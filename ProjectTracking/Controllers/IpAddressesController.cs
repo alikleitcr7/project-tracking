@@ -120,5 +120,23 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+        public IActionResult GetListed()
+        {
+            try
+            {
+                var dbIpAddresses = _ipAddresses.GetListed();
+
+                return Ok(dbIpAddresses);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
     }
 }

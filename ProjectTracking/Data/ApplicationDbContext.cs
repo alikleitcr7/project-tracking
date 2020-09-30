@@ -225,19 +225,24 @@ namespace ProjectTracking.Data
 
             #region IPAddress
 
+            builder.Entity<IpAddress>().HasKey(k => k.Address);
+
             builder.Entity<IpAddress>()
                    .HasMany(k => k.TimeSheetActivities)
                    .WithOne(k => k.IpAddress)
+                   .HasForeignKey(k => k.Address)
                    .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<IpAddress>()
                    .HasMany(k => k.TimeSheetActivityLogs)
                    .WithOne(k => k.IpAddress)
+                   .HasForeignKey(k => k.Address)
                    .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder.Entity<IpAddress>()
                    .HasMany(k => k.UserLogs)
                    .WithOne(k => k.IpAddress)
+                   .HasForeignKey(k => k.Address)
                    .OnDelete(DeleteBehavior.ClientSetNull);
 
             #endregion

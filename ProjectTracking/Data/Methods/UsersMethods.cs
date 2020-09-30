@@ -19,6 +19,8 @@ using System.Threading.Tasks;
 
 namespace ProjectTracking.Data.Methods
 {
+
+
     public class UsersMethods : IUserMethods
     {
         private ApplicationDbContext db;
@@ -221,12 +223,12 @@ namespace ProjectTracking.Data.Methods
                 return null;
             }
 
-            IpAddress address = _ipAddressesMethods.Add(new IpAddress() { Address = ipAddress });
+            bool ipAdded = _ipAddressesMethods.AddIfNotExist(ipAddress);
 
             DataSets.UserLog dbLog = new DataSets.UserLog()
             {
                 Comments = comments,
-                Address = address?.Address,
+                Address = ipAdded ? ipAddress : null,
                 FromDate = DateTime.Now,
                 UserId = userId
             };
@@ -468,28 +470,70 @@ namespace ProjectTracking.Data.Methods
         //    return result;
         //}
 
-        public List<DataContract.UserLog> GetUsersLogs(int page, int countPerPage, string fromDate, string toDate, out int totalPages)
+        public List<DataContract.UserLog> GetUsersLogs(int page, int countPerPage, string fromDate, string toDate, out int totalCount)
         {
-            totalPages = 0;
-            StringBuilder sqlGetUsersLogs = new StringBuilder();
-            sqlGetUsersLogs.Append(@"select CONCAT(FirstName,' ',LastName) as FullName, UserName ,FromDate ,ToDate ,Comments , UserLogging.IPAddress as IPAddress, ia.Title as IPAddressTitle
-                                        from UserLogging inner join AspNetUsers anu on UserId=anu.Id
-                                        left join IpAddresses ia on ia.Address = IPAddress
-                                            where fromdate between @fromDate and @toDate
-                                        order by fromdate desc");
-            //adding relation with user 
+            var query = db.UserLogging
+                .Include(k => k.IpAddress)
+                .Include(k => k.User)
+                .Select(k => new
+                {
+                    k.ID,
+                    k.FromDate,
+                    k.ToDate,
+                    k.Comments,
+                    k.Address,
+                    k.UserId,
+                    k.User,
+                    k.IpAddress,
+                });
 
-            SqlCommand cmd = new SqlCommand(sqlGetUsersLogs.ToString());
+            //if (!(string.IsNullOrEmpty(fromDate) || fromDate == "null"))
+            //{
+            //    query = query.Where(k => k.CategoryId.HasValue && k.CategoryId.Value == categoryId.Value);
+            //}
 
-            cmd.Parameters.AddWithValue("@fromDate", string.IsNullOrEmpty(fromDate) || fromDate == "null" ? "0001-01-01" : fromDate);
-            cmd.Parameters.AddWithValue("@toDate", string.IsNullOrEmpty(toDate) || toDate == "null" ? "3001-01-01" : toDate);
-            var result = dataAccess.ToObjectList<DataContract.UserLog>(cmd);
-            totalPages = result.Count();
-            var records = result.Skip(page * countPerPage)
-                                 .Take(countPerPage)
-                                 .ToList();
+            //if (!string.IsNullOrEmpty(keyword))
+            //{
+            //    query = query.Where(k => k.Title.Contains(keyword) || k.Description.Contains(keyword));
+            //}
 
-            return records;
+            totalCount = query.Count();
+
+            return query.OrderByDescending(k => k.FromDate)
+                .Skip(page * countPerPage)
+                .Take(countPerPage)
+                .ToList()
+                .Select(k => new UserLog()
+                {
+                    ID = k.ID,
+                    Comments = k.Comments,
+                    FromDate = k.FromDate,
+                    ToDate = k.ToDate,
+                    UserId = k.UserId,
+                    IPAddress = _mapper.Map<IpAddress>(k.IpAddress)
+                })
+                .ToList();
+
+            //totalPages = 0;
+            //StringBuilder sqlGetUsersLogs = new StringBuilder();
+            //sqlGetUsersLogs.Append(@"select CONCAT(FirstName,' ',LastName) as FullName, UserName ,FromDate ,ToDate ,Comments , UserLogging.IPAddress as IPAddress, ia.Title as IPAddressTitle
+            //                            from UserLogging inner join AspNetUsers anu on UserId=anu.Id
+            //                            left join IpAddresses ia on ia.Address = IPAddress
+            //                                where fromdate between @fromDate and @toDate
+            //                            order by fromdate desc");
+            ////adding relation with user 
+
+            //SqlCommand cmd = new SqlCommand(sqlGetUsersLogs.ToString());
+
+            //cmd.Parameters.AddWithValue("@fromDate", string.IsNullOrEmpty(fromDate) || fromDate == "null" ? "0001-01-01" : fromDate);
+            //cmd.Parameters.AddWithValue("@toDate", string.IsNullOrEmpty(toDate) || toDate == "null" ? "3001-01-01" : toDate);
+            //var result = dataAccess.ToObjectList<DataContract.UserLog>(cmd);
+            //totalPages = result.Count();
+            //var records = result.Skip(page * countPerPage)
+            //                     .Take(countPerPage)
+            //                     .ToList();
+
+            //return records;
 
         }
         public void EndLog(string userId, string comments = null)

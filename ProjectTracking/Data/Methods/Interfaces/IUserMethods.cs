@@ -7,7 +7,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
 {
     public interface IUserMethods
     {
-        List<DataContract.UserLog> GetUsersLogs(int page, int countPerPage, string fromDate, string toDate, out int totalPages);
+        List<DataContract.UserLog> GetUsersLogs(int page, int countPerPage, string fromDate, string toDate, out int totalCount);
         List<IdentityRole<string>> GetAllRoles();
         UserLog AddStartLog(string userId, string ipAddress, string comments = null);
         List<UserLog> GetActiveLogs();

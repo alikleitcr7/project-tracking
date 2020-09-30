@@ -173,7 +173,11 @@ namespace ProjectTracking
             services.AddSingleton<IDataAccess, DataAccess>(k => new DataAccess(Setting.ConnectionString));
 
             services.AddTransient<UserManager<ApplicationUser>>();
+
+
             services.AddHostedService<LiveObserverHost>();
+            //services.AddSingleton<LiveObserverHost>();
+            //services.AddHostedService<BackgroundServiceStarter<LiveObserverHost>>();
 
             services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme,
     opt =>
@@ -236,5 +240,6 @@ namespace ProjectTracking
 
             //ApplicationDbInitializer.SeedUsers(userManager);
         }
+
     }
 }

@@ -12,5 +12,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         void Delete(string ipAddress);
         List<IpAddress> GetAll();
         bool AddIfNotExist(string address);
+        List<IpAddress> GetListed();
     }
 }

@@ -44,6 +44,13 @@ const IpAddressesService = {
 
         return $.ajax(payload);
     },
+    GetListed: function () {
+
+        let url = IP_ADDRESS_SERVICE_URI('GetListed')
+        let payload = BASIC_AJAX_PAYLOAD(url, 'get');
+
+        return $.ajax(payload);
+    },
     GetUnlistedIps: function () {
 
         let url = IP_ADDRESS_SERVICE_URI('GetUnlistedIps')

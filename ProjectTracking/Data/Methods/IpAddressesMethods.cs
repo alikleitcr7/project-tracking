@@ -67,28 +67,29 @@ namespace ProjectTracking.Data.Methods
         {
             EnsureCleanIpAddress(ipAddress);
 
-            var dbRecord = _context.IpAddresses.FirstOrDefault(k => k.Address == ipAddress.Title);
+            var dbRecord = _context.IpAddresses.FirstOrDefault(k => k.Address == ipAddress.Address);
 
-            // add
-            if (dbRecord == null)
+            if (dbRecord != null)
             {
-                _context.IpAddresses.Add(new DataSets.IpAddress()
-                {
-                    Address = ipAddress.Address,
-                    Title = ipAddress.Title
-                });
-
-                return GetById(ipAddress.Address);
+                throw new ClientException("already exist");
             }
 
-            return _mapper.Map<IpAddress>(dbRecord);
+            // add
+            _context.IpAddresses.Add(new DataSets.IpAddress()
+            {
+                Address = ipAddress.Address,
+                Title = ipAddress.Title
+            });
+            _context.SaveChanges();
+
+            return GetById(ipAddress.Address);
         }
 
         public IpAddress Update(IpAddress ipAddress)
         {
             EnsureCleanIpAddress(ipAddress);
 
-            var dbRecord = _context.IpAddresses.FirstOrDefault(k => k.Address == ipAddress.Title);
+            var dbRecord = _context.IpAddresses.FirstOrDefault(k => k.Address == ipAddress.Address);
 
             // update
             if (dbRecord != null)
@@ -113,6 +114,11 @@ namespace ProjectTracking.Data.Methods
             if (string.IsNullOrEmpty(ipAddress.Address))
             {
                 throw new Exception("no address provided");
+            }
+
+            if (!System.Net.IPAddress.TryParse(ipAddress.Address, out _))
+            {
+                throw new ClientException("invalid ip");
             }
 
             // set title to null to ensure the fetch unlisted
@@ -148,6 +154,11 @@ namespace ProjectTracking.Data.Methods
             //    .ToList();
 
             //return timeSheetActivitiesIps.Union(logsIps).ToList();
+        }
+
+        public List<IpAddress> GetListed()
+        {
+            return _context.IpAddresses.Where(k => k.Title != null).ToList().Select(_mapper.Map<IpAddress>).ToList();
         }
     }
 }
