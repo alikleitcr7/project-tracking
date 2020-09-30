@@ -28,6 +28,9 @@ namespace ProjectTracking
         //public ICollection<Superviser> Supervisors { get; set; }
         //public ICollection<RequestedPermission> RequestedPermissions { get; set; }
         public ICollection<TimeSheet> TimeSheets { get; set; }
+        public ICollection<TimeSheet> AddedByUserTimeSheets { get; set; }
+        public List<Project> Projects { get; set; }
+        //public Role Role { get; set; }
         //public ICollection<IdentityUserRole<string>> Roles { get; set; }
         //public ICollection<RequestedPermissionsStatus> RequestedPermissionsStatuses { get; set; }
         //public virtual List<RequestedPermissionsStatus> RequestedPermissionsStatuses { get; set; }

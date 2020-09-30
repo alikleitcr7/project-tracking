@@ -13,7 +13,9 @@ namespace ProjectTracking.Data.DataSets
         public DateTime DateAdded { get; set; }
 
         public string UserId { get; set; }
+        public string AddedByUserId { get; set; }
 
+        public ApplicationUser AddedByUser { get; set; }
         public ApplicationUser User { get; set; }
         public ICollection<TimeSheetTask> TimeSheetTasks { get; set; }
     }

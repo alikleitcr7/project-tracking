@@ -19,6 +19,7 @@ namespace ProjectTracking.Data.DataSets
         //public int? TeamId { get; set; }
         public int? CategoryId { get; set; }
         public int? StatusCode { get; set; }
+        public int AddedByUserId { get; set; }
 
 
         public Category Category { get; set; }
@@ -27,6 +28,7 @@ namespace ProjectTracking.Data.DataSets
         public DateTime? ActualEnd { get; set; }
 
 
+        public ApplicationUser AddedByUser { get; set; }
         public List<TeamsProjects> TeamsProjects { get; set; }
         public List<ProjectTask> Tasks { get; set; }
     }

@@ -76,6 +76,8 @@
     <Compile Remove="Migrations\20200922183050_init.Designer.cs" />
     <Compile Remove="Migrations\20200922183307_init.cs" />
     <Compile Remove="Migrations\20200922183307_init.Designer.cs" />
+    <Compile Remove="Migrations\20200930175318_added_project_added_by.cs" />
+    <Compile Remove="Migrations\20200930175318_added_project_added_by.Designer.cs" />
     <Compile Remove="Models\TimeSheet\TimeSheetModel.cs" />
   </ItemGroup>
 

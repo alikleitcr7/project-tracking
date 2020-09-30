@@ -1,21 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="ProjectTracking.Data.DataSets.Category">
-    <Position X="17.5" Y="7" Width="1.5" />
+    <Position X="11" Y="16.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAgAAAAAAAAAQAAAAAAAAAAAAAAAAAAQA=</HashCode>
       <FileName>Data\DataSets\Category.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ProjectTracking.Data.DataSets.Team">
-    <Position X="10.5" Y="7.5" Width="1.5" />
+    <Position X="11" Y="10.25" Width="1.5" />
+    <Members>
+      <Property Name="ID" Hidden="true" />
+      <Property Name="Members" Hidden="true" />
+      <Property Name="Supervisers" Hidden="true" />
+      <Property Name="TeamsProjects" Hidden="true" />
+    </Members>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAgAAAAAAEAAQAAAAAAAgAAAAEAAAAAAA=</HashCode>
       <FileName>Data\DataSets\Team.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ProjectTracking.Data.DataSets.IpAddress">
-    <Position X="20.5" Y="2.25" Width="1.5" />
+    <Position X="17.25" Y="8.5" Width="1.5" />
     <Members>
       <Property Name="TimeSheetActivities" Hidden="true" />
       <Property Name="TimeSheetActivityLogs" Hidden="true" />
@@ -27,23 +33,30 @@
     </TypeIdentifier>
   </Class>
   <Class Name="ProjectTracking.Data.DataSets.Notification">
-    <Position X="14" Y="4.5" Width="1.75" />
+    <Position X="15.75" Y="6" Width="1.75" />
+    <Members>
+      <Property Name="FromUserId" Hidden="true" />
+      <Property Name="ID" Hidden="true" />
+      <Property Name="ToUserId" Hidden="true" />
+    </Members>
     <AssociationLine Name="FromUser" Type="ProjectTracking.ApplicationUser" FixedFromPoint="true">
       <Path>
-        <Point X="14" Y="5.438" />
-        <Point X="13.75" Y="5.438" />
+        <Point X="15.75" Y="6.698" />
+        <Point X="14" Y="6.698" />
       </Path>
-      <MemberNameLabel ManuallyPlaced="true">
-        <Position X="0.606" Y="-0.435" />
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="0.842" Y="-0.238" Height="0.182" Width="0.928" />
       </MemberNameLabel>
     </AssociationLine>
     <AssociationLine Name="ToUser" Type="ProjectTracking.ApplicationUser" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="14" Y="5.188" />
-        <Point X="13.75" Y="5.188" />
+        <Point X="15.75" Y="6.5" />
+        <Point X="14.25" Y="6.5" />
+        <Point X="14.25" Y="6.5" />
+        <Point X="14" Y="6.5" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
-        <Position X="0.092" Y="-0.809" />
+        <Position X="0.943" Y="0.12" />
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
@@ -56,17 +69,52 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="ProjectTracking.Data.DataSets.Project">
-    <Position X="15" Y="7" Width="1.5" />
+    <Position X="10" Y="13.75" Width="1.5" />
+    <Members>
+      <Property Name="AddedByUserId" Hidden="true" />
+      <Property Name="CategoryId" Hidden="true" />
+      <Property Name="ID" Hidden="true" />
+      <Property Name="Tasks" Hidden="true" />
+      <Property Name="TeamsProjects" Hidden="true" />
+    </Members>
+    <AssociationLine Name="Category" Type="ProjectTracking.Data.DataSets.Category" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.75" Y="16.007" />
+        <Point X="10.75" Y="16.2" />
+        <Point X="11.75" Y="16.2" />
+        <Point X="11.75" Y="16.5" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="1.057" Y="0.259" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="AddedByUser" Type="ProjectTracking.ApplicationUser" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="11" Y="13.75" />
+        <Point X="11" Y="13.375" />
+        <Point X="12.938" Y="13.375" />
+        <Point X="12.938" Y="8.771" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="1.135" Y="4.326" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAACAIAAAAggkAAAAAAAAAAAAAAAAgAIQAIAEAACAA=</HashCode>
+      <HashCode>gAAACAIAAAAggkAAAAAAAAgAAAAAAAgAIQAIAEAACAA=</HashCode>
       <FileName>Data\DataSets\Project.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Category" />
+      <Property Name="AddedByUser" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="ProjectTracking.Data.DataSets.Superviser">
-    <Position X="9.5" Y="2.75" Width="1.5" />
+  <Class Name="ProjectTracking.Data.DataSets.Superviser" Collapsed="true">
+    <Position X="9.75" Y="6.75" Width="1.5" />
+    <AssociationLine Name="Team" Type="ProjectTracking.Data.DataSets.Team">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.11" Y="2.664" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAABAAAAAAAAAAAAAAAAAAgCAAAAAAAAEAAAAAAAAAA=</HashCode>
       <FileName>Data\DataSets\Superviser.cs</FileName>
@@ -77,21 +125,59 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="ProjectTracking.Data.DataSets.TimeSheet">
-    <Position X="12.75" Y="7.5" Width="1.5" />
+    <Position X="14.75" Y="10.25" Width="1.5" />
+    <Members>
+      <Property Name="ID" Hidden="true" />
+      <Property Name="TimeSheetTasks" Hidden="true" />
+      <Property Name="UserId" Hidden="true" />
+    </Members>
+    <AssociationLine Name="User" Type="ProjectTracking.ApplicationUser" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.75" Y="11.25" />
+        <Point X="13.625" Y="11.25" />
+        <Point X="13.625" Y="8.771" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.064" Y="2.108" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="AddedByUser" Type="ProjectTracking.ApplicationUser" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.75" Y="11.125" />
+        <Point X="13.781" Y="11.125" />
+        <Point X="13.781" Y="8.771" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.92" Y="2.564" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAABAAAAAAAAgAAAAAAAAAgAAAAAAAAAAQAABAABQAA=</HashCode>
+      <HashCode>gAABAAAAAAAAgAAAAAAAAAgAAAAAAAAAAQAABAABQAA=</HashCode>
       <FileName>Data\DataSets\TimeSheet.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="User" />
+      <Property Name="AddedByUser" />
     </ShowAsAssociation>
   </Class>
   <Class Name="ProjectTracking.Data.DataSets.TimeSheetActivityBase">
-    <Position X="22.5" Y="4" Width="2" />
+    <Position X="16.25" Y="15" Width="2" />
     <Members>
       <Property Name="Address" Hidden="true" />
       <Property Name="TimeSheetProjectTaskId" Hidden="true" />
     </Members>
+    <AssociationLine Name="IpAddress" Type="ProjectTracking.Data.DataSets.IpAddress" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="18.25" Y="15.375" />
+        <Point X="18.5" Y="15.375" />
+        <Point X="18.5" Y="10.171" />
+        <Point X="17.688" Y="10.171" />
+        <Point X="17.688" Y="9.796" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.794" Y="4.849" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAEAEAAAAAAAACAAAAAAAAAAAACAQAABAABAAA=</HashCode>
       <FileName>Data\DataSets\TimeSheetActivity.cs</FileName>
@@ -101,16 +187,17 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="ProjectTracking.Data.DataSets.TimeSheetActivity" Collapsed="true">
-    <Position X="25" Y="4" Width="2" />
-    <AssociationLine Name="TimeSheetTask" Type="ProjectTracking.Data.DataSets.TimeSheetTask" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+    <Position X="16.25" Y="13.75" Width="2" />
+    <AssociationLine Name="TimeSheetTask" Type="ProjectTracking.Data.DataSets.TimeSheetTask" ManuallyRouted="true" FixedToPoint="true">
       <Path>
-        <Point X="27" Y="4.485" />
-        <Point X="27.375" Y="4.485" />
-        <Point X="27.375" Y="12.805" />
-        <Point X="12.375" Y="12.805" />
-        <Point X="12.375" Y="11.59" />
-        <Point X="12.75" Y="11.59" />
+        <Point X="17.25" Y="13.75" />
+        <Point X="17.25" Y="13.281" />
+        <Point X="15.5" Y="13.281" />
+        <Point X="15.5" Y="12.812" />
       </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.651" Y="0.601" />
+      </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAiAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
@@ -121,12 +208,26 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="ProjectTracking.Data.DataSets.TimeSheetActivityLog" Collapsed="true">
-    <Position X="25.25" Y="5.25" Width="1.75" />
-    <AssociationLine Name="TimeSheetActivity" Type="ProjectTracking.Data.DataSets.TimeSheetActivity" FixedFromPoint="true">
+    <Position X="16.25" Y="17" Width="1.75" />
+    <InheritanceLine Type="ProjectTracking.Data.DataSets.TimeSheetActivityBase" FixedFromPoint="true">
       <Path>
-        <Point X="26.062" Y="5.25" />
-        <Point X="26.062" Y="4.691" />
+        <Point X="18.25" Y="15.625" />
+        <Point X="18.625" Y="15.625" />
+        <Point X="18.625" Y="17.346" />
+        <Point X="18" Y="17.346" />
       </Path>
+    </InheritanceLine>
+    <AssociationLine Name="TimeSheetActivity" Type="ProjectTracking.Data.DataSets.TimeSheetActivity" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.312" Y="17.691" />
+        <Point X="17.312" Y="18.066" />
+        <Point X="15.492" Y="18.066" />
+        <Point X="15.492" Y="14.062" />
+        <Point X="16.25" Y="14.062" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.969" Y="-2.224" />
+      </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
       <HashCode>AACAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
@@ -136,8 +237,26 @@
       <Property Name="TimeSheetActivity" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="ProjectTracking.Data.DataSets.TimeSheetTask">
-    <Position X="12.75" Y="10.75" Width="1.5" />
+  <Class Name="ProjectTracking.Data.DataSets.TimeSheetTask" Collapsed="true">
+    <Position X="14.75" Y="12.25" Width="1.5" />
+    <Members>
+      <Property Name="Activities" Hidden="true" />
+      <Property Name="ID" Hidden="true" />
+    </Members>
+    <AssociationLine Name="TimeSheet" Type="ProjectTracking.Data.DataSets.TimeSheet" FixedFromPoint="true">
+      <Path>
+        <Point X="15.438" Y="12.25" />
+        <Point X="15.438" Y="11.738" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.146" Y="0.228" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="ProjectTask" Type="ProjectTracking.Data.DataSets.ProjectTask">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="2.067" Y="0.397" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAIAAAAAAAgAgAAAAAAIAAAAAAAAAAAAAAAIBAAAA=</HashCode>
       <FileName>Data\DataSets\TimeSheetTask.cs</FileName>
@@ -148,20 +267,22 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="ProjectTracking.Data.DataSets.UserLog" BaseTypeListCollapsed="true">
-    <Position X="18" Y="2.25" Width="1.5" />
+    <Position X="14.75" Y="8.5" Width="1.5" />
     <Members>
       <Property Name="Address" Hidden="true" />
       <Property Name="ID" Hidden="true" />
       <Property Name="UserId" Hidden="true" />
     </Members>
-    <AssociationLine Name="User" Type="ProjectTracking.ApplicationUser" FixedFromPoint="true">
+    <AssociationLine Name="User" Type="ProjectTracking.ApplicationUser" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="18" Y="2.662" />
-        <Point X="14" Y="2.662" />
-        <Point X="14" Y="2.5" />
-        <Point X="13" Y="2.5" />
-        <Point X="13" Y="2.75" />
+        <Point X="14.75" Y="9.25" />
+        <Point X="14.375" Y="9.25" />
+        <Point X="14.375" Y="7.386" />
+        <Point X="14" Y="7.386" />
       </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.145" Y="-2.111" />
+      </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAABAAAAAAAAgAAAAACAAAgAAAAAAAACAAAABAABIAA=</HashCode>
@@ -171,10 +292,24 @@
       <Property Name="User" />
       <Property Name="IpAddress" />
     </ShowAsAssociation>
-    <Lollipop Position="0.2" Collapsed="true" />
+    <Lollipop Position="0.635" Collapsed="true" />
   </Class>
   <Class Name="ProjectTracking.Data.DataSets.ProjectTask">
-    <Position X="17.5" Y="9" Width="1.5" />
+    <Position X="12.75" Y="13.75" Width="1.5" />
+    <Members>
+      <Property Name="ID" Hidden="true" />
+      <Property Name="ProjectId" Hidden="true" />
+      <Property Name="TimeSheetTasks" Hidden="true" />
+    </Members>
+    <AssociationLine Name="Project" Type="ProjectTracking.Data.DataSets.Project" ManuallyRouted="true" FixedFromPoint="true">
+      <Path>
+        <Point X="12.75" Y="14.875" />
+        <Point X="11.5" Y="14.875" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.273" Y="0.147" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAACAIAAAAggEAAAAAACAAABAAAAAAAIQAAAEAAQAA=</HashCode>
       <FileName>Data\DataSets\ProjectTask.cs</FileName>
@@ -183,23 +318,29 @@
       <Property Name="Project" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="ProjectTracking.Data.DataSets.TeamsProjects">
-    <Position X="9.25" Y="9.75" Width="1.5" />
+  <Class Name="ProjectTracking.Data.DataSets.TeamsProjects" Collapsed="true">
+    <Position X="10" Y="11.75" Width="1.5" />
     <AssociationLine Name="Team" Type="ProjectTracking.Data.DataSets.Team" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="10.125" Y="9.75" />
-        <Point X="10.125" Y="8.34" />
-        <Point X="10.5" Y="8.34" />
+        <Point X="10.562" Y="11.75" />
+        <Point X="10.562" Y="10.745" />
+        <Point X="11" Y="10.745" />
       </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.602" Y="-0.964" />
+      </MemberNameLabel>
     </AssociationLine>
     <AssociationLine Name="Project" Type="ProjectTracking.Data.DataSets.Project" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="10.75" Y="10.625" />
-        <Point X="13.417" Y="10.625" Type="JumpStart" />
-        <Point X="13.583" Y="10.625" Type="JumpEnd" />
-        <Point X="15.75" Y="10.625" />
-        <Point X="15.75" Y="10.026" />
+        <Point X="11.5" Y="12.129" />
+        <Point X="11.75" Y="12.129" />
+        <Point X="11.75" Y="12.562" />
+        <Point X="10.438" Y="12.562" />
+        <Point X="10.438" Y="13.75" />
       </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-2.047" Y="1.4" />
+      </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAACAACBAAAAAAAEAAAAAAAAAA=</HashCode>
@@ -211,14 +352,32 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="ProjectTracking.ApplicationUser">
-    <Position X="12.25" Y="2.75" Width="1.5" />
+    <Position X="12" Y="6" Width="2" />
+    <Members>
+      <Property Name="IsTracked" Hidden="true" />
+      <Property Name="Supervising" Hidden="true" />
+      <Property Name="TeamId" Hidden="true" />
+      <Property Name="TimeSheets" Hidden="true" />
+    </Members>
+    <AssociationLine Name="Team" Type="ProjectTracking.Data.DataSets.Team">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.089" Y="1.185" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAAAAEEAAAAACGAAAAAQEAACAEAQAAAgEAAAAACAAAg=</HashCode>
+      <HashCode>AAAAAEEAAAAACGAAAAAQEAACAEAQAAAgEAAAAACAAQg=</HashCode>
       <FileName>Models\ApplicationUser.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Team" />
     </ShowAsAssociation>
+  </Class>
+  <Class Name="ProjectTracking.Role">
+    <Position X="9.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Role.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
