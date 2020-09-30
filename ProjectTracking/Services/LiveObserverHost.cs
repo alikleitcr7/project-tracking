@@ -31,7 +31,7 @@ namespace ProjectTracking.Services
         //private string systemAdminId;
         public bool CheckedToday { get; set; }
 
-        public LiveObserverHost(IServiceProvider services,IConfiguration config, INotificationMethods notifications)
+        public LiveObserverHost(IServiceProvider services, IConfiguration config, INotificationMethods notifications)
         {
             //IUserMethods users, 
             _config = config;
@@ -41,7 +41,7 @@ namespace ProjectTracking.Services
             //_notificationMethods = notificationMethods;
             //systemAdminId = _config.GetValue<string>("Tokens:Admin");
             //managerIds = _users.GetUsersInRole("Manager");
-            
+
             using (var scope = Services.CreateScope())
             {
                 var scopedProcessingService =
@@ -52,7 +52,7 @@ namespace ProjectTracking.Services
             }
         }
 
-     
+
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _timer = new Timer(DoWork, null, 2000, interval);

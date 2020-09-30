@@ -19,7 +19,7 @@ namespace ProjectTracking.Data.DataSets
         //public int? TeamId { get; set; }
         public int? CategoryId { get; set; }
         public int? StatusCode { get; set; }
-        public int AddedByUserId { get; set; }
+        public string AddedByUserId { get; set; }
 
 
         public Category Category { get; set; }

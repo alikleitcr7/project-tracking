@@ -16,12 +16,14 @@ namespace ProjectTracking.Hubs
     {
         private IHttpContextAccessor _httpContextAccessor;
         private IUserMethods _users;
+        private readonly IUserLogsMethods _userLogsMethods;
         private IHttpContextAccessor _context;
 
-        public ObserverHub(IHttpContextAccessor httpContextAccessor, IUserMethods userMethods, IHttpContextAccessor context)
+        public ObserverHub(IHttpContextAccessor httpContextAccessor, IUserMethods userMethods,IUserLogsMethods userLogsMethods, IHttpContextAccessor context)
         {
             _httpContextAccessor = httpContextAccessor;
             _users = userMethods;
+            _userLogsMethods = userLogsMethods;
             _context = context;
         }
 
@@ -57,7 +59,7 @@ namespace ProjectTracking.Hubs
                 {
                     var ip = _context.HttpContext?.Connection?.RemoteIpAddress?.ToString();
 
-                    ApplicationContext.ActiveLogs.Add(_users.AddStartLog(id, ip));
+                    ApplicationContext.ActiveLogs.Add(_userLogsMethods.AddStartLog(id, ip));
                 }
 
                 //var cId = Context.User.FindFirst(ClaimTypes.NameIdentifier);

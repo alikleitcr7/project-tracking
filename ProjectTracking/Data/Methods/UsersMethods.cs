@@ -30,7 +30,7 @@ namespace ProjectTracking.Data.Methods
         private readonly IValidationExtensions _validation;
         private readonly IIpAddressMethods _ipAddressesMethods;
 
-        public UsersMethods(IMapper mapper, IConfiguration config, IDataAccess dataAccess, IValidationExtensions validation, IIpAddressMethods ipAddressesMethods)
+        public UsersMethods(IMapper mapper, IConfiguration config, IDataAccess dataAccess, IValidationExtensions validation)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             optionsBuilder.UseSqlServer(Setting.ConnectionString);
@@ -39,7 +39,7 @@ namespace ProjectTracking.Data.Methods
             _mapper = mapper;
             this.dataAccess = dataAccess;
             _validation = validation;
-            this._ipAddressesMethods = ipAddressesMethods;
+            //this._ipAddressesMethods = ipAddressesMethods;
         }
 
         public User Save(UserSaveModel model)
@@ -144,6 +144,7 @@ namespace ProjectTracking.Data.Methods
 
             // clear timesheets
             db.TimeSheets.RemoveRange(db.TimeSheets.Where(k => k.UserId == id));
+            //db.TimeSheets.RemoveRange(db.TimeSheets.Where(k => k.AddedByUserId == id));
 
             // clear notifications (from or to)
             db.Notifications.RemoveRange(db.Notifications.Where(k => k.FromUserId == id || k.ToUserId == id));
@@ -168,6 +169,11 @@ namespace ProjectTracking.Data.Methods
             parsedRecord.SupervisingCount = record.Supervising.Count;
 
             return parsedRecord;
+        }
+
+        public bool IsSupervisor(string userId)
+        {
+            return db.Supervisers.Any(k => k.UserId == userId);
         }
 
         public void AddRemoveTeamsFromSupervisor(string userId, List<int> teamIds)
@@ -214,31 +220,31 @@ namespace ProjectTracking.Data.Methods
             return db.Users.Where(k => k.UserName != "admin" && !k.Supervising.Any(s => s.TeamId == teamId)).ToList().Select(k => new KeyValuePair<string, string>(k.Id, k.FirstName + " " + k.LastName + $" ({k.UserName})")).ToList();
         }
 
-        public UserLog AddStartLog(string userId, string ipAddress, string comments = null)
-        {
-            var isActive = db.UserLogging.Any(k => k.UserId == userId && !k.ToDate.HasValue);
+        //public UserLog AddStartLog(string userId, string ipAddress, string comments = null)
+        //{
+        //    var isActive = db.UserLogging.Any(k => k.UserId == userId && !k.ToDate.HasValue);
 
-            if (isActive)
-            {
-                return null;
-            }
+        //    if (isActive)
+        //    {
+        //        return null;
+        //    }
 
-            bool ipAdded = _ipAddressesMethods.AddIfNotExist(ipAddress);
+        //    bool ipAdded = _ipAddressesMethods.AddIfNotExist(ipAddress);
 
-            DataSets.UserLog dbLog = new DataSets.UserLog()
-            {
-                Comments = comments,
-                Address = ipAdded ? ipAddress : null,
-                FromDate = DateTime.Now,
-                UserId = userId
-            };
+        //    DataSets.UserLog dbLog = new DataSets.UserLog()
+        //    {
+        //        Comments = comments,
+        //        Address = ipAdded ? ipAddress : null,
+        //        FromDate = DateTime.Now,
+        //        UserId = userId
+        //    };
 
-            db.UserLogging.Add(dbLog);
+        //    db.UserLogging.Add(dbLog);
 
-            db.SaveChanges();
+        //    db.SaveChanges();
 
-            return _mapper.Map<UserLog>(dbLog);
-        }
+        //    return _mapper.Map<UserLog>(dbLog);
+        //}
 
         public List<UserLog> GetActiveLogs()
         {
@@ -470,7 +476,7 @@ namespace ProjectTracking.Data.Methods
         //    return result;
         //}
 
-        public List<DataContract.UserLog> GetUsersLogs(int page, int countPerPage, string fromDate, string toDate, out int totalCount)
+        public List<DataContract.UserLog> GetUsersLogs(int page, int countPerPage, DateTime? fromDate, DateTime? toDate, out int totalCount)
         {
             var query = db.UserLogging
                 .Include(k => k.IpAddress)
@@ -497,6 +503,20 @@ namespace ProjectTracking.Data.Methods
             //    query = query.Where(k => k.Title.Contains(keyword) || k.Description.Contains(keyword));
             //}
 
+            if (fromDate.HasValue && toDate.HasValue)
+            {
+                query = query.Where(k => k.FromDate >= fromDate.Value && k.FromDate <= toDate.Value);
+            }
+
+            else if (fromDate.HasValue)
+            {
+                query = query.Where(k => k.FromDate >= fromDate.Value);
+            }
+            else if (toDate.HasValue)
+            {
+                query = query.Where(k => k.FromDate <= toDate.Value);
+            }
+
             totalCount = query.Count();
 
             return query.OrderByDescending(k => k.FromDate)
@@ -510,7 +530,9 @@ namespace ProjectTracking.Data.Methods
                     FromDate = k.FromDate,
                     ToDate = k.ToDate,
                     UserId = k.UserId,
-                    IPAddress = _mapper.Map<IpAddress>(k.IpAddress)
+                    IPAddress = _mapper.Map<IpAddress>(k.IpAddress),
+                    FullName = k.User.FirstName + " " + k.User.LastName,
+                    UserName = k.User.UserName
                 })
                 .ToList();
 

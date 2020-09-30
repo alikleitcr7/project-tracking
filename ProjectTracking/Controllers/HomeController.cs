@@ -23,6 +23,7 @@ namespace ProjectTracking.Controllers
         private readonly IHttpContextAccessor _accessor;
         private readonly IUserMethods _users;
         private readonly IIpAddressMethods _ipAddressMethods;
+        private readonly IUserLogsMethods _userLogsMethods;
 
         //private readonly IProjectsMethods _projects;
 
@@ -32,6 +33,7 @@ namespace ProjectTracking.Controllers
             UserManager<ApplicationUser> userManager,
             IUserMethods users,
             IIpAddressMethods ipAddressMethods,
+            IUserLogsMethods userLogsMethods,
             IHttpContextAccessor accessor
             )
         {
@@ -40,6 +42,7 @@ namespace ProjectTracking.Controllers
             _accessor = accessor;
             _users = users;
             this._ipAddressMethods = ipAddressMethods;
+            _userLogsMethods = userLogsMethods;
             //_projects = projects;
         }
 
@@ -81,6 +84,9 @@ namespace ProjectTracking.Controllers
             {
                 var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
 
+                // either add a claim of supervisor
+                // or a policy
+
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByEmailAsync(model.UserName);
@@ -95,8 +101,7 @@ namespace ProjectTracking.Controllers
 
                     ApplicationContext.LogsLastUpdatedDate = DateTime.Now;
 
-
-                    UserLog log = _users.AddStartLog(id, ip);
+                    UserLog log = _userLogsMethods.AddStartLog(id, ip);
 
                     if (!ApplicationContext.ActiveLogs.Any(k => k.UserId == id))
                     {

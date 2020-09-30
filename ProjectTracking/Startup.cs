@@ -66,6 +66,15 @@ namespace ProjectTracking
                        policy.RequireRole("Manager", "Admin"));
             });
 
+
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("SupervisingPolicy", policy =>
+            //        policy.Requirements.Add(new SupervisingPolicy()));
+            //});
+
+            //services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, SupervisingPolicyHandler>();
+
             Setting.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
 
             services
@@ -73,7 +82,7 @@ namespace ProjectTracking
                 {
                     options.UseSqlServer(
                         Configuration.GetConnectionString("DefaultConnection"));
-                }, ServiceLifetime.Transient);
+                }, ServiceLifetime.Scoped);
 
             //options.UseLazyLoadingProxies();
 
@@ -95,6 +104,7 @@ namespace ProjectTracking
 
             services.AddScoped<IProjectsMethods, Data.Methods.ProjectsMethods>();
             services.AddScoped<ITasksMethods, Data.Methods.TasksMethods>();
+            services.AddScoped<IUserLogsMethods, Data.Methods.UserLogsMethods>();
             services.AddScoped<IProjectsStatistics, Data.Methods.Statistics.ProjectsProgresses>();
             services.AddScoped<ITimeSheetActivityLogsMethods, Data.Methods.TimeSheetActivityLogsMethods>();
             services.AddScoped<IInsightsMethods, Data.Methods.Statistics.InsightsMethods>();
@@ -173,7 +183,6 @@ namespace ProjectTracking
             services.AddSingleton<IDataAccess, DataAccess>(k => new DataAccess(Setting.ConnectionString));
 
             services.AddTransient<UserManager<ApplicationUser>>();
-
 
             services.AddHostedService<LiveObserverHost>();
             //services.AddSingleton<LiveObserverHost>();

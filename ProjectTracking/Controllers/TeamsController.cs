@@ -14,8 +14,8 @@ namespace ProjectTracking.Controllers
 {
     //[Route("api/[controller]")]
     //[ApiController]
-    [Authorize]
-    public class TeamsController : Controller
+    //[Authorize(Policy = "SupervisingPolicy")]
+    public class TeamsController : BaseController
     {
         private readonly ITeamsMethods _teamsMethods;
 
@@ -30,7 +30,6 @@ namespace ProjectTracking.Controllers
 
             return View();
         }
-
 
         [HttpGet]
         public JsonResult GetById(int id)

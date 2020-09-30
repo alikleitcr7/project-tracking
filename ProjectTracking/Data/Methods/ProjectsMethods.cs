@@ -25,12 +25,13 @@ namespace ProjectTracking.Data.Methods
             _mapper = mapper;
         }
 
-        public Project Save(ProjectSaveModel model)
+        public Project Save(ProjectSaveModel model, string addedByUserId)
         {
             if (model.categoryId == 0 || string.IsNullOrEmpty(model.title))
             {
                 throw new ClientException("title and category are required");
             }
+
 
             if (model.id.HasValue)
             {
@@ -87,7 +88,8 @@ namespace ProjectTracking.Data.Methods
                     StartDate = model.startDate,
                     PlannedEnd = model.plannedEnd,
                     ActualEnd = model.actualEnd,
-                    StatusCode = model.statusCode
+                    StatusCode = model.statusCode,
+                    AddedByUserId = addedByUserId
                 };
 
                 // add the project

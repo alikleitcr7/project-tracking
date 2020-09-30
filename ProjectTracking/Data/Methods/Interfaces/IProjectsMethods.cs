@@ -13,7 +13,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         List<Project> Search(int? categoryId, string keyword, int page, int countPerPage, out int totalCount);
         List<Project> GetByTeam(int teamId);
 
-        Project Save(Models.Projects.ProjectSaveModel model);
+        Project Save(Models.Projects.ProjectSaveModel model, string addedByUserId);
 
         List<Project> Get(int departmentId, int companyId, bool includeActivities = true);
         List<Project> Get(bool includeActivities = true);

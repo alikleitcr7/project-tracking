@@ -25,9 +25,9 @@ namespace ProjectTracking.Controllers
         {
             return View();
         }
-       public JsonResult GetUsersLogs(int page, int countPerPage,string fromDate ,string toDate)
+       public JsonResult GetUsersLogs(int page, int countPerPage,DateTime? fromDate , DateTime? toDate)
         {
-            var records = _users.GetUsersLogs(page, countPerPage,fromDate,toDate, out int totalCount);
+            var records = _users.GetUsersLogs(page, countPerPage, fromDate, toDate, out int totalCount);
 
             object oRetval = new
             {

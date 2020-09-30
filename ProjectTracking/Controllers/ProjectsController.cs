@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ProjectTracking.Models.Projects;
 using ProjectTracking.Exceptions;
+using System.Security.Claims;
 
 namespace ProjectTracking.Controllers
 {
@@ -220,7 +221,9 @@ namespace ProjectTracking.Controllers
 
             try
             {
-                return Ok(_projects.Save(model));
+                string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                return Ok(_projects.Save(model, userId));
             }
             catch (ClientException ex)
             {
@@ -267,7 +270,7 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
-        
+
         [HttpGet]
         public IActionResult GetByTeam(int teamId)
         {
