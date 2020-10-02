@@ -68,6 +68,7 @@ namespace ProjectTracking.DataContract
 
         public Project Project { get; set; }
         public IEnumerable<TimeSheetTask> TimeSheetTasks { get; set; }
+        public List<ProjectTaskStatusModification> ProjectTaskStatusModifications { get; set; }
     }
 
 }

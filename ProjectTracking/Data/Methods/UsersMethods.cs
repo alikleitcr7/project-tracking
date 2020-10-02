@@ -147,7 +147,7 @@ namespace ProjectTracking.Data.Methods
             //db.TimeSheets.RemoveRange(db.TimeSheets.Where(k => k.AddedByUserId == id));
 
             // clear notifications (from or to)
-            db.Notifications.RemoveRange(db.Notifications.Where(k => k.FromUserId == id || k.ToUserId == id));
+            db.UserNotifications.RemoveRange(db.UserNotifications.Where(k => k.FromUserId == id || k.ToUserId == id));
 
             db.Users.Remove(dbUser);
 
@@ -171,6 +171,14 @@ namespace ProjectTracking.Data.Methods
             return parsedRecord;
         }
 
+        public List<string> SupervisingUsers(string supervisorId)
+        {
+            //List<int> supervisingTeams = db.Supervisers.Where(k => k.UserId == supervisorId)
+            //    .Select(k => k.TeamId).ToList();
+
+            return db.Users.Where(k => db.Supervisers.Any(s => s.UserId == supervisorId && s.TeamId == k.TeamId))
+                           .Select(k => k.Id).ToList();
+        }
         public bool IsSupervisor(string userId)
         {
             return db.Supervisers.Any(k => k.UserId == userId);
@@ -476,22 +484,34 @@ namespace ProjectTracking.Data.Methods
         //    return result;
         //}
 
-        public List<DataContract.UserLog> GetUsersLogs(int page, int countPerPage, DateTime? fromDate, DateTime? toDate, out int totalCount)
+        public List<DataContract.UserLog> GetUsersLogs( List<string> userIds , int page, int countPerPage, DateTime? fromDate, DateTime? toDate, out int totalCount)
         {
-            var query = db.UserLogging
+            IQueryable<DataSets.UserLog> baseQuery = db.UserLogging
                 .Include(k => k.IpAddress)
-                .Include(k => k.User)
-                .Select(k => new
-                {
-                    k.ID,
-                    k.FromDate,
-                    k.ToDate,
-                    k.Comments,
-                    k.Address,
-                    k.UserId,
-                    k.User,
-                    k.IpAddress,
-                });
+                .Include(k => k.User);
+
+            if (userIds != null)
+            {
+                baseQuery = baseQuery.Where(k => userIds.Contains(k.UserId));
+            }
+
+            //if (forSupervisorId != null)
+            //{
+            //    string[] userIds = 
+            //    baseQuery = baseQuery.Where(k=> k. )
+            //}
+
+            var query = baseQuery.Select(k => new
+            {
+                k.ID,
+                k.FromDate,
+                k.ToDate,
+                k.Comments,
+                k.Address,
+                k.UserId,
+                k.User,
+                k.IpAddress,
+            });
 
             //if (!(string.IsNullOrEmpty(fromDate) || fromDate == "null"))
             //{

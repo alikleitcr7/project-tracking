@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectTracking.Data;
 
 namespace ProjectTracking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201002151820_broadcast to user")]
+    partial class broadcasttouser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,7 +213,7 @@ namespace ProjectTracking.Migrations
                     b.ToTable("AspNetUsers");
 
                     b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", AccessFailedCount = 0, ConcurrencyStamp = "1e1c7103-028e-4fa4-9ad5-d8cdcdb272cd", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEB/zTBZ0ubhlbcYOTgHOxZ7X9FkirzXFaytyJIU0X7bo78xlIEAidXP+5+T+q5ZdzQ==", PhoneNumberConfirmed = false, SecurityStamp = "", TwoFactorEnabled = false, UserName = "admin" }
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", AccessFailedCount = 0, ConcurrencyStamp = "7da13084-cdea-4d27-a061-596694c15e7c", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAECC+7COLbJ5gmzNpP/6rJBsf+2QT5TbRZ/P3cBzfk7EvlYWwBFgB2AQSf+nMxx4HxQ==", PhoneNumberConfirmed = false, SecurityStamp = "", TwoFactorEnabled = false, UserName = "admin" }
                     );
                 });
 
@@ -562,8 +564,8 @@ namespace ProjectTracking.Migrations
                     b.HasDiscriminator().HasValue("IdentityRole");
 
                     b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e572", ConcurrencyStamp = "50531e26-5e6b-4c31-82f0-3c6564c8c2cc", Name = "Admin", NormalizedName = "ADMIN" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e590", ConcurrencyStamp = "aad0253c-368d-449e-9693-d81b953cef98", Name = "User", NormalizedName = "USER" }
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e572", ConcurrencyStamp = "d603061c-73f7-446d-9c0d-2475210ec106", Name = "Admin", NormalizedName = "ADMIN" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e590", ConcurrencyStamp = "e6d9f923-fc0a-4a7c-bbdc-45ee39a9727f", Name = "User", NormalizedName = "USER" }
                     );
                 });
 
@@ -647,7 +649,7 @@ namespace ProjectTracking.Migrations
             modelBuilder.Entity("ProjectTracking.Data.DataSets.ProjectStatusModification", b =>
                 {
                     b.HasOne("ProjectTracking.Data.DataSets.Project", "Project")
-                        .WithMany("ProjectStatusModifications")
+                        .WithMany("ProjectsModifications")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

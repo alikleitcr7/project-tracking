@@ -5,13 +5,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProjectTracking.DataContract
 {
+
     public class Notification
     {
         public int ID { get; set; }
         public string FromUserId { get; set; }
-        public string ToUserId { get; set; }
         public string Message { get; set; }
-        public bool IsRead { get; set; }
+        //public bool IsRead { get; set; }
 
         public NotificationType NotificationType
         {
@@ -23,15 +23,6 @@ namespace ProjectTracking.DataContract
 
         public short NotificationTypeCode { get; set; }
         public DateTime DateSent { get; set; }
-
-        public string ToUserDisplay
-        {
-            get
-            {
-
-                return ToUser == null ? "-" : ToUser.FullName;
-            }
-        }
 
         public string FromUserDisplay
         {
@@ -98,7 +89,6 @@ namespace ProjectTracking.DataContract
         }
 
         public User FromUser { get; set; }
-        public User ToUser { get; set; }
     }
 
     public enum NotificationType { Default, Information, Important }

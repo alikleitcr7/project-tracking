@@ -5,7 +5,8 @@ using System.Text;
 
 namespace ProjectTracking.DataContract
 {
-    public class UserLog : IUserLog
+    //: IUserLog
+    public class UserLog
     {
         public int ID { get; set; }
         public string UserId { get; set; }

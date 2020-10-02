@@ -35,7 +35,8 @@ namespace ProjectTracking.Controllers
             _users = users;
             _projectsStatistics = projectsStatistics;
         }
-        [Authorize(Policy = "Administration")]
+
+        //[Authorize(Policy = "Administration")]
         public IActionResult Index()
         {
             return View();

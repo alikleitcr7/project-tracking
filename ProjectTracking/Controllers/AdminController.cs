@@ -128,7 +128,7 @@ namespace ProjectTracking.Controllers
                 HourlyRate = addUserViewModel.HourlyRate,
                 MonthlySalary = addUserViewModel.MonthlySalary,
                 EmploymentTypeCode = addUserViewModel.AgreementType.HasValue ? (short?)addUserViewModel.AgreementType.Value : null,
-                HoursPerDay = addUserViewModel.HoursPerDay
+                //HoursPerDay = addUserViewModel.HoursPerDay
 
             };
 
@@ -171,8 +171,7 @@ namespace ProjectTracking.Controllers
                 HourlyRate = user.HourlyRate,
                 MonthlySalary = user.MonthlySalary,
                 AgreementType = (EmploymentType?)user.EmploymentTypeCode,
-                HoursPerDay = user.HoursPerDay
-                ,
+                //HoursPerDay = user.HoursPerDay
                 MiddleName = user.MiddleName
             };
 
@@ -210,7 +209,7 @@ namespace ProjectTracking.Controllers
                 user.HourlyRate = editUserViewModel.HourlyRate;
                 user.MonthlySalary = editUserViewModel.MonthlySalary;
                 user.EmploymentTypeCode = editUserViewModel.AgreementType.HasValue ? (short?)editUserViewModel.AgreementType.Value : null;
-                user.HoursPerDay = editUserViewModel.HoursPerDay;
+                //user.HoursPerDay = editUserViewModel.HoursPerDay;
 
                 var result = await _userManager.UpdateAsync(user);
 

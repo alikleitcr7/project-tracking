@@ -67,13 +67,20 @@ namespace ProjectTracking
             });
 
 
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("SupervisingPolicy", policy =>
-            //        policy.Requirements.Add(new SupervisingPolicy()));
-            //});
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("SupervisingPolicy", policy =>
+                    policy.Requirements.Add(new SupervisingPolicy(false)));
+            });
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("SupervisingOrAdminPolicy", policy =>
+                    policy.Requirements.Add(new SupervisingPolicy(true)));
+            });
 
-            //services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, SupervisingPolicyHandler>();
+
+            services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, SupervisingPolicyHandler>();
 
             Setting.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
 

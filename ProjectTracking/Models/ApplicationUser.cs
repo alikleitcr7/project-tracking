@@ -20,11 +20,14 @@ namespace ProjectTracking
         public bool? IsTracked { get; set; }
         public float? MonthlySalary { get; set; }
         public float? HourlyRate { get; set; }
-        public float? HoursPerDay { get; set; } // to be removed
+        //public float? HoursPerDay { get; set; } // to be removed
         public short? EmploymentTypeCode { get; set; }
+        //public bool IsDeleted { get; set; }
 
         //public virtual List<Superviser> Supervisors { get; set; }
         public List<Superviser> Supervising { get; set; }
+        public List<Broadcast> Broadcasts { get; set; }
+
         //public ICollection<Superviser> Supervisors { get; set; }
         //public ICollection<RequestedPermission> RequestedPermissions { get; set; }
         public ICollection<TimeSheet> TimeSheets { get; set; }

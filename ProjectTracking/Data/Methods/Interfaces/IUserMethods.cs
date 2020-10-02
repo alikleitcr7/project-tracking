@@ -7,7 +7,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
 {
     public interface IUserMethods
     {
-        List<DataContract.UserLog> GetUsersLogs(int page, int countPerPage, DateTime? fromDate, DateTime? toDate, out int totalCount);
+        List<DataContract.UserLog> GetUsersLogs(List<string> userIds,int page, int countPerPage, DateTime? fromDate, DateTime? toDate, out int totalCount);
         List<IdentityRole<string>> GetAllRoles();
         //UserLog AddStartLog(string userId, string ipAddress, string comments = null);
         List<UserLog> GetActiveLogs();
@@ -49,6 +49,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         User Save(Models.Users.UserSaveModel model);
         void AddRemoveTeamsFromSupervisor(string userId, List<int> teamIds);
         bool IsSupervisor(string userId);
+        List<string> SupervisingUsers(string supervisorId);
         #endregion
     }
 }

@@ -14,7 +14,8 @@ namespace ProjectTracking.Controllers
 {
     //[Route("api/[controller]")]
     //[ApiController]
-    //[Authorize(Policy = "SupervisingPolicy")]
+    // if u place the policy here, then if you call the other methods 
+    // via ajax they will require that policy!!!!!
     public class TeamsController : BaseController
     {
         private readonly ITeamsMethods _teamsMethods;
@@ -24,9 +25,12 @@ namespace ProjectTracking.Controllers
             _teamsMethods = teamsMethods;
         }
 
+        [Authorize(Policy = "SupervisingPolicy")]
         public IActionResult Index()
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+
 
             return View();
         }

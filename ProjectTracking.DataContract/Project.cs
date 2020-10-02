@@ -66,5 +66,6 @@ namespace ProjectTracking.DataContract
 
         public List<TeamsProjects> TeamsProjects { get; set; }
         public List<ProjectTask> Tasks { get; set; }
+        public List<ProjectStatusModification> ProjectStatusModifications { get; set; }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectTracking.Data;
 
 namespace ProjectTracking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201001195810_broadcast and status mode")]
+    partial class broadcastandstatusmode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,6 +163,8 @@ namespace ProjectTracking.Migrations
 
                     b.Property<float?>("HourlyRate");
 
+                    b.Property<float?>("HoursPerDay");
+
                     b.Property<bool?>("IsTracked");
 
                     b.Property<string>("LastName");
@@ -211,7 +215,7 @@ namespace ProjectTracking.Migrations
                     b.ToTable("AspNetUsers");
 
                     b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", AccessFailedCount = 0, ConcurrencyStamp = "1e1c7103-028e-4fa4-9ad5-d8cdcdb272cd", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEB/zTBZ0ubhlbcYOTgHOxZ7X9FkirzXFaytyJIU0X7bo78xlIEAidXP+5+T+q5ZdzQ==", PhoneNumberConfirmed = false, SecurityStamp = "", TwoFactorEnabled = false, UserName = "admin" }
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", AccessFailedCount = 0, ConcurrencyStamp = "c7e12632-3570-4d60-a604-599834f2c896", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAENatCrwBB+9AZEXa+A8lyvZbEBJWPcGdwC9kMcAFzrjXrtB+Wf//3xGceOR0jOoHMw==", PhoneNumberConfirmed = false, SecurityStamp = "", TwoFactorEnabled = false, UserName = "admin" }
                     );
                 });
 
@@ -223,19 +227,21 @@ namespace ProjectTracking.Migrations
 
                     b.Property<DateTime>("DateSent");
 
-                    b.Property<string>("FromUserId");
+                    b.Property<string>("FromSupervisorId");
 
                     b.Property<string>("Message");
 
                     b.Property<short>("NotificationTypeCode");
 
+                    b.Property<int?>("TeamID");
+
                     b.Property<int>("ToTeamId");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("FromUserId");
+                    b.HasIndex("TeamID");
 
-                    b.HasIndex("ToTeamId");
+                    b.HasIndex("ToTeamId", "FromSupervisorId");
 
                     b.ToTable("Broadcasts");
                 });
@@ -562,8 +568,8 @@ namespace ProjectTracking.Migrations
                     b.HasDiscriminator().HasValue("IdentityRole");
 
                     b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e572", ConcurrencyStamp = "50531e26-5e6b-4c31-82f0-3c6564c8c2cc", Name = "Admin", NormalizedName = "ADMIN" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e590", ConcurrencyStamp = "aad0253c-368d-449e-9693-d81b953cef98", Name = "User", NormalizedName = "USER" }
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e572", ConcurrencyStamp = "3cf0549e-d8dd-4bf5-ab5c-09c2f8acdc91", Name = "Admin", NormalizedName = "ADMIN" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e590", ConcurrencyStamp = "4218e8ae-fbb7-4b5c-a312-a3b97d60d535", Name = "User", NormalizedName = "USER" }
                     );
                 });
 
@@ -622,14 +628,13 @@ namespace ProjectTracking.Migrations
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.Broadcast", b =>
                 {
-                    b.HasOne("ProjectTracking.ApplicationUser", "FromUser")
-                        .WithMany("Broadcasts")
-                        .HasForeignKey("FromUserId");
-
-                    b.HasOne("ProjectTracking.Data.DataSets.Team", "ToTeam")
+                    b.HasOne("ProjectTracking.Data.DataSets.Team", "Team")
                         .WithMany()
-                        .HasForeignKey("ToTeamId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("TeamID");
+
+                    b.HasOne("ProjectTracking.Data.DataSets.Superviser", "FromSupervisor")
+                        .WithMany("Broadcasts")
+                        .HasForeignKey("ToTeamId", "FromSupervisorId");
                 });
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.Project", b =>
@@ -647,7 +652,7 @@ namespace ProjectTracking.Migrations
             modelBuilder.Entity("ProjectTracking.Data.DataSets.ProjectStatusModification", b =>
                 {
                     b.HasOne("ProjectTracking.Data.DataSets.Project", "Project")
-                        .WithMany("ProjectStatusModifications")
+                        .WithMany("ProjectsModifications")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

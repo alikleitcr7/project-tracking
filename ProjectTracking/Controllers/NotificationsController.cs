@@ -36,7 +36,7 @@ namespace ProjectTracking.Controllers
             }
 
 
-            List<Notification> records = _notificationMethods.GetFromUser(fromUserId, page, countPerPage, out int totalCount);
+            List<UserNotification> records = _notificationMethods.GetFromUser(fromUserId, page, countPerPage, out int totalCount);
 
             return new
             {
@@ -52,7 +52,7 @@ namespace ProjectTracking.Controllers
                 toUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
 
-            List<Notification> records = _notificationMethods.GetToUser(toUserId, page, countPerPage, out int totalCount);
+            List<UserNotification> records = _notificationMethods.GetToUser(toUserId, page, countPerPage, out int totalCount);
 
             return new
             {
@@ -76,15 +76,15 @@ namespace ProjectTracking.Controllers
             public NotificationType notificationType { get; set; }
         }
 
-        public async Task<List<Notification>> SendBroadCast([FromBody]SendBroadCastObject model)
+        public async Task<List<UserNotification>> SendBroadCast([FromBody]SendBroadCastObject model)
         {
-            List<Notification> sent = new List<Notification>();
+            List<UserNotification> sent = new List<UserNotification>();
 
             string fromUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             foreach (string id in model.selectedEmployees)
             {
-                Notification notification = await _notificationMethods.Send(fromUser, id, model.message, model.type,true);
+                UserNotification notification = await _notificationMethods.Send(fromUser, id, model.message, model.type,true);
                 sent.Add(notification);
             }
 
@@ -103,9 +103,9 @@ namespace ProjectTracking.Controllers
             return sent;
         }
 
-        public async Task<Notification> Send([FromBody]SendNotificationObject model)
+        public async Task<UserNotification> Send([FromBody]SendNotificationObject model)
         {
-            Notification notification = await _notificationMethods.Send(model.fromUserId, model.toUserId, model.message, model.notificationType, true);
+            UserNotification notification = await _notificationMethods.Send(model.fromUserId, model.toUserId, model.message, model.notificationType, true);
 
             //if (notification != null)
             //{

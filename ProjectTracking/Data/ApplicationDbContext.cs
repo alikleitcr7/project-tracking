@@ -24,7 +24,8 @@ namespace ProjectTracking.Data
         public DbSet<UserLog> UserLogging { get; set; }
         public DbSet<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
         public DbSet<IpAddress> IpAddresses { get; set; }
-        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<UserNotification> UserNotifications { get; set; }
+        public DbSet<Broadcast> Broadcasts { get; set; }
 
         private readonly IConfiguration _config;
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration config)
@@ -79,7 +80,6 @@ namespace ProjectTracking.Data
               .WithOne(c => c.TimeSheet)
               .OnDelete(DeleteBehavior.Cascade);
 
-
             builder.Entity<TimeSheet>()
                   .HasOne(c => c.User)
                   .WithMany(c => c.TimeSheets)
@@ -89,11 +89,10 @@ namespace ProjectTracking.Data
                   .HasOne(c => c.AddedByUser)
                   .WithMany(c => c.AddedByUserTimeSheets)
                   .HasForeignKey(k => k.AddedByUserId);
+
             #endregion
 
             #region TimeSheetActivity
-
-
 
             builder.Entity<TimeSheetTask>()
                   .HasMany(c => c.Activities)
@@ -126,11 +125,36 @@ namespace ProjectTracking.Data
                    .WithMany(k => k.TeamsProjects)
                    .OnDelete(DeleteBehavior.Cascade);
 
+            #region Broadcast
+
+            builder.Entity<Broadcast>()
+                   .HasOne(k => k.FromUser)
+                   .WithMany(k => k.Broadcasts)
+                   .HasForeignKey(k => k.FromUserId);
+
+            #endregion
+
+
+            builder.Entity<ProjectStatusModification>()
+                   .HasKey(k => new { k.ProjectId, k.DateModified });
+
+            builder.Entity<ProjectStatusModification>()
+                   .HasOne(k => k.Project)
+                   .WithMany(k => k.ProjectStatusModifications)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<ProjectTaskStatusModification>()
+                   .HasKey(k => new { k.ProjectTaskId, k.DateModified });
+
+            builder.Entity<ProjectTaskStatusModification>()
+                   .HasOne(k => k.ProjectTask)
+                   .WithMany(k => k.ProjectTaskStatusModifications)
+                   .OnDelete(DeleteBehavior.Cascade);
+
             #region Supervisor
 
             builder.Entity<Superviser>()
                    .HasKey(k => new { k.TeamId, k.UserId });
-
 
             //builder.Entity<Superviser>()
             //       .HasOne(x => x.Supervisor)

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProjectTracking.Data.DataSets
 {
-    public class TimeSheetActivityBase
+    public abstract class TimeSheetActivityBase
     {
         public DateTime FromDate { get; set; }
         public DateTime? ToDate { get; set; }

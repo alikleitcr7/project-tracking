@@ -1,25 +1,25 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "User Logs";
 }
 
 <div id="app" class="v-container" v-cloak>
-    <h2>Users Logs</h2>
-    <div class="form-inline my-5">
-        <div class="form-group ">
-            <label for="SearchLogTerm">From Date</label>
+    <h2>Users Log</h2>
+
+    <div class="input-group-container" style="max-width:400px">
+        <div class="input-group-item">
+            <label>From Date</label>
             <date-picker v-model="fromDate" :config="dateOptions"></date-picker>
         </div>
-        <div class="form-group ">
-            <label for="SearchLogTerm">To Date</label>
-
+        <div class="input-group-item">
+            <label>To Date</label>
             <date-picker v-model="toDate" :config="dateOptions"></date-picker>
         </div>
-        <div class="form-group ">
-            <button v-on:click="searchUserLogs" class="Button Button-Shared">Search</button>
-            <button v-on:click="resetLogsFilter" class="Button Button-Shared">Reset</button>
-
-
+        <div class="input-group-item">
+            <label>&nbsp;</label>
+            <div class="s-btn-group">
+                <button v-on:click="searchUserLogs" class="s-btn s-btn-primary">Search</button>
+                <button v-on:click="resetLogsFilter" class="s-btn s-btn-outline">Reset</button>
+            </div>
         </div>
     </div>
 
@@ -60,10 +60,10 @@
     </table>
 </div>
 @section Scripts{
-    <script src="https://unpkg.com/vuejs-paginate@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
-    <script src="~/services/UsersLogsService.js"></script>
-    <script src="~/js/UsersLogs.js"></script>
+<script src="https://unpkg.com/vuejs-paginate@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
+<script src="~/services/UsersLogsService.js"></script>
+<script src="~/js/UsersLogs.js"></script>
 }
 
 

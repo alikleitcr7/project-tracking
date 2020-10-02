@@ -31,17 +31,16 @@ namespace ProjectTracking.Data.Methods
         }
 
 
-        private IQueryable<DataSets.Notification> NotificationsPopulated()
+        private IQueryable<DataSets.UserNotification> NotificationsPopulated()
         {
-            return _context.Notifications
+            return _context.UserNotifications
                 .Include(k => k.FromUser)
                 .Include(k => k.ToUser);
         }
 
-
-        public async Task<Notification> Send(string fromUserId, string toUserId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false)
+        public async Task<UserNotification> Send(string fromUserId, string toUserId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false)
         {
-            DataSets.Notification notification = new DataSets.Notification()
+            DataSets.UserNotification notification = new DataSets.UserNotification()
             {
                 FromUserId = fromUserId,
                 ToUserId = toUserId,
@@ -50,10 +49,10 @@ namespace ProjectTracking.Data.Methods
                 DateSent = DateTime.Now
             };
 
-            _context.Notifications.Add(notification);
+            _context.UserNotifications.Add(notification);
             _context.SaveChanges();
 
-            Notification sent = Get(notification.ID);
+            UserNotification sent = Get(notification.ID);
 
             if (sendLiveNotification && sent != null)
             {
@@ -63,19 +62,19 @@ namespace ProjectTracking.Data.Methods
             return sent;
         }
 
-        public Notification Get(int id)
+        public UserNotification Get(int id)
         {
             var dbNotification = NotificationsPopulated().FirstOrDefault(k => k.ID == id);
 
             if (dbNotification != null)
             {
-                return _mapper.Map<Notification>(dbNotification);
+                return _mapper.Map<UserNotification>(dbNotification);
             }
 
             return null;
         }
 
-        public List<Notification> GetToUser(string toUserId, int page, int countPerPage, out int totalCount)
+        public List<UserNotification> GetToUser(string toUserId, int page, int countPerPage, out int totalCount)
         {
             totalCount = 0;
 
@@ -83,21 +82,21 @@ namespace ProjectTracking.Data.Methods
 
             totalCount = records.Count();
 
-            List<Notification> notifications = new List<Notification>();
+            List<UserNotification> notifications = new List<UserNotification>();
 
             if (totalCount == 0)
             {
                 return notifications;
             }
 
-            notifications = records.Select(_mapper.Map<Notification>).OrderByDescending(k => k.DateSent).ToList();
+            notifications = records.Select(_mapper.Map<UserNotification>).OrderByDescending(k => k.DateSent).ToList();
 
             notifications = notifications.Skip(page * countPerPage).Take(countPerPage).ToList();
 
             return notifications;
         }
 
-        public List<Notification> GetFromUser(string fromUserId, int page, int countPerPage, out int totalCount)
+        public List<UserNotification> GetFromUser(string fromUserId, int page, int countPerPage, out int totalCount)
         {
             totalCount = 0;
 
@@ -105,14 +104,14 @@ namespace ProjectTracking.Data.Methods
 
             totalCount = records.Count();
 
-            List<Notification> notifications = new List<Notification>();
+            List<UserNotification> notifications = new List<UserNotification>();
 
             if (totalCount == 0)
             {
                 return notifications;
             }
 
-            notifications = records.Select(_mapper.Map<Notification>).OrderByDescending(k => k.DateSent).ToList();
+            notifications = records.Select(_mapper.Map<UserNotification>).OrderByDescending(k => k.DateSent).ToList();
 
             notifications = notifications.Skip(page * countPerPage).Take(countPerPage).ToList();
 
