@@ -248,7 +248,7 @@ namespace ProjectTracking.Controllers
         {
             return Ok(Enum.GetNames(typeof(ProjectStatus)).Select((key, value) => new KeyValuePair<int, string>(value, key)).ToList());
         }
-
+        
         [HttpGet]
         public IActionResult Search(int? categoryId, string keyword, int page, int countPerPage)
         {
@@ -271,6 +271,27 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+
+        [HttpGet]
+        public IActionResult GetStatusModifications(int projectId)
+        {
+            try
+            {
+                var record = _projects.GetStatusModifications(projectId);
+
+                return Ok(record);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
 
         [HttpGet]
         public IActionResult GetByTeam(int teamId)

@@ -43,16 +43,34 @@ namespace ProjectTracking.Data.Methods
                     throw new ClientException($"project exist under title {model.title} and the selected category");
                 }
 
-                // save project
+                // # save project #
 
                 // get project
 
-                var dbProject = db.Projects.Include(k => k.TeamsProjects).FirstOrDefault(k => k.ID == model.id.Value);
+                var dbProject = db.Projects
+                    .Include(k => k.TeamsProjects)
+                    .Include(k => k.ProjectStatusModifications)
+                    .FirstOrDefault(k => k.ID == model.id.Value);
 
                 if (dbProject == null)
                 {
                     throw new ClientException("record not found");
                 }
+
+                // check if status changed
+                bool statusChanged = dbProject.StatusCode != model.statusCode;
+
+                if (statusChanged)
+                {
+                    // append project's status modification
+                    dbProject.ProjectStatusModifications.Add(new DataSets.ProjectStatusModification()
+                    {
+                        ProjectId = dbProject.ID,
+                        StatusCode = dbProject.StatusCode
+                    });
+                }
+
+                // update values
 
                 dbProject.Title = model.title;
                 dbProject.Description = model.description;
@@ -70,6 +88,7 @@ namespace ProjectTracking.Data.Methods
             }
             else
             {
+                // # new task #
 
                 // check if title already exist under the selected category
                 bool nameExist = db.Projects.Any(k => k.Title == model.title && k.CategoryId == model.categoryId);
@@ -153,6 +172,24 @@ namespace ProjectTracking.Data.Methods
                 .ToList()
                 .Select(_mapper.Map<Project>)
                 .ToList();
+        }
+
+        public List<ProjectStatusModification> GetStatusModifications(int projectId)
+        {
+            var dbProject = db.Projects.Include(k => k.ProjectStatusModifications)
+                .FirstOrDefault(k => k.ID == projectId);
+
+            if (dbProject == null)
+            {
+                throw new ClientException("project dont exist");
+            }
+
+            if (dbProject.ProjectStatusModifications == null)
+            {
+                return null;
+            }
+
+            return dbProject.ProjectStatusModifications.Select(_mapper.Map<ProjectStatusModification>).ToList();
         }
 
         public List<Project> GetByTeam(int teamId)

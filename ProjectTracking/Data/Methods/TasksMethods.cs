@@ -26,7 +26,7 @@ namespace ProjectTracking.Data.Methods
         {
             if (model.id.HasValue)
             {
-                // save project
+                // # save task #
 
                 // get project
 
@@ -37,6 +37,21 @@ namespace ProjectTracking.Data.Methods
                     throw new ClientException("record not found");
                 }
 
+                // check if status changed
+                bool statusChanged = dbTask.StatusCode != model.statusCode;
+
+                if (statusChanged)
+                {
+                    // append project's status modification
+                    dbTask.ProjectTaskStatusModifications.Add(new DataSets.ProjectTaskStatusModification()
+                    {
+                        ProjectTaskId = dbTask.ID,
+                        StatusCode = dbTask.StatusCode
+                    });
+                }
+
+
+                // update the task
                 dbTask.Title = model.title;
                 dbTask.Description = model.description;
                 dbTask.StartDate = model.startDate;
@@ -50,6 +65,8 @@ namespace ProjectTracking.Data.Methods
             }
             else
             {
+                // # new task #
+
                 // check title if exist
                 bool nameExist = db.ProjectTasks.Any(k => k.Title == model.title);
 
@@ -79,6 +96,24 @@ namespace ProjectTracking.Data.Methods
 
                 return _mapper.Map<ProjectTask>(dbTask);
             }
+        }
+
+        public List<ProjectTaskStatusModification> GetStatusModifications(int taskId)
+        {
+            var dbTask = db.ProjectTasks.Include(k => k.ProjectTaskStatusModifications)
+                .FirstOrDefault(k => k.ID == taskId);
+
+            if (dbTask == null)
+            {
+                throw new ClientException("project dont exist");
+            }
+
+            if (dbTask.ProjectTaskStatusModifications == null)
+            {
+                return null;
+            }
+
+            return dbTask.ProjectTaskStatusModifications.Select(_mapper.Map<ProjectTaskStatusModification>).ToList();
         }
 
         public void ChangeStatus(int taskId, int? statusCode)

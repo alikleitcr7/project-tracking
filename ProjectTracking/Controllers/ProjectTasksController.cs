@@ -108,6 +108,27 @@ namespace ProjectTracking.Controllers
             }
         }
 
+
+        [HttpGet]
+        public IActionResult GetStatusModifications(int taskId)
+        {
+            try
+            {
+                var record = _tasksMethods.GetStatusModifications(taskId);
+
+                return Ok(record);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
         [HttpDelete]
         [Route("Delete")]
         public IActionResult Delete(int id)

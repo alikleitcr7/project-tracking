@@ -14,15 +14,23 @@ const ProjectsService = {
     },
     Search: function (categoryId, keyword, page, countPerPage) {
 
-        const query = serialize({ categoryId, keyword, page, countPerPage})
+        const query = serialize({ categoryId, keyword, page, countPerPage })
 
         const url = PROJECTS_SERVICE_URI(`Search?${query}`)
 
         return axios.get(url);
     },
+    GetStatusModifications: function (projectId) {
+
+        const query = serialize({ projectId })
+
+        const url = PROJECTS_SERVICE_URI(`GetStatusModifications?${query}`)
+
+        return axios.get(url);
+    },
     GetByTeam: function (teamId) {
 
-        const query = serialize({ teamId})
+        const query = serialize({ teamId })
 
         const url = PROJECTS_SERVICE_URI(`GetByTeam?${query}`)
 

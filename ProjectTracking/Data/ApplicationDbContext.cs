@@ -26,8 +26,11 @@ namespace ProjectTracking.Data
         public DbSet<IpAddress> IpAddresses { get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }
         public DbSet<Broadcast> Broadcasts { get; set; }
+        public DbSet<ProjectStatusModification> ProjectStatusModifications { get; set; }
+        public DbSet<ProjectTaskStatusModification> ProjectTaskStatusModifications { get; set; }
 
         private readonly IConfiguration _config;
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IConfiguration config)
             : base(options)
         {

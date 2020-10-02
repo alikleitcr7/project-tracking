@@ -24,5 +24,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         DateFilterModel GetProjectWithActivities(int projectId, int? year, int? month);
 
         List<Project> Get(int departmentId, int companyId, int page, int countPerPage, out int totalCount);
+        List<ProjectStatusModification> GetStatusModifications(int projectId);
     }
 }
