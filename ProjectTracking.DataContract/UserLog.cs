@@ -5,6 +5,7 @@ using System.Text;
 
 namespace ProjectTracking.DataContract
 {
+    public enum UserLogStatus { Login, Logout, Disconnected }
     //: IUserLog
     public class UserLog
     {
@@ -13,9 +14,26 @@ namespace ProjectTracking.DataContract
         //public string ConnectionId { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime? ToDate { get; set; }
-        public string Comments { get; set; }
+        public short LogStatusCode { get; set; } // was Comment
         public string FullName { get; set; }
         public string UserName { get; set; }
+
+        public ProjectTaskStatus LogStatus
+        {
+            get
+            {
+                return ((ProjectTaskStatus)LogStatusCode);
+            }
+        }
+
+        public string LogStatusDisplay
+        {
+            get
+            {
+                return LogStatus.ToString();
+            }
+        }
+
         public string IpAddressDisplay
         {
             get

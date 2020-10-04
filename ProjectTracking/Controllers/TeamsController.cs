@@ -91,6 +91,24 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+        [HttpGet]
+        public IActionResult GetSupervisingTeamId(string userId)
+        {
+            try
+            {
+                var supervised = _teamsMethods.GetSupervisingTeamId(userId);
+
+                return Ok(supervised);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
 
         public class AddRemoveTeamsUsersParam
         {

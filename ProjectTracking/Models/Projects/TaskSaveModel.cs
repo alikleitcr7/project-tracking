@@ -15,7 +15,7 @@ namespace ProjectTracking.Models.Projects
         public string title { get; set; }
         public string description { get; set; }
         public int categoryId { get; set; }
-        public int? statusCode { get; set; }
+        public short statusCode { get; set; }
         public DateTime? startDate { get; set; }
         public DateTime? plannedEnd { get; set; }
         public DateTime? actualEnd { get; set; }

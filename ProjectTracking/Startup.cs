@@ -72,7 +72,7 @@ namespace ProjectTracking
                 options.AddPolicy("SupervisingPolicy", policy =>
                     policy.Requirements.Add(new SupervisingPolicy(false)));
             });
-            
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("SupervisingOrAdminPolicy", policy =>
@@ -128,11 +128,14 @@ namespace ProjectTracking
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             //register identity roles 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, ApplicationIdentityRole>()
+            .AddRoleManager<RoleManager<ApplicationIdentityRole>>()
                          .AddEntityFrameworkStores<ApplicationDbContext>()
                          .AddDefaultTokenProviders()
                          .AddDefaultUI();
 
+            //.AddSignInManager<SignInManager<ApplicationUser>>()
+            //.AddRoleManager<RoleManager<ApplicationIdentityRole>>()
 
             #region Jwt Handlers and Managers
 
@@ -189,7 +192,7 @@ namespace ProjectTracking
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddSingleton<IDataAccess, DataAccess>(k => new DataAccess(Setting.ConnectionString));
 
-            services.AddTransient<UserManager<ApplicationUser>>();
+            //services.AddTransient<UserManager<ApplicationUser>>();
 
             services.AddHostedService<LiveObserverHost>();
             //services.AddSingleton<LiveObserverHost>();

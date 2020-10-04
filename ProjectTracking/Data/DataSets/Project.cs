@@ -18,7 +18,7 @@ namespace ProjectTracking.Data.DataSets
         //public int? ParentId { get; set; }
         //public int? TeamId { get; set; }
         public int? CategoryId { get; set; }
-        public int? StatusCode { get; set; }
+        public short StatusCode { get; set; }
         public string AddedByUserId { get; set; }
 
 

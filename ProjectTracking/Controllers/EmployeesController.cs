@@ -22,12 +22,12 @@ namespace ProjectTracking.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly IProjectsMethods _projects;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<ApplicationIdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
         public EmployeesController(IUserMethods users, ApplicationDbContext context,
                                   UserManager<ApplicationUser> userManager,
-                                  RoleManager<IdentityRole> roleManager,
+                                  RoleManager<ApplicationIdentityRole> roleManager,
                                   ITeamsMethods departments,
                                   ITimeSheetsMethods timeSheets,
                                   SignInManager<ApplicationUser> signInManager,
@@ -232,7 +232,7 @@ namespace ProjectTracking.Controllers
             ApplicationUser employee = _context.Users.FirstOrDefault(c => c.Id == userId);
             if (employee == null)
                 throw new NullReferenceException();
-            List<IdentityRole> roles = _roleManager.Roles.ToList();
+            List<ApplicationIdentityRole> roles = _roleManager.Roles.ToList();
             string[] rolesTakenIds = _context.UserRoles.Where(c => c.UserId == userId).Select(c => c.RoleId).ToArray();
             return Json(new { All = roles, rolesTakes = rolesTakenIds });
 

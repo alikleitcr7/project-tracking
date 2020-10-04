@@ -27,7 +27,7 @@ namespace ProjectTracking.Data.Methods
             this._mapper = mapper;
         }
 
-        public UserLog AddStartLog(string userId, string ipAddress, string comments = null)
+        public UserLog AddStartLog(string userId, string ipAddress, UserLogStatus status)
         {
             var isActive = db.UserLogging.Any(k => k.UserId == userId && !k.ToDate.HasValue);
 
@@ -40,7 +40,7 @@ namespace ProjectTracking.Data.Methods
 
             DataSets.UserLog dbLog = new DataSets.UserLog()
             {
-                Comments = comments,
+                LogStatusCode = (short)status,
                 Address = ipAdded ? ipAddress : null,
                 FromDate = DateTime.Now,
                 UserId = userId

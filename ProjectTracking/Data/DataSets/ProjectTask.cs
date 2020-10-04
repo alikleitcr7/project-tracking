@@ -16,7 +16,7 @@ namespace ProjectTracking.Data.DataSets
         public DateTime DateAdded { get; set; } = DateTime.Now;
 
         public int ProjectId { get; set; }
-        public int? StatusCode { get; set; }
+        public short StatusCode { get; set; }
 
 
         public DateTime? StartDate { get; set; }

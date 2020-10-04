@@ -29,11 +29,21 @@ const Modals_Projects = {
         Hide: function () {
             $('#ProjectModal').modal('hide');
         }
+    },
+    ProjectStatusModifications: {
+        Show: function () {
+            $('#ProjectStatusModificationsModal').modal('show');
+        },
+        Hide: function () {
+            $('#ProjectStatusModificationsModal').modal('hide');
+        }
     }
 }
 
 const projectFormObject = (obj) => {
+
     console.log({ obj })
+
     let record = obj ? {
         id: obj.id,
         title: obj.title,
@@ -54,7 +64,6 @@ const projectFormObject = (obj) => {
             statusCode: null,
             teamsIds: [],
         }
-
 
     return {
         record,
@@ -84,6 +93,11 @@ const projectObject = () => {
         isProcessing: false,
         message: '',
         form: projectFormObject(),
+        activeProject: null,
+        statusModifications: {
+            data: [],
+            isLoading: false
+        },
         statuses: {
             data: [],
             isLoading: false
@@ -435,6 +449,41 @@ const projectsMethods = {
             })
             .then(() => {
                 this.projects_setStatusesLoading(false)
+            })
+
+    },
+
+    projects_setStatusesModificationLoading: function (isLoading) {
+        this.projects.statusModifications.isLoading = isLoading
+    },
+    projects_viewStatusesModification: function (project) {
+
+        this.projects_setStatusesModificationLoading(true)
+
+        this.projects.activeProject = null;
+        this.projects.activeProject = { ...project }
+
+        Modals_Projects.ProjectStatusModifications.Show();
+
+        return ProjectsService.GetStatusModifications(project.id)
+            .then((r) => {
+
+                /** @type {IClientResponseModel<ISubject>} */
+                const record = r.data
+
+                if (record) {
+                    this.projects.statusModifications.data = [...record]
+                }
+                else {
+                    this.projects_setMessage(BASIC_ERROR_MESSAGE)
+                }
+            })
+            .catch((e) => {
+                console.error('projects getall', e)
+                this.projects_setMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.projects_setStatusesModificationLoading(false)
             })
 
     },

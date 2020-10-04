@@ -184,6 +184,35 @@ namespace ProjectTracking.Data.Methods
             return db.Supervisers.Any(k => k.UserId == userId);
         }
 
+        public void AssignTeamSupervisor(string assignedById, string userId, int teamId)
+        {
+            var dbUser = db.Users.Include(k => k.Supervising).FirstOrDefault(k => k.Id == userId);
+
+            if (dbUser == null)
+            {
+                throw new ClientException("user dont exist");
+            }
+
+            // get current team supervisor
+            var currentSupervisor = db.Supervisers.OrderByDescending(k => k.DateAssigned).FirstOrDefault(k => k.TeamId == teamId);
+
+            // check if exist ? then check if that user is the current supervisor ? return 
+            if (currentSupervisor != null && currentSupervisor.UserId == userId)
+            {
+                return;
+            }
+
+            db.Supervisers.Add(new DataSets.Superviser()
+            {
+                AssignedByUserId = assignedById,
+                DateAssigned = DateTime.Now,
+                UserId = userId,
+                TeamId = teamId
+            });
+
+            db.SaveChanges();
+        }
+
         public void AddRemoveTeamsFromSupervisor(string userId, List<int> teamIds)
         {
             var dbUser = db.Users.Include(k => k.Supervising).FirstOrDefault(k => k.Id == userId);
@@ -212,7 +241,7 @@ namespace ProjectTracking.Data.Methods
             db.SaveChanges();
         }
 
-        public List<IdentityRole<string>> GetAllRoles()
+        public List<ApplicationIdentityRole> GetAllRoles()
         {
             return db.Roles.ToList();
         }
@@ -484,7 +513,7 @@ namespace ProjectTracking.Data.Methods
         //    return result;
         //}
 
-        public List<DataContract.UserLog> GetUsersLogs( List<string> userIds , int page, int countPerPage, DateTime? fromDate, DateTime? toDate, out int totalCount)
+        public List<DataContract.UserLog> GetUsersLogs(List<string> userIds, int page, int countPerPage, DateTime? fromDate, DateTime? toDate, out int totalCount)
         {
             IQueryable<DataSets.UserLog> baseQuery = db.UserLogging
                 .Include(k => k.IpAddress)
@@ -506,7 +535,7 @@ namespace ProjectTracking.Data.Methods
                 k.ID,
                 k.FromDate,
                 k.ToDate,
-                k.Comments,
+                k.LogStatusCode,
                 k.Address,
                 k.UserId,
                 k.User,
@@ -546,7 +575,7 @@ namespace ProjectTracking.Data.Methods
                 .Select(k => new UserLog()
                 {
                     ID = k.ID,
-                    Comments = k.Comments,
+                    LogStatusCode = k.LogStatusCode,
                     FromDate = k.FromDate,
                     ToDate = k.ToDate,
                     UserId = k.UserId,
@@ -578,18 +607,20 @@ namespace ProjectTracking.Data.Methods
             //return records;
 
         }
-        public void EndLog(string userId, string comments = null)
+
+        public void EndLog(string userId, UserLogStatus status)
         {
             var log = db.UserLogging.OrderByDescending(k => k.FromDate).FirstOrDefault(k => k.UserId == userId);
 
             if (log != null)
             {
                 log.ToDate = DateTime.Now;
-                log.Comments = comments;
+                log.LogStatusCode = (short)status;
                 //db.UserLogging.Update(log);
                 db.SaveChanges();
             }
         }
+
         public List<User> UsersNotRegisteredTimeSheetActivityToday()
         {
             string sql = @" select distinct anu.Id, FirstName, LastName 
@@ -795,5 +826,6 @@ namespace ProjectTracking.Data.Methods
         {
             throw new NotImplementedException();
         }
+
     }
 }

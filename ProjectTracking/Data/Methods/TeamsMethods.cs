@@ -172,6 +172,11 @@ namespace ProjectTracking.Data.Methods
                 .ToList();
         }
 
+        public Team GetSupervisingTeamId(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         //public Team EditDepartment(int id, Team department)
         //{
         //    if (department == null)

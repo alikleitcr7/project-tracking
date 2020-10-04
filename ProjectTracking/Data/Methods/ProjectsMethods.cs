@@ -66,7 +66,8 @@ namespace ProjectTracking.Data.Methods
                     dbProject.ProjectStatusModifications.Add(new DataSets.ProjectStatusModification()
                     {
                         ProjectId = dbProject.ID,
-                        StatusCode = dbProject.StatusCode
+                        StatusCode = dbProject.StatusCode,
+                        DateModified = DateTime.Now
                     });
                 }
 
@@ -189,7 +190,7 @@ namespace ProjectTracking.Data.Methods
                 return null;
             }
 
-            return dbProject.ProjectStatusModifications.Select(_mapper.Map<ProjectStatusModification>).ToList();
+            return dbProject.ProjectStatusModifications.OrderByDescending(k => k.DateModified).Select(_mapper.Map<ProjectStatusModification>).ToList();
         }
 
         public List<Project> GetByTeam(int teamId)

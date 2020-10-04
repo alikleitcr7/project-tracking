@@ -23,7 +23,7 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<ApplicationIdentityRole> _roleManager;
 
         private readonly IConfiguration _configuration;
 
@@ -31,22 +31,23 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger, IConfiguration configuration, RoleManager<IdentityRole> roleManager,
+            ILogger<RegisterModel> logger, IConfiguration configuration, RoleManager<ApplicationIdentityRole> roleManager,
             IEmailSender emailSender
-            , ApplicationDbContext context, IEnumerable<IdentityRole> roles
+            , ApplicationDbContext context, IEnumerable<ApplicationIdentityRole> roles
             )
         {
             _context = context;
             _userManager = userManager;
             _configuration = configuration;
             _signInManager = signInManager;
-            _logger = logger; _roleManager = roleManager;
+            _logger = logger;
+            _roleManager = roleManager;
             _emailSender = emailSender;
         }
 
         [BindProperty]
         public InputModel Input { get; set; }
-        public List<IdentityRole> Roles
+        public List<ApplicationIdentityRole> Roles
         {
             get
             {

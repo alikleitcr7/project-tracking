@@ -20,7 +20,7 @@ namespace ProjectTracking.DataContract
         public DateTime DateAdded { get; set; } = DateTime.Now;
 
         public int ProjectId { get; set; }
-        public int? StatusCode { get; set; }
+        public short  StatusCode { get; set; }
 
         public DateTime? StartDate { get; set; }
         public DateTime? PlannedEnd { get; set; }
@@ -62,7 +62,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return StatusCode.HasValue ? ((ProjectTaskStatus)StatusCode.Value).ToString() : "NoStatus";
+                return  ((ProjectTaskStatus)StatusCode).ToString();
             }
         }
 

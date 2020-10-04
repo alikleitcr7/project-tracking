@@ -125,7 +125,7 @@ namespace ProjectTracking.Data.Methods
                 dbActivity.Address = ipAdded ? activity.IpAddress : null;
                 dbActivity.FromDate = activity.FromDate;
                 dbActivity.ToDate = activity.ToDate;
-                dbActivity.Comment = activity.Comment;
+                dbActivity.Message = activity.Comment;
 
                 db.SaveChanges();
 
@@ -257,7 +257,7 @@ namespace ProjectTracking.Data.Methods
         {
             var activity = db.TimeSheetActivities.First(k => k.ID == id);
 
-            return _mapper.Map<ProjectTask>(db.ProjectTasks.Include(k => k.Project).First(k => k.ID == activity.TimeSheetProjectTaskId));
+            return _mapper.Map<ProjectTask>(db.ProjectTasks.Include(k => k.Project).First(k => k.ID == activity.TimeSheetTaskId));
         }
 
         #endregion

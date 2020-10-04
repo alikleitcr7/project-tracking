@@ -6,6 +6,7 @@ namespace ProjectTracking.DataContract
 {
     public class TimeSheetActivityBase
     {
+        public int ID { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime? ToDate { get; set; }
         public DateTime DateAdded { get; set; }
@@ -90,12 +91,11 @@ namespace ProjectTracking.DataContract
         }
 
 
-        public int TimeSheetTaskId { get; set; }
     }
 
     public class TimeSheetActivity : TimeSheetActivityBase
     {
-        public int ID { get; set; }
+        public int TimeSheetTaskId { get; set; }
         public virtual TimeSheetTask TimeSheetTask { get; set; }
 
         public virtual List<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
@@ -103,7 +103,6 @@ namespace ProjectTracking.DataContract
 
     public class TimeSheetActivityLog : TimeSheetActivityBase
     {
-        public int ID { get; set; }
         public int TimeSheetActivityId { get; set; }
         public virtual TimeSheetActivity TimeSheetActivity { get; set; }
     }

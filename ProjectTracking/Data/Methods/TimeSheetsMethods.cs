@@ -301,7 +301,7 @@ namespace ProjectTracking.Data.Methods
 
                 foreach (var task in tasks)
                 {
-                    var taskActivities = db.TimeSheetActivities.Where(k => k.TimeSheetProjectTaskId == task.ID);
+                    var taskActivities = db.TimeSheetActivities.Where(k => k.TimeSheetTaskId == task.ID);
                     db.TimeSheetActivities.RemoveRange(taskActivities);
                 }
 

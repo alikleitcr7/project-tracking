@@ -11,6 +11,6 @@ namespace ProjectTracking.DataContract.Interfaces
         //string ConnectionId { get; set; }
         DateTime FromDate { get; set; }
         DateTime? ToDate { get; set; }
-        string Comments { get; set; }
+        string LogStatus { get; set; }
     }
 }

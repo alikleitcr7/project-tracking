@@ -19,7 +19,7 @@ namespace ProjectTracking.DataContract
         public int? ParentId { get; set; }
         //public int? TeamId { get; set; }
         public int? CategoryId { get; set; }
-        public int? StatusCode { get; set; }
+        public short StatusCode { get; set; }
 
         public Category Category { get; set; }
         public DateTime? StartDate { get; set; }
@@ -60,7 +60,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return StatusCode.HasValue ? ((ProjectStatus)StatusCode.Value).ToString() : "NoStatus";
+                return ((ProjectStatus)StatusCode).ToString();
             }
         }
 

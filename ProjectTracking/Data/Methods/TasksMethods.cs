@@ -46,7 +46,8 @@ namespace ProjectTracking.Data.Methods
                     dbTask.ProjectTaskStatusModifications.Add(new DataSets.ProjectTaskStatusModification()
                     {
                         ProjectTaskId = dbTask.ID,
-                        StatusCode = dbTask.StatusCode
+                        StatusCode = dbTask.StatusCode,
+                        DateModified = DateTime.Now
                     });
                 }
 
@@ -113,10 +114,10 @@ namespace ProjectTracking.Data.Methods
                 return null;
             }
 
-            return dbTask.ProjectTaskStatusModifications.Select(_mapper.Map<ProjectTaskStatusModification>).ToList();
+            return dbTask.ProjectTaskStatusModifications.OrderByDescending(k => k.DateModified).Select(_mapper.Map<ProjectTaskStatusModification>).ToList();
         }
 
-        public void ChangeStatus(int taskId, int? statusCode)
+        public void ChangeStatus(int taskId, short statusCode)
         {
             var dbTask = db.ProjectTasks.FirstOrDefault(k => k.ID == taskId);
 

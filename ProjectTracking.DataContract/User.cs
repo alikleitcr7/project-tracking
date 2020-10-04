@@ -82,7 +82,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(FirstName))
+                if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName))
                 {
                     return null;
                 }

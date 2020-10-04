@@ -17,13 +17,13 @@ namespace ProjectTracking.Controllers
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<ApplicationIdentityRole> _roleManager;
         //private readonly ICompanies _comapnyDto;
         private readonly ITeamsMethods _departmentDto;
         private readonly IUserMethods _userMethods;
         private readonly ApplicationDbContext _context;
 
-        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ITeamsMethods departmentDto, ApplicationDbContext context
+        public AdminController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationIdentityRole> roleManager, ITeamsMethods departmentDto, ApplicationDbContext context
             , IUserMethods userMethods
             )
         {
@@ -36,6 +36,7 @@ namespace ProjectTracking.Controllers
 
 
         [Route("/manage")]
+        [Authorize]
         public IActionResult Manage()
         {
             //UserManagerViewModel _userManagerViewModel = new UserManagerViewModel();
@@ -121,7 +122,7 @@ namespace ProjectTracking.Controllers
                 //CompanyID = addUserViewModel.CompanyID,
                 FirstName = addUserViewModel.FirstName,
                 LastName = addUserViewModel.LastName,
-                IsTracked = true,
+                //IsTracked = true,
                 DateOfBirth = DateTime.Parse(addUserViewModel.DateOfBirth),
                 MiddleName = addUserViewModel.MiddleName,
                 //TeamId = addUserViewModel.TeamId,
@@ -167,7 +168,7 @@ namespace ProjectTracking.Controllers
                 //DepartmentID = user.DepartmentID,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                IsTracked = user.IsTracked,
+                //IsTracked = user.IsTracked,
                 HourlyRate = user.HourlyRate,
                 MonthlySalary = user.MonthlySalary,
                 AgreementType = (EmploymentType?)user.EmploymentTypeCode,
@@ -205,7 +206,7 @@ namespace ProjectTracking.Controllers
                 user.LastName = editUserViewModel.LastName;
                 user.MiddleName = editUserViewModel.MiddleName;
 
-                user.IsTracked = editUserViewModel.IsTracked;
+                //user.IsTracked = editUserViewModel.IsTracked;
                 user.HourlyRate = editUserViewModel.HourlyRate;
                 user.MonthlySalary = editUserViewModel.MonthlySalary;
                 user.EmploymentTypeCode = editUserViewModel.AgreementType.HasValue ? (short?)editUserViewModel.AgreementType.Value : null;
@@ -266,7 +267,7 @@ namespace ProjectTracking.Controllers
 
             if (!ModelState.IsValid) return View(addRoleViewModel);
 
-            var role = new IdentityRole
+            var role = new ApplicationIdentityRole
             {
                 Name = addRoleViewModel.RoleName
             };
@@ -395,7 +396,7 @@ namespace ProjectTracking.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteRole(string id)
         {
-            IdentityRole role = await _roleManager.FindByIdAsync(id);
+            ApplicationIdentityRole role = await _roleManager.FindByIdAsync(id);
             if (role != null)
             {
                 var result = await _roleManager.DeleteAsync(role);

@@ -17,7 +17,7 @@ namespace ProjectTracking
         public int? TeamId { get; set; }
         public Team Team { get; set; }
         //public int? CompanyID { get; set; }
-        public bool? IsTracked { get; set; }
+        //public bool? IsTracked { get; set; }
         public float? MonthlySalary { get; set; }
         public float? HourlyRate { get; set; }
         //public float? HoursPerDay { get; set; } // to be removed
@@ -26,6 +26,7 @@ namespace ProjectTracking
 
         //public virtual List<Superviser> Supervisors { get; set; }
         public List<Superviser> Supervising { get; set; }
+        public List<Superviser> AssignedSupervisors { get; set; }
         public List<Broadcast> Broadcasts { get; set; }
 
         //public ICollection<Superviser> Supervisors { get; set; }
@@ -33,9 +34,18 @@ namespace ProjectTracking
         public ICollection<TimeSheet> TimeSheets { get; set; }
         public ICollection<TimeSheet> AddedByUserTimeSheets { get; set; }
         public List<Project> Projects { get; set; }
+        public string RoleId { get; set; }
+        public ApplicationIdentityRole Role { get; set; }
+
         //public Role Role { get; set; }
         //public ICollection<IdentityUserRole<string>> Roles { get; set; }
         //public ICollection<RequestedPermissionsStatus> RequestedPermissionsStatuses { get; set; }
         //public virtual List<RequestedPermissionsStatus> RequestedPermissionsStatuses { get; set; }
     }
+
+    public class ApplicationIdentityRole : IdentityRole<string>
+    {
+        public List<ApplicationUser> ApplicationUser { get; set; }
+    }
+
 }

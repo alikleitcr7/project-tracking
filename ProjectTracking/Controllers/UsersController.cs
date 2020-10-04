@@ -14,15 +14,16 @@ namespace ProjectTracking.Controllers
 {
     //[Route("api/[controller]")]
     //[ApiController]
-    public class UsersController : Controller
+    public class UsersController : BaseSupervisorController
     {
-        private readonly IUserMethods _usersMethods;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        //private readonly IUserMethods _userMethods;
+        private readonly RoleManager<ApplicationIdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UsersController(IUserMethods usersMethods, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        public UsersController(IUserMethods usersMethods, RoleManager<ApplicationIdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+            : base(usersMethods)
         {
-            _usersMethods = usersMethods;
+            //_userMethods = usersMethods;
             _userManager = userManager;
             _roleManager = roleManager;
         }
@@ -30,7 +31,7 @@ namespace ProjectTracking.Controllers
         [Route("/profile/{userId}")]
         public IActionResult Profile(string userId)
         {
-            DataContract.User user = _usersMethods.GetById(userId);
+            DataContract.User user = _userMethods.GetById(userId);
 
             if (user == null)
             {
@@ -45,7 +46,7 @@ namespace ProjectTracking.Controllers
         {
             try
             {
-                return Ok(_usersMethods.GetById(id));
+                return Ok(_userMethods.GetById(id));
             }
             catch (ClientException ex)
             {
@@ -62,7 +63,7 @@ namespace ProjectTracking.Controllers
         {
             try
             {
-                var record = _usersMethods.Search(keyword, page, countPerPage, out int totalCount);
+                var record = _userMethods.Search(keyword, page, countPerPage, out int totalCount);
 
                 return Ok(new { record, totalCount });
             }
@@ -170,7 +171,8 @@ namespace ProjectTracking.Controllers
         public class AddRemoveTeamsFromSupervisorParam
         {
             public string userId { get; set; }
-            public List<int> teamIds { get; set; }
+            public int teamId { get; set; }
+            //public List<int> teamIds { get; set; }
         }
 
         [HttpPost]
@@ -178,7 +180,9 @@ namespace ProjectTracking.Controllers
         {
             try
             {
-                _usersMethods.AddRemoveTeamsFromSupervisor(model.userId, model.teamIds);
+                string currentUserId = GetCurrentUserId();
+
+                _userMethods.AssignTeamSupervisor(currentUserId, model.userId, model.teamId);
 
                 return Ok(true);
             }
@@ -197,7 +201,7 @@ namespace ProjectTracking.Controllers
         {
             try
             {
-                return Ok(_usersMethods.Save(user));
+                return Ok(_userMethods.Save(user));
             }
             catch (ClientException ex)
             {
@@ -214,7 +218,7 @@ namespace ProjectTracking.Controllers
         {
             try
             {
-                _usersMethods.Delete(id);
+                _userMethods.Delete(id);
                 return Ok(true);
             }
             catch (ClientException ex)

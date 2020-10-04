@@ -6,7 +6,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
 {
     public interface ITasksMethods
     {
-        void ChangeStatus(int taskId, int? statusCode);
+        void ChangeStatus(int taskId, short statusCode);
         bool Delete(int id);
         ProjectTask GetById(int id);
         List<ProjectTaskStatusModification> GetStatusModifications(int taskId);

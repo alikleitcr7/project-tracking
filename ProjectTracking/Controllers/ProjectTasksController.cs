@@ -149,7 +149,7 @@ namespace ProjectTracking.Controllers
 
         [HttpPut]
         [Route("ChangeStatus")]
-        public IActionResult ChangeStatus(int taskId, int? statusCode)
+        public IActionResult ChangeStatus(int taskId, short statusCode)
         {
             try
             {

@@ -6,7 +6,7 @@
 @model AddUserViewModel
 @inject ITeamsMethods teamsMethods
 @*@inject ICompanies CompanyDtos*@
-@inject RoleManager<IdentityRole> roles
+@inject RoleManager<ApplicationIdentityRole> roles
 @{
     string successFeedback = ViewData["success"] != null ? ViewData["success"].ToString() : "";
 }

@@ -127,7 +127,7 @@ namespace ProjectTracking.Services
                     if (!observedUsers.Any(k => k.UserId == activeUsr.UserId))
                     {
                         inactiveUsers.Add(activeUsr);
-                        _users.EndLog(activeUsr.UserId, "Disconnected");
+                        _users.EndLog(activeUsr.UserId, UserLogStatus.Disconnected);
                     }
                 }
 

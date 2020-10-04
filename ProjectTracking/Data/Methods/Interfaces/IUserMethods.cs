@@ -7,8 +7,11 @@ namespace ProjectTracking.Data.Methods.Interfaces
 {
     public interface IUserMethods
     {
-        List<DataContract.UserLog> GetUsersLogs(List<string> userIds,int page, int countPerPage, DateTime? fromDate, DateTime? toDate, out int totalCount);
-        List<IdentityRole<string>> GetAllRoles();
+        List<DataContract.UserLog> GetUsersLogs(List<string> userIds, int page, int countPerPage, DateTime? fromDate, DateTime? toDate, out int totalCount);
+        void EndLog(string userId, UserLogStatus status);
+
+
+        List<ApplicationIdentityRole> GetAllRoles();
         //UserLog AddStartLog(string userId, string ipAddress, string comments = null);
         List<UserLog> GetActiveLogs();
         List<User> GetEmployees();
@@ -19,11 +22,8 @@ namespace ProjectTracking.Data.Methods.Interfaces
         List<User> GetAllUsers();
         List<User> GetSubordinatesWithTimeSheets(string superVisorId);
         bool CheckIfEmployeeHasSubordinates(string userId);
-        void EndLog(string userId, string comments = null);
         List<User> UsersNotRegisteredTimeSheetActivityToday();
         List<User> UsersNotHavingTimeSheetThisMonthYet();
-
-
         List<string> GetSupervisorsIds(string forUserId);
         List<string> GetSupervisorsIdsIncludingParents(string forUserId, int levels);
         List<int> GetSupervisingIds(string forUserId);
@@ -47,7 +47,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         void Delete(string id);
         List<User> Search(string keyword, int page, int countPerPage, out int totalCount);
         User Save(Models.Users.UserSaveModel model);
-        void AddRemoveTeamsFromSupervisor(string userId, List<int> teamIds);
+        void AssignTeamSupervisor(string assignedById, string userId, int teamId);
         bool IsSupervisor(string userId);
         List<string> SupervisingUsers(string supervisorId);
         #endregion

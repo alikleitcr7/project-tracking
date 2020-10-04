@@ -28,12 +28,13 @@ namespace ProjectTracking.Data.Methods
         {
             try
             {
-                var activeActivity = db.TimeSheetActivities.FirstOrDefault(k => k.TimeSheetProjectTaskId == activity.TimeSheetTaskId && !k.ToDate.HasValue);
+                // i commented this for later to check
+                //var activeActivity = db.TimeSheetActivities.FirstOrDefault(k => k.ID == activity.TimeSheetActivityId && !k.ToDate.HasValue);
 
-                if (activeActivity != null)
-                {
-                    return null;
-                }
+                //if (activeActivity != null)
+                //{
+                //    return null;
+                //}
 
                 var dbActivity = _mapper.Map<DataSets.TimeSheetActivityLog>(activity);
 

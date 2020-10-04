@@ -59,7 +59,7 @@ namespace ProjectTracking.Hubs
                 {
                     var ip = _context.HttpContext?.Connection?.RemoteIpAddress?.ToString();
 
-                    ApplicationContext.ActiveLogs.Add(_userLogsMethods.AddStartLog(id, ip));
+                    ApplicationContext.ActiveLogs.Add(_userLogsMethods.AddStartLog(id, ip, DataContract.UserLogStatus.Login));
                 }
 
                 //var cId = Context.User.FindFirst(ClaimTypes.NameIdentifier);

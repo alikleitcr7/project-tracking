@@ -538,11 +538,11 @@ const usersMethods = {
 }
 
 
-const supervisorFormObject = (userId = null, teamIds = []) => {
+const supervisorFormObject = (userId = null, teamId = null) => {
 
     let record = {
         userId,
-        teamIds
+        teamId
     }
 
     return {

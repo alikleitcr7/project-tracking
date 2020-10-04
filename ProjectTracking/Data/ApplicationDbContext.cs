@@ -9,7 +9,7 @@ using ProjectTracking.Data.DataSets;
 
 namespace ProjectTracking.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<string>, string>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationIdentityRole, string>
     {
         public DbSet<Superviser> Supervisers { get; set; }
         public DbSet<Project> Projects { get; set; }
@@ -20,7 +20,7 @@ namespace ProjectTracking.Data
         public DbSet<TimeSheetTask> TimeSheetTasks { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Team> Teams { get; set; }
-        public DbSet<IdentityRole> ApplicationRoles { get; set; }
+        //public DbSet<ApplicationIdentityRole> ApplicationRoles { get; set; }
         public DbSet<UserLog> UserLogging { get; set; }
         public DbSet<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
         public DbSet<IpAddress> IpAddresses { get; set; }
@@ -39,6 +39,9 @@ namespace ProjectTracking.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<ApplicationIdentityRole>().ToTable("Roles").HasKey(k=>k.Id);
+            builder.Entity<ApplicationUser>().ToTable("Users").HasKey(k => k.Id);
+
             #region Team
 
             builder.Entity<Team>()
@@ -159,11 +162,15 @@ namespace ProjectTracking.Data
             builder.Entity<Superviser>()
                    .HasKey(k => new { k.TeamId, k.UserId });
 
-            //builder.Entity<Superviser>()
-            //       .HasOne(x => x.Supervisor)
-            //       .WithMany(m => m.Supervising)
-            //       .HasForeignKey(x => x.SupervisorId)
-            //       .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Superviser>()
+                   .HasOne(x => x.User)
+                   .WithMany(m => m.Supervising)
+                   .HasForeignKey(x => x.UserId);
+
+            builder.Entity<Superviser>()
+                   .HasOne(x => x.AssignedByUser)
+                   .WithMany(m => m.AssignedSupervisors)
+                   .HasForeignKey(x => x.AssignedByUserId);
 
             #endregion
 
@@ -295,19 +302,21 @@ namespace ProjectTracking.Data
             #region Initial Users
 
             string ADMIN_ID = _config.GetValue<string>("Tokens:SysUsers:Admin");
+            string DEV_ID = _config.GetValue<string>("Tokens:SysUsers:Dev");
+
             string ADMIN_ROLE_ID = _config.GetValue<string>("Tokens:Roles:Admin");
             string USER_ROLE_ID = _config.GetValue<string>("Tokens:Roles:User");
             //const string ADMIN_ID = "a18be9c0-aa65-4af8-bd17-00bd9344e575";
             // any guid, but nothing is against to use the same one
 
-            builder.Entity<IdentityRole>().HasData(new IdentityRole
+            builder.Entity<ApplicationIdentityRole>().HasData(new ApplicationIdentityRole
             {
                 Id = ADMIN_ROLE_ID,
                 Name = "Admin",
                 NormalizedName = "ADMIN"
             });
 
-            builder.Entity<IdentityRole>().HasData(new IdentityRole
+            builder.Entity<ApplicationIdentityRole>().HasData(new ApplicationIdentityRole
             {
                 Id = USER_ROLE_ID,
                 Name = "User",
@@ -320,19 +329,45 @@ namespace ProjectTracking.Data
             {
                 Id = ADMIN_ID,
                 UserName = "admin",
+                FirstName = "Admin",
                 NormalizedUserName = "ADMIN",
                 Email = "admin@sys.com",
                 NormalizedEmail = "ADMIN@SYS.COM",
                 EmailConfirmed = true,
                 PasswordHash = hasher.HashPassword(null, "123123"),
-                SecurityStamp = string.Empty
+                SecurityStamp = string.Empty,
+                Title = "Admin",
+                RoleId = ADMIN_ROLE_ID
             });
 
-            builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            builder.Entity<ApplicationUser>().HasData(new ApplicationUser
             {
-                RoleId = ADMIN_ROLE_ID,
-                UserId = ADMIN_ID
+                Id = DEV_ID,
+                UserName = "alikleit",
+                FirstName = "Ali",
+                LastName = "Kleit",
+                NormalizedUserName = "ALIKLEIT",
+                Email = "alikleitcr7@gmail.com",
+                NormalizedEmail = "ALIKLEITCR7@GMAIL.COM",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "123123"),
+                SecurityStamp = string.Empty,
+                Title = "Developer",
+                RoleId = USER_ROLE_ID
             });
+
+            //builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            //{
+            //    UserId = ADMIN_ID,
+            //    RoleId = ADMIN_ROLE_ID,
+            //});
+
+
+            //builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            //{
+            //    UserId = DEV_ID,
+            //    RoleId = USER_ROLE_ID,
+            //});
 
             #endregion
         }
