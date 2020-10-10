@@ -35,9 +35,20 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetById(int id)
+        public IActionResult GetById(int id, bool includeMembers)
         {
-            return Json(_teamsMethods.GetById(id));
+            try
+            {
+                return Ok(_teamsMethods.GetById(id, includeMembers));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpGet]
@@ -152,6 +163,13 @@ namespace ProjectTracking.Controllers
         {
             try
             {
+                if (!model.id.HasValue)
+                {
+                    model.SetAddedByUserId(GetCurrentUserId());
+                }
+
+                model.SetAssignedByUserId(GetCurrentUserId());
+
                 return Ok(_teamsMethods.Save(model));
             }
             catch (ClientException ex)
@@ -163,8 +181,8 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
-        
-        
+
+
         [HttpDelete]
         public IActionResult Delete(int id)
         {

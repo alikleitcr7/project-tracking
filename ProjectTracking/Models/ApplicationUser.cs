@@ -24,7 +24,7 @@ namespace ProjectTracking
         [MaxLength(30)]
         public string MiddleName { get; set; }
 
-        [MaxLength(60), Required]
+        [MaxLength(60)]
         public string Title { get; set; }
 
         public DateTime DateOfBirth { get; set; }

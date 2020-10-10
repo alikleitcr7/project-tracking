@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectTracking.Data;
 
 namespace ProjectTracking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201010150214_user title not req")]
+    partial class usertitlenotreq
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,8 +145,8 @@ namespace ProjectTracking.Migrations
                     b.ToTable("Users");
 
                     b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", ConcurrencyStamp = "7f8f68f2-0c83-44dc-b493-844170ae3776", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, FirstName = "Sys", LastName = "Admin", NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEAH2otD4wctid6jtU2HgqcXkRIDY6jyGwP0N5dwupaDhcZuiR+M1P8ndwYIOUiG72w==", RoleCode = (short)2, SecurityStamp = "", Title = "Admin", UserName = "admin" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e576", ConcurrencyStamp = "3f10bba6-8ba2-4f65-999f-89a5cc3af249", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "alikleitcr7@gmail.com", EmailConfirmed = true, FirstName = "Ali", LastName = "Kleit", NormalizedEmail = "ALIKLEITCR7@GMAIL.COM", NormalizedUserName = "ALIKLEIT", PasswordHash = "AQAAAAEAACcQAAAAELeP3rpHILU1HbgBgiLkN5ISX+FCSWTo6FDBhNn5eQciJ42w090lIYCKUwp+O0tp1A==", RoleCode = (short)1, SecurityStamp = "", Title = "Developer", UserName = "alikleit" }
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", ConcurrencyStamp = "1eff4cf6-f779-4999-842b-2df698a23baf", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, FirstName = "Sys", LastName = "Admin", NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEHxldJSsIdmeQ4H0MHfJ1Y4QFZAZWNaE1LGnWm+zUci/UVq8AWtD63mRqMwO2dupmg==", RoleCode = (short)2, SecurityStamp = "", Title = "Admin", UserName = "admin" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e576", ConcurrencyStamp = "a406c49e-7a1e-46ab-bc5a-3a5dd78ca655", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "alikleitcr7@gmail.com", EmailConfirmed = true, FirstName = "Ali", LastName = "Kleit", NormalizedEmail = "ALIKLEITCR7@GMAIL.COM", NormalizedUserName = "ALIKLEIT", PasswordHash = "AQAAAAEAACcQAAAAEGS6lcCqwIlUjO+EJ274mKjtCSV7VBX78werhNHsLzU49B0jBpWx+TF3X7hb2kXBfA==", RoleCode = (short)1, SecurityStamp = "", Title = "Developer", UserName = "alikleit" }
                     );
                 });
 
@@ -344,7 +346,8 @@ namespace ProjectTracking.Migrations
 
                     b.Property<string>("AssignedByUserId");
 
-                    b.Property<DateTime>("DateAdded");
+                    b.Property<DateTime>("DateAdded")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<DateTime>("DateAssigned");
 

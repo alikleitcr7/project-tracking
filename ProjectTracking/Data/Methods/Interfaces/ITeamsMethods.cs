@@ -9,7 +9,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         bool Delete(int id);
         List<Team> GetAll(bool includeMembersCount = true);
         Team Update(Team Departmentdto);
-        Team GetById(int id);
+        Team GetById(int id, bool includeMembers = true);
         System.Threading.Tasks.Task AddRemoveTeamsUsers(int teamId, List<string> userIds);
         List<string> GetTeamUsers(int teamId);
         //List<Team> GetAllExecludingSupervising(string userId);

@@ -32,7 +32,7 @@
 
                             <p v-show="!teams.members.isLoading && !teams.members.data.length">There are currently no team members registered!</p>
                             <p v-for="(user, idx) in teams.members.data">
-                                <input type="checkbox" :value="user.key" v-model="teams.form.record.selectedMembers" />
+                                <input type="checkbox" :value="user.key" v-model="teams.form.record.userIds" />
                                 {{user.value}}
                             </p>
                         </div>
@@ -45,7 +45,7 @@
 
                             <p v-show="!teams.supervisors.isLoading && !teams.supervisors.data.length">There are currently no team supervisors registered!</p>
                             <p v-for="(user, idx) in teams.supervisors.data">
-                                <input type="checkbox" :value="user.key" v-model="teams.form.record.selectedMembers" />
+                                <input type="radio" :value="user.key" v-model="teams.form.record.supervisorId" />
                                 {{user.value}}
                             </p>
                         </div>

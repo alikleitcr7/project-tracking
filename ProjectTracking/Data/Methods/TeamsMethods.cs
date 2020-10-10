@@ -83,7 +83,7 @@ namespace ProjectTracking.Data.Methods
 
         public async Task<Team> Save(TeamSaveModel model)
         {
-            string supervisorId = model.GetSupervisorId();
+            string supervisorId = model.supervisorId;
             string assignedById = model.GetAssignedByUserId();
             string addedByUserId = model.GetAddedByUserId();
 
@@ -143,8 +143,17 @@ namespace ProjectTracking.Data.Methods
                 // add/remove team members
                 await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds);
 
-                // save changes
-                _context.SaveChanges();
+                try
+                {
+                    // save changes
+                    _context.SaveChanges();
+
+                }
+                catch (Exception exx)
+                {
+
+                    throw;
+                }
 
                 // return the record
                 return GetById(dbTeam.ID);
@@ -180,8 +189,17 @@ namespace ProjectTracking.Data.Methods
                 // add the team
                 _context.Teams.Add(dbTeam);
 
-                // save changes on team
-                _context.SaveChanges();
+                try
+                {
+                    // save changes
+                    _context.SaveChanges();
+
+                }
+                catch (Exception exx)
+                {
+
+                    throw;
+                }
 
                 // set team members
                 await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds);
@@ -279,9 +297,16 @@ namespace ProjectTracking.Data.Methods
                 .ToList();
         }
 
-        public Team GetById(int id)
+        public Team GetById(int id, bool includeMembers = true)
         {
-            var dbTeam = _context.Teams.Include(k => k.Members).FirstOrDefault(k => k.ID == id);
+            IQueryable<DataSets.Team> query = _context.Teams;
+
+            if (includeMembers)
+            {
+                query = query.Include(k => k.Members);
+            }
+
+            DataSets.Team dbTeam = query.FirstOrDefault(k => k.ID == id);
 
             if (dbTeam == null)
             {

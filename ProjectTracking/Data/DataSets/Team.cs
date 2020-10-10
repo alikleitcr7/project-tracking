@@ -16,8 +16,8 @@ namespace ProjectTracking.Data.DataSets
         public string Name { get; set; }
         [Required]
         public string AddedByUserId { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime DateAdded { get; set; } = DateTime.Now;
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime DateAdded { get; set; }
 
         // another admin can change supervisor
         // so we need to keep who added the record

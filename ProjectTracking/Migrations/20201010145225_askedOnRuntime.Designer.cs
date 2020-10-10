@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectTracking.Data;
 
 namespace ProjectTracking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201010145225_askedOnRuntime")]
+    partial class askedOnRuntime
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,6 +125,7 @@ namespace ProjectTracking.Migrations
                     b.Property<int?>("TeamId");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(60);
 
                     b.Property<string>("UserName")
@@ -143,8 +146,8 @@ namespace ProjectTracking.Migrations
                     b.ToTable("Users");
 
                     b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", ConcurrencyStamp = "7f8f68f2-0c83-44dc-b493-844170ae3776", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, FirstName = "Sys", LastName = "Admin", NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEAH2otD4wctid6jtU2HgqcXkRIDY6jyGwP0N5dwupaDhcZuiR+M1P8ndwYIOUiG72w==", RoleCode = (short)2, SecurityStamp = "", Title = "Admin", UserName = "admin" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e576", ConcurrencyStamp = "3f10bba6-8ba2-4f65-999f-89a5cc3af249", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "alikleitcr7@gmail.com", EmailConfirmed = true, FirstName = "Ali", LastName = "Kleit", NormalizedEmail = "ALIKLEITCR7@GMAIL.COM", NormalizedUserName = "ALIKLEIT", PasswordHash = "AQAAAAEAACcQAAAAELeP3rpHILU1HbgBgiLkN5ISX+FCSWTo6FDBhNn5eQciJ42w090lIYCKUwp+O0tp1A==", RoleCode = (short)1, SecurityStamp = "", Title = "Developer", UserName = "alikleit" }
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", ConcurrencyStamp = "71d575e1-bdac-4272-b275-3d9166ea215b", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, FirstName = "Sys", LastName = "Admin", NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAECbpQh6EONI65oxBc8SLyZ07Sey6jPIntirMSIrmNizfdElWuN9VHiZ0lz5T75IxXg==", RoleCode = (short)2, SecurityStamp = "", Title = "Admin", UserName = "admin" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e576", ConcurrencyStamp = "1665f2e5-87a0-4a89-96fb-9d8b5bf43b78", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "alikleitcr7@gmail.com", EmailConfirmed = true, FirstName = "Ali", LastName = "Kleit", NormalizedEmail = "ALIKLEITCR7@GMAIL.COM", NormalizedUserName = "ALIKLEIT", PasswordHash = "AQAAAAEAACcQAAAAEDAhQ27yYi1Fz+UaJh5eemaNL9EBI/simSPTmOUq7Q/lgEKF+x+hVGjuCgWJcllfdA==", RoleCode = (short)1, SecurityStamp = "", Title = "Developer", UserName = "alikleit" }
                     );
                 });
 
@@ -344,7 +347,8 @@ namespace ProjectTracking.Migrations
 
                     b.Property<string>("AssignedByUserId");
 
-                    b.Property<DateTime>("DateAdded");
+                    b.Property<DateTime>("DateAdded")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<DateTime>("DateAssigned");
 

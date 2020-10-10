@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @{
     string errorMessage = ViewBag.ErrorMessage;
+    string message = ViewData["Message"]?.ToString();
 
     //List<IdentityRole<string>> roles = (List<IdentityRole<string>>)ViewData["Roles"];
 
@@ -49,7 +50,10 @@
                    class="s-btn s-btn-md s-btn-block s-btn-outline">Register</a>
 
                 <div>
-
+                    @if (!string.IsNullOrEmpty(message))
+                    {
+                        <p>@message</p>
+                    }
                     <p>@ViewData["ErrorMessage"]</p>
 
                     @Html.ValidationSummary(false, "", new { @class = "text-danger" })

@@ -73,6 +73,13 @@
                 </div>
 
                 <div class="row">
+                    @*<div class="col-sm-6">
+                            <div class="form-group">
+                                <label asp-for="Input.Title"></label>
+                                <input asp-for="Input.Title" class="form-control" />
+                                <span asp-validation-for="Input.Title" class="text-danger"></span>
+                            </div>
+                        </div>*@
                     <div class="col-lg-12">
                         <div class="form-group">
                             <label asp-for="Input.RoleKey"></label>
@@ -86,6 +93,13 @@
                     @ViewData["ErrorMessage"]
                     @Html.ValidationMessage("RegistrationError")
                 </h4>
+
+                @if (ViewData["Message"] != null)
+                {
+                    <h4 class="text-danger">
+                        @ViewData["Message"]
+                    </h4>
+                }
 
                 <button type="submit" class="s-btn s-btn-block s-btn-md s-btn-primary mb-3">Register</button>
                 <a class="s-btn s-btn-block s-btn-md s-btn-outline mb-3"

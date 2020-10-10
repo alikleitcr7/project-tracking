@@ -13,18 +13,13 @@ namespace ProjectTracking.Models.Teams
         public string name { get; set; }
 
         private string addedByUserId { get; set; }
-        private string supervisorId { get; set; }
+        public string supervisorId { get; set; }
         private string assignedByUserId { get; set; }
 
 
         public string GetAddedByUserId()
         {
             return addedByUserId;
-        }
-
-        public string GetSupervisorId()
-        {
-            return supervisorId;
         }
 
         public string GetAssignedByUserId()
@@ -36,11 +31,6 @@ namespace ProjectTracking.Models.Teams
         public void SetAddedByUserId(string userId)
         {
             addedByUserId = userId;
-        }
-
-        public void SetSupervisorId(string userId)
-        {
-            supervisorId = userId;
         }
 
         public void SetAssignedByUserId(string userId)

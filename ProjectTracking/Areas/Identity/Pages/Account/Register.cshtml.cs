@@ -23,7 +23,7 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
-        private readonly RoleManager<ApplicationIdentityRole> _roleManager;
+        //private readonly RoleManager<ApplicationIdentityRole> _roleManager;
 
         private readonly IConfiguration _configuration;
 
@@ -31,9 +31,10 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger, IConfiguration configuration, RoleManager<ApplicationIdentityRole> roleManager,
-            IEmailSender emailSender
-            , ApplicationDbContext context, IEnumerable<ApplicationIdentityRole> roles
+            ILogger<RegisterModel> logger,
+            IConfiguration configuration,
+            IEmailSender emailSender,
+            ApplicationDbContext context
             )
         {
             _context = context;
@@ -41,19 +42,19 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
             _configuration = configuration;
             _signInManager = signInManager;
             _logger = logger;
-            _roleManager = roleManager;
+            //_roleManager = roleManager;
             _emailSender = emailSender;
         }
 
         [BindProperty]
         public InputModel Input { get; set; }
-        public List<ApplicationIdentityRole> Roles
-        {
-            get
-            {
-                return _roleManager.Roles.ToList();
-            }
-        }
+        //public List<ApplicationIdentityRole> Roles
+        //{
+        //    get
+        //    {
+        //        return _roleManager.Roles.ToList();
+        //    }
+        //}
 
         public string ReturnUrl { get; set; }
 
@@ -66,6 +67,10 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
+
+            //[Required]
+            //[Display(Name = "Title")]
+            //public string Title { get; set; }
 
             [Required]
             [Display(Name = "Date Of Birth")]
@@ -102,9 +107,29 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
         }
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            var secretToken = _configuration.GetSection($"Tokens:ApplicationUser").Value;
+            string roleKey = Input.RoleKey;
 
-            if (secretToken != Input.RoleKey)
+            var secretToken_member = _configuration.GetSection($"Tokens:TeamMember").Value;
+            var secretToken_admin = _configuration.GetSection($"Tokens:Admin").Value;
+            var secretToken_supervisor = _configuration.GetSection($"Tokens:Supervisor").Value;
+
+            ApplicationUserRole? role = null;
+
+            if (roleKey == secretToken_member)
+            {
+                role = ApplicationUserRole.TeamMember;
+            }
+            if (roleKey == secretToken_admin)
+            {
+                role = ApplicationUserRole.Admin;
+            }
+
+            if (roleKey == secretToken_supervisor)
+            {
+                role = ApplicationUserRole.Supervisor;
+            }
+
+            if (!role.HasValue)
             {
                 ViewData["ErrorMessage"] = "your are not authorized to register";
 
@@ -127,6 +152,7 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
                     DateOfBirth = DateTime.Parse(Input.DateOfBirth),
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
+                    RoleCode = (short)role.Value
                 };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -159,13 +185,17 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
 
                     //Using LocalRedirect ensures that the "return URL" is a route actually on your site, 
                     //instead of some malicious third-party bad actor's.
-                    return LocalRedirect(returnUrl);
+                    return Page();
                 }
 
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("RegistrationError", error.Description);
                 }
+            }
+            else
+            {
+                ViewData["ErrorMessage"] = "fill required fields";
             }
 
             // If we got this far, something failed, redisplay form

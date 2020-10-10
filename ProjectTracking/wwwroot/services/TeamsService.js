@@ -2,13 +2,21 @@
 const TEAMS_SERVICE_URI = (method) => `/teams/${method}`;
 
 const TeamsService = {
-    GetById: function (id) {
-        const url = TEAMS_SERVICE_URI(`GetById?id=${id}`)
+    GetById: function (id, includeMembers = true) {
+
+        const query = serialize({ id, includeMembers })
+
+        const url = TEAMS_SERVICE_URI(`GetById?${query}`)
 
         return axios.get(url);
     },
     Add: function (team) {
         const url = TEAMS_SERVICE_URI(`Add`)
+
+        return axios.post(url, team);
+    },
+    Save: function (team) {
+        const url = TEAMS_SERVICE_URI(`Save`)
 
         return axios.post(url, team);
     },

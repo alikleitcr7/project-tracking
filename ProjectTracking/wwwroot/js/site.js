@@ -248,7 +248,12 @@ class CoreValidator {
     }
 
     arrayValidation() {
+
         const { value, min, max, isRequired } = this
+
+        if (!Array.isArray(value)) {
+            return false
+        }
 
         if (!isRequired) {
             return true
@@ -256,13 +261,13 @@ class CoreValidator {
 
         const len = value.length
 
-        let isValid = false;
+        let isValid = true;
 
-        if (len >= min) {
-            isValid = true
+        if (this.hasValue(min) && len < min) {
+            isValid = false
         }
 
-        if (max && len > max) {
+        if (this.hasValue(max) && len > max) {
             isValid = false
         }
 

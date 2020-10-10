@@ -6,10 +6,25 @@ const teamFields = [
     {
         name: 'name',
         displayName: 'name',
-        min: 0,
+        min: 1,
         max: 255,
         type: DATA_TYPES.TEXT,
-        required: false,
+        required: true,
+    },
+    {
+        name: 'supervisorId',
+        displayName: 'Supervisor',
+        errorMessage: 'Supervisor is required',
+        type: DATA_TYPES.TEXT,
+        required: true,
+    },
+    {
+        name: 'userIds',
+        displayName: 'Members',
+        errorMessage: 'Team members are required',
+        min: 1,
+        type: DATA_TYPES.ARRAY,
+        required: true,
     },
 ]
 
@@ -36,8 +51,8 @@ const teamFormObject = (obj) => {
 
     let record = obj || {
         name: null,
-        selectedSupervisor: null,
-        selectedMembers: []
+        supervisorId: null,
+        userIds: []
     }
 
     return {
@@ -94,10 +109,13 @@ const teamsMethods = {
             const field = teamFields[i]
             const fieldValue = form[field.name];
             const validator = new CoreValidator(field.name, fieldValue, field.required, field.type, field.min, field.max)
+
             isValid = validator.validate()
 
+            console.log({ field,isValid })
+
             if (!isValid) {
-                finalMessage = validator.message();
+                finalMessage = field.errorMessage || validator.message();
                 break;
             }
         }
@@ -159,7 +177,7 @@ const teamsMethods = {
         this.teams_setFormMessage('Loading...');
 
         // GET REQUEST
-        TeamsService.GetById(record.id)
+        TeamsService.GetById(record.id, true)
             .then(r => {
 
                 const record = r.data
@@ -196,7 +214,6 @@ const teamsMethods = {
             //this.teams_setFormMessage('Fill the required fields to continue')
             return;
         }
-
 
         const sendForm = () => {
 
@@ -255,7 +272,7 @@ const teamsMethods = {
             }
 
             // NEW RECORD
-            TeamsService.Add(pendingRecord)
+            TeamsService.Save(pendingRecord)
                 .then((r) => {
 
                     const record = r.data
@@ -460,157 +477,6 @@ const teamsMembersMethods = {
             })
             .then(() => {
                 this.teamsMembers_setLoading(false)
-            })
-    },
-}
-
-const teamUserFormObject = (teamId = null, userIds = []) => {
-
-    let record = {
-        teamId,
-        userIds
-    }
-
-    return {
-        record,
-        message: '',
-        image: null,
-        isLoading: false,
-        isSaving: false,
-    }
-}
-
-const teamUserObject = () => {
-    return {
-        data: [],
-        isLoading: false,
-        isProcessing: false,
-        form: teamUserFormObject(),
-        message: '',
-    }
-}
-
-const teamUsersMethods = {
-    teamUsers_setFormMessage: function (message) {
-
-        this.teamUsers.form.message = message
-    },
-    teamUsers_setFormLoading: function (isLoading) {
-        this.teamUsers.form.isLoading = isLoading
-    },
-    teamUsers_setFormSaving: function (isSaving) {
-        this.teamUsers.form.isSaving = isSaving
-    },
-    teamUsers_edit: function (teamId) {
-
-        // OPEN MODAL
-        Modals_Teams.TeamUsers.Show();
-        this.teamUsers.form.isLoading = true
-
-        this.teamUsers_setFormLoading(true)
-        this.teamUsers_setFormMessage('Loading...');
-
-        this.teamUsers_getAll(teamId)
-
-        // GET REQUEST
-        TeamsService.GetTeamUsers(teamId)
-            .then(r => {
-
-                const record = r.data
-
-                if (!record) {
-                    this.teamUsers_setFormMessage(BASIC_ERROR_MESSAGE);
-                    return
-                }
-
-                this.teamUsers_setFormMessage('');
-
-                this.teamUsers.form = teamUserFormObject(teamId, record);
-
-            })
-            .catch(e => {
-
-                console.error('get error', e)
-
-                this.teamUsers_setFormMessage(BASIC_ERROR_MESSAGE);
-            })
-            .then(() => {
-                this.teamUsers_setFormLoading(false)
-            })
-    },
-    teamUsers_save: function () {
-
-        this.teamUsers_setFormMessage('');
-
-        let pendingRecord = { ...this.teamUsers.form.record }
-
-        // START UPDATE/CREATE REQUEST
-        this.teamUsers_setFormSaving(true)
-
-        // UPDATE
-        TeamsService.AddRemoveTeamsUsers(pendingRecord)
-            .then((r) => {
-
-                const record = r.data
-
-                if (record) {
-
-                    // update members count (teams)
-                    let data = [...this.teams.data]
-
-                    let teamToUpdate = data.find(k => k.id === pendingRecord.teamId)
-
-                    teamToUpdate.membersCount = pendingRecord.userIds.length
-
-                    this.teams.data = data
-
-                    // saved feeback (teamUsers)
-                    this.teamUsers_setFormMessage('Saved!')
-                }
-                else {
-                    this.teamUsers_setFormMessage(BASIC_ERROR_MESSAGE)
-                }
-
-            })
-            .catch((e) => {
-                console.error('save team teamUsers', e)
-                this.teamUsers_setFormMessage(getAxiosErrorMessage(e))
-            })
-            .then(() => {
-                this.teamUsers_setFormSaving(false)
-            });
-    },
-    teamUsers_setLoading: function (isLoading) {
-        this.teamUsers.isLoading = isLoading
-    },
-    teamUsers_setMessage: function (message) {
-        this.teamUsers.message = message
-    },
-    teamUsers_getAll: function (teamId) {
-
-        this.teamUsers_setLoading(true)
-        this.teamUsers_setMessage('Loading...')
-
-        this.teamUsers.data = []
-
-        return AdminsService.GetAllUsersExecludeTeamSupervisors(teamId)
-            .then((r) => {
-
-                const record = r.data
-
-                if (record) {
-                    this.teamUsers.data = [...record]
-                }
-                else {
-                    this.teamUsers_setMessage(BASIC_ERROR_MESSAGE)
-                }
-            })
-            .catch((e) => {
-                console.error('teamUsers getall', e)
-                this.teamUsers_setMessage(getAxiosErrorMessage(e))
-            })
-            .then(() => {
-                this.teamUsers_setLoading(false)
             })
     },
 }
