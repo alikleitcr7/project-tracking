@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 
@@ -17,10 +18,13 @@ namespace ProjectTracking.DataContract
 
         [MaxLength(255)]
         public string Description { get; set; }
+
         public DateTime DateAdded { get; set; } = DateTime.Now;
 
         public int ProjectId { get; set; }
-        public short  StatusCode { get; set; }
+
+        [Range(0, 4)]
+        public short StatusCode { get; set; }
 
         public DateTime? StartDate { get; set; }
         public DateTime? PlannedEnd { get; set; }
@@ -62,7 +66,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return  ((ProjectTaskStatus)StatusCode).ToString();
+                return ((ProjectTaskStatus)StatusCode).ToString();
             }
         }
 

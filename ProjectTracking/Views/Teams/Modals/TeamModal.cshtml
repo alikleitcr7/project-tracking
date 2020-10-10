@@ -1,0 +1,69 @@
+﻿
+<div class="modal" id="TeamModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            @*<div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>*@
+
+            <div class="modal-body">
+
+                <div class="input-group-container">
+                    <div class="input-group-item">
+                        <label>Team Name</label>
+                        <input type="text" class="form-control" v-model="teams.form.record.name" />
+
+                    </div>
+                </div>
+
+
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#MembersTab">Members (*)</a></li>
+                    <li><a data-toggle="tab" href="#SupervisorTab">Supervisor</a></li>
+                </ul>
+
+                <div class="tab-content">
+
+                    <div id="MembersTab" class="tab-pane fade in active">
+                        <div class="checklist-container scrollable-container-400">
+
+                            <p class="checklist-item-loading" v-show="teams.members.isLoading" v-for="k in [,,,]"></p>
+
+                            <p v-show="!teams.members.isLoading && !teams.members.data.length">There are currently no team members registered!</p>
+                            <p v-for="(user, idx) in teams.members.data">
+                                <input type="checkbox" :value="user.key" v-model="teams.form.record.selectedMembers" />
+                                {{user.value}}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="SupervisorTab" class="tab-pane fade">
+                        <div class="checklist-container scrollable-container-400">
+
+                            <p class="checklist-item-loading" v-show="teams.supervisors.isLoading" v-for="k in [,,,]"></p>
+
+                            <p v-show="!teams.supervisors.isLoading && !teams.supervisors.data.length">There are currently no team supervisors registered!</p>
+                            <p v-for="(user, idx) in teams.supervisors.data">
+                                <input type="checkbox" :value="user.key" v-model="teams.form.record.selectedMembers" />
+                                {{user.value}}
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer modal-footer-centered">
+                <p class="f-display-message">{{ teams.form.message}}</p>
+                <div class="modal-buttons-container">
+                    <button v-bind:disabled="teams.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="teams_save">
+                        Save
+                    </button>
+                    <button type="button" class="s-btn s-btn-outline" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

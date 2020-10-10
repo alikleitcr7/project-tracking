@@ -2,40 +2,53 @@
 using System;
 using System.Collections.Generic;
 using ProjectTracking.Data.DataSets;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProjectTracking
 {
+    public enum ApplicationUserRole
+    {
+        TeamMember,
+        Supervisor,
+        Admin
+    }
+
     public class ApplicationUser : IdentityUser
     {
+        [MaxLength(30), Required]
         public string FirstName { get; set; }
+
+        [MaxLength(30), Required]
         public string LastName { get; set; }
+
+        [MaxLength(30)]
         public string MiddleName { get; set; }
+
+        [MaxLength(60), Required]
         public string Title { get; set; }
 
         public DateTime DateOfBirth { get; set; }
 
         public int? TeamId { get; set; }
-        public Team Team { get; set; }
-        //public int? CompanyID { get; set; }
-        //public bool? IsTracked { get; set; }
         public float? MonthlySalary { get; set; }
         public float? HourlyRate { get; set; }
-        //public float? HoursPerDay { get; set; } // to be removed
         public short? EmploymentTypeCode { get; set; }
-        //public bool IsDeleted { get; set; }
+      
+        [Range(0, 2)]
+        public short RoleCode { get; set; }
 
-        //public virtual List<Superviser> Supervisors { get; set; }
+        public Team Team { get; set; }
+
         public List<Superviser> Supervising { get; set; }
         public List<Superviser> AssignedSupervisors { get; set; }
         public List<Broadcast> Broadcasts { get; set; }
-
-        //public ICollection<Superviser> Supervisors { get; set; }
-        //public ICollection<RequestedPermission> RequestedPermissions { get; set; }
-        public ICollection<TimeSheet> TimeSheets { get; set; }
-        public ICollection<TimeSheet> AddedByUserTimeSheets { get; set; }
-        public List<Project> Projects { get; set; }
-        public string RoleId { get; set; }
-        public ApplicationIdentityRole Role { get; set; }
+        public List<UserNotification> FromUserNotifications { get; set; }
+        public List<UserNotification> ToUserNotifications { get; set; }
+        public List<TimeSheet> TimeSheets { get; set; }
+        public List<TimeSheet> AddedByUserTimeSheets { get; set; }
+        public List<Team> AddedByUserTeams { get; set; }
+        public List<Project> AddedByUserProject { get; set; }
+        //public ApplicationIdentityRole Role { get; set; }
 
         //public Role Role { get; set; }
         //public ICollection<IdentityUserRole<string>> Roles { get; set; }

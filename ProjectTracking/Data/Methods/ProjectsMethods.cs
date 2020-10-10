@@ -157,7 +157,7 @@ namespace ProjectTracking.Data.Methods
 
             if (categoryId.HasValue)
             {
-                query = query.Where(k => k.CategoryId.HasValue && k.CategoryId.Value == categoryId.Value);
+                query = query.Where(k => k.CategoryId == categoryId.Value);
             }
 
             if (!string.IsNullOrEmpty(keyword))
@@ -250,7 +250,7 @@ namespace ProjectTracking.Data.Methods
 
             if (categoryId.HasValue)
             {
-                query = query.Where(k => k.CategoryId.HasValue && k.CategoryId == categoryId.Value);
+                query = query.Where(k =>  k.CategoryId == categoryId.Value);
             }
 
             query = query.OrderByDescending(k => k.DateAdded);

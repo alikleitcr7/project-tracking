@@ -1,0 +1,85 @@
+﻿<div id="Teams" class="Teams v-container" v-cloak=v-cloak>
+    <div class="buttons mb-2">
+        <button type="button" v-on:click="teams_openModal" class="s-btn s-btn-primary">New Team &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
+    </div>
+
+    <h4 v-show="!teams.isLoading && !teams.data.length ">
+        <br />
+        <span class="clickable-link" v-on:click="teams_openModal">Click Here</span> to add
+    </h4>
+
+    <section id="Pagination" class="c-pagination" v-show="teamsTotalPages > 1">
+        <div class="container">
+            <paginate v-bind:page-count="teamsTotalPages"
+                      v-bind:container-class="teams.dataPaging.pagination"
+                      v-bind:prev-text="teams.dataPaging.prev"
+                      v-bind:next-text="teams.dataPaging.next" v-bind:click-handler="teams_pageClick">
+            </paginate>
+        </div>
+    </section>
+
+    <p class="c-display-message">{{teams.isLoading ? 'Loading...':'&nbsp;'}}</p>
+
+    <div v-show="teams.data.length" class="Teams c-table-data-container"
+         v-bind:class="{'lock-controls': teams.isProcessing }">
+
+        <table class="table ">
+
+            <thead>
+                <tr>
+                    <th style="width: 50px">-</th>
+                    <th>Name</th>
+                    <th>Members</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <template v-for="(item ,idx) in teams.data">
+
+                    <tr>
+                        <td>
+                            {{item.id}}
+                        </td>
+
+                        <td>
+                            {{item.name}}
+                        </td>
+                        <td>
+                            {{item.membersCount}}
+                        </td>
+
+                        <td>
+                            @*<button class="s-btn s-btn-sm s-btn-outline"
+                                    type="button"
+                                    v-on:click="teamUsers_edit(item.id)">
+                                <i class="glyphicon glyphicon-user"></i>
+                                Assign Users
+                            </button>*@
+                            <button class="s-btn s-btn-sm s-btn-outline" type="button"
+                                    v-on:click="teams_edit(idx)">
+                                <i class="glyphicon glyphicon-edit"></i>
+                                Edit
+
+                            </button>
+                            <button class="s-btn s-btn-sm s-btn-danger" type="button"
+                                    v-on:click="teams_delete(idx)">
+                                <i class="glyphicon glyphicon-trash"></i>
+                                Delete
+
+                            </button>
+                        </td>
+                    </tr>
+
+                </template>
+
+            </tbody>
+        </table>
+    </div>
+
+
+    <partial name="~/views/teams/modals/TeamModal.cshtml" />
+    @*<partial name="~/views/teams/modals/TeamUsersModal.cshtml" />*@
+
+
+</div>

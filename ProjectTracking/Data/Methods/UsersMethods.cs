@@ -171,6 +171,20 @@ namespace ProjectTracking.Data.Methods
             return parsedRecord;
         }
 
+        public List<User> GetUsersByRole(int roleCode)
+        {
+            return db.Users.Where(k => k.RoleCode == roleCode)
+                .ToList()
+                .Select(_mapper.Map<User>)
+                .ToList();
+        }
+        public List<KeyValuePair<string, string>> GetUsersByRoleKeyValue(int roleCode)
+        {
+            return db.Users.Where(k => k.RoleCode == roleCode)
+                .Select(k => new KeyValuePair<string, string>(k.Id, k.FirstName + " " + k.LastName))
+                .ToList();
+        }
+
         public List<string> SupervisingUsers(string supervisorId)
         {
             //List<int> supervisingTeams = db.Supervisers.Where(k => k.UserId == supervisorId)
@@ -243,7 +257,8 @@ namespace ProjectTracking.Data.Methods
 
         public List<ApplicationIdentityRole> GetAllRoles()
         {
-            return db.Roles.ToList();
+            throw new NotImplementedException();
+            //return db.Roles.ToList();
         }
 
         public List<KeyValuePair<string, string>> GetAllUsersKeyValues()
@@ -398,16 +413,19 @@ namespace ProjectTracking.Data.Methods
 
         public List<string> GetUsersInRole(string role)
         {
-            var dbRole = db.Roles.FirstOrDefault(k => k.Name.Equals(role, StringComparison.OrdinalIgnoreCase));
 
-            List<string> users = new List<string>();
+            throw new NotImplementedException();
 
-            if (dbRole == null)
-            {
-                return users;
-            }
+            //var dbRole = db.Roles.FirstOrDefault(k => k.Name.Equals(role, StringComparison.OrdinalIgnoreCase));
 
-            return db.UserRoles.Where(k => k.RoleId == dbRole.Id).Select(k => k.UserId).ToList();
+            //List<string> users = new List<string>();
+
+            //if (dbRole == null)
+            //{
+            //    return users;
+            //}
+
+            //return db.UserRoles.Where(k => k.RoleId == dbRole.Id).Select(k => k.UserId).ToList();
             //List<string> userIds = db.UserRoles.Where(k => k.RoleId == dbRole.Id).Select(k => k.UserId).ToList();
 
             //if (userIds.Count == 0)

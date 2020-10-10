@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
 using ProjectTracking.Exceptions;
+using ProjectTracking.Models.Teams;
 
 namespace ProjectTracking.Controllers
 {
@@ -25,12 +26,10 @@ namespace ProjectTracking.Controllers
             _teamsMethods = teamsMethods;
         }
 
-        [Authorize(Policy = "SupervisingPolicy")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-
 
             return View();
         }
@@ -91,6 +90,7 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
         [HttpGet]
         public IActionResult GetSupervisingTeamId(string userId)
         {
@@ -147,11 +147,39 @@ namespace ProjectTracking.Controllers
             return Json(_teamsMethods.Update(team));
         }
 
-        [HttpDelete]
-        public JsonResult Delete(int id)
+        [HttpPost]
+        public IActionResult Save([FromBody]TeamSaveModel model)
         {
-            return Json(_teamsMethods.Delete(id));
+            try
+            {
+                return Ok(_teamsMethods.Save(model));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
-
+        
+        
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                return Ok(_teamsMethods.Delete(id));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
     }
 }

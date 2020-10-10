@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace ProjectTracking.DataContract
@@ -10,6 +11,7 @@ namespace ProjectTracking.DataContract
     }
     public class Entity : IEntity
     {
+        [Column("ID", Order = 0)]
         public int ID { get; set; }
     }
 }

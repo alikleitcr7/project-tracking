@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
+using ProjectTracking.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -92,6 +93,11 @@ namespace ProjectTracking.Data.Methods
             if (record == null)
             {
                 throw new KeyNotFoundException();
+            }
+
+            if (_context.Projects.Any(k=>k.CategoryId == id))
+            {
+                throw new ClientException("category is set to some projects and cannot be deleted");
             }
 
             _context.Categories.Remove(record);

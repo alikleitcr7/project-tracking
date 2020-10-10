@@ -36,6 +36,8 @@ const teamFormObject = (obj) => {
 
     let record = obj || {
         name: null,
+        selectedSupervisor: null,
+        selectedMembers: []
     }
 
     return {
@@ -63,6 +65,17 @@ const teamObject = () => {
         isProcessing: false,
         message: '',
         form: teamFormObject(),
+        supervisors: {
+            data: [],
+            message: '',
+            isLoading: false
+        },
+        members: {
+            data: [],
+            message: '',
+            isLoading: false
+        },
+        formRelatedDataAreLoaded: false
     }
 }
 
@@ -116,6 +129,8 @@ const teamsMethods = {
     },
     teams_openModal: function () {
 
+        this.teams_loadFormRelatedData();
+
         this.teams.message = ''
         this.teams.form = teamFormObject()
 
@@ -123,6 +138,8 @@ const teamsMethods = {
         Modals_Teams.Team.Show()
     },
     teams_edit: function (idx) {
+
+        this.teams_loadFormRelatedData();
 
         // INDEX VALIDATION if (idx < 0 || idx>
 
@@ -365,8 +382,87 @@ const teamsMethods = {
     teams_pageClick: function (pageNum) {
         this.teams_getAll(pageNum - 1)
     },
+    teams_loadFormRelatedData: function () {
+
+        if (!this.teams.formRelatedDataAreLoaded) {
+            this.teamsSupervisors_getAll();
+            this.teamsMembers_getAll();
+            this.teams.formRelatedDataAreLoaded = true
+        }
+    },
 }
 
+const teamsSupervisorsMethods = {
+    teamsSupervisors_setLoading: function (isLoading) {
+        this.teams.supervisors.isLoading = isLoading
+    },
+    teamsSupervisors_setMessage: function (message) {
+        this.teams.supervisors.message = message
+    },
+    teamsSupervisors_getAll: function () {
+
+        this.teamsSupervisors_setLoading(true)
+        this.teamsSupervisors_setMessage('Loading...')
+
+        this.teams.supervisors.data = []
+
+        return UsersService.GetUsersByRoleKeyValue(APP_USER_ROLES.supervisor.key)
+            .then((r) => {
+
+                const record = r.data
+
+                if (record) {
+                    this.teams.supervisors.data = record
+                }
+                else {
+                    this.teamsSupervisors_setMessage(BASIC_ERROR_MESSAGE)
+                }
+            })
+            .catch((e) => {
+                console.error('teamsSupervisors getall', e)
+                this.teamsSupervisors_setMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.teamsSupervisors_setLoading(false)
+            })
+    },
+}
+
+const teamsMembersMethods = {
+    teamsMembers_setLoading: function (isLoading) {
+        this.teams.members.isLoading = isLoading
+    },
+    teamsMembers_setMessage: function (message) {
+        this.teams.members.message = message
+    },
+    teamsMembers_getAll: function () {
+
+        this.teamsMembers_setLoading(true)
+        this.teamsMembers_setMessage('Loading...')
+
+        this.teams.members.data = []
+
+        return UsersService.GetUsersByRoleKeyValue(APP_USER_ROLES.teamMember.key)
+            .then((r) => {
+
+                const record = r.data
+
+                if (record) {
+                    this.teams.members.data = record
+                }
+                else {
+                    this.teamsMembers_setMessage(BASIC_ERROR_MESSAGE)
+                }
+            })
+            .catch((e) => {
+                console.error('teamsMembers getall', e)
+                this.teamsMembers_setMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.teamsMembers_setLoading(false)
+            })
+    },
+}
 
 const teamUserFormObject = (teamId = null, userIds = []) => {
 
@@ -519,15 +615,13 @@ const teamUsersMethods = {
     },
 }
 
-
 var teams_app = new Vue({
     el: "#Teams",
     data: {
         dateOptions,
         dateTimeOptions,
-
         teams: teamObject(),
-        teamUsers: teamUserObject(),
+        //teamUsers: teamUserObject(),
     },
     computed: {
         teamsTotalPages: function () {
@@ -544,11 +638,12 @@ var teams_app = new Vue({
     },
     methods: {
         ...teamsMethods,
-        ...teamUsersMethods
+        //...teamUsersMethods,
+        ...teamsSupervisorsMethods,
+        ...teamsMembersMethods,
     },
     mounted: function () {
 
         this.teams_getAll()
     }
 })
-

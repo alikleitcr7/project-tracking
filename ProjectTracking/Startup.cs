@@ -128,11 +128,12 @@ namespace ProjectTracking
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             //register identity roles 
-            services.AddIdentity<ApplicationUser, ApplicationIdentityRole>()
-            .AddRoleManager<RoleManager<ApplicationIdentityRole>>()
+            services.AddDefaultIdentity<ApplicationUser>()
                          .AddEntityFrameworkStores<ApplicationDbContext>()
                          .AddDefaultTokenProviders()
                          .AddDefaultUI();
+
+            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationClaimsIdentityFactory>();
 
             //.AddSignInManager<SignInManager<ApplicationUser>>()
             //.AddRoleManager<RoleManager<ApplicationIdentityRole>>()

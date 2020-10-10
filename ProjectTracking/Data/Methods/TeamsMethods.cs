@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
 using ProjectTracking.Exceptions;
+using ProjectTracking.Models.Teams;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -29,6 +30,7 @@ namespace ProjectTracking.Data.Methods
             _context = dbContext;
             _mapper = mapper;
         }
+
         public Team Add(Team team)
         {
             if (team == null)
@@ -73,6 +75,124 @@ namespace ProjectTracking.Data.Methods
             return GetById(dbRecord.ID);
         }
 
+
+        //public Superviser GetTeamSupervisorLogs(TeamSaveModel model)
+        //{
+
+        //}
+
+        public async Task<Team> Save(TeamSaveModel model)
+        {
+            string supervisorId = model.GetSupervisorId();
+            string assignedById = model.GetAssignedByUserId();
+            string addedByUserId = model.GetAddedByUserId();
+
+            if (supervisorId == null || assignedById == null)
+            {
+                throw new Exception("supervisor and assigned by user claims were not provided");
+            }
+
+            if (model.userIds == null || model.userIds.Count == 0)
+            {
+                throw new ClientException("at least one team member is required");
+            }
+
+            if (model.id.HasValue)
+            {
+                // check if name already exist 
+                bool nameExist = _context.Teams.Any(k => k.ID != model.id.Value && k.Name == model.name);
+
+                if (nameExist)
+                {
+                    throw new ClientException($"team exist under name {model.name}");
+                }
+
+                // # save team #
+
+                // get team
+
+                var dbTeam = _context.Teams.FirstOrDefault(k => k.ID == model.id.Value);
+
+                if (dbTeam == null)
+                {
+                    throw new ClientException("record not found");
+                }
+
+                if (dbTeam.SupervisorId != supervisorId)
+                {
+                    // supervisor has changed
+
+                    // move current to logs
+                    _context.Supervisers.Add(new DataSets.Superviser()
+                    {
+                        TeamId = dbTeam.ID,
+                        UserId = dbTeam.SupervisorId,
+                        DateAssigned = dbTeam.DateAssigned,
+                        AssignedByUserId = dbTeam.AssignedByUserId,
+                    });
+
+                    // set new values
+                    dbTeam.SupervisorId = supervisorId;
+                    dbTeam.DateAssigned = DateTime.Now;
+                    dbTeam.AssignedByUserId = assignedById;
+                }
+
+                // set model values
+                dbTeam.Name = model.name;
+
+                // add/remove team members
+                await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds);
+
+                // save changes
+                _context.SaveChanges();
+
+                // return the record
+                return GetById(dbTeam.ID);
+            }
+            else
+            {
+                // # new team #
+
+                // check if name already exist 
+                bool nameExist = _context.Teams.Any(k => k.Name == model.name);
+
+                // validation
+                if (nameExist)
+                {
+                    throw new ClientException($"team exist under name {model.name}");
+                }
+
+                if (addedByUserId == null)
+                {
+                    throw new Exception("added user claim was not provided");
+                }
+
+                DataSets.Team dbTeam = new DataSets.Team()
+                {
+                    Name = model.name,
+                    AddedByUserId = addedByUserId,
+                    AssignedByUserId = assignedById,
+                    DateAssigned = DateTime.Now,
+                    DateAdded = DateTime.Now,
+                    SupervisorId = supervisorId,
+                };
+
+                // add the team
+                _context.Teams.Add(dbTeam);
+
+                // save changes on team
+                _context.SaveChanges();
+
+                // set team members
+                await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds);
+
+                // save changes on teamsteams
+                _context.SaveChanges();
+
+                return GetById(dbTeam.ID);
+            }
+        }
+
         public async Task AddRemoveTeamsUsers(int teamId, List<string> userIds)
         {
             var dbTeam = _context.Teams.FirstOrDefault(k => k.ID == teamId);
@@ -82,6 +202,16 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException("team dont exist");
             }
 
+            await AddRemoveTeamsUsers(teamId, userIds);
+
+            _context.SaveChanges();
+        }
+
+        /// <summary>
+        /// no commit is made to the db
+        /// </summary>
+        private async Task AddRemoveTeamsUsersFromContext(int teamId, List<string> userIds)
+        {
             // remove all items not in the model
             var existingUsersUnderTeam = _context.Users.Where(k => k.TeamId == teamId);
 
@@ -193,6 +323,5 @@ namespace ProjectTracking.Data.Methods
         //    _context.SaveChanges();
         //    return department;
         //}
-
     }
 }

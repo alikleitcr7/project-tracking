@@ -1,8 +1,12 @@
-﻿namespace ProjectTracking.Data.DataSets
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ProjectTracking.Data.DataSets
 {
     public class UserNotification : Notification
     {
+        [Required]
         public string FromUserId { get; set; }
+        [Required]
         public string ToUserId { get; set; }
 
         public ApplicationUser FromUser { get; set; }

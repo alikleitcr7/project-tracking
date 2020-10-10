@@ -72,14 +72,20 @@
     <Compile Remove="Data\Methods\RequestedPermissionsMethods.cs" />
     <Compile Remove="Data\Methods\SubProjectsMethods.cs" />
     <Compile Remove="Data\Methods\UpdateFrequenciesMethods.cs" />
-    <Compile Remove="Migrations\20200922183050_init.cs" />
-    <Compile Remove="Migrations\20200922183050_init.Designer.cs" />
-    <Compile Remove="Migrations\20200922183307_init.cs" />
-    <Compile Remove="Migrations\20200922183307_init.Designer.cs" />
-    <Compile Remove="Migrations\20200930175318_added_project_added_by.cs" />
-    <Compile Remove="Migrations\20200930175318_added_project_added_by.Designer.cs" />
-    <Compile Remove="Migrations\20201004181115_tablernm2.cs" />
-    <Compile Remove="Migrations\20201004181115_tablernm2.Designer.cs" />
+    <Compile Remove="Migrations\20201005190606_added constraints.cs" />
+    <Compile Remove="Migrations\20201005190606_added constraints.Designer.cs" />
+    <Compile Remove="Migrations\20201005191037_added constraints.cs" />
+    <Compile Remove="Migrations\20201005191037_added constraints.Designer.cs" />
+    <Compile Remove="Migrations\20201005191841_added constraints.cs" />
+    <Compile Remove="Migrations\20201005191841_added constraints.Designer.cs" />
+    <Compile Remove="Migrations\20201005195537_added constraints.cs" />
+    <Compile Remove="Migrations\20201005195537_added constraints.Designer.cs" />
+    <Compile Remove="Migrations\20201005200657_added constraints.cs" />
+    <Compile Remove="Migrations\20201005200657_added constraints.Designer.cs" />
+    <Compile Remove="Migrations\20201005201320_added constraints.cs" />
+    <Compile Remove="Migrations\20201005201320_added constraints.Designer.cs" />
+    <Compile Remove="Migrations\20201007175214_supervisorlog.cs" />
+    <Compile Remove="Migrations\20201007175214_supervisorlog.Designer.cs" />
     <Compile Remove="Models\TimeSheet\TimeSheetModel.cs" />
   </ItemGroup>
 
@@ -180,6 +186,12 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\ProjectTasks\Forms\ProjectTasksResult.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Teams\Modals\TeamUsersModal.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Teams\Modals\TeamModal.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>

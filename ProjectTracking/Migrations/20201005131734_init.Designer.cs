@@ -10,8 +10,8 @@ using ProjectTracking.Data;
 namespace ProjectTracking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201004074525_app user removed col")]
-    partial class appuserremovedcol
+    [Migration("20201005131734_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,26 +20,6 @@ namespace ProjectTracking.Migrations
                 .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType");
-
-                    b.Property<string>("ClaimValue");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
@@ -63,9 +43,11 @@ namespace ProjectTracking.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128);
 
-                    b.Property<string>("ProviderKey");
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderDisplayName");
 
@@ -79,31 +61,15 @@ namespace ProjectTracking.Migrations
                     b.ToTable("AspNetUserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId");
-
-                    b.Property<string>("RoleId");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles");
-
-                    b.HasData(
-                        new { UserId = "a18be9c0-aa65-4af8-bd17-00bd9344e575", RoleId = "a18be9c0-aa65-4af8-bd17-00bd9344e572" },
-                        new { UserId = "a18be9c0-aa65-4af8-bd17-00bd9344e576", RoleId = "a18be9c0-aa65-4af8-bd17-00bd9344e590" }
-                    );
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId");
 
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Value");
 
@@ -112,41 +78,10 @@ namespace ProjectTracking.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ProjectTracking.ApplicationIdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e572", ConcurrencyStamp = "ec4ee308-b322-4b97-93b1-60e0c27a8b2c", Name = "Admin", NormalizedName = "ADMIN" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e590", ConcurrencyStamp = "e8752d03-188c-4d02-ba5b-7b9275f484da", Name = "User", NormalizedName = "USER" }
-                    );
-                });
-
             modelBuilder.Entity("ProjectTracking.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AccessFailedCount");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -160,17 +95,16 @@ namespace ProjectTracking.Migrations
 
                     b.Property<short?>("EmploymentTypeCode");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(30);
 
                     b.Property<float?>("HourlyRate");
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .HasMaxLength(30);
 
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("MiddleName");
+                    b.Property<string>("MiddleName")
+                        .HasMaxLength(30);
 
                     b.Property<float?>("MonthlySalary");
 
@@ -182,17 +116,14 @@ namespace ProjectTracking.Migrations
 
                     b.Property<string>("PasswordHash");
 
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
+                    b.Property<short>("RoleCode");
 
                     b.Property<string>("SecurityStamp");
 
                     b.Property<int?>("TeamId");
 
-                    b.Property<string>("Title");
-
-                    b.Property<bool>("TwoFactorEnabled");
+                    b.Property<string>("Title")
+                        .HasMaxLength(60);
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
@@ -209,11 +140,11 @@ namespace ProjectTracking.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("Users");
 
                     b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", AccessFailedCount = 0, ConcurrencyStamp = "0d37eef6-53bb-4b75-af12-09550af04a0a", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, FirstName = "Admin", LockoutEnabled = false, NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEKR2HjXmFwiD8erfw6GcLG7O1KBilcabmcNGvGdEnBv+/obGaLRnpR/h++lxkIZCxQ==", PhoneNumberConfirmed = false, SecurityStamp = "", Title = "Admin", TwoFactorEnabled = false, UserName = "admin" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e576", AccessFailedCount = 0, ConcurrencyStamp = "15056b09-365c-494a-8848-0b66324d44d1", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "alikleitcr7@gmail.com", EmailConfirmed = true, FirstName = "Ali", LastName = "Kleit", LockoutEnabled = false, NormalizedEmail = "ALIKLEITCR7@GMAIL.COM", NormalizedUserName = "ALIKLEIT", PasswordHash = "AQAAAAEAACcQAAAAED3YT+3iPzsXfxeqqVotR67vvSg7hEpGMi29UP8DSw/6WZrdIB28fN9J9JrYD2uHrg==", PhoneNumberConfirmed = false, SecurityStamp = "", Title = "Developer", TwoFactorEnabled = false, UserName = "alikleit" }
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", ConcurrencyStamp = "c038fc8e-3043-4797-82db-ce8ba3542c75", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, FirstName = "Admin", NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAELKFOi3kQLerM47v90J4hn66CGNLXrJgFrWa/ZTCQ1Zi1ocgMD47hwf1XfW24M/qpw==", RoleCode = (short)2, SecurityStamp = "", Title = "Admin", UserName = "admin" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e576", ConcurrencyStamp = "7fb0b1f4-a623-42ce-973b-8ecbc40917d0", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "alikleitcr7@gmail.com", EmailConfirmed = true, FirstName = "Ali", LastName = "Kleit", NormalizedEmail = "ALIKLEITCR7@GMAIL.COM", NormalizedUserName = "ALIKLEIT", PasswordHash = "AQAAAAEAACcQAAAAEOA+icTE9sog77SmDC5yhomE4DHn7iT0+bVKn8ST/ljaWF2i8kZYzxhCZLWGbZ2LYQ==", RoleCode = (short)1, SecurityStamp = "", Title = "Developer", UserName = "alikleit" }
                     );
                 });
 
@@ -221,6 +152,7 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("DateSent");
@@ -246,6 +178,7 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
@@ -273,6 +206,7 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("ActualEnd");
@@ -290,7 +224,7 @@ namespace ProjectTracking.Migrations
 
                     b.Property<DateTime?>("StartDate");
 
-                    b.Property<int?>("StatusCode");
+                    b.Property<short>("StatusCode");
 
                     b.Property<string>("Title")
                         .HasMaxLength(100);
@@ -310,7 +244,7 @@ namespace ProjectTracking.Migrations
 
                     b.Property<DateTime>("DateModified");
 
-                    b.Property<int?>("StatusCode");
+                    b.Property<short>("StatusCode");
 
                     b.HasKey("ProjectId", "DateModified");
 
@@ -321,6 +255,7 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("ActualEnd");
@@ -336,7 +271,7 @@ namespace ProjectTracking.Migrations
 
                     b.Property<DateTime?>("StartDate");
 
-                    b.Property<int?>("StatusCode");
+                    b.Property<short>("StatusCode");
 
                     b.Property<string>("Title")
                         .HasMaxLength(100);
@@ -354,7 +289,7 @@ namespace ProjectTracking.Migrations
 
                     b.Property<DateTime>("DateModified");
 
-                    b.Property<int?>("StatusCode");
+                    b.Property<short>("StatusCode");
 
                     b.HasKey("ProjectTaskId", "DateModified");
 
@@ -363,27 +298,35 @@ namespace ProjectTracking.Migrations
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.Superviser", b =>
                 {
-                    b.Property<int>("TeamId");
-
-                    b.Property<string>("UserId");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AssignedByUserId");
 
                     b.Property<DateTime>("DateAssigned");
 
-                    b.HasKey("TeamId", "UserId");
+                    b.Property<int>("TeamId");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("ID");
 
                     b.HasIndex("AssignedByUserId");
 
+                    b.HasIndex("TeamId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Supervisers");
+                    b.ToTable("Supervisor");
                 });
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.Team", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AddedByUserId");
@@ -418,6 +361,7 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AddedByUserId");
@@ -443,19 +387,19 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address");
-
-                    b.Property<string>("Comment");
+                    b.Property<string>("Address")
+                        .HasColumnName("IpAdd");
 
                     b.Property<DateTime>("DateAdded");
 
                     b.Property<DateTime>("FromDate");
 
-                    b.Property<int>("TimeSheetProjectTaskId");
+                    b.Property<string>("Message");
 
-                    b.Property<int?>("TimeSheetTaskID");
+                    b.Property<int>("TimeSheetTaskId");
 
                     b.Property<DateTime?>("ToDate");
 
@@ -463,7 +407,7 @@ namespace ProjectTracking.Migrations
 
                     b.HasIndex("Address");
 
-                    b.HasIndex("TimeSheetTaskID");
+                    b.HasIndex("TimeSheetTaskId");
 
                     b.ToTable("TimeSheetActivities");
                 });
@@ -472,19 +416,19 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address");
-
-                    b.Property<string>("Comment");
+                    b.Property<string>("Address")
+                        .HasColumnName("IpAdd");
 
                     b.Property<DateTime>("DateAdded");
 
                     b.Property<DateTime>("FromDate");
 
-                    b.Property<int>("TimeSheetActivityId");
+                    b.Property<string>("Message");
 
-                    b.Property<int>("TimeSheetProjectTaskId");
+                    b.Property<int>("TimeSheetActivityId");
 
                     b.Property<DateTime?>("ToDate");
 
@@ -501,6 +445,7 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ProjectTaskId");
@@ -520,13 +465,15 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address");
-
-                    b.Property<string>("Comments");
+                    b.Property<string>("Address")
+                        .HasColumnName("IpAdd");
 
                     b.Property<DateTime>("FromDate");
+
+                    b.Property<short>("LogStatusCode");
 
                     b.Property<DateTime?>("ToDate");
 
@@ -545,6 +492,7 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("DateSent");
@@ -566,14 +514,6 @@ namespace ProjectTracking.Migrations
                     b.ToTable("UserNotifications");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("ProjectTracking.ApplicationIdentityRole")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("ProjectTracking.ApplicationUser")
@@ -584,19 +524,6 @@ namespace ProjectTracking.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ProjectTracking.ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("ProjectTracking.ApplicationIdentityRole")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("ProjectTracking.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -680,8 +607,7 @@ namespace ProjectTracking.Migrations
 
                     b.HasOne("ProjectTracking.ApplicationUser", "User")
                         .WithMany("Supervising")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.Team", b =>
@@ -723,7 +649,7 @@ namespace ProjectTracking.Migrations
 
                     b.HasOne("ProjectTracking.Data.DataSets.TimeSheetTask", "TimeSheetTask")
                         .WithMany("Activities")
-                        .HasForeignKey("TimeSheetTaskID")
+                        .HasForeignKey("TimeSheetTaskId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

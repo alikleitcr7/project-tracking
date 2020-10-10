@@ -20,7 +20,7 @@ namespace ProjectTracking.Controllers
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly RoleManager<ApplicationIdentityRole> roleManager;
+        //private readonly RoleManager<ApplicationIdentityRole> roleManager;
         private readonly IHttpContextAccessor _accessor;
         private readonly IUserMethods _users;
         private readonly IIpAddressMethods _ipAddressMethods;
@@ -32,7 +32,7 @@ namespace ProjectTracking.Controllers
 
         public HomeController(SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-            RoleManager<ApplicationIdentityRole> roleManager,
+            //RoleManager<ApplicationIdentityRole> roleManager,
             IUserMethods users,
             IIpAddressMethods ipAddressMethods,
             IUserLogsMethods userLogsMethods,
@@ -41,7 +41,7 @@ namespace ProjectTracking.Controllers
         {
             _signInManager = signInManager;
             _userManager = userManager;
-            this.roleManager = roleManager;
+            //this.roleManager = roleManager;
             _accessor = accessor;
             _users = users;
             this._ipAddressMethods = ipAddressMethods;
@@ -67,20 +67,21 @@ namespace ProjectTracking.Controllers
                 return Redirect("/logout");
             }
 
-            List<ApplicationIdentityRole> roles = _users.GetAllRoles();
+            //List<ApplicationIdentityRole> roles = _users.GetAllRoles();
 
-            ViewData["Roles"] = roles;
+            //ViewData["Roles"] = roles;
 
             return View();
         }
+
 
         [Route("/login")]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            List<ApplicationIdentityRole> roles = _users.GetAllRoles();
+            //List<ApplicationIdentityRole> roles = _users.GetAllRoles();
 
-            ViewData["Roles"] = roles;
+            //ViewData["Roles"] = roles;
 
             if (ModelState.IsValid)
 

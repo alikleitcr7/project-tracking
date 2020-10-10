@@ -50,6 +50,8 @@ namespace ProjectTracking.Data.Methods.Interfaces
         void AssignTeamSupervisor(string assignedById, string userId, int teamId);
         bool IsSupervisor(string userId);
         List<string> SupervisingUsers(string supervisorId);
+        List<User> GetUsersByRole(int roleCode);
+        List<KeyValuePair<string, string>> GetUsersByRoleKeyValue(int roleCode);
         #endregion
     }
 }

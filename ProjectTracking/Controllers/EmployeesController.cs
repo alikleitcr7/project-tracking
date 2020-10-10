@@ -193,15 +193,15 @@ namespace ProjectTracking.Controllers
                 return false;
             foreach (string roleId in assign.SuperViseIds)
             {
-                var role = _context.Roles.FirstOrDefault(c => c.Id == roleId);
-                if (role == null)
-                    continue;
-                IdentityUserRole<string> userRole = new IdentityUserRole<string>
-                {
-                    RoleId = roleId,
-                    UserId = employee.Id
-                };
-                _context.UserRoles.Add(userRole);
+                //var role = _context.Roles.FirstOrDefault(c => c.Id == roleId);
+                //if (role == null)
+                //    continue;
+                //IdentityUserRole<string> userRole = new IdentityUserRole<string>
+                //{
+                //    RoleId = roleId,
+                //    UserId = employee.Id
+                //};
+                //_context.UserRoles.Add(userRole);
 
             }
             _context.SaveChanges();
@@ -209,32 +209,19 @@ namespace ProjectTracking.Controllers
         }
         public bool RemoveRolesToUser([FromBody] AssignSuperVisorModel assign)
         {
-            var employee = _context.Users.FirstOrDefault(c => c.Id == assign.UserId);
-            if (employee == null)
-                return false;
-            foreach (string roleId in assign.SuperViseIds)
-            {
-                var role = _context.Roles.FirstOrDefault(c => c.Id == roleId);
-                if (role == null)
-                    continue;
-                var userRolesToRemove = _context.UserRoles.Where(c => c.RoleId == roleId && c.UserId == employee.Id);
-                if (userRolesToRemove == null)
-                    continue;
-                _context.UserRoles.RemoveRange(userRolesToRemove);
-            }
-            _context.SaveChanges();
-            return true;
+            throw new NotImplementedException();
         }
         public JsonResult GetRoles(string userId)
         {
-            if (string.IsNullOrEmpty(userId))
-                throw new ArgumentNullException();
-            ApplicationUser employee = _context.Users.FirstOrDefault(c => c.Id == userId);
-            if (employee == null)
-                throw new NullReferenceException();
-            List<ApplicationIdentityRole> roles = _roleManager.Roles.ToList();
-            string[] rolesTakenIds = _context.UserRoles.Where(c => c.UserId == userId).Select(c => c.RoleId).ToArray();
-            return Json(new { All = roles, rolesTakes = rolesTakenIds });
+            throw new NotImplementedException();
+            //if (string.IsNullOrEmpty(userId))
+            //    throw new ArgumentNullException();
+            //ApplicationUser employee = _context.Users.FirstOrDefault(c => c.Id == userId);
+            //if (employee == null)
+            //    throw new NullReferenceException();
+            //List<ApplicationIdentityRole> roles = _roleManager.Roles.ToList();
+            ////string[] rolesTakenIds = _context.UserRoles.Where(c => c.UserId == userId).Select(c => c.RoleId).ToArray();
+            //return Json(new { All = roles, rolesTakes = rolesTakenIds });
 
         }
         #endregion

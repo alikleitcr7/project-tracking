@@ -92,7 +92,8 @@
                                     v-on:click="supervisors_edit(item.id)"
                                     type="button">
                                 <i class="glyphicon glyphicon-user"></i>
-                                Teams ({{item.supervisingCount}})
+                                Team
+                                @*({{item.supervisingCount}})*@
                             </button>
                         </td>
 
@@ -120,12 +121,12 @@
                                             Edit
                                         </a>
                                     </li>
-                                    <li>
+                                    @*<li>
                                         <a class="dropdown-item-danger" v-on:click="users_delete(idx)">
                                             <i class="glyphicon glyphicon-trash"></i>
                                             Delete
                                         </a>
-                                    </li>
+                                    </li>*@
                                 </ul>
 
                             </div>
@@ -275,8 +276,8 @@
                         <p v-show="userRoles.isLoading">Loading roles....</p>
                         <p v-show="!userRoles.isLoading && !userRoles.data.length">-</p>
                         <p v-for="(role, idx) in userRoles.data">
-                            <input type="radio" :value="role.name" v-model="userRoles.form.record.role" />
-                            {{role.name}}
+                            <input type="radio" :value="role.key" v-model="userRoles.form.record.role" />
+                            {{role.value}}
                         </p>
                     </div>
                 </div>

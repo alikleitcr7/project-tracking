@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
+using ProjectTracking.Exceptions;
 
 namespace ProjectTracking.Controllers
 {
@@ -19,34 +20,88 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetById(int id)
+        public IActionResult GetById(int id)
         {
-            return Json(_categoriesMethods.GetById(id));
+            try
+            {
+                return Ok(_categoriesMethods.GetById(id));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpGet]
-        public JsonResult GetAll()
+        public IActionResult GetAll()
         {
-            return Json(_categoriesMethods.GetAll());
+            try
+            {
+                return Ok(_categoriesMethods.GetAll());
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpPost]
-        public JsonResult Add([FromBody]Category category)
+        public IActionResult Add([FromBody]Category category)
         {
-            return Json(_categoriesMethods.Add(category));
+            try
+            {
+                return Ok(_categoriesMethods.Add(category));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpPut]
-        public JsonResult Update([FromBody]Category category)
+        public IActionResult Update([FromBody]Category category)
         {
-            return Json(_categoriesMethods.Update(category));
+            try
+            {
+                return Ok(_categoriesMethods.Update(category));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         [HttpDelete]
-        public JsonResult Delete(int id)
+        public IActionResult Delete(int id)
         {
-            return Json(_categoriesMethods.Delete(id));
+            try
+            {
+                return Ok(_categoriesMethods.Delete(id));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
-
     }
 }

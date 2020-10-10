@@ -19,26 +19,6 @@ namespace ProjectTracking.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType");
-
-                    b.Property<string>("ClaimValue");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -61,9 +41,11 @@ namespace ProjectTracking.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128);
 
-                    b.Property<string>("ProviderKey");
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderDisplayName");
 
@@ -77,26 +59,15 @@ namespace ProjectTracking.Migrations
                     b.ToTable("AspNetUserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId");
-
-                    b.Property<string>("RoleId");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId");
 
-                    b.Property<string>("LoginProvider");
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(128);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Value");
 
@@ -105,41 +76,10 @@ namespace ProjectTracking.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ProjectTracking.ApplicationIdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e572", ConcurrencyStamp = "937278cf-e704-425c-9b73-7f2d11e9344f", Name = "Admin", NormalizedName = "ADMIN" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e590", ConcurrencyStamp = "466f9821-bbbd-4ce7-a12a-36a5b3459e3f", Name = "User", NormalizedName = "USER" }
-                    );
-                });
-
             modelBuilder.Entity("ProjectTracking.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AccessFailedCount");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -153,17 +93,18 @@ namespace ProjectTracking.Migrations
 
                     b.Property<short?>("EmploymentTypeCode");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(30);
 
                     b.Property<float?>("HourlyRate");
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(30);
 
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("MiddleName");
+                    b.Property<string>("MiddleName")
+                        .HasMaxLength(30);
 
                     b.Property<float?>("MonthlySalary");
 
@@ -175,19 +116,15 @@ namespace ProjectTracking.Migrations
 
                     b.Property<string>("PasswordHash");
 
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("RoleId");
+                    b.Property<short>("RoleCode");
 
                     b.Property<string>("SecurityStamp");
 
                     b.Property<int?>("TeamId");
 
-                    b.Property<string>("Title");
-
-                    b.Property<bool>("TwoFactorEnabled");
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(60);
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
@@ -202,15 +139,13 @@ namespace ProjectTracking.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("RoleId");
-
                     b.HasIndex("TeamId");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("Users");
 
                     b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", AccessFailedCount = 0, ConcurrencyStamp = "459d3ad3-04c0-4a6e-b0bd-526eb7154df8", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, FirstName = "Admin", LockoutEnabled = false, NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEGNzvozZqtI32TYqN+yXoujfrIiQ+tRUM/zGuTLc2k+nmTSl39sBWgFlcSdCDLNRjA==", PhoneNumberConfirmed = false, RoleId = "a18be9c0-aa65-4af8-bd17-00bd9344e572", SecurityStamp = "", Title = "Admin", TwoFactorEnabled = false, UserName = "admin" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e576", AccessFailedCount = 0, ConcurrencyStamp = "23b5642d-8bc8-4919-9456-9052d9d8947b", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "alikleitcr7@gmail.com", EmailConfirmed = true, FirstName = "Ali", LastName = "Kleit", LockoutEnabled = false, NormalizedEmail = "ALIKLEITCR7@GMAIL.COM", NormalizedUserName = "ALIKLEIT", PasswordHash = "AQAAAAEAACcQAAAAEPDJtgGMt/0djDdSBa58JKvqyyCeNkBXQh4ztYa0wHjXyilRJ27Mkh5oI5L9IMXoGw==", PhoneNumberConfirmed = false, RoleId = "a18be9c0-aa65-4af8-bd17-00bd9344e590", SecurityStamp = "", Title = "Developer", TwoFactorEnabled = false, UserName = "alikleit" }
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", ConcurrencyStamp = "ba79376d-46f3-4171-86c6-f496f8813074", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, FirstName = "Sys", LastName = "Admin", NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEO9/XUlzUFAsxIgsFg72iZwaRu4pMPnBNwLEpusRcczZy/fFhyo+F0htvR8c7/XS+g==", RoleCode = (short)2, SecurityStamp = "", Title = "Admin", UserName = "admin" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e576", ConcurrencyStamp = "2c079c2c-3d91-454c-b663-a4900589fc5b", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "alikleitcr7@gmail.com", EmailConfirmed = true, FirstName = "Ali", LastName = "Kleit", NormalizedEmail = "ALIKLEITCR7@GMAIL.COM", NormalizedUserName = "ALIKLEIT", PasswordHash = "AQAAAAEAACcQAAAAEI6IKXhpjv5b2yqiLqL01FlgwrHT/CvTQyqkohyEURe4qUkgfMUcBhW2e8bdzj2B8w==", RoleCode = (short)1, SecurityStamp = "", Title = "Developer", UserName = "alikleit" }
                     );
                 });
 
@@ -218,13 +153,17 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateSent");
+                    b.Property<DateTime>("DateSent")
+                        .ValueGeneratedOnAddOrUpdate();
 
-                    b.Property<string>("FromUserId");
+                    b.Property<string>("FromUserId")
+                        .IsRequired();
 
-                    b.Property<string>("Message");
+                    b.Property<string>("Message")
+                        .HasMaxLength(255);
 
                     b.Property<short>("NotificationTypeCode");
 
@@ -243,6 +182,7 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
@@ -257,9 +197,11 @@ namespace ProjectTracking.Migrations
             modelBuilder.Entity("ProjectTracking.Data.DataSets.IpAddress", b =>
                 {
                     b.Property<string>("Address")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(15);
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .HasMaxLength(50);
 
                     b.HasKey("Address");
 
@@ -270,15 +212,18 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("ActualEnd");
 
-                    b.Property<string>("AddedByUserId");
+                    b.Property<string>("AddedByUserId")
+                        .IsRequired();
 
-                    b.Property<int?>("CategoryId");
+                    b.Property<int>("CategoryId");
 
-                    b.Property<DateTime>("DateAdded");
+                    b.Property<DateTime>("DateAdded")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<string>("Description")
                         .HasMaxLength(255);
@@ -318,11 +263,13 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("ActualEnd");
 
-                    b.Property<DateTime>("DateAdded");
+                    b.Property<DateTime>("DateAdded")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<string>("Description")
                         .HasMaxLength(255);
@@ -360,36 +307,54 @@ namespace ProjectTracking.Migrations
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.Superviser", b =>
                 {
-                    b.Property<int>("TeamId");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("UserId");
-
-                    b.Property<string>("AssignedByUserId");
+                    b.Property<string>("AssignedByUserId")
+                        .IsRequired();
 
                     b.Property<DateTime>("DateAssigned");
 
-                    b.HasKey("TeamId", "UserId");
+                    b.Property<int>("TeamId");
+
+                    b.Property<string>("UserId")
+                        .IsRequired();
+
+                    b.HasKey("ID");
 
                     b.HasIndex("AssignedByUserId");
 
+                    b.HasIndex("TeamId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Supervisers");
+                    b.ToTable("SupervisorLog");
                 });
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.Team", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AddedByUserId");
+                    b.Property<string>("AddedByUserId")
+                        .IsRequired();
 
-                    b.Property<DateTime>("DateAdded");
+                    b.Property<string>("AssignedByUserId");
+
+                    b.Property<DateTime>("DateAdded")
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<DateTime>("DateAssigned");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30);
+
+                    b.Property<string>("SupervisorId");
 
                     b.HasKey("ID");
 
@@ -415,17 +380,20 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AddedByUserId");
 
-                    b.Property<DateTime>("DateAdded");
+                    b.Property<DateTime>("DateAdded")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<DateTime>("FromDate");
 
                     b.Property<DateTime>("ToDate");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .IsRequired();
 
                     b.HasKey("ID");
 
@@ -440,16 +408,20 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
-                        .HasColumnName("IpAdd");
+                        .HasColumnName("IpAdd")
+                        .HasMaxLength(15);
 
-                    b.Property<DateTime>("DateAdded");
+                    b.Property<DateTime>("DateAdded")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<DateTime>("FromDate");
 
-                    b.Property<string>("Message");
+                    b.Property<string>("Message")
+                        .HasMaxLength(150);
 
                     b.Property<int>("TimeSheetTaskId");
 
@@ -468,16 +440,20 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
-                        .HasColumnName("IpAdd");
+                        .HasColumnName("IpAdd")
+                        .HasMaxLength(15);
 
-                    b.Property<DateTime>("DateAdded");
+                    b.Property<DateTime>("DateAdded")
+                        .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<DateTime>("FromDate");
 
-                    b.Property<string>("Message");
+                    b.Property<string>("Message")
+                        .HasMaxLength(150);
 
                     b.Property<int>("TimeSheetActivityId");
 
@@ -496,6 +472,7 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ProjectTaskId");
@@ -515,10 +492,12 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Address")
-                        .HasColumnName("IpAdd");
+                        .HasColumnName("IpAdd")
+                        .HasMaxLength(15);
 
                     b.Property<DateTime>("FromDate");
 
@@ -526,7 +505,8 @@ namespace ProjectTracking.Migrations
 
                     b.Property<DateTime?>("ToDate");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .IsRequired();
 
                     b.HasKey("ID");
 
@@ -541,17 +521,22 @@ namespace ProjectTracking.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
+                        .HasColumnName("ID")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("DateSent");
+                    b.Property<DateTime>("DateSent")
+                        .ValueGeneratedOnAddOrUpdate();
 
-                    b.Property<string>("FromUserId");
+                    b.Property<string>("FromUserId")
+                        .IsRequired();
 
-                    b.Property<string>("Message");
+                    b.Property<string>("Message")
+                        .HasMaxLength(255);
 
                     b.Property<short>("NotificationTypeCode");
 
-                    b.Property<string>("ToUserId");
+                    b.Property<string>("ToUserId")
+                        .IsRequired();
 
                     b.HasKey("ID");
 
@@ -560,14 +545,6 @@ namespace ProjectTracking.Migrations
                     b.HasIndex("ToUserId");
 
                     b.ToTable("UserNotifications");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("ProjectTracking.ApplicationIdentityRole")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -586,19 +563,6 @@ namespace ProjectTracking.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("ProjectTracking.ApplicationIdentityRole")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("ProjectTracking.ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.HasOne("ProjectTracking.ApplicationUser")
@@ -609,10 +573,6 @@ namespace ProjectTracking.Migrations
 
             modelBuilder.Entity("ProjectTracking.ApplicationUser", b =>
                 {
-                    b.HasOne("ProjectTracking.ApplicationIdentityRole", "Role")
-                        .WithMany("ApplicationUser")
-                        .HasForeignKey("RoleId");
-
                     b.HasOne("ProjectTracking.Data.DataSets.Team", "Team")
                         .WithMany("Members")
                         .HasForeignKey("TeamId")
@@ -623,7 +583,8 @@ namespace ProjectTracking.Migrations
                 {
                     b.HasOne("ProjectTracking.ApplicationUser", "FromUser")
                         .WithMany("Broadcasts")
-                        .HasForeignKey("FromUserId");
+                        .HasForeignKey("FromUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ProjectTracking.Data.DataSets.Team", "ToTeam")
                         .WithMany()
@@ -634,13 +595,14 @@ namespace ProjectTracking.Migrations
             modelBuilder.Entity("ProjectTracking.Data.DataSets.Project", b =>
                 {
                     b.HasOne("ProjectTracking.ApplicationUser", "AddedByUser")
-                        .WithMany("Projects")
-                        .HasForeignKey("AddedByUserId");
+                        .WithMany("AddedByUserProject")
+                        .HasForeignKey("AddedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ProjectTracking.Data.DataSets.Category", "Category")
                         .WithMany("Projects")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.ProjectStatusModification", b =>
@@ -671,7 +633,8 @@ namespace ProjectTracking.Migrations
                 {
                     b.HasOne("ProjectTracking.ApplicationUser", "AssignedByUser")
                         .WithMany("AssignedSupervisors")
-                        .HasForeignKey("AssignedByUserId");
+                        .HasForeignKey("AssignedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ProjectTracking.Data.DataSets.Team", "Team")
                         .WithMany("Supervisers")
@@ -681,14 +644,15 @@ namespace ProjectTracking.Migrations
                     b.HasOne("ProjectTracking.ApplicationUser", "User")
                         .WithMany("Supervising")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.Team", b =>
                 {
                     b.HasOne("ProjectTracking.ApplicationUser", "AddedByUser")
-                        .WithMany()
-                        .HasForeignKey("AddedByUserId");
+                        .WithMany("AddedByUserTeams")
+                        .HasForeignKey("AddedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.TeamsProjects", b =>
@@ -708,11 +672,13 @@ namespace ProjectTracking.Migrations
                 {
                     b.HasOne("ProjectTracking.ApplicationUser", "AddedByUser")
                         .WithMany("AddedByUserTimeSheets")
-                        .HasForeignKey("AddedByUserId");
+                        .HasForeignKey("AddedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ProjectTracking.ApplicationUser", "User")
                         .WithMany("TimeSheets")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.TimeSheetActivity", b =>
@@ -760,18 +726,21 @@ namespace ProjectTracking.Migrations
 
                     b.HasOne("ProjectTracking.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("ProjectTracking.Data.DataSets.UserNotification", b =>
                 {
                     b.HasOne("ProjectTracking.ApplicationUser", "FromUser")
-                        .WithMany()
-                        .HasForeignKey("FromUserId");
+                        .WithMany("FromUserNotifications")
+                        .HasForeignKey("FromUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("ProjectTracking.ApplicationUser", "ToUser")
-                        .WithMany()
-                        .HasForeignKey("ToUserId");
+                        .WithMany("ToUserNotifications")
+                        .HasForeignKey("ToUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

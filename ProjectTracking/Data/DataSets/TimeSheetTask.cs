@@ -5,9 +5,9 @@ using System.Text;
 
 namespace ProjectTracking.Data.DataSets
 {
-    public class TimeSheetTask
+    public class TimeSheetTask : DataContract.Entity
     {
-        public int ID { get; set; }
+        //public int ID { get; set; }
 
         public int TimeSheetId { get; set; }
         public int ProjectTaskId { get; set; }

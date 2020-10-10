@@ -1,14 +1,32 @@
 ﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Manage Teams";
 }
 
 <div id="Teams" class="v-container">
-    <h2>
-        @ViewData["Title"]
-    </h2>
 
+    <h4> <i class="fa fa-users"></i> @ViewData["Title"] </h4>
 
+    <partial name="~/views/teams/form.cshtml" />
 
 </div>
 
+
+@section styles {
+    <link href="~/css/Dashboard.min.css" rel="stylesheet" />
+}
+
+@section scripts{
+
+    <script src="~/services/TeamsService.js">
+    </script>
+
+    <script src="~/services/UsersService.js">
+    </script>
+
+    <script src="~/js/Teams.js">
+    </script>
+
+    @*<script src="~/js/UserManagement.js">
+        </script>*@
+}

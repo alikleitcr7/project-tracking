@@ -29,6 +29,7 @@
   max-height: 400px;
 }
 .clickable-link {
+  color: #1776b0;
   cursor: pointer;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -370,4 +371,9 @@
 }
 .File-Control-Container input[type=file] {
   display: none;
+}
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
 }

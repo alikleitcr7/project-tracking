@@ -1,5 +1,4 @@
-﻿
-const USERS_SERVICE_URI = (method) => `/users/${method}`;
+﻿const USERS_SERVICE_URI = (method) => `/users/${method}`;
 
 const UsersService = {
     GetById: function (id) {
@@ -45,6 +44,22 @@ const UsersService = {
         const url = USERS_SERVICE_URI(`AddRemoveTeamsFromSupervisor`)
 
         return axios.post(url, model);
+    },
+    GetUsersByRole: function (roleCode) {
+
+        const query = serialize({ roleCode })
+
+        const url = USERS_SERVICE_URI(`GetUsersByRole?${query}`)
+
+        return axios.get(url);
+    },
+    GetUsersByRoleKeyValue: function (roleCode) {
+
+        const query = serialize({ roleCode })
+
+        const url = USERS_SERVICE_URI(`GetUsersByRoleKeyValue?${query}`)
+
+        return axios.get(url);
     },
     SetRole: function (userId, role) {
 

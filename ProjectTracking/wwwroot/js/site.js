@@ -99,7 +99,8 @@ const BASIC_AJAX_PAYLOAD = (url, method, data) => {
     return obj;
 }
 
-const BASIC_ERROR_MESSAGE = 'Something went wrong, check your connection and try again!'
+//check your connection and
+const BASIC_ERROR_MESSAGE = 'Something went wrong, try again!'
 const BASIC_INTERNAL_ERROR_MESSAGE = 'An Error Occured, Kindly Contact System Admin.'
 
 //#endregion 

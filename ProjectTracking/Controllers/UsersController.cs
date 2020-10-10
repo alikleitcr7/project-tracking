@@ -17,15 +17,15 @@ namespace ProjectTracking.Controllers
     public class UsersController : BaseSupervisorController
     {
         //private readonly IUserMethods _userMethods;
-        private readonly RoleManager<ApplicationIdentityRole> _roleManager;
+        //private readonly RoleManager<ApplicationIdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UsersController(IUserMethods usersMethods, RoleManager<ApplicationIdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        public UsersController(IUserMethods usersMethods, UserManager<ApplicationUser> userManager)
             : base(usersMethods)
         {
             //_userMethods = usersMethods;
             _userManager = userManager;
-            _roleManager = roleManager;
+            //_roleManager = roleManager;
         }
 
         [Route("/profile/{userId}")]
@@ -82,9 +82,7 @@ namespace ProjectTracking.Controllers
         {
             try
             {
-                var record = _roleManager.Roles.ToList();
-
-                return Ok(record);
+                return Ok(Enum.GetNames(typeof(ApplicationUserRole)).Select((key, value) => new KeyValuePair<int, string>(value, key)).ToList());
             }
             catch (ClientException ex)
             {
@@ -119,6 +117,42 @@ namespace ProjectTracking.Controllers
 
                 // has no role
                 return Ok("");
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetUsersByRoleKeyValue(int roleCode)
+        {
+            try
+            {
+                // has no role
+                return Ok(_userMethods.GetUsersByRoleKeyValue(roleCode));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+        
+        [HttpGet]
+        public IActionResult GetUsersByRole(int roleCode)
+        {
+            try
+            {
+                // has no role
+                return Ok(_userMethods.GetUsersByRole(roleCode));
             }
             catch (ClientException ex)
             {

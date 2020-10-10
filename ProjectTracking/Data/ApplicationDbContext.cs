@@ -9,7 +9,7 @@ using ProjectTracking.Data.DataSets;
 
 namespace ProjectTracking.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationIdentityRole, string>
+    public class ApplicationDbContext : IdentityUserContext<ApplicationUser, string>
     {
         public DbSet<Superviser> Supervisers { get; set; }
         public DbSet<Project> Projects { get; set; }
@@ -39,15 +39,36 @@ namespace ProjectTracking.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<ApplicationIdentityRole>().ToTable("Roles").HasKey(k=>k.Id);
-            builder.Entity<ApplicationUser>().ToTable("Users").HasKey(k => k.Id);
+            builder.Entity<ApplicationUser>().Ignore(c => c.PhoneNumberConfirmed)
+                                         .Ignore(c => c.TwoFactorEnabled)
+                                         //.Ignore(c => c.SecurityStamp)
+                                         .Ignore(c => c.PhoneNumber)
+                                         .Ignore(c => c.LockoutEnabled)
+                                         .Ignore(c => c.LockoutEnd)
+                                         .Ignore(c => c.AccessFailedCount);
+
+
+            builder.Entity<UserNotification>()
+                     .HasOne(c => c.FromUser)
+                     .WithMany(c => c.FromUserNotifications)
+                     .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UserNotification>()
+                     .HasOne(c => c.ToUser)
+                     .WithMany(c => c.ToUserNotifications)
+                     .OnDelete(DeleteBehavior.Restrict);
 
             #region Team
 
             builder.Entity<Team>()
-                   .HasMany(c => c.Members)
-                   .WithOne(c => c.Team)
-                   .OnDelete(DeleteBehavior.SetNull);
+                     .HasMany(c => c.Members)
+                     .WithOne(c => c.Team)
+                     .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Team>()
+                     .HasOne(c => c.AddedByUser)
+                     .WithMany(c => c.AddedByUserTeams)
+                     .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Team>()
                   .HasMany(c => c.TeamsProjects)
@@ -75,10 +96,14 @@ namespace ProjectTracking.Data
             builder.Entity<Project>()
                    .HasOne(c => c.Category)
                    .WithMany(c => c.Projects)
-                   .OnDelete(DeleteBehavior.SetNull);
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Project>()
+                   .HasOne(c => c.AddedByUser)
+                   .WithMany(c => c.AddedByUserProject)
+                   .OnDelete(DeleteBehavior.Restrict);
 
             #endregion
-
 
             #region TimeSheet
             builder.Entity<TimeSheet>()
@@ -89,12 +114,14 @@ namespace ProjectTracking.Data
             builder.Entity<TimeSheet>()
                   .HasOne(c => c.User)
                   .WithMany(c => c.TimeSheets)
-                  .HasForeignKey(k => k.UserId);
+                  .HasForeignKey(k => k.UserId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<TimeSheet>()
                   .HasOne(c => c.AddedByUser)
                   .WithMany(c => c.AddedByUserTimeSheets)
-                  .HasForeignKey(k => k.AddedByUserId);
+                  .HasForeignKey(k => k.AddedByUserId)
+                  .OnDelete(DeleteBehavior.Restrict);
 
             #endregion
 
@@ -136,7 +163,8 @@ namespace ProjectTracking.Data
             builder.Entity<Broadcast>()
                    .HasOne(k => k.FromUser)
                    .WithMany(k => k.Broadcasts)
-                   .HasForeignKey(k => k.FromUserId);
+                   .HasForeignKey(k => k.FromUserId)
+                   .OnDelete(DeleteBehavior.Cascade);
 
             #endregion
 
@@ -159,25 +187,27 @@ namespace ProjectTracking.Data
 
             #region Supervisor
 
-            builder.Entity<Superviser>()
-                   .HasKey(k => new { k.TeamId, k.UserId });
+            //builder.Entity<Superviser>()
+            //       .HasKey(k => new { k.TeamId, k.UserId, k.DateAssigned });
 
             builder.Entity<Superviser>()
                    .HasOne(x => x.User)
                    .WithMany(m => m.Supervising)
-                   .HasForeignKey(x => x.UserId);
+                   .HasForeignKey(x => x.UserId)
+                   .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Superviser>()
                    .HasOne(x => x.AssignedByUser)
                    .WithMany(m => m.AssignedSupervisors)
-                   .HasForeignKey(x => x.AssignedByUserId);
+                   .HasForeignKey(x => x.AssignedByUserId)
+                   .OnDelete(DeleteBehavior.Restrict);
 
             #endregion
 
             #region IdentityUserRole
 
-            builder.Entity<IdentityUserRole<string>>()
-                   .HasKey(p => new { p.UserId, p.RoleId });
+            //builder.Entity<IdentityUserRole<string>>()
+            //       .HasKey(p => new { p.UserId, p.RoleId });
 
             #endregion
 
@@ -299,29 +329,33 @@ namespace ProjectTracking.Data
 
             base.OnModelCreating(builder);
 
+            //builder.Entity<ApplicationIdentityRole>().ToTable("Roles").HasKey(k => k.Id);
+            builder.Entity<ApplicationUser>().ToTable("Users").HasKey(k => k.Id);
+            builder.Entity<Superviser>().ToTable("SupervisorLog");
+
             #region Initial Users
 
             string ADMIN_ID = _config.GetValue<string>("Tokens:SysUsers:Admin");
             string DEV_ID = _config.GetValue<string>("Tokens:SysUsers:Dev");
 
-            string ADMIN_ROLE_ID = _config.GetValue<string>("Tokens:Roles:Admin");
-            string USER_ROLE_ID = _config.GetValue<string>("Tokens:Roles:User");
+            //string ADMIN_ROLE_ID = _config.GetValue<string>("Tokens:Roles:Admin");
+            //string USER_ROLE_ID = _config.GetValue<string>("Tokens:Roles:User");
             //const string ADMIN_ID = "a18be9c0-aa65-4af8-bd17-00bd9344e575";
             // any guid, but nothing is against to use the same one
 
-            builder.Entity<ApplicationIdentityRole>().HasData(new ApplicationIdentityRole
-            {
-                Id = ADMIN_ROLE_ID,
-                Name = "Admin",
-                NormalizedName = "ADMIN"
-            });
+            //builder.Entity<ApplicationIdentityRole>().HasData(new ApplicationIdentityRole
+            //{
+            //    Id = ADMIN_ROLE_ID,
+            //    Name = "Admin",
+            //    NormalizedName = "ADMIN"
+            //});
 
-            builder.Entity<ApplicationIdentityRole>().HasData(new ApplicationIdentityRole
-            {
-                Id = USER_ROLE_ID,
-                Name = "User",
-                NormalizedName = "USER",
-            });
+            //builder.Entity<ApplicationIdentityRole>().HasData(new ApplicationIdentityRole
+            //{
+            //    Id = USER_ROLE_ID,
+            //    Name = "User",
+            //    NormalizedName = "USER",
+            //});
 
             var hasher = new PasswordHasher<ApplicationUser>();
 
@@ -329,7 +363,8 @@ namespace ProjectTracking.Data
             {
                 Id = ADMIN_ID,
                 UserName = "admin",
-                FirstName = "Admin",
+                FirstName = "Sys",
+                LastName = "Admin",
                 NormalizedUserName = "ADMIN",
                 Email = "admin@sys.com",
                 NormalizedEmail = "ADMIN@SYS.COM",
@@ -337,7 +372,7 @@ namespace ProjectTracking.Data
                 PasswordHash = hasher.HashPassword(null, "123123"),
                 SecurityStamp = string.Empty,
                 Title = "Admin",
-                RoleId = ADMIN_ROLE_ID
+                RoleCode = (short)ApplicationUserRole.Admin
             });
 
             builder.Entity<ApplicationUser>().HasData(new ApplicationUser
@@ -353,8 +388,9 @@ namespace ProjectTracking.Data
                 PasswordHash = hasher.HashPassword(null, "123123"),
                 SecurityStamp = string.Empty,
                 Title = "Developer",
-                RoleId = USER_ROLE_ID
+                RoleCode = (short)ApplicationUserRole.Supervisor
             });
+
 
             //builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
             //{

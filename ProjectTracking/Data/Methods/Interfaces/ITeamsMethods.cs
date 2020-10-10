@@ -16,5 +16,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         List<int> GetAllSupervisingTeamIds(string userId);
         List<Team> GetAllSupervisableTeams(string userId);
         Team GetSupervisingTeamId(string userId);
+        System.Threading.Tasks.Task<Team> Save(Models.Teams.TeamSaveModel model);
     }
 }

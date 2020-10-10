@@ -18,7 +18,7 @@ namespace ProjectTracking.DataContract
 
         public int? ParentId { get; set; }
         //public int? TeamId { get; set; }
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public short StatusCode { get; set; }
 
         public Category Category { get; set; }
