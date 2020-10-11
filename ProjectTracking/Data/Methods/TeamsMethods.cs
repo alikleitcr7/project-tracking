@@ -143,17 +143,9 @@ namespace ProjectTracking.Data.Methods
                 // add/remove team members
                 await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds);
 
-                try
-                {
-                    // save changes
-                    _context.SaveChanges();
 
-                }
-                catch (Exception exx)
-                {
-
-                    throw;
-                }
+                // save changes
+                _context.SaveChanges();
 
                 // return the record
                 return GetById(dbTeam.ID);
@@ -189,17 +181,8 @@ namespace ProjectTracking.Data.Methods
                 // add the team
                 _context.Teams.Add(dbTeam);
 
-                try
-                {
-                    // save changes
-                    _context.SaveChanges();
-
-                }
-                catch (Exception exx)
-                {
-
-                    throw;
-                }
+                // save changes
+                _context.SaveChanges();
 
                 // set team members
                 await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds);
@@ -282,16 +265,45 @@ namespace ProjectTracking.Data.Methods
             if (includeMembersCount)
             {
                 return _context.Teams
+                               .Include(k => k.AddedByUser)
+                               .Include(k => k.Supervisor)
+                               .Include(k => k.AssignedByUser)
                                .Select(k => new Team()
                                {
                                    ID = k.ID,
                                    Name = k.Name,
-                                   MembersCount = k.Members.Count()
+                                   MembersCount = k.Members.Count(),
+                                   DateAdded = k.DateAdded,
+                                   DateAssigned= k.DateAssigned,
+                                   AddedByUserId = k.AddedByUserId,
+                                   SupervisorId = k.SupervisorId,
+                                   AssignedByUserId = k.AssignedByUserId,
+                                   AddedByUser = new User()
+                                   {
+                                       Id = k.AddedByUser.Id,
+                                       FirstName = k.AddedByUser.FirstName,
+                                       LastName = k.AddedByUser.LastName,
+                                   },
+                                   Supervisor = new User()
+                                   {
+                                       Id = k.Supervisor.Id,
+                                       FirstName = k.Supervisor.FirstName,
+                                       LastName = k.Supervisor.LastName,
+                                   },
+                                   AssignedByUser = new User()
+                                   {
+                                       Id = k.AssignedByUser.Id,
+                                       FirstName = k.AssignedByUser.FirstName,
+                                       LastName = k.AssignedByUser.LastName,
+                                   }
                                })
                                .ToList();
             }
 
             return _context.Teams
+                .Include(k => k.AddedByUser)
+                .Include(k => k.Supervisor)
+                .Include(k => k.AssignedByUser)
                 .ToList()
                 .Select(k => _mapper.Map<Team>(k))
                 .ToList();
@@ -299,7 +311,10 @@ namespace ProjectTracking.Data.Methods
 
         public Team GetById(int id, bool includeMembers = true)
         {
-            IQueryable<DataSets.Team> query = _context.Teams;
+            IQueryable<DataSets.Team> query = _context.Teams
+                .Include(k => k.AddedByUser)
+                .Include(k => k.Supervisor)
+                .Include(k => k.AssignedByUser);
 
             if (includeMembers)
             {

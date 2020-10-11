@@ -30,6 +30,9 @@
                     <th style="width: 50px">-</th>
                     <th>Name</th>
                     <th>Members</th>
+                    <th>Supervisor</th>
+                    <th>Date Assigned</th>
+                    <th>Date Created</th>
                     <th></th>
                 </tr>
             </thead>
@@ -45,8 +48,21 @@
                         <td>
                             {{item.name}}
                         </td>
+
                         <td>
                             {{item.membersCount}}
+                        </td>
+
+                        <td>
+                            {{item.supervisor.fullName}}
+                        </td>
+
+                        <td>
+                            {{item.dateAssignedDisplay}}
+                        </td>
+
+                        <td>
+                            {{item.dateAddedDisplay}}
                         </td>
 
                         <td>

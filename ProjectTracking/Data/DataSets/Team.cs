@@ -24,9 +24,12 @@ namespace ProjectTracking.Data.DataSets
         // each update will append the supervisors ta
         public string SupervisorId { get; set; }
         public string AssignedByUserId { get; set; }
-        public DateTime DateAssigned { get; set; } 
+        public DateTime DateAssigned { get; set; }
 
+        public ApplicationUser Supervisor { get; set; }
         public ApplicationUser AddedByUser { get; set; }
+        public ApplicationUser AssignedByUser { get; set; }
+
         public List<Superviser> Supervisers { get; set; }
         public List<ApplicationUser> Members { get; set; }
         public List<TeamsProjects> TeamsProjects { get; set; }

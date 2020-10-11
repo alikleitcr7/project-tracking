@@ -19,8 +19,8 @@
 
 
                 <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#MembersTab">Members (*)</a></li>
-                    <li><a data-toggle="tab" href="#SupervisorTab">Supervisor</a></li>
+                    <li class="active"><a data-toggle="tab" href="#MembersTab"><span v-bind:class="{'text-danger':!teams.form.record.userIds.length  }"> Members ({{teams.form.record.userIds.length}})</span></a></li>
+                    <li><a data-toggle="tab" href="#SupervisorTab"><span v-bind:class="{'text-danger':!teams.form.record.supervisorId  }">Supervisor</span> </a></li>
                 </ul>
 
                 <div class="tab-content">

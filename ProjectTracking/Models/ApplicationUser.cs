@@ -47,6 +47,8 @@ namespace ProjectTracking
         public List<TimeSheet> TimeSheets { get; set; }
         public List<TimeSheet> AddedByUserTimeSheets { get; set; }
         public List<Team> AddedByUserTeams { get; set; }
+        public List<Team> SupervisedTeams { get; set; }
+        public List<Team> AssignedSupervisorForTeams { get; set; }
         public List<Project> AddedByUserProject { get; set; }
         //public ApplicationIdentityRole Role { get; set; }
 

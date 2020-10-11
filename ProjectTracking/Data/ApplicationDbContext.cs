@@ -75,6 +75,16 @@ namespace ProjectTracking.Data
                   .WithOne(c => c.Team)
                   .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<Team>()
+                  .HasOne(c => c.Supervisor)
+                  .WithMany(c => c.SupervisedTeams)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Team>()
+                  .HasOne(c => c.AssignedByUser)
+                  .WithMany(c => c.AssignedSupervisorForTeams)
+                  .OnDelete(DeleteBehavior.Restrict);
+
             #endregion
 
             #region Category
@@ -392,6 +402,22 @@ namespace ProjectTracking.Data
             });
 
 
+            string USER_MARK_ID = _config.GetValue<string>("Tokens:SysUsers:Mark");
+            string USER_ASHTON_ID = _config.GetValue<string>("Tokens:SysUsers:Ashton");
+            string USER_TED_ID = _config.GetValue<string>("Tokens:SysUsers:Ted");
+            string USER_MARSHAL_ID = _config.GetValue<string>("Tokens:SysUsers:Marshall");
+            string USER_LILLY_ID = _config.GetValue<string>("Tokens:SysUsers:Lily");
+            string USER_ROBIN_ID = _config.GetValue<string>("Tokens:SysUsers:Robin");
+
+
+            SeedUser(builder, hasher, USER_MARK_ID, "mark", "mark@project-tracking.com", "Mark", "Goldman", "123123", "Head IT", ApplicationUserRole.Supervisor);
+            SeedUser(builder, hasher, USER_ASHTON_ID, "ashton", "ashton@project-tracking.com", "Ashton", "Kutcher", "123123", "Sr. Designer", ApplicationUserRole.Supervisor);
+
+            SeedUser(builder, hasher, USER_TED_ID, "ted", "ted@project-tracking.com", "Ted", "Mosby", "123123", "Software Engineer", ApplicationUserRole.TeamMember);
+            SeedUser(builder, hasher, USER_MARSHAL_ID, "marshall", "marshall@project-tracking.com", "Marshall", "Eriksen", "123123", "Jr. Developer", ApplicationUserRole.TeamMember);
+            SeedUser(builder, hasher, USER_LILLY_ID, "lilly", "lilly@project-tracking.com", "Lilly", "Aldrin", "123123", "Dev Leader", ApplicationUserRole.TeamMember);
+            SeedUser(builder, hasher, USER_ROBIN_ID, "robin", "robin@project-tracking.com", "Robin", "Scherbatsky", "123123", "Graphic Designer", ApplicationUserRole.TeamMember);
+
             //builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
             //{
             //    UserId = ADMIN_ID,
@@ -406,6 +432,38 @@ namespace ProjectTracking.Data
             //});
 
             #endregion
+        }
+
+        public void SeedUser(
+            ModelBuilder builder,
+            PasswordHasher<ApplicationUser> hasher,
+            string id,
+            string username,
+            string email,
+            string fn,
+            string ln,
+            string password,
+            string title,
+            ApplicationUserRole role
+            )
+        {
+
+            builder.Entity<ApplicationUser>().HasData(new ApplicationUser
+            {
+                Id = id,
+                UserName = username,
+                FirstName = fn,
+                LastName = ln,
+                NormalizedUserName = username.ToUpper(),
+                Email = email,
+                NormalizedEmail = email.ToUpper(),
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, password),
+                SecurityStamp = string.Empty,
+                Title = title,
+                RoleCode = (short)role
+            });
+
         }
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -49,10 +49,11 @@ const Modals_Teams = {
 
 const teamFormObject = (obj) => {
 
-    let record = obj || {
-        name: null,
-        supervisorId: null,
-        userIds: []
+    let record = {
+        id: obj ? obj.id : null,
+        name: obj ? obj.name : null,
+        supervisorId: obj ? obj.supervisorId : null,
+        userIds: obj ? (obj.members || []).map(k => k.id) : []
     }
 
     return {
@@ -112,7 +113,7 @@ const teamsMethods = {
 
             isValid = validator.validate()
 
-            console.log({ field,isValid })
+            console.log({ field, isValid })
 
             if (!isValid) {
                 finalMessage = field.errorMessage || validator.message();
@@ -220,22 +221,31 @@ const teamsMethods = {
             // START UPDATE/CREATE REQUEST
             this.teams_setFormSaving(true)
 
+            const isNewRecord = pendingRecord.id === null;
 
-            // EXISTING RECORD
-            if (pendingRecord.id) {
 
-                TeamsService.Update(pendingRecord)
-                    .then((r) => {
+            TeamsService.Save(pendingRecord)
+                .then((r) => {
 
-                        /** @type {IClientResponseModel<ISubject>} */
-                        const record = r.data
+                    const record = r.data
 
-                        if (debugTeams) {
-                            console.log('update response', r)
+                    if (debugTeams) {
+                        console.log('add response', r)
+                    }
+
+                    if (record) {
+                        if (isNewRecord) {
+
+                            let data = [...this.teams.data]
+
+                            data.unshift(record)
+
+                            this.teams.data = data
+                            this.teams.form = teamFormObject();
+
+                            this.teams_setFormMessage('Added!')
                         }
-
-                        if (record) {
-
+                        else {
                             // feedback
                             this.teams_setFormMessage('Updated!')
 
@@ -249,48 +259,7 @@ const teamsMethods = {
                                 data[idx] = { ...record }
                                 this.teams.data = data;
                             }
-                            else {
-                                location.reload()
-                            }
                         }
-                        else {
-                            this.teams_setFormMessage(BASIC_ERROR_MESSAGE)
-                        }
-                    })
-                    .catch((e) => {
-
-                        console.error('Updated!', e)
-
-                        this.teams_setFormMessage(BASIC_ERROR_MESSAGE)
-
-                    })
-                    .then(() => {
-                        this.teams_setFormSaving(false)
-                    });
-
-                return
-            }
-
-            // NEW RECORD
-            TeamsService.Save(pendingRecord)
-                .then((r) => {
-
-                    const record = r.data
-
-                    if (debugTeams) {
-                        console.log('add response', r)
-                    }
-
-
-                    if (record) {
-
-                        let data = [...this.teams.data]
-                        data.unshift(record)
-
-                        this.teams.data = data
-                        this.teams.form = teamFormObject();
-
-                        this.teams_setFormMessage('Added!')
                     }
                     else {
                         this.teams_setFormMessage(BASIC_ERROR_MESSAGE)
@@ -301,7 +270,7 @@ const teamsMethods = {
 
                     console.error('create', e)
 
-                    this.teams_setFormMessage(BASIC_ERROR_MESSAGE)
+                    this.teams_setFormMessage(getAxiosErrorMessage(e))
                 })
                 .then(() => {
                     this.teams_setFormSaving(false)

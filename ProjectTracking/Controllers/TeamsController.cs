@@ -159,7 +159,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save([FromBody]TeamSaveModel model)
+        public async Task<IActionResult> Save([FromBody]TeamSaveModel model)
         {
             try
             {
@@ -170,7 +170,7 @@ namespace ProjectTracking.Controllers
 
                 model.SetAssignedByUserId(GetCurrentUserId());
 
-                return Ok(_teamsMethods.Save(model));
+                return Ok(await _teamsMethods.Save(model));
             }
             catch (ClientException ex)
             {

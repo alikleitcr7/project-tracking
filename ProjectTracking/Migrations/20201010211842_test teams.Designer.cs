@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectTracking.Data;
 
 namespace ProjectTracking.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201010211842_test teams")]
+    partial class testteams
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,14 +145,14 @@ namespace ProjectTracking.Migrations
                     b.ToTable("Users");
 
                     b.HasData(
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", ConcurrencyStamp = "0d4c7028-3c25-4865-be5a-bbaabdc4576b", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, FirstName = "Sys", LastName = "Admin", NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEFGJgRUU4pnnQjRUDwOpGmVz3R8G+eh8zL9eEVQma6eydyg/Vd5OU/e/QEH2IBjAUg==", RoleCode = (short)2, SecurityStamp = "", Title = "Admin", UserName = "admin" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e576", ConcurrencyStamp = "638c4c7b-d0ae-4331-947b-9d11027e56ae", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "alikleitcr7@gmail.com", EmailConfirmed = true, FirstName = "Ali", LastName = "Kleit", NormalizedEmail = "ALIKLEITCR7@GMAIL.COM", NormalizedUserName = "ALIKLEIT", PasswordHash = "AQAAAAEAACcQAAAAEPYTlu1ga9HYOWZDnz5638U0HVz2CRBUYvtsqxE/RtUGzISnBZGLnYygZwwFnQaPdQ==", RoleCode = (short)1, SecurityStamp = "", Title = "Developer", UserName = "alikleit" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e581", ConcurrencyStamp = "eb786f2a-09c9-4fce-a9c2-d6df09777b37", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "mark@project-tracking.com", EmailConfirmed = true, FirstName = "Mark", LastName = "Goldman", NormalizedEmail = "MARK@PROJECT-TRACKING.COM", NormalizedUserName = "MARK", PasswordHash = "AQAAAAEAACcQAAAAEBlErHy/vVfVsJPY1kSSNole+8Ff3EIW6STU7SC7Ug1KmGnoScptQHUF5oFx500X/w==", RoleCode = (short)1, SecurityStamp = "", Title = "Head IT", UserName = "mark" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e582", ConcurrencyStamp = "d6ffa129-7c51-487e-9e0e-86335a4768a2", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "ashton@project-tracking.com", EmailConfirmed = true, FirstName = "Ashton", LastName = "Kutcher", NormalizedEmail = "ASHTON@PROJECT-TRACKING.COM", NormalizedUserName = "ASHTON", PasswordHash = "AQAAAAEAACcQAAAAECBFkCQG6rYSJ1pN40xtjOpcCCgAmE8n6nEFhObWs5jtjUsB+0sSUNHH6VjN2X+pAA==", RoleCode = (short)1, SecurityStamp = "", Title = "Sr. Designer", UserName = "ashton" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e577", ConcurrencyStamp = "79ea719a-b45b-456c-8a30-fe4be127a119", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "ted@project-tracking.com", EmailConfirmed = true, FirstName = "Ted", LastName = "Mosby", NormalizedEmail = "TED@PROJECT-TRACKING.COM", NormalizedUserName = "TED", PasswordHash = "AQAAAAEAACcQAAAAEMNlW8SbwiWoc8u/VLM81SNHQ3dlXwiUd1T6oTT4puKnEARTCO3X+2j110fiLHd8Mg==", RoleCode = (short)0, SecurityStamp = "", Title = "Software Engineer", UserName = "ted" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e578", ConcurrencyStamp = "aa1ede70-ee69-483e-a65f-5db647889c29", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "marshall@project-tracking.com", EmailConfirmed = true, FirstName = "Marshall", LastName = "Eriksen", NormalizedEmail = "MARSHALL@PROJECT-TRACKING.COM", NormalizedUserName = "MARSHALL", PasswordHash = "AQAAAAEAACcQAAAAEGdGFtoak2Ts38ZuFg39FxZah/SzLeHAP2XpEHm1E6Hlf0abtBXWuDCgBOxRmaAOow==", RoleCode = (short)0, SecurityStamp = "", Title = "Jr. Developer", UserName = "marshall" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e579", ConcurrencyStamp = "2f9e3184-0955-4f8a-b90d-4f5b8398fb81", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "lilly@project-tracking.com", EmailConfirmed = true, FirstName = "Lilly", LastName = "Aldrin", NormalizedEmail = "LILLY@PROJECT-TRACKING.COM", NormalizedUserName = "LILLY", PasswordHash = "AQAAAAEAACcQAAAAELGPDpW/o8wpZn8aKF1QQ1arvZiYSN9E6ivbsutP7TxYiblK+GY5EeSoiBjfMoFTlw==", RoleCode = (short)0, SecurityStamp = "", Title = "Dev Leader", UserName = "lilly" },
-                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e580", ConcurrencyStamp = "7527d03d-9ce0-43d0-b6e8-28a983ba4a31", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "robin@project-tracking.com", EmailConfirmed = true, FirstName = "Robin", LastName = "Scherbatsky", NormalizedEmail = "ROBIN@PROJECT-TRACKING.COM", NormalizedUserName = "ROBIN", PasswordHash = "AQAAAAEAACcQAAAAEI8FNBMwPIvjMXcQMgw8ReAh3+c09PwMBrIrCyWKuqd1QbfT/sr4DaCP3Lrmazsj1Q==", RoleCode = (short)0, SecurityStamp = "", Title = "Graphic Designer", UserName = "robin" }
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e575", ConcurrencyStamp = "f66ef0f0-2271-4775-b5e4-0b4bd33642e5", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "admin@sys.com", EmailConfirmed = true, FirstName = "Sys", LastName = "Admin", NormalizedEmail = "ADMIN@SYS.COM", NormalizedUserName = "ADMIN", PasswordHash = "AQAAAAEAACcQAAAAEA5/Pu4/jssScPv53j8810Mkw30+YDr/jsva+oX10kf7R9nteSu+/r607A7xHJausA==", RoleCode = (short)2, SecurityStamp = "", Title = "Admin", UserName = "admin" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e576", ConcurrencyStamp = "52e8cdec-5097-413e-ade1-d34e80b85674", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "alikleitcr7@gmail.com", EmailConfirmed = true, FirstName = "Ali", LastName = "Kleit", NormalizedEmail = "ALIKLEITCR7@GMAIL.COM", NormalizedUserName = "ALIKLEIT", PasswordHash = "AQAAAAEAACcQAAAAEEuzUuA72OMjbkBCZS0JI2GkS6XdlJTLjDazKKtPm9ABB2Hn86BAVg2cqXoJQBlwOw==", RoleCode = (short)1, SecurityStamp = "", Title = "Developer", UserName = "alikleit" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e581", ConcurrencyStamp = "491dd1e9-a1ca-43b1-b351-0d54b762b23d", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "mark@project-tracking.com", EmailConfirmed = true, FirstName = "Mark", LastName = "Goldman", NormalizedEmail = "MARK@PROJECT-TRACKING.COM", NormalizedUserName = "MARK", PasswordHash = "AQAAAAEAACcQAAAAEDS9o4cKIBzRufrjYenBeEzCuky+51RGftvytQDPF6/onZXRh5+H4zXR6gzgpfbAHw==", RoleCode = (short)1, SecurityStamp = "", Title = "Head IT", UserName = "mark" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e582", ConcurrencyStamp = "7b4f2a7f-9e92-4b15-8bdb-4837c81c5521", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "ashton@project-tracking.com", EmailConfirmed = true, FirstName = "Ashton", LastName = "Kutcher", NormalizedEmail = "ASHTON@PROJECT-TRACKING.COM", NormalizedUserName = "ASHTON", PasswordHash = "AQAAAAEAACcQAAAAEFpG4MydoEwhLPxcwWBClrOSKGbdIuFhubVYTT/5AiP5YQkJlgbBETwyAhJv/mmx0Q==", RoleCode = (short)1, SecurityStamp = "", Title = "Sr. Designer", UserName = "ashton" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e577", ConcurrencyStamp = "32be3233-3a14-4949-82f2-f532f9ff663f", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "ted@project-tracking.com", EmailConfirmed = true, FirstName = "Ted", LastName = "Mosby", NormalizedEmail = "TED@PROJECT-TRACKING.COM", NormalizedUserName = "TED", PasswordHash = "AQAAAAEAACcQAAAAEInTA/eveTGBd6yo8he7wSEyVH+y2MA2ktvel47nZGWxWctdZRO8/MQ60K31Ozf7OA==", RoleCode = (short)0, SecurityStamp = "", Title = "Software Engineer", UserName = "ted" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e578", ConcurrencyStamp = "6fe9f359-f3a9-4ebf-8c89-4a2f62dd50af", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "marshall@project-tracking.com", EmailConfirmed = true, FirstName = "Marshall", LastName = "Eriksen", NormalizedEmail = "MARSHALL@PROJECT-TRACKING.COM", NormalizedUserName = "MARSHALL", PasswordHash = "AQAAAAEAACcQAAAAECl7SmWaYLnG3Gk+e+iliYw9vq1UwNpihCdH2/V2neTXq4BxuHgn9dWhAxk6R2Ls8Q==", RoleCode = (short)0, SecurityStamp = "", Title = "Jr. Developer", UserName = "marshall" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e579", ConcurrencyStamp = "d6cdf6c4-848a-4407-91b1-c64c5ac48ff7", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "lilly@project-tracking.com", EmailConfirmed = true, FirstName = "Lilly", LastName = "Aldrin", NormalizedEmail = "LILLY@PROJECT-TRACKING.COM", NormalizedUserName = "LILLY", PasswordHash = "AQAAAAEAACcQAAAAEKZaEJh7a45Q/0g9SpnaLs+tmriTDt+H37uhgkHzHaZT/5oKkL2fgXZwcqGyGvuNDg==", RoleCode = (short)0, SecurityStamp = "", Title = "Dev Leader", UserName = "lilly" },
+                        new { Id = "a18be9c0-aa65-4af8-bd17-00bd9344e580", ConcurrencyStamp = "1b4a74f2-060f-4bd1-b63d-71f502ec6580", DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), Email = "robin@project-tracking.com", EmailConfirmed = true, FirstName = "Robin", LastName = "Scherbatsky", NormalizedEmail = "ROBIN@PROJECT-TRACKING.COM", NormalizedUserName = "ROBIN", PasswordHash = "AQAAAAEAACcQAAAAEBg2N+j2gjC0cAoPYjA2ZGLzUbOSFQxmy0BPfypIPtasi6vyfgXf28fAIErcdqkasQ==", RoleCode = (short)0, SecurityStamp = "", Title = "Graphic Designer", UserName = "robin" }
                     );
                 });
 
@@ -363,10 +365,6 @@ namespace ProjectTracking.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("AddedByUserId");
-
-                    b.HasIndex("AssignedByUserId");
-
-                    b.HasIndex("SupervisorId");
 
                     b.ToTable("Teams");
                 });
@@ -660,16 +658,6 @@ namespace ProjectTracking.Migrations
                     b.HasOne("ProjectTracking.ApplicationUser", "AddedByUser")
                         .WithMany("AddedByUserTeams")
                         .HasForeignKey("AddedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ProjectTracking.ApplicationUser", "AssignedByUser")
-                        .WithMany("AssignedSupervisorForTeams")
-                        .HasForeignKey("AssignedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("ProjectTracking.ApplicationUser", "Supervisor")
-                        .WithMany("SupervisedTeams")
-                        .HasForeignKey("SupervisorId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
