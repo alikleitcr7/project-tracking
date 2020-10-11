@@ -27,6 +27,13 @@ namespace ProjectTracking.AppStart
             CreateMap<Team, DataContract.Team>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.Team, Team>().ForAllMembers(opt => opt.AllowNull());
 
+            CreateMap<SupervisorLog, DataContract.SupervisorLog>().ForAllMembers(opt => opt.AllowNull());
+            //CreateMap<SupervisorLog, DataContract.SupervisorLog>().ForMember(m => m.User, opt => opt.MapFrom(m=>m.);
+            //CreateMap<SupervisorLog, DataContract.SupervisorLog>().ForMember(m => m.User.TimeSheets, opt => opt.AllowNull());
+            //CreateMap<SupervisorLog, DataContract.SupervisorLog>().ForMember(m => m.AssignedByUser.Team, opt => opt.AllowNull());
+            //CreateMap<SupervisorLog, DataContract.SupervisorLog>().ForMember(m => m.AssignedByUser.TimeSheets, opt => opt.AllowNull());
+            CreateMap<DataContract.SupervisorLog, SupervisorLog>().ForAllMembers(opt => opt.AllowNull());
+
             CreateMap<Category, DataContract.Category>().ForAllMembers(k => k.AllowNull());
             CreateMap<DataContract.Category, Category>().ForAllMembers(k => k.AllowNull());
 
@@ -47,19 +54,19 @@ namespace ProjectTracking.AppStart
 
             CreateMap<Broadcast, DataContract.Broadcast>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.Broadcast, Broadcast>().ForAllMembers(opt => opt.AllowNull());
-            
+
             CreateMap<ProjectStatusModification, DataContract.ProjectStatusModification>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.ProjectStatusModification, ProjectStatusModification>().ForAllMembers(opt => opt.AllowNull());
-            
+
             CreateMap<ProjectTaskStatusModification, DataContract.ProjectTaskStatusModification>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.ProjectTaskStatusModification, ProjectTaskStatusModification>().ForAllMembers(opt => opt.AllowNull());
-            
+
             CreateMap<ProjectTask, DataContract.ProjectTask>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.ProjectTask, ProjectTask>().ForAllMembers(opt => opt.AllowNull());
-            
+
             CreateMap<TeamsProjects, DataContract.TeamsProjects>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.TeamsProjects, TeamsProjects>().ForAllMembers(opt => opt.AllowNull());
-            
+
             CreateMap<TimeSheetTask, DataContract.TimeSheetTask>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.TimeSheetTask, TimeSheetTask>().ForAllMembers(opt => opt.AllowNull());
         }

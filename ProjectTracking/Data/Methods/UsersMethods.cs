@@ -140,7 +140,7 @@ namespace ProjectTracking.Data.Methods
             // clear logs
             db.UserLogging.RemoveRange(db.UserLogging.Where(k => k.UserId == id));
             // clear supervisor
-            db.Supervisers.RemoveRange(db.Supervisers.Where(k => k.UserId == id));
+            db.SupervisorLogs.RemoveRange(db.SupervisorLogs.Where(k => k.UserId == id));
 
             // clear timesheets
             db.TimeSheets.RemoveRange(db.TimeSheets.Where(k => k.UserId == id));
@@ -190,12 +190,12 @@ namespace ProjectTracking.Data.Methods
             //List<int> supervisingTeams = db.Supervisers.Where(k => k.UserId == supervisorId)
             //    .Select(k => k.TeamId).ToList();
 
-            return db.Users.Where(k => db.Supervisers.Any(s => s.UserId == supervisorId && s.TeamId == k.TeamId))
+            return db.Users.Where(k => db.SupervisorLogs.Any(s => s.UserId == supervisorId && s.TeamId == k.TeamId))
                            .Select(k => k.Id).ToList();
         }
         public bool IsSupervisor(string userId)
         {
-            return db.Supervisers.Any(k => k.UserId == userId);
+            return db.SupervisorLogs.Any(k => k.UserId == userId);
         }
 
         public void AssignTeamSupervisor(string assignedById, string userId, int teamId)
@@ -208,7 +208,7 @@ namespace ProjectTracking.Data.Methods
             }
 
             // get current team supervisor
-            var currentSupervisor = db.Supervisers.OrderByDescending(k => k.DateAssigned).FirstOrDefault(k => k.TeamId == teamId);
+            var currentSupervisor = db.SupervisorLogs.OrderByDescending(k => k.DateAssigned).FirstOrDefault(k => k.TeamId == teamId);
 
             // check if exist ? then check if that user is the current supervisor ? return 
             if (currentSupervisor != null && currentSupervisor.UserId == userId)
@@ -216,7 +216,7 @@ namespace ProjectTracking.Data.Methods
                 return;
             }
 
-            db.Supervisers.Add(new DataSets.Superviser()
+            db.SupervisorLogs.Add(new DataSets.SupervisorLog()
             {
                 AssignedByUserId = assignedById,
                 DateAssigned = DateTime.Now,
@@ -245,7 +245,7 @@ namespace ProjectTracking.Data.Methods
             // add the rest
             if (teamIds.Count > 0)
             {
-                dbUser.Supervising.AddRange(teamIds.Select(k => new DataSets.Superviser()
+                dbUser.Supervising.AddRange(teamIds.Select(k => new DataSets.SupervisorLog()
                 {
                     UserId = userId,
                     TeamId = k

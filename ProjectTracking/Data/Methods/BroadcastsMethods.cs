@@ -42,7 +42,7 @@ namespace ProjectTracking.Data.Methods
         {
             // get users under the team that user is supervising...
             // this will validate the supervisor constraint
-            List<string> userIds = _context.Users.Where(k => _context.Supervisers.Any(s => s.UserId == fromUserId && s.TeamId == toTeamId))
+            List<string> userIds = _context.Users.Where(k => _context.SupervisorLogs.Any(s => s.UserId == fromUserId && s.TeamId == toTeamId))
                            .Select(k => k.Id).ToList();
 
             if (userIds.Count == 0)

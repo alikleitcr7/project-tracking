@@ -38,7 +38,7 @@ namespace ProjectTracking.Managers
 
             string userId = context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            bool isSupervisor = db.Supervisers.Any(k => k.UserId == userId);
+            bool isSupervisor = db.SupervisorLogs.Any(k => k.UserId == userId);
 
             if (!isSupervisor)
             {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
@@ -123,7 +124,7 @@ namespace ProjectTracking.Data.Methods
                     // supervisor has changed
 
                     // move current to logs
-                    _context.Supervisers.Add(new DataSets.Superviser()
+                    _context.SupervisorLogs.Add(new DataSets.SupervisorLog()
                     {
                         TeamId = dbTeam.ID,
                         UserId = dbTeam.SupervisorId,
@@ -248,7 +249,7 @@ namespace ProjectTracking.Data.Methods
 
         public List<int> GetAllSupervisingTeamIds(string userId)
         {
-            return _context.Supervisers.Where(k => k.UserId == userId).Select(k => k.TeamId).ToList();
+            return _context.SupervisorLogs.Where(k => k.UserId == userId).Select(k => k.TeamId).ToList();
         }
 
         public List<Team> GetAllSupervisableTeams(string userId)
@@ -274,7 +275,7 @@ namespace ProjectTracking.Data.Methods
                                    Name = k.Name,
                                    MembersCount = k.Members.Count(),
                                    DateAdded = k.DateAdded,
-                                   DateAssigned= k.DateAssigned,
+                                   DateAssigned = k.DateAssigned,
                                    AddedByUserId = k.AddedByUserId,
                                    SupervisorId = k.SupervisorId,
                                    AssignedByUserId = k.AssignedByUserId,
@@ -307,6 +308,38 @@ namespace ProjectTracking.Data.Methods
                 .ToList()
                 .Select(k => _mapper.Map<Team>(k))
                 .ToList();
+        }
+
+        public List<SupervisorLog> GetSupervisorLog(int teamId)
+        {
+            var logs = _context.SupervisorLogs
+                .AsNoTracking()
+                .Include(k=>k.User)
+                .Include(k=>k.AssignedByUser)
+                .Where(k => k.TeamId == teamId)
+                .Select(k => new SupervisorLog() {
+                    ID = k.ID,
+                    TeamId = k.TeamId,
+                    UserId = k.UserId,
+                    AssignedByUserId = k.AssignedByUserId,
+                    DateAssigned = k.DateAssigned,
+                    User = new User()
+                    {
+                        Id = k.User.Id,
+                        FirstName = k.User.FirstName,
+                        LastName = k.User.LastName,
+                    },
+                    AssignedByUser = new User()
+                    {
+                        Id = k.AssignedByUser.Id,
+                        FirstName = k.AssignedByUser.FirstName,
+                        LastName = k.AssignedByUser.LastName,
+                    }
+                });
+
+            //var list = logs.ProjectTo<SupervisorLog>(_mapper.ConfigurationProvider);
+
+            return logs.ToList();
         }
 
         public Team GetById(int id, bool includeMembers = true)

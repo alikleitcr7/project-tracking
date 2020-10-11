@@ -20,6 +20,14 @@ const TeamsService = {
 
         return axios.post(url, team);
     },
+    GetSupervisorLog: function (teamId) {
+
+        const query = serialize({ teamId })
+
+        const url = TEAMS_SERVICE_URI(`GetSupervisorLog?${query}`)
+
+        return axios.get(url);
+    },
     Update: function (team) {
 
         const url = TEAMS_SERVICE_URI(`Update`)

@@ -39,8 +39,8 @@ namespace ProjectTracking
 
         public Team Team { get; set; }
 
-        public List<Superviser> Supervising { get; set; }
-        public List<Superviser> AssignedSupervisors { get; set; }
+        public List<SupervisorLog> Supervising { get; set; }
+        public List<SupervisorLog> AssignedSupervisors { get; set; }
         public List<Broadcast> Broadcasts { get; set; }
         public List<UserNotification> FromUserNotifications { get; set; }
         public List<UserNotification> ToUserNotifications { get; set; }

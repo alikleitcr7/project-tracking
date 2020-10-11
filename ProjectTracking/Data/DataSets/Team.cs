@@ -30,7 +30,7 @@ namespace ProjectTracking.Data.DataSets
         public ApplicationUser AddedByUser { get; set; }
         public ApplicationUser AssignedByUser { get; set; }
 
-        public List<Superviser> Supervisers { get; set; }
+        public List<SupervisorLog> Supervisers { get; set; }
         public List<ApplicationUser> Members { get; set; }
         public List<TeamsProjects> TeamsProjects { get; set; }
     }

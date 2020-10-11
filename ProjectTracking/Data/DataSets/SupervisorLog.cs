@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProjectTracking.Data.DataSets
 {
-    public class Superviser : DataContract.Entity
+    public class SupervisorLog : DataContract.Entity
     {
         [Column(Order = 1), Required]
         public string UserId { get; set; }

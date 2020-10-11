@@ -44,6 +44,14 @@ const Modals_Teams = {
         Hide: function () {
             $('#TeamUsersModal').modal('hide');
         }
+    },
+    SupervisorLogs: {
+        Show: function () {
+            $('#SupervisorLogsModal').modal('show');
+        },
+        Hide: function () {
+            $('#SupervisorLogsModal').modal('hide');
+        }
     }
 }
 
@@ -90,6 +98,10 @@ const teamObject = () => {
             data: [],
             message: '',
             isLoading: false
+        },
+        supervisorLogs: {
+            data: [],
+            isLoading: false,
         },
         formRelatedDataAreLoaded: false
     }
@@ -450,6 +462,44 @@ const teamsMembersMethods = {
     },
 }
 
+const supervisorLogsMethods = {
+    supervisorLogs_setLoading: function (isLoading) {
+        this.teams.supervisorLogs.isLoading = isLoading
+    },
+    supervisorLogs_setMessage: function (message) {
+        this.teams.supervisorLogs.message = message
+    },
+    supervisorLogs_explore: function (teamId) {
+
+        this.supervisorLogs_setLoading(true)
+        this.supervisorLogs_setMessage('Loading...')
+
+        this.teams.supervisorLogs.data = []
+
+        Modals_Teams.SupervisorLogs.Show()
+
+        return TeamsService.GetSupervisorLog(teamId)
+            .then((r) => {
+
+                const record = r.data
+
+                if (record) {
+                    this.teams.supervisorLogs.data = record
+                }
+                else {
+                    this.supervisorLogs_setMessage(BASIC_ERROR_MESSAGE)
+                }
+            })
+            .catch((e) => {
+                console.error('supervisorLogs getall', e)
+                this.supervisorLogs_setMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.supervisorLogs_setLoading(false)
+            })
+    },
+}
+
 var teams_app = new Vue({
     el: "#Teams",
     data: {
@@ -476,6 +526,7 @@ var teams_app = new Vue({
         //...teamUsersMethods,
         ...teamsSupervisorsMethods,
         ...teamsMembersMethods,
+        ...supervisorLogsMethods,
     },
     mounted: function () {
 

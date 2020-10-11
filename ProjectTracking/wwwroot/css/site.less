@@ -66,29 +66,32 @@ body {
 }
 
 .bootbox-danger {
-    .modal-header{
-        border-bottom:3px solid @color-danger;
+    .modal-header {
+        border-bottom: 3px solid @color-danger;
     }
-    .modal-footer{
-        border-top:none;
+
+    .modal-footer {
+        border-top: none;
     }
 }
 
 .bootbox-info {
-    .modal-header{
-        border-bottom:3px solid @gray;
+    .modal-header {
+        border-bottom: 3px solid @gray;
     }
-    .modal-footer{
-        border-top:none;
+
+    .modal-footer {
+        border-top: none;
     }
 }
 
 .bootbox-default {
-    .modal-header{
-        border-bottom:3px solid @main-color;
+    .modal-header {
+        border-bottom: 3px solid @main-color;
     }
-    .modal-footer{
-        border-top:none;
+
+    .modal-footer {
+        border-top: none;
     }
 }
 
@@ -133,11 +136,18 @@ body {
     }
 }
 
+p.skeleton-loading-item {
+    .skeleton();
+    margin: .7em 0 .5em 0;
+    border-radius: 5px;
+    max-width: 10em;
+    height: 1.4em;
+}
+
 .checklist-container {
     /*max-height: 350px;
     overflow-y: auto;*/
-
-    padding:.5em 0;
+    padding: .5em 0;
 
     > p {
         margin: 0;
@@ -146,10 +156,10 @@ body {
 
     .checklist-item-loading {
         .skeleton();
-        margin:.7em 0 .5em 0;
-        border-radius:5px;
-        max-width:10em;
-        height:1.4em;
+        margin: .7em 0 .5em 0;
+        border-radius: 5px;
+        max-width: 10em;
+        height: 1.4em;
     }
 }
 
@@ -159,7 +169,7 @@ body {
     padding: .5em 1em;
     text-decoration: none;
     background-color: @main-color;
-    color:#fff;
+    color: #fff;
     -moz-user-select: none;
     -ms-user-select: none;
     -webkit-user-select: none;

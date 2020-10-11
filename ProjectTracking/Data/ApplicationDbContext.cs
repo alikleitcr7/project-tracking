@@ -11,7 +11,7 @@ namespace ProjectTracking.Data
 {
     public class ApplicationDbContext : IdentityUserContext<ApplicationUser, string>
     {
-        public DbSet<Superviser> Supervisers { get; set; }
+        public DbSet<SupervisorLog> SupervisorLogs { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<TeamsProjects> TeamsProjects { get; set; }
         public DbSet<ProjectTask> ProjectTasks { get; set; }
@@ -200,13 +200,13 @@ namespace ProjectTracking.Data
             //builder.Entity<Superviser>()
             //       .HasKey(k => new { k.TeamId, k.UserId, k.DateAssigned });
 
-            builder.Entity<Superviser>()
+            builder.Entity<SupervisorLog>()
                    .HasOne(x => x.User)
                    .WithMany(m => m.Supervising)
                    .HasForeignKey(x => x.UserId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<Superviser>()
+            builder.Entity<SupervisorLog>()
                    .HasOne(x => x.AssignedByUser)
                    .WithMany(m => m.AssignedSupervisors)
                    .HasForeignKey(x => x.AssignedByUserId)
@@ -341,7 +341,7 @@ namespace ProjectTracking.Data
 
             //builder.Entity<ApplicationIdentityRole>().ToTable("Roles").HasKey(k => k.Id);
             builder.Entity<ApplicationUser>().ToTable("Users").HasKey(k => k.Id);
-            builder.Entity<Superviser>().ToTable("SupervisorLog");
+            builder.Entity<SupervisorLog>().ToTable("SupervisorLog");
 
             #region Initial Users
 

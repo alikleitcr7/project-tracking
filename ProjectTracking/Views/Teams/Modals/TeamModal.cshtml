@@ -28,7 +28,7 @@
                     <div id="MembersTab" class="tab-pane fade in active">
                         <div class="checklist-container scrollable-container-400">
 
-                            <p class="checklist-item-loading" v-show="teams.members.isLoading" v-for="k in [,,,]"></p>
+                            <p class="skeleton-loading-item" v-show="teams.members.isLoading" v-for="k in [,,,]"></p>
 
                             <p v-show="!teams.members.isLoading && !teams.members.data.length">There are currently no team members registered!</p>
                             <p v-for="(user, idx) in teams.members.data">
@@ -41,7 +41,7 @@
                     <div id="SupervisorTab" class="tab-pane fade">
                         <div class="checklist-container scrollable-container-400">
 
-                            <p class="checklist-item-loading" v-show="teams.supervisors.isLoading" v-for="k in [,,,]"></p>
+                            <p class="skeleton-loading-item" v-show="teams.supervisors.isLoading" v-for="k in [,,,]"></p>
 
                             <p v-show="!teams.supervisors.isLoading && !teams.supervisors.data.length">There are currently no team supervisors registered!</p>
                             <p v-for="(user, idx) in teams.supervisors.data">

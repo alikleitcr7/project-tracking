@@ -78,6 +78,14 @@
                                 Edit
 
                             </button>
+
+                            <button class="s-btn s-btn-sm s-btn-outline" type="button"
+                                    v-on:click="supervisorLogs_explore(item.id)">
+                                <i class="fa fa-history"></i>
+                                Supervisor Logs
+
+                            </button>
+
                             <button class="s-btn s-btn-sm s-btn-danger" type="button"
                                     v-on:click="teams_delete(idx)">
                                 <i class="glyphicon glyphicon-trash"></i>
@@ -95,6 +103,7 @@
 
 
     <partial name="~/views/teams/modals/TeamModal.cshtml" />
+    <partial name="~/views/teams/modals/SupervisorLogsModal.cshtml" />
     @*<partial name="~/views/teams/modals/TeamUsersModal.cshtml" />*@
 
 

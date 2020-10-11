@@ -183,6 +183,24 @@ namespace ProjectTracking.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult GetSupervisorLog(int teamId)
+        {
+            try
+            {
+                return Ok(_teamsMethods.GetSupervisorLog(teamId));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
         [HttpDelete]
         public IActionResult Delete(int id)
         {

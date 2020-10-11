@@ -11,7 +11,7 @@ namespace ProjectTracking.DataContract
     {
         public string Id { get; set; }
         public string Email { get; set; }
-        public bool IsTracked { get; set; }
+        //public bool IsTracked { get; set; }
 
         public string UserName { get; set; }
         public string FirstName { get; set; }
@@ -29,7 +29,6 @@ namespace ProjectTracking.DataContract
         }
         public DateTime DateOfBirth { get; set; }
         public int? TeamId { get; set; }
-        public Team Team { get; set; }
         public string TeamDisplay
         {
             get
@@ -52,7 +51,10 @@ namespace ProjectTracking.DataContract
         //        return Company == null ? "-" : Company.Name;
         //    }
         //}
+
+        public Team Team { get; set; }
         public List<TimeSheet> TimeSheets { get; set; }
+
         //public List<RequestedPermission> RequestedPermissions { get; set; }
         //public List<Supervising> Supervisors { get; set; }
         //public List<User> Supervising { get; set; }
