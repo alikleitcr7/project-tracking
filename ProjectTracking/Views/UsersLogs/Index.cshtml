@@ -41,9 +41,9 @@
             <tr>
                 <th>Full Name </th>
                 <th>User Name</th>
+                <th>Status</th>
                 <th>From Date</th>
                 <th>To Date </th>
-                <th>Status</th>
                 <th>Location</th>
             </tr>
         </thead>
@@ -51,9 +51,9 @@
             <tr v-for="userLog in usersLogs">
                 <td>{{userLog.fullName}}</td>
                 <td>{{userLog.userName}}</td>
+                <td v-bind:class="{'text-success  text-bold ':userIsActive(userLog)}">{{userLog.logStatusDisplay}}</td>
                 <td>{{userLog.displayFromDate}}</td>
                 <td>{{userLog.displayToDate}}</td>
-                <td>{{userLog.logStatusDisply}}</td>
                 <td>{{userLog.ipAddressDisplay}}</td>
             </tr>
         </tbody>

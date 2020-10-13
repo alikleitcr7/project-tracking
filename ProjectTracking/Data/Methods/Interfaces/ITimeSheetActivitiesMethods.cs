@@ -7,12 +7,12 @@ namespace ProjectTracking.Data.Methods.Interfaces
 {
     public interface ITimeSheetActivitiesMethods
     {
-        TimeSheetActivity Add(TimeSheetActivity activity);
+        TimeSheetActivity Add(TimeSheetActivity activity, string ipAddress);
         User GetActivityUser(int id);
         ProjectTask GetActivityProjectTask(int id);
         TimeSheetActivity Get(int id);
         List<TimeSheetActivity> GetByTimeSheet(int timesheetId);
-        TimeSheetActivity Update(TimeSheetActivity activity);
+        TimeSheetActivity Update(TimeSheetActivity activity, string ipAddress);
         bool Delete(int id);
     }
 }

@@ -51,6 +51,9 @@ new Vue({
                 this.UsersLogsAreLoading = false;
             }).catch(error => { console.log(error) });
         },
+        userIsActive: function (userLog) {
+            return !userLog.toDate && userLog.logStatusCode === 0
+        }
     },
     mounted: function () {
         this.GetUsersLogs(0, this.dataPaging.length, this.fromDate, this.toDate);

@@ -56,15 +56,7 @@ const GetTimeSheetYears = (userId) => {
     return axios.get('/Employees/GetTimeSheetYears?userId=' + userId);
 }
 
-const AddProjectToTimeSheet = (timeSheetId, projectIds) => {
-    return axios.post(`/Employees/AddProjectToTimeSheet`, { timeSheetId: timeSheetId, projectIds: projectIds });
-}
-
-const RemoveProjectFromTimeSheet = (timeSheetId, projectIds) => {
-    return axios.post(`/Employees/RemoveProjectFromTimeSheet`, { timeSheetId: timeSheetId, projectIds: projectIds });
-}
-
-function FilterProjects(val, filteredProjects) {
+function filterProjects(val, filteredProjects) {
 
     val = val.toLowerCase();
 
@@ -83,7 +75,7 @@ function FilterProjects(val, filteredProjects) {
 
         let project = filteredProjects[i];
 
-        let showProject = project.title.toLowerCase().indexOf(val) > -1 || project.description.toLowerCase().indexOf(val) > -1;
+        let showProject = project.title.toLowerCase().indexOf(val) > -1 || (project.description ? project.description.toLowerCase().indexOf(val) > -1 : false);
 
         // show project if some tasks met the search criteria
         project.isHidden = !project.tasks.some(k => k.title.toLowerCase().indexOf(val) > -1);
@@ -116,7 +108,7 @@ function FilterProjects(val, filteredProjects) {
 
 }
 
-function ExtractSelectedIdsFromProjects(projects) {
+function extractSelectedIdsFromProjects(projects) {
 
     let selectedIds = [];
 
@@ -125,6 +117,18 @@ function ExtractSelectedIdsFromProjects(projects) {
     });
 
     return selectedIds;
+}
+
+function getTimeSheetFormDates() {
+
+    let currentDate = moment()
+
+    currentDate = currentDate.set('date', 1)
+
+    let prevDate = currentDate.clone().subtract(1, 'months')
+    let nextDate = currentDate.clone().add(1, 'months')
+
+    return [prevDate, currentDate, nextDate]
 }
 
 const userProfileData = {
@@ -136,19 +140,40 @@ const userProfileData = {
     }
 }
 
+const timeSheetFormObject = (obj) => {
+
+    let record = {
+        id: obj ? obj.id : null,
+        userId: obj ? obj.userId : userProfileData.user(),
+        fromDate: obj ? obj.fromDate : null,
+        toDate: obj ? obj.toDate : null,
+    }
+
+    return {
+        record,
+        message: '',
+        isLoading: false,
+        isSaving: false,
+    }
+}
+
 new Vue({
     el: '#Profile',
     data: {
         isInAdministration: false,
-        timeSheetStatuses: [],
-        timesheetModel: {
-            userId: userProfileData.user(),
-            fromDate: '',
-            toDate: '',
-            timeSheetError: '',
-            dateList: []
-        },
+        //timeSheetStatuses: [],
+
+        timeSheetForm: timeSheetFormObject(),
+        //timeSheetForm: {
+        //    id: null,
+        //    userId: userProfileData.user(),
+        //    fromDate: '',
+        //    toDate: '',
+        //    timeSheetError: '',
+        //    dateList: []
+        //},
         dateOptions,
+        dateList: getTimeSheetFormDates(),
         dateTimeOptions,
         timeSheets: [],
         timeSheetsLoading: true,
@@ -167,13 +192,6 @@ new Vue({
         searchKeys: {
             timeSheets: ''
         },
-        superVised: [],
-        notSuperVised: [],
-        superVisors: [],
-        notSuperVisors: [],
-        rolesAssigned: [],
-        rolesNotAssigned: [],
-        test: true,
         availableProjectsChecked: true,
         assignedProjectsChecked: true,
         availableProjectsSearchKey: '',
@@ -184,11 +202,6 @@ new Vue({
             activeIdx: null,
             message: '',
             isDeleting: false,
-        },
-        timesheetSignModal: {
-            activeIdx: null,
-            message: '',
-            isSigning: false,
         },
         timeSheetYears: [],
         selectedTimeSheetYear: new Date().getFullYear()
@@ -208,7 +221,7 @@ new Vue({
             handler: function (val) {
                 let filteredProjects = [...this.timeSheetProjects.availableProjects];
 
-                FilterProjects(val, filteredProjects);
+                filterProjects(val, filteredProjects);
 
                 this.timeSheetProjects.availableProjects = filteredProjects;
             }
@@ -218,7 +231,7 @@ new Vue({
 
                 let filteredProjects = [...this.timeSheetProjects.assignedProjects];
 
-                FilterProjects(val, filteredProjects);
+                filterProjects(val, filteredProjects);
 
                 this.timeSheetProjects.assignedProjects = filteredProjects;
             }
@@ -238,39 +251,106 @@ new Vue({
         }
     },
     methods: {
-        addTimeSheet: function () {
+        saveTimeSheet: function () {
 
-            this.timesheetModel.timeSheetError = ''
+            this.timeSheetForm.message = ''
 
-            if (moment(this.timesheetModel.toDate) <= moment(this.timesheetModel.fromDate)) {
-                this.timesheetModel.timeSheetError = 'to date can not be less than or equal  from date';
-                return
-            }
-            else if (this.timesheetModel.toDate == '' || this.timesheetModel.fromDate == '') {
-                this.timesheetModel.timeSheetError = 'please insert correct dates ';
+            const pendingRecord = this.timeSheetForm.record
+
+            const { fromDate, toDate } = pendingRecord
+
+            if (toDate == '' || fromDate == '') {
+                this.timeSheetForm.message = 'from/to dates are required';
                 return;
             }
-            console.log('user id', this.timesheetModel.userId);
 
-            UserProfileRequests.AddTimeSheet(this.timesheetModel)
+            if (moment(toDate) <= moment(fromDate)) {
+                this.timeSheetForm.message = '"From Date" should be before "To Date"';
+                return
+            }
+
+            const isNew = pendingRecord.id === null
+            this.timeSheetForm.isSaving = true
+
+            TimeSheetsService.Save(pendingRecord)
                 .then(response => {
-                    console.log('add Time Sheet Response', response);
 
-                    const { data } = response;
-                    if (data.timeSheet == null) {
+                    const record = response.data;
 
-                        this.timesheetModel.timeSheetError = `incorrect information :${data.message} `;
+                    if (!record) {
+                        this.timeSheetForm.message = BASIC_ERROR_MESSAGE;
                     }
                     else {
 
-                        alert("A new timesheet has been added ");
-                        location.reload();
-                        this.timeSheets = [data.timeSheet, ...this.timeSheets]
+                        this.timeSheetForm.message = isNew ? 'TimeSheet Added!' : 'TimeSheet Updated!';
+
+                        if (isNew) {
+                            // append to view
+                            this.timeSheets = [record, ...this.timeSheets]
+                        }
+                        else {
+
+                            // update view
+                            let timeSheets = [...this.timeSheets]
+
+                            const idx = timeSheets.findIndex(k => k.id === record.id)
+
+                            if (idx !== -1) {
+
+                                timeSheets[idx] = { ...record }
+                                this.timeSheets = timeSheets;
+                            }
+                            else {
+                                location.reload()
+                            }
+                        }
+                    }
+                })
+                .catch(e => {
+                    this.timeSheetForm.message = getAxiosErrorMessage(e)
+                })
+                .then(() => {
+                    this.timeSheetForm.isSaving = false
+                })
+
+        },
+        newTimeSheet: function () {
+
+            this.timeSheetForm = timeSheetFormObject();
+
+            $('#SaveTimeSheetModal').modal('show')
+        },
+        editTimeSheet: function (timesheet) {
+
+
+            this.timeSheetForm.isLoading = true
+            this.timeSheetForm.message = 'Loading...'
+
+            $('#SaveTimeSheetModal').modal('show')
+
+            TimeSheetsService.GetById(timesheet.id)
+                .then(r => {
+
+                    const record = r.data
+
+                    if (!record) {
+                        this.timeSheetForm.message = BASIC_ERROR_MESSAGE;
+                        return
                     }
 
-                })
-                .catch(error => { console.log(error) })
+                    this.timeSheetForm.message = ''
 
+                    this.timeSheetForm = timeSheetFormObject(record);
+                })
+                .catch(e => {
+
+                    console.error('get timesheet', e)
+
+                    this.timeSheetForm.message = getAxiosErrorMessage(e)
+                })
+                .then(() => {
+                    this.timeSheetForm.isLoading = false
+                })
         },
         openTimeSheetProjectsModal: function (timeSheet) {
 
@@ -290,15 +370,15 @@ new Vue({
 
             let projects = [...this.projects];
 
-            GetTimeSheetProjects(timeSheetId)
+            TimeSheetsService.TimeSheetTasksWithActivityCheck(timeSheetId)
                 .then(r => {
 
                     timeSheetProjects.isFailed = false;
 
                     console.log('timesheet projects data', r.data)
 
-                    const ids = r.data.map(k => k.projectTaskId);
-                    const locked_ids = r.data.filter(k => k.activities.length > 0).map(k => k.projectTaskId);
+                    const ids = r.data.map(k => k.taskId);
+                    const locked_ids = r.data.filter(k => k.hasActivity).map(k => k.taskId);
 
                     console.log('available ids', ids);
                     console.log('locked ids', locked_ids);
@@ -372,12 +452,12 @@ new Vue({
             let availableProjects = [...this.timeSheetProjects.availableProjects];
             let assignedProjects = [...this.timeSheetProjects.assignedProjects]
 
-            let projectIds = ExtractSelectedIdsFromProjects(this.timeSheetProjects.availableProjects);
+            let projectIds = extractSelectedIdsFromProjects(this.timeSheetProjects.availableProjects);
             let timeSheetId = this.timeSheetProjects.timeSheetId;
 
             this.assignProjectsLoading = true;
 
-            AddProjectToTimeSheet(timeSheetId, projectIds)
+            TimeSheetsService.AddProjectToTimeSheet({ timeSheetId, projectIds })
                 .then(r => {
 
                     console.log('add project to timesheet response', r.data);
@@ -456,14 +536,14 @@ new Vue({
             let availableProjects = [...this.timeSheetProjects.availableProjects];
             let assignedProjects = [...this.timeSheetProjects.assignedProjects]
 
-            let projectIds = ExtractSelectedIdsFromProjects(this.timeSheetProjects.assignedProjects);
+            let projectIds = extractSelectedIdsFromProjects(this.timeSheetProjects.assignedProjects);
             let timeSheetId = this.timeSheetProjects.timeSheetId;
 
             this.assignProjectsLoading = true;
 
 
 
-            RemoveProjectFromTimeSheet(timeSheetId, projectIds)
+            TimeSheetsService.RemoveProjectFromTimeSheet({ timeSheetId, projectIds })
                 .then(r => {
                     if (r.data) {
 
@@ -543,84 +623,73 @@ new Vue({
             this.timeSheetProjects.assignedProjects = assignedProjects;
         },
         getLatestTimeSheet: function () {
-            UserProfileRequests.GetLatestTimeSheet(this.userId).then(response => {
+            TimeSheetsService.GetLatest(this.userId).then(response => {
+
                 const { data } = response;
+
                 if (data != null) {
-                    this.timesheetModel.fromDate = data.toDatePlusOneDay
-                    this.timesheetModel.toDate = data.toDatePlusMonth
+                    this.timeSheetForm.record.fromDate = data.toDatePlusOneDay
+                    this.timeSheetForm.record.toDate = data.toDatePlusMonth
                 }
-                //ToDatePlusMonth
+
                 console.log('latest timesheet', response);
 
-            }).catch(error => { console.log(error) });
+            }).catch(error => {
+                console.log(error)
+            });
         },
         changeDate: function (date) {
             console.log({ date })
 
             let oDate = moment(date)
-            this.timesheetModel.fromDate = oDate
-            this.timesheetModel.toDate = oDate.clone().add(1, 'months').subtract(1, 'day')
+            this.timeSheetForm.record.fromDate = oDate
+            this.timeSheetForm.record.toDate = oDate.clone().add(1, 'months').subtract(1, 'day')
 
         },
-        openDeleteTimeSheetModal: function (idx) {
-            this.timesheetDeleteModal.activeIdx = idx
-            $('#DeleteTimeSheetModal').modal('show')
-        },
-        deleteTimeSheet: function () {
-
+        deleteTimeSheet: function (timesheet, idx) {
 
             if (!confirm('Confirm Deletion')) {
                 return;
             }
 
-            const password = this.timesheetDeleteModal.password
             this.timesheetDeleteModal.isDeleting = true
             this.timesheetDeleteModal.message = ''
 
-            UserProfileRequests.ValidateCurrentUserPassword(password).then(r => {
-                console.log('pass validation', r.data)
+            const id = timesheet.id
 
-                const timeSheetToDelete = this.timeSheets[this.timesheetDeleteModal.activeIdx]
-                console.log({ timeSheetToDelete })
+            TimeSheetsService.Delete(id)
+                .then(r => {
 
-                if (r.data) {
-                    TimeSheetsService.Delete(timeSheetToDelete.id).then(r => {
+                    const record = r.data
 
-                        console.log('ts delete', r.data)
+                    if (record) {
 
-                        if (r.data) {
+                        let timeSheets = [...this.timeSheets]
 
-                            let timeSheets = [...this.timeSheets]
+                        timeSheets.splice(idx, 1)
 
-                            timeSheets.splice(this.timesheetDeleteModal.activeIdx, 1)
+                        this.timeSheets = timeSheets
 
+                        $('#DeleteTimeSheetModal').modal('hide')
 
-                            this.timeSheets = timeSheets
+                        alert('Timesheet Deleted!')
+                    }
+                    else {
+                        this.timesheetDeleteModal.message = BASIC_ERROR_MESSAGE
+                    }
 
-                            $('#DeleteTimeSheetModal').modal('hide')
+                })
+                .catch(e => {
+                    this.timesheetDeleteModal.message = getAxiosErrorMessage(e)
+                })
+                .then(() => {
+                    this.timesheetDeleteModal.isDeleting = false
 
-                            alert('Timesheet Deleted!')
-                        }
-                        else {
-                            this.timesheetDeleteModal.message = BASIC_ERROR_MESSAGE
-                        }
-
-                    })
-                }
-                else {
-                    this.timesheetDeleteModal.message = 'Invalid Password'
-                }
-
-            }).catch(e => {
-                console.error('pass validation', e)
-                this.timesheetDeleteModal.message = BASIC_INTERNAL_ERROR_MESSAGE
-            }).then(() => {
-                this.timesheetDeleteModal.isDeleting = false
-            })
-
+                })
         },
         filterTimeSheets: function () {
-            GetTimeSheets(this.userId, this.selectedTimeSheetYear)
+
+            TimeSheetsService.GetTimeSheets(this.userId, this.selectedTimeSheetYear, false)
                 .then(response => {
                     console.log('response timesheets', response.data);
                     this.timeSheets = response.data;
@@ -631,7 +700,6 @@ new Vue({
                 .then(() => {
                     this.timeSheetsLoading = false;
                 });
-
         },
         nextDateDisplay: function (date) {
 
@@ -643,7 +711,9 @@ new Vue({
         this.userId = userProfileData.user();
         this.teamId = userProfileData.team() ? parseInt(userProfileData.team()) : null;
 
-        this.getLatestTimeSheet();
+        console.log('uid', this.userId)
+
+        //this.getLatestTimeSheet();
 
         ProjectsService.GetByTeam(this.teamId)
             .then(r => {
@@ -657,7 +727,7 @@ new Vue({
                 this.projectsLoading = false;
             })
 
-        GetTimeSheetYears(this.userId)
+        TimeSheetsService.GetTimeSheetYears(this.userId)
             .then(r => {
                 console.log('get timesheet years', r)
                 this.timeSheetYears = r.data
@@ -666,28 +736,10 @@ new Vue({
                 console.error('error', e)
             })
 
-        GetTimeSheets(this.userId)
-            .then(response => {
-                console.log('response timesheets', response.data);
-                this.timeSheets = response.data;
-            })
-            .catch(e => {
-                console.error('err', e);
-            })
-            .then(() => {
-                this.timeSheetsLoading = false;
-            });
+        this.filterTimeSheets()
 
-        let currentDate = moment()
 
-        currentDate = currentDate.set('date', 26)
-        let prevDate = moment().set('date', 26).subtract(1, 'months')
-        let nextDate = moment().set('date', 26).add(1, 'months')
 
-        let dateList = [prevDate, currentDate, nextDate]
-        console.log({ date: dateList[0].format() })
-
-        this.timesheetModel.dateList = dateList
     }
 });
 

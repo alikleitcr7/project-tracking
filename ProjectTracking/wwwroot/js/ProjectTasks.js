@@ -12,6 +12,14 @@ const projectTaskFields = [
         type: DATA_TYPES.TEXT,
         required: true,
     },
+    {
+        name: 'statusCode',
+        displayName: 'Status',
+        errorMessage: 'Status is Required',
+        min: 0,
+        type: DATA_TYPES.NUMBER,
+        required: true,
+    },
 ]
 
 const Modals_ProjectTasks = {
@@ -28,8 +36,6 @@ const Modals_ProjectTasks = {
 const getActiveProjectId = () => parseInt($('#ProjectTasks').attr('data-project'))
 
 const projectTaskFormObject = (obj) => {
-
-    //console.log({ obj })
 
     const projectId = getActiveProjectId();
 
@@ -49,9 +55,8 @@ const projectTaskFormObject = (obj) => {
             startDate: null,
             plannedEnd: null,
             actualEnd: null,
-            statusCode: null,
+            statusCode: 0,
         }
-
 
     return {
         record,
@@ -105,13 +110,13 @@ const projectTasksMethods = {
 
             console.log('field validation', { field, fieldValue })
 
-            const validator = new CoreValidator(field.name, fieldValue, field.required, field.type, field.min, field.max)
+            const validator = new CoreValidator(field.name, fieldValue, field.required, field.type, field.min, field.max, field.displayName)
             isValid = validator.validate()
 
 
             if (!isValid) {
 
-                finalMessage = validator.message();
+                finalMessage = field.errorMessage || validator.message();
                 console.log(' validation 3')
 
                 break;

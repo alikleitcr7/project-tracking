@@ -204,7 +204,7 @@ class CoreValidator {
 
         console.log({ value, min, max, isRequired })
 
-        if (isNaN(value)) {
+        if (isNaN(value) || value == null) {
             return false
         }
 
@@ -217,7 +217,7 @@ class CoreValidator {
 
             // check min 
             if (this.hasValue(min)) {
-                return value >= min 
+                return value >= min
             }
 
             // check max
@@ -525,7 +525,7 @@ const bootboxExtension = {
         bootbox.dialog({
             title,
             message,
-            size:'sm',
+            size: 'sm',
             className: `bootbox-danger`,
             buttons: {
                 cancel: {

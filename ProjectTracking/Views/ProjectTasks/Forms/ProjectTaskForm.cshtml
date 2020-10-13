@@ -27,7 +27,7 @@
                                 <label>Status</label>
                                 <p v-show="projectTasks.statuses.isLoading">Loading Statuses...</p>
                                 <select v-if="projectTasks.statuses.data.length" v-model="projectTasks.form.record.statusCode" class="form-control ">
-                                    <option :value="oNull" disabled>Choose a Status</option>
+                                    @*<option :value="oNull" disabled>Choose a Status</option>*@
                                     <option v-for="opt in projectTasks.statuses.data" v-bind:value="opt.key">
                                         {{opt.value}}
                                     </option>

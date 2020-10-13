@@ -455,6 +455,9 @@ select:-moz-focusring {
   color: transparent;
   text-shadow: 0 0 0 #000;
 }
+.text-bold {
+  font-weight: 600;
+}
 body {
   position: relative;
 }

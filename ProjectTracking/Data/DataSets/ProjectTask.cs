@@ -14,8 +14,6 @@ namespace ProjectTracking.Data.DataSets
         public string Title { get; set; }
         [MaxLength(255)]
         public string Description { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime DateAdded { get; set; } = DateTime.Now;
 
         public int ProjectId { get; set; }

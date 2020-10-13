@@ -19,6 +19,14 @@ const projectFields = [
         type: DATA_TYPES.NUMBER,
         required: true,
     },
+    {
+        name: 'statusCode',
+        displayName: 'Status',
+        errorMessage: 'Status is Required',
+        min: 0,
+        type: DATA_TYPES.NUMBER,
+        required: true,
+    },
 ]
 
 const Modals_Projects = {
@@ -42,8 +50,6 @@ const Modals_Projects = {
 
 const projectFormObject = (obj) => {
 
-    console.log({ obj })
-
     let record = obj ? {
         id: obj.id,
         title: obj.title,
@@ -61,7 +67,7 @@ const projectFormObject = (obj) => {
             startDate: null,
             plannedEnd: null,
             actualEnd: null,
-            statusCode: null,
+            statusCode: 0,
             teamsIds: [],
         }
 
@@ -122,20 +128,15 @@ const projectsMethods = {
 
             console.log('field validation', { field, fieldValue })
 
-            const validator = new CoreValidator(field.name, fieldValue, field.required, field.type, field.min, field.max)
+            const validator = new CoreValidator(field.name, fieldValue, field.required, field.type, field.min, field.max, field.displayName)
             isValid = validator.validate()
-
 
             if (!isValid) {
 
-                finalMessage = validator.message();
-                console.log(' validation 3')
-
+                finalMessage = field.statusMessage || validator.message();
                 break;
             }
         }
-
-        console.log('end validation')
 
 
         if (!isValid) {
@@ -208,9 +209,9 @@ const projectsMethods = {
             })
             .catch(e => {
 
-                console.error('get error', e)
+                console.error('get project', e)
 
-                this.projects_setFormMessage(BASIC_ERROR_MESSAGE);
+                this.projects_setFormMessage(getAxiosErrorMessage(e));
             })
             .then(() => {
                 this.projects_setFormLoading(false)

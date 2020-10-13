@@ -11,8 +11,8 @@ namespace ProjectTracking.DataContract
         public DateTime? ToDate { get; set; }
         public DateTime DateAdded { get; set; }
 
-        public string Comment { get; set; }
-        public string IpAddress { get; set; }
+        public string Message { get; set; }
+        public string Address { get; set; }
         public string IpAddressDisplay
         {
             get
@@ -21,7 +21,7 @@ namespace ProjectTracking.DataContract
             }
         }
 
-        public IpAddress IPAddress { get; set; }
+        public virtual IpAddress IPAddress { get; set; }
 
         public string DateAddedDisplay
         {
@@ -89,16 +89,14 @@ namespace ProjectTracking.DataContract
                 return display;
             }
         }
-
-
     }
 
     public class TimeSheetActivity : TimeSheetActivityBase
     {
         public int TimeSheetTaskId { get; set; }
-        public virtual TimeSheetTask TimeSheetTask { get; set; }
+        //public virtual TimeSheetTask TimeSheetTask { get; set; }
 
-        public virtual List<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
+        public  List<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
     }
 
     public class TimeSheetActivityLog : TimeSheetActivityBase

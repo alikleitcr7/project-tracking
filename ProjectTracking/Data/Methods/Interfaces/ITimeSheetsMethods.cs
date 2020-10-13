@@ -12,8 +12,10 @@ namespace ProjectTracking.Data.Methods.Interfaces
         TimeSheet Add(string userId, DateTime fromDate, DateTime toDate, out string message);
         TimeSheet Add(string userId, DateTime fromDate, DateTime toDate);
         TimeSheet Get(int id, out List<Project> projects, bool includeActivities = true);
-        List<TimeSheet> GetByUser(string userId);
-        List<TimeSheetTask> GetTimeSheetTasks(int timeSheetId);
+        TimeSheet GetLatest(string userId);
+        List<int> GetTimeSheetYears(string userId);
+        List<TimeSheet> GetByUser(string userId, int? year = null, bool includeTasks = true);
+        List<TimeSheetTask> GetTimeSheetTasks(int timeSheetId, bool includeActivitie = true);
         List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId);
         List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, DateTime date);
         bool AddTasks(int timeSheetId, List<int> projectIds);
@@ -21,9 +23,8 @@ namespace ProjectTracking.Data.Methods.Interfaces
         bool RemoveTasks(int timeSheetId, List<int> projectIds);
         bool RemoveTasks(int timeSheetId, int projectId);
         bool Delete(int id);
-        bool SignTimeSheet(string userId, int timeSheetId);
-        bool PermitTimeSheetStatus(PermitModel permitModel);
-        TimeSheet GetLatest(string userId);
-        List<TimeSheetTask> GetSubordinatesTimeSheets(string supervisorId, int page, int countPerPage, out int totalPages);
+        TimeSheet Save(Models.TimeSheet.TimeSheetSaveModel model);
+        TimeSheet GetById(int id);
+        List<Models.Profile.TimeSheetTasksWithActivityCheck> TimeSheetTasksWithActivityCheck(int timeSheetId);
     }
 }

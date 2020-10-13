@@ -137,7 +137,7 @@ const GetSuperVisors = (userId) => {
     return axios.get(`/Employees/GetSuperVisors?userId=${userId}`);
 }
 
-function FilterProjects(val, filteredProjects) {
+function filterProjects(val, filteredProjects) {
 
     val = val.toLowerCase();
 
@@ -189,7 +189,7 @@ function FilterProjects(val, filteredProjects) {
 
 }
 
-function ExtractSelectedIdsFromProjects(projects) {
+function extractSelectedIdsFromProjects(projects) {
 
     let selectedIds = [];
 
@@ -290,7 +290,7 @@ new Vue({
             handler: function (val) {
                 let filteredProjects = [...this.timeSheetProjects.availableProjects];
 
-                FilterProjects(val, filteredProjects);
+                filterProjects(val, filteredProjects);
 
                 this.timeSheetProjects.availableProjects = filteredProjects;
             }
@@ -300,7 +300,7 @@ new Vue({
 
                 let filteredProjects = [...this.timeSheetProjects.assignedProjects];
 
-                FilterProjects(val, filteredProjects);
+                filterProjects(val, filteredProjects);
 
                 this.timeSheetProjects.assignedProjects = filteredProjects;
             }
@@ -499,7 +499,7 @@ new Vue({
             let availableProjects = [...this.timeSheetProjects.availableProjects];
             let assignedProjects = [...this.timeSheetProjects.assignedProjects]
 
-            let projectIds = ExtractSelectedIdsFromProjects(this.timeSheetProjects.availableProjects);
+            let projectIds = extractSelectedIdsFromProjects(this.timeSheetProjects.availableProjects);
             let timeSheetId = this.timeSheetProjects.timeSheetId;
 
             this.assignProjectsLoading = true;
@@ -583,7 +583,7 @@ new Vue({
             let availableProjects = [...this.timeSheetProjects.availableProjects];
             let assignedProjects = [...this.timeSheetProjects.assignedProjects]
 
-            let projectIds = ExtractSelectedIdsFromProjects(this.timeSheetProjects.assignedProjects);
+            let projectIds = extractSelectedIdsFromProjects(this.timeSheetProjects.assignedProjects);
             let timeSheetId = this.timeSheetProjects.timeSheetId;
 
             this.assignProjectsLoading = true;

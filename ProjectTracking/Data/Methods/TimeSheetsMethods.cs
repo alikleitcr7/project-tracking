@@ -7,9 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ProjectTracking.Models;
+using ProjectTracking.Models.TimeSheet;
+using ProjectTracking.Exceptions;
+using ProjectTracking.Models.Profile;
 
 namespace ProjectTracking.Data.Methods
 {
+
     public class TimeSheetsMethods : ITimeSheetsMethods
     {
         private ApplicationDbContext db;
@@ -25,6 +29,92 @@ namespace ProjectTracking.Data.Methods
             _mapper = mapper;
             _users = users;
         }
+
+
+        public TimeSheet Save(TimeSheetSaveModel model)
+        {
+            IQueryable<DataSets.TimeSheet> conflictQuery = db.TimeSheets.Where(c => c.UserId == model.userId
+                                                         && ((model.fromDate >= c.FromDate && model.fromDate <= c.ToDate)
+                                                         || (model.toDate >= c.FromDate && model.toDate <= c.ToDate)));
+
+            void ensureNoConflict(DataSets.TimeSheet ts)
+            {
+                if (ts != null)
+                {
+                    throw new ClientException($"Dates {model.fromDate.ToShortDateString()}/{model.toDate.ToShortDateString()} Fall betweeen user's timesheet dates {ts.FromDate.ToShortDateString()}/{ts.ToDate.ToShortDateString()}");
+                }
+            }
+
+
+            if (model.id.HasValue)
+            {
+                var possibleConflictTimeSheet = conflictQuery.Where(k => k.ID != model.id.Value).FirstOrDefault();
+
+                ensureNoConflict(possibleConflictTimeSheet);
+
+                // # save timeSheet #
+
+                // get timeSheet
+
+                var dbTimeSheet = db.TimeSheets.FirstOrDefault(k => k.ID == model.id.Value);
+
+                if (dbTimeSheet == null)
+                {
+                    throw new ClientException("record not found");
+                }
+
+                // update values
+
+                dbTimeSheet.FromDate = model.fromDate;
+                dbTimeSheet.ToDate = model.toDate;
+
+                db.SaveChanges();
+
+                return _mapper.Map<TimeSheet>(dbTimeSheet);
+            }
+            else
+            {
+                var possibleConflictTimeSheet = conflictQuery.FirstOrDefault();
+
+                ensureNoConflict(possibleConflictTimeSheet);
+
+                // # new timesheet #
+
+                DataSets.TimeSheet dbTimeSheet = new DataSets.TimeSheet()
+                {
+                    UserId = model.userId,
+                    FromDate = model.fromDate,
+                    ToDate = model.toDate,
+                    DateAdded = DateTime.Now,
+                    AddedByUserId = model.GetAddedByUser()
+                };
+
+                // add the timeSheet
+                db.TimeSheets.Add(dbTimeSheet);
+
+                // save changes on teamstimeSheets
+                db.SaveChanges();
+
+                return _mapper.Map<TimeSheet>(dbTimeSheet);
+            }
+
+
+            //DataSets.TimeSheet dbTimeSheet = new DataSets.TimeSheet()
+            //{
+            //    FromDate = fromDate,
+            //    ToDate = toDate,
+            //    DateAdded = DateTime.Now,
+            //    UserId = userId
+            //};
+
+            //db.TimeSheets.Add(dbTimeSheet);
+
+            //if (db.SaveChanges() > 0)
+            //{
+            //    return _mapper.Map<TimeSheet>(dbTimeSheet);
+            //}
+        }
+
         public TimeSheet Add(string userId, DateTime fromDate, DateTime toDate, out string message)
         {
             message = "";
@@ -68,57 +158,7 @@ namespace ProjectTracking.Data.Methods
                 return null;
             }
         }
-        private bool AddTimeSheetStatuses(string userId, int timeSheetId)
-        {
-            throw new NotImplementedException();
 
-        }
-        public bool PermitTimeSheetStatus(PermitModel permitModel)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<TimeSheetTask> GetSubordinatesTimeSheets(string supervisorId, int page, int countPerPage, out int totalPages)
-        {
-            throw new NotImplementedException();
-            //totalPages = 0;
-            ////var result = db.TimeSheetStatuses.Include(k => k.TimeSheet)
-            ////                                      .ThenInclude(k => k.User)
-            ////                                      .ThenInclude(k => k.Company)
-            ////                                  .Include(k => k.TimeSheet)
-            ////                                      .ThenInclude(k => k.User)
-            ////                                      .ThenInclude(k => k.Department)
-            ////                                  .Select(_mapper.Map<TimeSheetStatus>)
-            ////                                   .Where(k => k.SuperviserId == supervisorId)
-            ////                                  .OrderByDescending(c => c.TimeSheet.FromDate); 
-
-            //// removed company
-            //var result = db.TimeSheetStatuses.Include(k => k.TimeSheet)
-            //                                      .ThenInclude(k => k.User)
-            //                                  .Include(k => k.TimeSheet)
-            //                                      .ThenInclude(k => k.User)
-            //                                      .ThenInclude(k => k.Team)
-            //                                  .Select(_mapper.Map<TimeSheetStatus>)
-            //                                  .Where(k => k.SuperviserId == supervisorId)
-            //                                  .OrderByDescending(c => c.TimeSheet.FromDate);
-
-            //totalPages = result.Count();
-
-            //var records = result.Skip(page * countPerPage)
-            //                    .Take(countPerPage)
-            //                    .ToList();
-            //return records;
-        }
-        public TimeSheet GetLatest(string userId)
-        {
-            var user = db.Users.FirstOrDefault(c => c.Id == userId);
-            if (user == null)
-                return null;
-            var dbTimeSheetLatest = db.TimeSheets.OrderByDescending(c => c.ToDate)
-                                                 .FirstOrDefault(c => c.UserId == userId);
-            return dbTimeSheetLatest == null ? null : _mapper.Map<TimeSheet>(dbTimeSheetLatest);
-
-        }
         public TimeSheet Add(string userId, DateTime fromDate, DateTime toDate)
         {
             DataSets.TimeSheet dbTimeSheet = new DataSets.TimeSheet()
@@ -135,119 +175,14 @@ namespace ProjectTracking.Data.Methods
 
             return saved ? _mapper.Map<TimeSheet>(dbTimeSheet) : null;
         }
-        public List<TimeSheet> GetByUser(string userId)
+
+        public TimeSheet GetById(int id)
         {
-            var dbTimeSheets = db.TimeSheets
-                                 .Include(k => k.TimeSheetTasks)
-                                 .Where(k => k.UserId == userId);
+            var record = db.TimeSheets.FirstOrDefault(k => k.ID == id);
 
-            var parsedTimeSheets = dbTimeSheets.Select(_mapper.Map<TimeSheet>)
-                                               .ToList();
-
-            return parsedTimeSheets.OrderByDescending(k => k.FromDate).ToList();
-        }
-        public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, DateTime date)
-        {
-            var dbTimeSheetActivities = db.TimeSheetActivities
-                .Include(k => k.TimeSheetTask)
-                .Where(k => k.TimeSheetTask != null && k.TimeSheetTask.TimeSheetId == timeSheetId
-                            && k.FromDate.Month == date.Month
-                            && k.FromDate.Day == date.Day
-                            && k.FromDate.Year == date.Year).ToList();
-
-            if (dbTimeSheetActivities.Count == 0)
-            {
-                return new List<TimeSheetActivity>();
-            }
-
-            List<TimeSheetActivity> activities = dbTimeSheetActivities.Select(_mapper.Map<TimeSheetActivity>).ToList();
-
-            TimeSheetActivitiesMethods.PopulateIpAddresses(activities, db.IpAddresses.ToList());
-
-            return activities;
+            return record != null ? _mapper.Map<TimeSheet>(record) : null;
         }
 
-        public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId)
-        {
-            var dbTimeSheetActivities = db.TimeSheetActivities
-                .Include(k => k.TimeSheetTask)
-                .Where(k => k.TimeSheetTask != null && k.TimeSheetTask.TimeSheetId == timeSheetId)
-                .ToList();
-
-            if (dbTimeSheetActivities.Count == 0)
-            {
-                return new List<TimeSheetActivity>();
-            }
-
-            return dbTimeSheetActivities.Select(_mapper.Map<TimeSheetActivity>).ToList();
-        }
-
-        public List<TimeSheetTask> GetTimeSheetTasks(int timeSheetId)
-        {
-            var dbTimeSheetProjects = db.TimeSheetTasks.Include(k => k.Activities).Where(k => k.TimeSheetId == timeSheetId).ToList();
-
-            if (dbTimeSheetProjects.Count == 0)
-            {
-                return new List<TimeSheetTask>();
-            }
-
-            return dbTimeSheetProjects.Select(_mapper.Map<TimeSheetTask>).ToList();
-        }
-
-        public bool AddTasks(int timeSheetId, int projectId)
-        {
-            return AddTasks(timeSheetId, new List<int>() { projectId });
-        }
-
-        public bool AddTasks(int timeSheetId, List<int> tasksIds)
-        {
-            DataSets.TimeSheet dbTimeSheet = db.TimeSheets.FirstOrDefault(k => k.ID == timeSheetId);
-
-            // get timesheet
-            if (dbTimeSheet == null)
-                return false;
-
-            // get existing projects
-            List<DataSets.TimeSheetTask> existingTasks = db.TimeSheetTasks
-                .Where(k => k.TimeSheetId == timeSheetId)
-                .ToList();
-
-            // remove already exist
-            tasksIds = tasksIds.Where(p => !existingTasks.Any(k => k.ProjectTaskId == p))
-                                   .ToList();
-
-            // add 
-            foreach (int id in tasksIds)
-            {
-                db.TimeSheetTasks.Add(new DataSets.TimeSheetTask()
-                {
-                    ProjectTaskId = id,
-                    TimeSheetId = timeSheetId
-                });
-            }
-
-            return db.SaveChanges() > 0;
-        }
-        public bool RemoveTasks(int timeSheetId, int projectId)
-        {
-            return RemoveTasks(timeSheetId, new List<int>() { projectId });
-        }
-        public bool RemoveTasks(int timeSheetId, List<int> projectIds)
-        {
-            DataSets.TimeSheet dbTimeSheet = db.TimeSheets.FirstOrDefault(k => k.ID == timeSheetId);
-
-            if (dbTimeSheet == null)
-                return false;
-
-            List<DataSets.TimeSheetTask> dbTsProjects = db.TimeSheetTasks.Include(k => k.Activities)
-                .Where(k => projectIds.Contains(k.ProjectTaskId) && k.TimeSheetId == timeSheetId && k.Activities.Count == 0)
-                .ToList();
-
-            db.TimeSheetTasks.RemoveRange(dbTsProjects);
-
-            return db.SaveChanges() > 0;
-        }
-        
         public TimeSheet Get(int id, out List<Project> projects, bool includeActivites = true)
         {
             projects = new List<Project>();
@@ -289,6 +224,190 @@ namespace ProjectTracking.Data.Methods
 
             return _mapper.Map<TimeSheet>(dbTimeSheet);
         }
+
+        public TimeSheet GetLatest(string userId)
+        {
+            var user = db.Users.FirstOrDefault(c => c.Id == userId);
+            if (user == null)
+                return null;
+            var dbTimeSheetLatest = db.TimeSheets.OrderByDescending(c => c.ToDate)
+                                                 .FirstOrDefault(c => c.UserId == userId);
+            return dbTimeSheetLatest == null ? null : _mapper.Map<TimeSheet>(dbTimeSheetLatest);
+
+        }
+
+        public List<TimeSheet> GetByUser(string userId, int? year = null, bool includeTasks = true)
+        {
+            IQueryable<DataSets.TimeSheet> dbTimeSheets = db.TimeSheets
+                                 .Where(k => k.UserId == userId)
+                                 .OrderByDescending(k => k.FromDate);
+
+            if (includeTasks)
+            {
+                dbTimeSheets = dbTimeSheets.Include(k => k.TimeSheetTasks);
+            }
+
+            if (year.HasValue)
+            {
+                dbTimeSheets = dbTimeSheets.Where(k => k.FromDate.Year == year);
+            }
+
+            return dbTimeSheets.Select(k => new TimeSheet()
+            {
+                ID = k.ID,
+                DateAdded = k.DateAdded,
+                FromDate = k.FromDate,
+                ToDate = k.ToDate,
+                UserId = k.UserId,
+                TimeSheetTasks = includeTasks ? k.TimeSheetTasks.Select(t => new TimeSheetTask()
+                {
+                    ID = t.ID,
+                    ProjectTaskId = t.ProjectTaskId,
+                    TimeSheetId = t.TimeSheetId
+                }).ToList() : null
+            }).ToList();
+        }
+
+        public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, DateTime date)
+        {
+            var dbTimeSheetActivities = db.TimeSheetActivities
+                .Include(k => k.TimeSheetTask)
+                .Where(k => k.TimeSheetTask != null && k.TimeSheetTask.TimeSheetId == timeSheetId
+                            && k.FromDate.Month == date.Month
+                            && k.FromDate.Day == date.Day
+                            && k.FromDate.Year == date.Year).ToList();
+
+            if (dbTimeSheetActivities.Count == 0)
+            {
+                return new List<TimeSheetActivity>();
+            }
+
+            List<TimeSheetActivity> activities = dbTimeSheetActivities.Select(_mapper.Map<TimeSheetActivity>).ToList();
+
+            TimeSheetActivitiesMethods.PopulateIpAddresses(activities, db.IpAddresses.ToList());
+
+            return activities;
+        }
+
+        public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId)
+        {
+            var dbTimeSheetActivities = db.TimeSheetActivities
+                .Include(k => k.TimeSheetTask)
+                .Where(k => k.TimeSheetTask != null && k.TimeSheetTask.TimeSheetId == timeSheetId)
+                .ToList();
+
+            if (dbTimeSheetActivities.Count == 0)
+            {
+                return new List<TimeSheetActivity>();
+            }
+
+            return dbTimeSheetActivities.Select(_mapper.Map<TimeSheetActivity>).ToList();
+        }
+
+        public List<TimeSheetTask> GetTimeSheetTasks(int timeSheetId, bool includeActivities = true)
+        {
+            IQueryable<DataSets.TimeSheetTask> query = db.TimeSheetTasks.AsNoTracking()
+                .Where(k => k.TimeSheetId == timeSheetId);
+
+
+            if (includeActivities)
+            {
+                query = query.Include(k => k.Activities);
+            }
+
+            // result truncated (when array orders is empty)
+            return query.Select(_mapper.Map<TimeSheetTask>).ToList();
+
+            //// without automapper, also truncated
+            //return query.Select(k => new TimeSheetTask()
+            //{
+            //    ID = k.ID,
+            //    ProjectTaskId = k.ProjectTaskId,
+            //    TimeSheetId = k.TimeSheetId,
+            //    Activities = k.Activities.Select(a => new TimeSheetActivity() { ID = a.ID })
+            //    .ToList()
+            //}).ToList();
+
+
+            // WORKS, not getting truncated 
+            // since i did not include the orders
+            //return query.Select(k => new TimeSheetTask()
+            //{
+            //    ID = k.ID,
+            //    ProjectTaskId = k.ProjectTaskId,
+            //    TimeSheetId = k.TimeSheetId,
+            //}).ToList();
+        }
+
+        public List<TimeSheetTasksWithActivityCheck> TimeSheetTasksWithActivityCheck(int timeSheetId)
+        {
+            return db.TimeSheetTasks
+                .AsNoTracking()
+                .Where(k => k.TimeSheetId == timeSheetId)
+                .Select(k => new TimeSheetTasksWithActivityCheck()
+                {
+                    TaskId = k.ProjectTaskId,
+                    HasActivity = k.Activities.Any(),
+                })
+                .ToList();
+        }
+
+        public bool AddTasks(int timeSheetId, int projectId)
+        {
+            return AddTasks(timeSheetId, new List<int>() { projectId });
+        }
+
+        public bool AddTasks(int timeSheetId, List<int> tasksIds)
+        {
+            DataSets.TimeSheet dbTimeSheet = db.TimeSheets.FirstOrDefault(k => k.ID == timeSheetId);
+
+            // get timesheet
+            if (dbTimeSheet == null)
+                return false;
+
+            // get existing projects
+            List<DataSets.TimeSheetTask> existingTasks = db.TimeSheetTasks
+                .Where(k => k.TimeSheetId == timeSheetId)
+                .ToList();
+
+            // remove already exist
+            tasksIds = tasksIds.Where(p => !existingTasks.Any(k => k.ProjectTaskId == p))
+                                   .ToList();
+
+            // add 
+            foreach (int id in tasksIds)
+            {
+                db.TimeSheetTasks.Add(new DataSets.TimeSheetTask()
+                {
+                    ProjectTaskId = id,
+                    TimeSheetId = timeSheetId
+                });
+            }
+
+            return db.SaveChanges() > 0;
+        }
+
+        public bool RemoveTasks(int timeSheetId, int projectId)
+        {
+            return RemoveTasks(timeSheetId, new List<int>() { projectId });
+        }
+
+        public bool RemoveTasks(int timeSheetId, List<int> projectIds)
+        {
+            DataSets.TimeSheet dbTimeSheet = db.TimeSheets.FirstOrDefault(k => k.ID == timeSheetId);
+
+            if (dbTimeSheet == null)
+                return false;
+
+            List<DataSets.TimeSheetTask> dbTsProjects = db.TimeSheetTasks.Include(k => k.Activities)
+                .Where(k => projectIds.Contains(k.ProjectTaskId) && k.TimeSheetId == timeSheetId && k.Activities.Count == 0)
+                .ToList();
+
+            db.TimeSheetTasks.RemoveRange(dbTsProjects);
+
+            return db.SaveChanges() > 0;
+        }
+
         public bool Delete(int id)
         {
             var dbTimeSheet = db.TimeSheets.FirstOrDefault(k => k.ID == id);
@@ -314,9 +433,16 @@ namespace ProjectTracking.Data.Methods
             return false;
         }
 
-        public bool SignTimeSheet(string userId, int timeSheetId)
+        public List<int> GetTimeSheetYears(string userId)
         {
-            throw new NotImplementedException();
+            return db.TimeSheets
+                                 .Include(k => k.TimeSheetTasks)
+                                 .Where(k => k.UserId == userId)
+                                 .Select(k => k.FromDate.Year)
+                                 .Distinct()
+                                 .ToList();
         }
+
+
     }
 }

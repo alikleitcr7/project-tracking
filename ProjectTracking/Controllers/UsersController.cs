@@ -28,18 +28,18 @@ namespace ProjectTracking.Controllers
             //_roleManager = roleManager;
         }
 
-        [Route("/profile/{userId}")]
-        public IActionResult Profile(string userId)
-        {
-            DataContract.User user = _userMethods.GetById(userId);
+        //[Route("/profile/{userId}")]
+        //public IActionResult Profile(string userId)
+        //{
+        //    User user = _userMethods.GetById(userId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(user);
-        }
+        //    return View(user);
+        //}
 
         [HttpGet]
         public IActionResult GetById(string id)

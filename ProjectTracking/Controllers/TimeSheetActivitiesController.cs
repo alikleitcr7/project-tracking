@@ -26,9 +26,9 @@ namespace ProjectTracking.Controllers
             //if (Request.Headers.ContainsKey("X-Forwarded-For"))
             //    remoteIpAddress = Request.Headers["X-Forwarded-For"];
 
-            activity.IpAddress =  _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(); ;
+            string ipAddress =  _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(); 
 
-            return _activitiesMethods.Add(activity);
+            return _activitiesMethods.Add(activity, ipAddress);
         }
         public TimeSheetActivity Get(int id)
         {
@@ -47,10 +47,10 @@ namespace ProjectTracking.Controllers
 
             //activity.IpAddress = remoteIpAddress;
 
-            activity.IpAddress = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(); ;
+            string ipAddress = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(); ;
 
 
-            return _activitiesMethods.Update(activity);
+            return _activitiesMethods.Update(activity, ipAddress);
         }
         public bool Delete(int id)
         {

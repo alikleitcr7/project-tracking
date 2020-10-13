@@ -15,7 +15,7 @@ namespace ProjectTracking.Data.DataSets
         [Range(0,2)]
         public short NotificationTypeCode { get; set; }
         //public bool IsRead { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime DateSent { get; set; } = DateTime.Now;
     }
 }

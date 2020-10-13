@@ -25,13 +25,21 @@ namespace ProjectTracking.Data.Methods
             this._ipAddressMethods = ipAddressMethods;
         }
 
-        public TimeSheetActivity Add(TimeSheetActivity activity)
+        public TimeSheetActivity Add(TimeSheetActivity activity,string ipAddress)
         {
             try
             {
                 if (activity.TimeSheetTaskId == 0)
                 {
                     return null;
+                }
+
+                bool ipAdded = _ipAddressMethods.AddIfNotExist(ipAddress);
+
+
+                if (ipAdded)
+                {
+                    activity.Address = ipAddress;
                 }
 
                 var dbActivity = _mapper.Map<DataSets.TimeSheetActivity>(activity);
@@ -98,7 +106,7 @@ namespace ProjectTracking.Data.Methods
             return activities;
         }
 
-        public TimeSheetActivity Update(TimeSheetActivity activity)
+        public TimeSheetActivity Update(TimeSheetActivity activity, string ipAddress)
         {
             try
             {
@@ -120,12 +128,12 @@ namespace ProjectTracking.Data.Methods
 
                 #endregion
 
-                bool ipAdded = _ipAddressMethods.AddIfNotExist(activity.IpAddress);
+                bool ipAdded = _ipAddressMethods.AddIfNotExist(ipAddress);
 
-                dbActivity.Address = ipAdded ? activity.IpAddress : null;
+                dbActivity.Address = ipAdded ? activity.Address : null;
                 dbActivity.FromDate = activity.FromDate;
                 dbActivity.ToDate = activity.ToDate;
-                dbActivity.Message = activity.Comment;
+                dbActivity.Message = activity.Message;
 
                 db.SaveChanges();
 

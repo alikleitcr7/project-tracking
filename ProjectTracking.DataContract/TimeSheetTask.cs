@@ -12,9 +12,9 @@ namespace ProjectTracking.DataContract
         public int TimeSheetId { get; set; }
         public int ProjectTaskId { get; set; }
 
-        public TimeSheet TimeSheet { get; set; }
-        public ProjectTask ProjectTask { get; set; }
+        public virtual TimeSheet TimeSheet { get; set; }
+        public virtual ProjectTask ProjectTask { get; set; }
 
-        public List<TimeSheetActivity> Activities { get; set; }
+        public virtual ICollection<TimeSheetActivity> Activities { get; set; }
     }
 }

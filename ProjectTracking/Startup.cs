@@ -25,6 +25,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ProjectTracking.Managers;
 using ProjectTracking.Utils;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace ProjectTracking
 {
@@ -44,6 +46,13 @@ namespace ProjectTracking
             //{
             //    options.AutomaticAuthentication = false;
             //});
+
+            //.SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            services.AddMvc()
+              .AddJsonOptions(options => {
+                  options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+              });
+
 
             services.AddSingleton<IConfiguration>(Configuration);
 
@@ -206,8 +215,10 @@ namespace ProjectTracking
         opt.LoginPath = "/login";
     });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+          
+            
+            //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            //    .AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             //.AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 

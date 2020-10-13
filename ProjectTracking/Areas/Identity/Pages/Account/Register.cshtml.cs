@@ -119,12 +119,11 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
             {
                 role = ApplicationUserRole.TeamMember;
             }
-            if (roleKey == secretToken_admin)
+            else if (roleKey == secretToken_admin)
             {
                 role = ApplicationUserRole.Admin;
             }
-
-            if (roleKey == secretToken_supervisor)
+            else if (roleKey == secretToken_supervisor)
             {
                 role = ApplicationUserRole.Supervisor;
             }

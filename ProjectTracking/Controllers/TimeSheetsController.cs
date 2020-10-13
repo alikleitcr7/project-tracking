@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ProjectTracking.Exceptions;
+using ProjectTracking.Models.TimeSheet;
 
 namespace ProjectTracking.Controllers
 {
@@ -50,104 +52,181 @@ namespace ProjectTracking.Controllers
             return View();
         }
 
-        //public IActionResult SubordinatesTimeSheets()
-        //{
-        //    ViewData["SuperVisorId"] = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
-        //    return View();
-        //}
-        //public JsonResult GetSubordinatesTimeSheets(int page, int countPerPage)
-        //{
-        //    string supervisorId = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value.ToString();
-        //    //string supervisorId = "6a3b5438-fd4a-4c67-a5ff-82b99e876503";
-        //    var records = _timeSheets.GetSubordinatesTimeSheets(supervisorId, page, countPerPage, out int totalPages);
-        //    object oRetval = new
-        //    {
-        //        records,
-        //        totalPages
-        //    };
-
-        //    return Json(oRetval);
-        //}
-        //[Authorize]
-
         public IActionResult UserTimeSheets()
         {
             ViewData["ID"] = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
             return View();
         }
 
-        //public JsonResult PermitTimeSheetStatus([FromBody] PermitModel permission)
-        //{
-        //    if (permission == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(permission));
-        //    }
-
-        //    return Json(_timeSheets.PermitTimeSheetStatus(permission));
-        //}
-    
-        //[HttpPost]
-        //public async Task<bool> SignTimeSheet(int timeSheetId)
-        //{
-        //    string currentUserId = "";
-
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-
-        //    if (_timeSheets.SignTimeSheet(currentUserId, timeSheetId))
-        //    {
-        //        // SEND NOTIFICATION TO SUPERVISORS 
-
-        //        List<string> supervisorsIds = _users.GetSupervisorsIds(currentUserId);
-
-        //        User user = _users.GetEmployee(currentUserId);
-        //        TimeSheet timesheet = _timeSheets.Get(timeSheetId, out _, false);
-
-        //        foreach (string supervisorId in supervisorsIds)
-        //        {
-        //            var sent = await _notificationMethods.Send(currentUserId, supervisorId, $"Timesheet for {timesheet.FromDateDisplay}-{timesheet.ToDateDisplay} Signed", NotificationType.Information, true);
-
-        //            //await _notificationsHub.Clients.User(supervisorId).SendAsync("ReceiveNotification", sent);
-        //        }
-
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
-
-
-        public object Add([FromBody]AddTimeSheetModel modal)
-        {
-            TimeSheet timeSheet = _timeSheets.Add(modal.userId, modal.fromDate, modal.toDate, out string message);
-
-            return new
-            {
-                message,
-                timeSheet
-            };
-        }
-
-
         [HttpDelete]
-        public bool Delete([FromQuery]int id)
+        public IActionResult Delete([FromQuery]int id)
         {
-            //return true;
-            return _timeSheets.Delete(id);
+            try
+            {
+                return Ok(_timeSheets.Delete(id));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
-        public TimeSheet GetLatest(string userId)
+        [HttpGet]
+        public IActionResult GetById(int id)
         {
-            //string currentUserId = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
-
-            return _timeSheets.GetLatest(userId);
+            try
+            {
+                return Ok(_timeSheets.GetById(id));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
+
+        [HttpPost]
+        public IActionResult Save([FromBody] TimeSheetSaveModel model)
+        {
+            try
+            {
+                return Ok(_timeSheets.Save(model));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetTimeSheetTasks(int timeSheetId)
+        {
+            try
+            {
+                //var tasks = _timeSheets.GetTimeSheetTasks(timeSheetId);
+
+                //Newtonsoft.Json.JsonConvert.DefaultSettings = () => new Newtonsoft.Json.JsonSerializerSettings
+                //{
+                //    NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+                //    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+                //};
+
+                //string serialized = Newtonsoft.Json.JsonConvert.SerializeObject(tasks);
+
+                return Ok(_timeSheets.GetTimeSheetTasks(timeSheetId));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddProjectToTimeSheet([FromBody]ProjectAssignModel model)
+        {
+            try
+            {
+                return Ok(_timeSheets.AddTasks(model.timeSheetId, model.projectIds));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public IActionResult RemoveProjectFromTimeSheet([FromBody]ProjectAssignModel model)
+        {
+            try
+            {
+                return Ok(_timeSheets.RemoveTasks(model.timeSheetId, model.projectIds));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetTimeSheetYears(string userId)
+        {
+            try
+            {
+                return Ok(_timeSheets.GetTimeSheetYears(userId));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetTimeSheets(string userId, int? year, bool includeTasks)
+        {
+            try
+            {
+                var timesheets = _timeSheets.GetByUser(userId, year, includeTasks);
+
+                string ser = Newtonsoft.Json.JsonConvert.SerializeObject(timesheets);
+
+                return Ok(timesheets);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
+        }
+
+        [HttpGet]
+        public IActionResult GetLatest(string userId)
+        {
+            try
+            {
+                return Ok(_timeSheets.GetLatest(userId));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
         public Models.TimeSheet.TimeSheetProjectModel GetTimeSheetProjectModel(int timeSheetId)
         {
             var timeSheet = _timeSheets.Get(timeSheetId, out List<Project> project, false);
@@ -167,9 +246,39 @@ namespace ProjectTracking.Controllers
             return _timeSheets.GetTimeSheetActivities(timesheetId);
         }
 
-        public List<TimeSheetTask> GetTimeSheetProjects(int timesheetId)
+        public IActionResult GetTimeSheetProjects(int timesheetId)
         {
-            return _timeSheets.GetTimeSheetTasks(timesheetId);
+            try
+            {
+                var timesheets = _timeSheets.GetTimeSheetTasks(timesheetId);
+
+                string serialized = Newtonsoft.Json.JsonConvert.SerializeObject(_timeSheets.GetTimeSheetTasks(timesheetId));
+
+                return Ok(timesheets);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+        public IActionResult TimeSheetTasksWithActivityCheck(int timesheetId)
+        {
+            try
+            {
+                return Ok(_timeSheets.TimeSheetTasksWithActivityCheck(timesheetId));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         public List<TimeSheetActivity> GetActivitiesByDate(int timesheetId, DateTime date)
@@ -187,7 +296,5 @@ namespace ProjectTracking.Controllers
         {
             return _timeSheets.GetByUser(userId);
         }
-
-
     }
 }

@@ -4,6 +4,62 @@
 const TIMESHEETS_SERVICE_URI = (method) => `/timesheets/${method}`;
 
 const TimeSheetsService = {
+    GetById: function (id) {
+
+        let url = TIMESHEETS_SERVICE_URI(`GetById?id=${id}`)
+
+        return axios.get(url)
+
+    },
+    Save: function (model) {
+
+        const url = TIMESHEETS_SERVICE_URI(`Save`)
+
+        return axios.post(url, model);
+
+    },
+    GetLatest: function (userId) {
+
+        const query = serialize({ userId })
+
+        const url = TIMESHEETS_SERVICE_URI(`GetLatest?${query}`)
+
+        return axios.get(url);
+    },
+    GetTimeSheetTasks: function (timeSheetId) {
+
+        const query = serialize({ timeSheetId })
+
+        const url = TIMESHEETS_SERVICE_URI(`GetTimeSheetTasks?${query}`)
+
+        return axios.get(url);
+    },
+    AddProjectToTimeSheet: function (model) {
+
+        const url = TIMESHEETS_SERVICE_URI(`AddProjectToTimeSheet`)
+
+        return axios.post(url, model);
+    },
+    RemoveProjectFromTimeSheet: function (model) {
+
+        const url = TIMESHEETS_SERVICE_URI(`RemoveProjectFromTimeSheet`)
+
+        return axios.post(url, model);
+    },
+    GetTimeSheetYears: function (userId) {
+        const query = serialize({ userId })
+
+        const url = TIMESHEETS_SERVICE_URI(`GetTimeSheetYears?${query}`)
+
+        return axios.get(url);
+    },
+    GetTimeSheets: function (userId, year, includeTasks) {
+        const query = serialize({ userId, year, includeTasks})
+
+        const url = TIMESHEETS_SERVICE_URI(`GetTimeSheets?${query}`)
+
+        return axios.get(url);
+    },
     GetActivities: function (timesheetId) {
         let url = TIMESHEETS_SERVICE_URI(`GetActivities?timesheetId=${timesheetId}`)
         return axios.get(url)
@@ -14,6 +70,10 @@ const TimeSheetsService = {
     },
     GetTimeSheetProjects: function (timesheetId) {
         let url = TIMESHEETS_SERVICE_URI(`GetTimeSheetProjects?timesheetId=${timesheetId}`)
+        return axios.get(url)
+    },
+    TimeSheetTasksWithActivityCheck: function (timesheetId) {
+        let url = TIMESHEETS_SERVICE_URI(`TimeSheetTasksWithActivityCheck?timesheetId=${timesheetId}`)
         return axios.get(url)
     },
     GetTimeSheetProjectModel: function (timesheetId) {

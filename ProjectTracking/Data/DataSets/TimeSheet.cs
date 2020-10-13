@@ -13,7 +13,7 @@ namespace ProjectTracking.Data.DataSets
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime DateAdded { get; set; } = DateTime.Now;
 
         [Required]

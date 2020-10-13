@@ -22,19 +22,19 @@ namespace ProjectTracking.Data.DataSets
         public string Address { get; set; }
 
         [Column(Order = 6)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime DateAdded { get; set; } = DateTime.Now;
 
-        public IpAddress IpAddress { get; set; }
+        public virtual IpAddress IpAddress { get; set; }
     }
 
     public class TimeSheetActivity : TimeSheetActivityBase
     {
         [Column(Order = 1)]
         public int TimeSheetTaskId { get; set; }
-        public TimeSheetTask TimeSheetTask { get; set; }
+        public virtual TimeSheetTask TimeSheetTask { get; set; }
 
-        public List<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
+        public  virtual ICollection<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
     }
 
     public class TimeSheetActivityLog : TimeSheetActivityBase
@@ -43,6 +43,6 @@ namespace ProjectTracking.Data.DataSets
         //public int TimeSheetActivityId { get; set; }
         [Column(Order = 1)]
         public int TimeSheetActivityId { get; set; }
-        public TimeSheetActivity TimeSheetActivity { get; set; }
+        public virtual TimeSheetActivity TimeSheetActivity { get; set; }
     }
 }
