@@ -107,10 +107,11 @@ namespace ProjectTracking.Data.Methods
                 //Role = k.Roles.FirstOrDefault().RoleId,
                 DateOfBirth = k.DateOfBirth,
                 UserName = k.UserName,
-                SupervisingCount = k.Supervising.Count(),
+                //SupervisingCount = k.Supervising.Count(),
                 EmploymentTypeCode = k.EmploymentTypeCode,
                 MonthlySalary = k.MonthlySalary,
-                HourlyRate = k.HourlyRate
+                HourlyRate = k.HourlyRate,
+                RoleCode = k.RoleCode
             });
 
 
@@ -166,7 +167,7 @@ namespace ProjectTracking.Data.Methods
             }
 
             User parsedRecord = _mapper.Map<User>(record);
-            parsedRecord.SupervisingCount = record.Supervising.Count;
+            //parsedRecord.SupervisingCount = record.Supervising.Count;
 
             return parsedRecord;
         }
@@ -845,5 +846,18 @@ namespace ProjectTracking.Data.Methods
             throw new NotImplementedException();
         }
 
+        public void SetRole(string userId, short roleCode)
+        {
+            var dbUser = db.Users.FirstOrDefault(k => k.Id == userId);
+
+            if (dbUser == null)
+            {
+                throw new ClientException("user dont exist");
+            }
+
+            dbUser.RoleCode = roleCode;
+
+            db.SaveChanges();
+        }
     }
 }

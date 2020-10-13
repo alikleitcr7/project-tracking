@@ -285,88 +285,59 @@ const usersMethods = {
             // START UPDATE/CREATE REQUEST
             this.users_setFormSaving(true)
 
+            const isNew = pendingRecord.id === null
 
-            // EXISTING RECORD
-            if (pendingRecord.id) {
+            UsersService.Save(pendingRecord)
+                .then((r) => {
 
-                UsersService.Save(pendingRecord)
-                    .then((r) => {
+                    /** @type {IClientResponseModel<ISubject>} */
+                    const record = r.data
 
-                        /** @type {IClientResponseModel<ISubject>} */
-                        const record = r.data
+                    if (debugUsers) {
+                        console.log('update response', r)
+                    }
 
-                        if (debugUsers) {
-                            console.log('update response', r)
+                    if (record) {
+
+                        // feedback
+                        this.users_setFormMessage(isNew ? 'Added!' : 'Updated!')
+
+                        // update data array
+                        let data = [...this.users.data]
+
+                        if (isNew) {
+
+                            data.unshift(record)
+
+                            this.users.data = data
+                            this.users.form = userFormObject();
                         }
-
-                        if (record) {
-
-                            // feedback
-                            this.users_setFormMessage('Updated!')
-
-                            // update data array
-                            let data = [...this.users.data]
+                        else {
 
                             const idx = data.findIndex(k => k.id === record.id)
 
                             if (idx !== -1) {
-                                data[idx] = { ...record }
+                                data[idx] = record
                                 this.users.data = data;
                             }
-                            else {
-                                location.reload()
-                            }
                         }
-                        else {
-                            this.users_setFormMessage(BASIC_ERROR_MESSAGE)
-                        }
-                    })
-                    .catch((e) => {
-
-                        console.error('Updated!', e)
-
-                        this.users_setFormMessage(getAxiosErrorMessage(e))
-
-                    })
-                    .then(() => {
-                        this.users_setFormSaving(false)
-                    });
-
-                return
-            }
-
-            // NEW RECORD
-            UsersService.Save(pendingRecord)
-                .then((r) => {
-
-                    const record = r.data
-
-                    if (debugUsers) {
-                        console.log('add response', r)
-                    }
-
-
-                    if (record) {
-
-                        let data = [...this.users.data]
-                        data.unshift(record)
-
-                        this.users.data = data
-                        this.users.form = userFormObject();
-
-                        this.users_setFormMessage('Added!')
                     }
                     else {
                         this.users_setFormMessage(BASIC_ERROR_MESSAGE)
                     }
-
                 })
                 .catch((e) => {
+
+                    console.error('Updated!', e)
+
                     this.users_setFormMessage(getAxiosErrorMessage(e))
+
                 })
                 .then(() => {
                     this.users_setFormSaving(false)
                 });
+
+
 
         }
 
@@ -699,11 +670,11 @@ const supervisorsMethods = {
 }
 
 
-const userRoleFormObject = (userId = null, role = null) => {
+const userRoleFormObject = (userId = null, roleCode = null) => {
 
     let record = {
         userId,
-        role
+        roleCode
     }
 
     return {
@@ -781,15 +752,31 @@ const userRolesMethods = {
         // START UPDATE/CREATE REQUEST
         this.userRoles_setFormSaving(true)
 
-        const { userId, role } = pendingRecord
+        const { userId, roleCode } = pendingRecord
 
         // UPDATE
-        UsersService.SetRole(userId, role)
+        UsersService.SetRole(userId, roleCode)
             .then((r) => {
 
                 const record = r.data
 
                 if (record) {
+
+                    this.userRoles_setFormMessage('Saved!')
+
+                    let data = [...this.users.data]
+
+                    const idx = data.findIndex(k => k.id === userId)
+
+                    if (idx !== -1) {
+
+                        data[idx].roleCode = roleCode
+                        const existingRoleKeyVal = APP_USER_ROLES._toList().find(k => k.key === roleCode)
+                        data[idx].roleDisplay = existingRoleKeyVal ? existingRoleKeyVal.value : '-'
+
+                        this.users.data = data;
+                    }
+
 
                     //// update members count (teams)
                     //let data = [...this.users.data]
@@ -801,7 +788,6 @@ const userRolesMethods = {
                     //this.users.data = data
 
                     // saved feeback (userRoles)
-                    this.userRoles_setFormMessage('Saved!')
                 }
                 else {
                     this.userRoles_setFormMessage(BASIC_ERROR_MESSAGE)

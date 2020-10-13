@@ -4,9 +4,9 @@
     admin: { key: 2, value: 'Admin' },
     _toList: function () {
         return [
-            { ...this.TeamMember },
-            { ...this.Supervisor },
-            { ...this.Admin },
+            { ...this.teamMember },
+            { ...this.supervisor },
+            { ...this.admin },
         ]
     }
 }

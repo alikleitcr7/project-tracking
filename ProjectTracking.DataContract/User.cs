@@ -18,7 +18,11 @@ namespace ProjectTracking.DataContract
         public string LastName { get; set; }
         public string MiddleName { get; set; }
         public string Title { get; set; }
-        //public string Role { get; set; }
+
+        public short RoleCode { get; set; }
+
+        public ApplicationUserRole Role => (ApplicationUserRole)RoleCode;
+        public string RoleDisplay => Role.ToString();
 
         public string FullName
         {
@@ -93,7 +97,7 @@ namespace ProjectTracking.DataContract
             }
         }
 
-        public int? SupervisingCount { get; set; }
+        //public int? SupervisingCount { get; set; }
     }
 
     public enum EmploymentType

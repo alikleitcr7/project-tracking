@@ -6,13 +6,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProjectTracking
 {
-    public enum ApplicationUserRole
-    {
-        TeamMember,
-        Supervisor,
-        Admin
-    }
-
     public class ApplicationUser : IdentityUser
     {
         [MaxLength(30), Required]

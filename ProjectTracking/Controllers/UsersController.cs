@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -107,16 +108,18 @@ namespace ProjectTracking.Controllers
                     throw new ClientException("user not found");
                 }
 
-                // get current roles
-                var currentRoles = await _userManager.GetRolesAsync(appUser);
+                return Ok(appUser.RoleCode);
 
-                if (currentRoles.Count == 1)
-                {
-                    return Ok(currentRoles.First());
-                }
+                //// get current roles
+                //var currentRoles = await _userManager.GetRolesAsync(appUser);
 
-                // has no role
-                return Ok("");
+                //if (currentRoles.Count == 1)
+                //{
+                //    return Ok(currentRoles.First());
+                //}
+
+                //// has no role
+                //return Ok("");
             }
             catch (ClientException ex)
             {
@@ -145,7 +148,7 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
-        
+
         [HttpGet]
         public IActionResult GetUsersByRole(int roleCode)
         {
@@ -165,31 +168,34 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> SetRole(string userId, string role)
+        [Authorize(Roles = "Admin")]
+        public IActionResult SetRole(string userId, short roleCode)
         {
             try
             {
-                // get app user by id
-                var appUser = await _userManager.FindByIdAsync(userId);
+                _userMethods.SetRole(userId, roleCode);
 
-                if (appUser == null)
-                {
-                    throw new ClientException("user not found");
-                }
+                //// get app user by id
+                //var appUser = await _userManager.FindByIdAsync(userId);
 
-                // get current roles
-                var currentRoles = await _userManager.GetRolesAsync(appUser);
+                //if (appUser == null)
+                //{
+                //    throw new ClientException("user not found");
+                //}
 
-                // clear other roles
-                if (currentRoles.Count > 0 && !currentRoles.Contains(role))
-                {
-                    await _userManager.RemoveFromRolesAsync(appUser, currentRoles);
-                }
+                //// get current roles
+                //var currentRoles = await _userManager.GetRolesAsync(appUser);
 
-                // add user to role
-                await _userManager.AddToRoleAsync(appUser, role);
+                //// clear other roles
+                //if (currentRoles.Count > 0 && !currentRoles.Contains(role))
+                //{
+                //    await _userManager.RemoveFromRolesAsync(appUser, currentRoles);
+                //}
 
-                return Ok(role);
+                //// add user to role
+                //await _userManager.AddToRoleAsync(appUser, role);
+
+                return Ok(true);
             }
             catch (ClientException ex)
             {

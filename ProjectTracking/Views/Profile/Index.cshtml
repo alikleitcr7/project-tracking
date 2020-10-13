@@ -32,7 +32,7 @@
         <div class="tab-content">
 
             <div id="ScheduleTab" class="tab-pane fade in active">
-                <partial name="~/views/users/schedule.cshtml" />
+                <partial name="~/views/profile/schedules.cshtml" />
             </div>
 
             <div id="ProgressTab" class="tab-pane fade">
@@ -75,14 +75,6 @@
                             <td>Email</td>
                             <td>@Model.Email</td>
                         </tr>
-
-                        @if (Model.SupervisingCount.HasValue && Model.SupervisingCount.Value > 0)
-                        {
-                            <tr>
-                                <td>Supervising</td>
-                                <td>@Model.SupervisingCount.Value Team@(Model.SupervisingCount.Value > 1 ? "s" : "")</td>
-                            </tr>
-                        }
 
                         <tr>
                             <td>Employment Type</td>

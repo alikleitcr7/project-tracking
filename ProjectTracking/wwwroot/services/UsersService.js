@@ -61,9 +61,9 @@ const UsersService = {
 
         return axios.get(url);
     },
-    SetRole: function (userId, role) {
+    SetRole: function (userId, roleCode) {
 
-        const query = serialize({ userId, role })
+        const query = serialize({ userId, roleCode })
 
         const url = USERS_SERVICE_URI(`SetRole?${query}`)
 

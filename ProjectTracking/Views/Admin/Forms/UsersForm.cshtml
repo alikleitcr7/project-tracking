@@ -22,7 +22,7 @@
     </div>
 
     <section id="Pagination" class="c-pagination" v-show="usersTotalPages > 1">
-        <div class="container">
+        <div class="">
             <paginate v-bind:page-count="usersTotalPages"
                       v-bind:container-class="users.dataPaging.pagination"
                       v-bind:prev-text="users.dataPaging.prev"
@@ -47,7 +47,8 @@
                     <th>Monthly Salary</th>
                     <th>Hourly Rate</th>
                     <th>Employment Type</th>
-                    <th>Supervising</th>
+                    <th>Role</th>
+                    @*<th>Supervising</th>*@
                     <th></th>
                     <th></th>
                 </tr>
@@ -83,19 +84,22 @@
                         {{item.employmentTypeDisplay || '-'}}
                     </td>
 
+                    <td>
+                        {{item.roleDisplay}}
+                    </td>
+
                     <td v-if="users_isAdmin(item)" colspan="3"></td>
 
                     <template v-if="!users_isAdmin(item)">
 
-                        <td>
+                        @*<td>
                             <button class="s-btn s-btn-sm s-btn-outline"
                                     v-on:click="supervisors_edit(item.id)"
                                     type="button">
                                 <i class="glyphicon glyphicon-user"></i>
                                 Team
-                                @*({{item.supervisingCount}})*@
                             </button>
-                        </td>
+                        </td>*@
 
                         <td>
                             <a class="s-btn s-btn-primary" :href="`/profile/${item.id}`">Profile</a>
@@ -276,7 +280,7 @@
                         <p v-show="userRoles.isLoading">Loading roles....</p>
                         <p v-show="!userRoles.isLoading && !userRoles.data.length">-</p>
                         <p v-for="(role, idx) in userRoles.data">
-                            <input type="radio" :value="role.key" v-model="userRoles.form.record.role" />
+                            <input type="radio" :value="role.key" v-model="userRoles.form.record.roleCode" />
                             {{role.value}}
                         </p>
                     </div>

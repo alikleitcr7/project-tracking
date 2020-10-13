@@ -204,7 +204,7 @@ class CoreValidator {
 
         console.log({ value, min, max, isRequired })
 
-        if (isNaN(value) || value == null) {
+        if (isNaN(value) || (value == null && isRequired )) {
             return false
         }
 
