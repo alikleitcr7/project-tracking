@@ -1,24 +1,29 @@
 ﻿
 <div id="Schedules"  v-cloak class="schedule-container v-container">
 
-    <div>
+    <div class="v-container">
 
         <button type="button" v-show="!isCurrentUser"
-                class="btn Button-Shared mb-4"
+                class="s-btn s-btn-primary"
                 v-on:click="newTimeSheet()">
             Add TimeSheet
         </button>
 
-        <a asp-controller="Projects"
+        <a class="s-btn s-btn-outline" v-bind:href="`/timesheets/explore/${userId}`">Explore
+         <i class="fa fa-angle-right"></i>
+        </a>
+
+        @*<a asp-controller="Projects"
            asp-action="ProjectsProgress"
            asp-route-userId="@Model.Id"
            class="btn Button-Shared mb-4">
             Projects Progress
         </a>
 
+
         <a class="btn Button-Shared mb-4"
            target="_blank" v-show="isInAdministration"
-           href="/userinsights?userId=@Model.Id">Active Hours Insights</a>
+           href="/userinsights?userId=@Model.Id">Active Hours Insights</a>*@
 
     </div>
 

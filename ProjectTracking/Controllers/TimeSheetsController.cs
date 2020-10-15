@@ -17,6 +17,7 @@ using ProjectTracking.Models.TimeSheet;
 
 namespace ProjectTracking.Controllers
 {
+    [Route("[controller]/[action]")]
     public class TimeSheetsController : Controller
     {
 
@@ -52,9 +53,11 @@ namespace ProjectTracking.Controllers
             return View();
         }
 
-        public IActionResult UserTimeSheets()
+        [Route("/timesheets/explore/{userId}")]
+        public IActionResult UserTimeSheets(string userId)
         {
-            ViewData["ID"] = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
+            ViewData["ID"] = userId ?? User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
+
             return View();
         }
 
@@ -227,6 +230,27 @@ namespace ProjectTracking.Controllers
         }
 
 
+
+        [HttpGet]
+        public IActionResult GetTimeSheetProjectsWithTasks(int timeSheetId)
+        {
+            try
+            {
+                List<Project> projects = _timeSheets.GetTimeSheetProjectsWithTasks(timeSheetId);
+
+                return Ok(projects);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
         public Models.TimeSheet.TimeSheetProjectModel GetTimeSheetProjectModel(int timeSheetId)
         {
             var timeSheet = _timeSheets.Get(timeSheetId, out List<Project> project, false);
@@ -292,7 +316,7 @@ namespace ProjectTracking.Controllers
             return _timeSheets.GetByUser(currentUserId);
         }
 
-        public List<DataContract.TimeSheet> GetUserTimeSheets(string userId, int timeSheetId)
+        public List<DataContract.TimeSheet> GetUserTimeSheets(string userId)
         {
             return _timeSheets.GetByUser(userId);
         }

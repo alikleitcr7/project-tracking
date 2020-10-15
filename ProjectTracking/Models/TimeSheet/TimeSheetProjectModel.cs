@@ -41,13 +41,14 @@ namespace ProjectTracking.Models.TimeSheet
             //    ID = k.ID,
             //    Title = k.Title,
             //    Description = k.Description,
+
             //}).ToList();
 
             //foreach (Project project in model.Projects)
             //{
 
             //    var projectTasks = ts.TimeSheetTasks
-            //        .Where(k => k.Project.ParentId == project.ID)
+            //        .Where(k => k.ProjectTask.ProjectId == project.ID)
             //        .ToList();
 
             //    if (projectTasks != null)

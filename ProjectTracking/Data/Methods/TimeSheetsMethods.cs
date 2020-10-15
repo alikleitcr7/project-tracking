@@ -443,6 +443,39 @@ namespace ProjectTracking.Data.Methods
                                  .ToList();
         }
 
+        public List<Project> GetTimeSheetProjectsWithTasks(int timeSheetId)
+        {
+            List<Project> projects = new List<Project>();
 
+            // get timesheet tasks
+            List<ProjectTask> tasks = db.ProjectTasks
+                .AsNoTracking()
+                .Where(k => k.TimeSheetTasks.Any(t => t.TimeSheetId == timeSheetId))
+                .Select(_mapper.Map<ProjectTask>)
+                .ToList();
+
+            // return if no tasks
+            if (tasks.Count == 0)
+            {
+                return projects;
+            }
+
+            List<int> projectsIds = tasks.Select(k => k.ProjectId).ToList();
+
+            // get tasks' projects
+            projects = db.Projects
+              .AsNoTracking()
+              .Where(k => projectsIds.Contains(k.ID))
+              .Select(_mapper.Map<Project>)
+              .ToList();
+
+            // connect projects with their tasks
+            foreach (Project project in projects)
+            {
+                project.Tasks = tasks.Where(k => k.ProjectId == project.ID).ToList();
+            }
+
+            return projects;
+        }
     }
 }

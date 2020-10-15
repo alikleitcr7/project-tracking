@@ -1,8 +1,11 @@
 ﻿.t {
   border: 1px solid red !important;
 }
+.b {
+  border: 1px solid blue !important;
+}
 .Fill-Background {
-  background-color: rgba(243, 241, 241, 0.9);
+  background-color: rgba(238, 238, 238, 0.94);
 }
 .Box-Shadow-Right {
   -webkit-box-shadow: 1px -1px 7px 0px #a3a3a3;
@@ -26,6 +29,7 @@
   max-height: 400px;
 }
 .clickable-link {
+  color: #1776b0;
   cursor: pointer;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -59,7 +63,7 @@
   cursor: pointer;
 }
 .cell-arrow * {
-  fill: #b00000;
+  fill: #1776b0;
 }
 .cell-arrow.rotate-180 {
   transform: rotate(180deg);
@@ -74,22 +78,22 @@
   /* Safari 3-8 */
 }
 .main-dark-color {
-  color: #b00000 !important;
+  color: #1776b0 !important;
 }
 .main-light-color {
-  color: #e65a5a;
+  color: #5bcbee;
 }
 .main-color {
-  color: #c80000;
+  color: #2286c3;
 }
 .light-color {
   color: #fff;
 }
 .main-dark-background {
-  background-color: #b00000;
+  background-color: #1776b0;
 }
 .main-light-background {
-  background-color: rgba(225, 0, 0, 0.47);
+  background-color: #73d3f1;
 }
 .table-child {
   font-size: 0.9em;
@@ -97,16 +101,16 @@
 }
 .table-child th {
   font-weight: 600;
-  padding: 3px!important;
+  padding: 3px !important;
 }
 .table-child td {
-  padding: 3px!important;
+  padding: 3px !important;
 }
 .gray-light-background {
   background-color: rgba(207, 207, 207, 0.63);
 }
 .main-background {
-  background-color: #b00000;
+  background-color: #1776b0;
 }
 .BoxShadow {
   -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
@@ -121,47 +125,44 @@
 .Error {
   border: 1px solid red !important;
 }
-.Button-Small {
-  padding: 3px 10px;
-}
 .Button {
+  padding: 0.5em 1em;
   border-radius: 5px;
   border: none;
   text-decoration: none;
-}
-.Button:not(.Button-Small) {
-  padding: 7px 10px;
 }
 .Button-Shared {
+  padding: 0.5em 1em;
   border-radius: 5px;
   border: none;
   text-decoration: none;
-  line-height: 16px;
-  background-color: #b00000;
+  /*line-height:16px;*/
+  background-color: #2286c3;
   color: #fff !important;
 }
-.Button-Shared:not(.Button-Small) {
-  padding: 7px 10px;
-}
 .Button-Shared:hover {
-  background-color: rgba(176, 0, 0, 0.85);
+  background-color: #1776b0;
 }
 .Button-Shared:disabled {
   opacity: 0.5;
 }
+.Button-Shared.Button-Small {
+  padding: 3px 10px;
+}
+.Button-Shared.Button-Large {
+  padding: 1.5em;
+}
 .Button-Danger {
+  padding: 0.5em 1em;
   border-radius: 5px;
   border: none;
   text-decoration: none;
   background-color: #fff;
-  color: #b00000 !important;
-  border: 1px solid #b00000;
-}
-.Button-Danger:not(.Button-Small) {
-  padding: 7px 10px;
+  color: #1776b0 !important;
+  border: 1px solid #1776b0;
 }
 .Button-Danger:hover {
-  background-color: rgba(248, 210, 210, 0.85);
+  background-color: rgba(216, 243, 251, 0.85);
 }
 .TextCenter {
   text-align: center;
@@ -183,17 +184,17 @@
 .Link-Shared {
   cursor: pointer !important;
   text-decoration: none;
-  color: #b00000;
+  color: #1776b0;
 }
 .Link-Shared:not(:first-child),
 .Link-Shared:not(:last-child) {
   margin-left: 5px;
 }
 .Link-Shared:hover {
-  color: #c80000;
+  color: #2286c3;
 }
 .Link-Shared:active {
-  color: #c80000;
+  color: #2286c3;
 }
 .LinksSection {
   display: block;
@@ -201,17 +202,17 @@
 .LinksSection a {
   cursor: pointer !important;
   text-decoration: none;
-  color: #b00000;
+  color: #1776b0;
 }
 .LinksSection a:not(:first-child),
 .LinksSection a:not(:last-child) {
   margin-left: 5px;
 }
 .LinksSection a:hover {
-  color: #c80000;
+  color: #2286c3;
 }
 .LinksSection a:active {
-  color: #c80000;
+  color: #2286c3;
 }
 .Button-Block-Small {
   width: 100%;
@@ -219,17 +220,6 @@
 }
 .Button-Block {
   width: 100%;
-  padding: 15px 20px;
-}
-.t {
-  border: 1px solid red !important;
-}
-.b {
-  border: 1px solid blue !important;
-}
-select:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 #000;
 }
 .MiddleBoxContainerTemplate {
   padding: 40px 40px;
@@ -237,37 +227,37 @@ select:-moz-focusring {
 .MiddleBoxContainerTemplate .MiddleBox {
   max-width: 650px;
   margin: auto;
-  border-radius: 20px;
+  border-radius: 5px;
   background-color: #fff;
   -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
   box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
 }
 .MiddleBoxContainerTemplate .MiddleBox h3 {
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   padding: 30px 0;
   text-align: center;
-  background-color: #b00000;
+  background-color: #1776b0;
   color: #fff;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent {
-  padding: 20px;
+  padding: 1em 1.5em;
   position: relative;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select {
-  margin: 10px 0;
+  margin: 5px 0;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=email],
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=text],
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password],
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select {
   border: none;
-  padding: 10px 20px;
-  background-color: rgba(243, 241, 241, 0.9);
+  padding: 10px 15px;
+  background-color: rgba(238, 238, 238, 0.94);
   width: 100%;
-  border-radius: 20px;
+  border-radius: 5px;
   font-size: 16px;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=email]::-webkit-input-placeholder,
@@ -275,28 +265,28 @@ select:-moz-focusring {
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]::-webkit-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
-  color: #4a0000;
+  color: #0b3a56;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=email]::-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=text]::-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]::-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select::-moz-placeholder {
   /* Firefox 19+ */
-  color: #4a0000;
+  color: #0b3a56;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=email]:-ms-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=text]:-ms-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]:-ms-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select:-ms-input-placeholder {
   /* IE 10+ */
-  color: #4a0000;
+  color: #0b3a56;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=email]:-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=text]:-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]:-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select:-moz-placeholder {
   /* Firefox 18- */
-  color: #4a0000;
+  color: #0b3a56;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select {
   -webkit-appearance: none;
@@ -312,7 +302,7 @@ select:-moz-focusring {
   outline: none !important;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleLinks {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   text-align: right;
 }
 .MiddleBoxContainerTemplate .MiddleBox .BottomLinks {
@@ -341,10 +331,10 @@ select:-moz-focusring {
   cursor: pointer;
 }
 .Icon-Default * {
-  fill: #b00000;
+  fill: #1776b0;
 }
 .Icon-Default:hover * {
-  fill: #c80000;
+  fill: #2286c3;
 }
 .Light-Gray-Control {
   border: none;
@@ -356,19 +346,19 @@ select:-moz-focusring {
 }
 .Light-Gray-Control::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
-  color: #4a0000;
+  color: #0b3a56;
 }
 .Light-Gray-Control::-moz-placeholder {
   /* Firefox 19+ */
-  color: #4a0000;
+  color: #0b3a56;
 }
 .Light-Gray-Control:-ms-input-placeholder {
   /* IE 10+ */
-  color: #4a0000;
+  color: #0b3a56;
 }
 .Light-Gray-Control:-moz-placeholder {
   /* Firefox 18- */
-  color: #4a0000;
+  color: #0b3a56;
 }
 .Light-Gray-Control:focus {
   outline: none;
@@ -382,6 +372,11 @@ select:-moz-focusring {
 .File-Control-Container input[type=file] {
   display: none;
 }
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
 [v-cloak] {
   display: none !important;
 }
@@ -389,11 +384,16 @@ select:-moz-focusring {
   display: none !important;
 }
 .ts-column-scrollable {
-  max-height: 90vh;
+  max-height: 80vh;
   overflow-y: auto;
+  -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
+  box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
+  border-radius: 5px;
 }
 #UserTimeSheets {
   display: flex;
+  flex-direction: column;
 }
 #UserTimeSheets .list-group-item {
   -moz-user-select: none;
@@ -402,27 +402,38 @@ select:-moz-focusring {
   user-select: none;
   cursor: pointer;
   font-weight: 400;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  margin: 0;
+  border-bottom: 1px solid #eeeeee !important;
+  -moz-transition: 100ms;
+  -o-transition: 100ms;
+  -webkit-transition: 100ms;
+  transition: 100ms;
 }
 #UserTimeSheets .list-group-item.is-current-day {
-  color: #c80000;
+  color: #1776b0;
   font-weight: bold;
 }
 #UserTimeSheets .list-group-item:hover {
-  background-color: rgba(235, 109, 109, 0.64);
+  background-color: #73d3f1;
 }
 #UserTimeSheets .list-group-item.active-tab {
-  background-color: #b00000;
+  background-color: #1776b0;
   color: #fff;
 }
 #UserTimeSheets .user-timesheets {
   /*width: 210px;*/
-  min-width: 210px;
-  max-height: 90vh;
-  overflow-y: auto;
+  /*min-width: 210px;*/
+  flex: 1;
+  padding: 1em 0;
+  /*.ts-column-scrollable;*/
 }
 #UserTimeSheets .user-timesheets-content {
+  display: flex;
   flex: 1;
-  padding: 0 10px;
+  /*padding-right: 1em;*/
 }
 #UserTimeSheets .user-timesheets-content h5 {
   color: #333;
@@ -432,9 +443,13 @@ select:-moz-focusring {
   display: flex;
 }
 #UserTimeSheets .user-timesheets-content__days {
-  width: 125px;
-  max-height: 90vh;
+  width: 150px;
+  max-height: 80vh;
   overflow-y: auto;
+  -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
+  box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
+  border-radius: 5px;
 }
 #UserTimeSheets .user-timesheets-content__projects {
   flex: 1;
@@ -455,7 +470,7 @@ select:-moz-focusring {
   font-size: 0.8em;
 }
 #UserTimeSheets .user-timesheets-content__projects .timesheet-subProjects .item-subproject-activity:hover {
-  background-color: #e65a5a;
+  background-color: #5bcbee;
 }
 .item-subproject {
   display: flex;
@@ -506,7 +521,7 @@ select:-moz-focusring {
 }
 .item-subproject__buttons > span:hover,
 .item-subproject__buttons > span.active {
-  color: #c80000;
+  color: #2286c3;
   opacity: 1;
 }
 table td {
@@ -546,8 +561,58 @@ table td {
   pointer-events: none;
 }
 .hint-list > span:hover {
-  background-color: rgba(235, 109, 109, 0.64);
+  background-color: #6bcfee;
 }
 .is-readonly .item-subproject__buttons {
   /*display: none !important;*/
+}
+.tasks-filter-container {
+  display: flex;
+}
+.tasks-filter-container > span {
+  opacity: 0.3;
+  -moz-transition: 100ms;
+  -o-transition: 100ms;
+  -webkit-transition: 100ms;
+  transition: 100ms;
+  cursor: pointer;
+  display: flex;
+  padding: 5px 0;
+  border-radius: 15px;
+  justify-content: center;
+  align-items: center;
+}
+.tasks-filter-container > span .fa,
+.tasks-filter-container > span .far {
+  width: 1.6em;
+  padding-left: 0.2em;
+  font-size: 1.5em;
+}
+.tasks-filter-container > span .filter-label {
+  flex: 1;
+  font-size: 0.8em;
+}
+.tasks-filter-container > span:hover,
+.tasks-filter-container > span.active {
+  opacity: 1;
+}
+.tasks-filter-container > span.active {
+  background-color: #eeeeee;
+  margin-right: 0.2em;
+  padding: 5px 10px 5px 5px;
+}
+.task-filter--pending {
+  color: #333;
+}
+.task-filter--pending {
+  color: #f78438;
+}
+.task-filter--progress {
+  color: #4b59ff;
+}
+.task-filter--done {
+  color: #3fcc35;
+}
+.task-filter--failed {
+  color: #bb0000;
 }

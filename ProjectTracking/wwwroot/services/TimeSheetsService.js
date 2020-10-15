@@ -54,9 +54,16 @@ const TimeSheetsService = {
         return axios.get(url);
     },
     GetTimeSheets: function (userId, year, includeTasks) {
-        const query = serialize({ userId, year, includeTasks})
+        const query = serialize({ userId, year, includeTasks })
 
         const url = TIMESHEETS_SERVICE_URI(`GetTimeSheets?${query}`)
+
+        return axios.get(url);
+    },
+    GetTimeSheetProjectsWithTasks: function (timeSheetId) {
+        const query = serialize({ timeSheetId })
+
+        const url = TIMESHEETS_SERVICE_URI(`GetTimeSheetProjectsWithTasks?${query}`)
 
         return axios.get(url);
     },
@@ -64,7 +71,7 @@ const TimeSheetsService = {
         let url = TIMESHEETS_SERVICE_URI(`GetActivities?timesheetId=${timesheetId}`)
         return axios.get(url)
     },
-    GetActivitiesByDate: function (timesheetId,date) {
+    GetActivitiesByDate: function (timesheetId, date) {
         let url = TIMESHEETS_SERVICE_URI(`GetActivitiesByDate?timesheetId=${timesheetId}&date=${date}`)
         return axios.get(url)
     },
@@ -88,9 +95,9 @@ const TimeSheetsService = {
         let url = TIMESHEETS_SERVICE_URI('PermitTimeSheetStatus')
         return axios.put(url, permitModel);
     },
-    GetUserTimeSheets: function (userId, timeSheetId) {
+    GetUserTimeSheets: function (userId) {
 
-        let url = TIMESHEETS_SERVICE_URI(`GetUserTimeSheets?userId=${userId}&timeSheetId=${timeSheetId}`)
+        let url = TIMESHEETS_SERVICE_URI(`GetUserTimeSheets?userId=${userId}`)
         return axios.get(url);
     },
     Delete: function (id) {

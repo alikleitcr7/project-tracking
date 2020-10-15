@@ -1,26 +1,36 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "User Time Sheets";
 
     string userId = ViewData["ID"].ToString();
 }
 
 
-<div id="UserTimeSheets" class="main-container" v-bind:class="{'is-readonly':readOnly}" v-cloak>
-    <p v-show="timesheetsAreLoading">Loading...</p>
-    <p v-show="!timesheetsAreLoading && !timesheets.length">No Time Sheets</p>
+
+<div id="UserTimeSheets" data-user="@userId" data-active-role="0" class="v-container" v-bind:class="{'is-readonly':readOnly}" v-cloak>
+    <h3 v-show="timesheetsAreLoading">Loading...</h3>
+    <h3 v-show="!timesheetsAreLoading && !timesheets.length">Nothing Here Yet! <i class="far fa-smile-beam"></i> </h3>
 
     <div class="user-timesheets">
+
+        <select v-on:change="handleTimeSheetChange" class="form-control w-200-px" v-model="selectedTimeSheetId">
+            <option :value="oNull">- Select a Schedule - </option>
+            <option v-for="timesheet in timesheets" :value="timesheet.id"> {{timesheet.fromDateDisplay}} - {{timesheet.toDateDisplay}}</option>
+        </select>
+
+        @*
         <ul class="list-group">
             <li v-for="timesheet in timesheets" class="list-group-item" v-on:click="openTimeSheet(timesheet)" v-bind:class="{'active-tab': (activeTimeSheet !== null && activeTimeSheet.id === timesheet.id) }">
                 {{timesheet.fromDateDisplay}} - {{timesheet.toDateDisplay}}
             </li>
         </ul>
+        *@
     </div>
+
 
     <div class="user-timesheets-content">
 
         <h4 v-show="activeTimeSheetDisplay">{{activeTimeSheetDisplay}}</h4>
+
         <div class="user-timesheets-content-container">
 
             <div class="user-timesheets-content__days">
@@ -36,15 +46,28 @@
             </div>
 
             <div class="user-timesheets-content__projects">
+
                 <p v-show="filteredProjectsLoading">Loading...</p>
                 <h4>{{activeDate ? activeDate.format('LL') : ''}} {{activeDateIndexIsCurrentDay !== -1 && activeDateIndexIsCurrentDay === activeDateIdx ? '(Today)' : ''}} <i class="main-color">{{activeTimeSheet && activeTimeSheet.isSigned ? ' | (SIGNED)' :''}}</i> </h4>
                 <button class="btn btn-default btn-sm" v-if="canUnlock" v-on:click="toggleReadOnly"> <i class="glyphicon glyphicon-lock"></i> {{readOnly ? 'Unlock' : 'Lock'}}</button>
 
+                <div v-if="filteredProjects.length" class="tasks-filter-container">
+                    <span :class="taskStatusClass(status)"
+                          @@click="taskFilter(status.key)"
+                          :title="status.title || status.name"
+                          v-for="status in tasksFilter.statuses">
+                        <i :class="status.icon"></i>
+                        <span class="filter-label" v-if="tasksFilter.selectedStatusKey === status.key">{{status.name}} ({{status.count}})</span>
+                    </span>
+                </div>
+
                 <div v-for="(proj, idx) in filteredProjects">
+
+
                     <h5>{{proj.title}}</h5>
-                    <table class="timesheet-subProjects">
+                    <table class="timesheet-tasks">
                         <tbody>
-                            <template v-for="(subProject,subProjectIdx) in proj.subProjects">
+                            <template v-for="(subProject,subProjectIdx) in proj.tasks">
                                 <tr>
                                     <td>
                                         <span class="item-subproject">
@@ -187,16 +210,16 @@
 
 @section scripts{
 
-    <script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
-    <script src="~/services/TimeSheetsService.js"></script>
-    <script src="~/services/TypeOfWorkService.js"></script>
-    <script src="~/services/MeasurementUnitsService.js"></script>
-    <script src="~/services/TimeSheetActivitiesService.js"></script>
-    <script src="~/services/ProjectFilesService.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
+<script src="~/services/TimeSheetsService.js"></script>
+<script src="~/services/TypeOfWorkService.js"></script>
+<script src="~/services/MeasurementUnitsService.js"></script>
+<script src="~/services/TimeSheetActivitiesService.js"></script>
+<script src="~/services/ProjectFilesService.js"></script>
 
-    <script src="~/js/UserTimeSheets.js"></script>
+<script src="~/js/UserTimeSheets.js"></script>
 }
 
 @section styles {
-    <link href="~/css/UserTimeSheets.min.css" rel="stylesheet" />
+<link href="~/css/UserTimeSheets.min.css" rel="stylesheet" />
 }

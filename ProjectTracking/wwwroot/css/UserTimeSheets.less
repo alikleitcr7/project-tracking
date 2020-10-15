@@ -1,5 +1,4 @@
-﻿
-@import 'variables.less';
+﻿@import 'variables.less';
 
 [v-cloak] {
     display: none !important;
@@ -11,12 +10,15 @@
 
 
 .ts-column-scrollable {
-    max-height: 90vh;
+    max-height: 80vh;
     overflow-y: auto;
+    .box-shadow();
+    border-radius: 5px;
 }
 
 #UserTimeSheets {
     display: flex;
+    flex-direction: column;
 
     .list-group-item {
         -moz-user-select: none;
@@ -25,14 +27,20 @@
         user-select: none;
         cursor: pointer;
         font-weight: 400;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        margin: 0;
+        border-bottom: 1px solid @gray-xlight !important;
+        .fast-transition();
 
         &.is-current-day {
-            color: @main-color;
+            color: @main-dark;
             font-weight: bold;
         }
 
         &:hover {
-            background-color: @main-xlight;
+            background-color: @main-xxlight;
         }
 
         &.active-tab {
@@ -43,15 +51,16 @@
 
     .user-timesheets {
         /*width: 210px;*/
-        min-width: 210px;
-
-        .ts-column-scrollable;
+        /*min-width: 210px;*/
+        flex: 1;
+        padding: 1em 0;
+        /*.ts-column-scrollable;*/
     }
 
     .user-timesheets-content {
+        display: flex;
         flex: 1;
-        padding: 0 10px;
-
+        /*padding-right: 1em;*/
         h4 {
         }
 
@@ -65,9 +74,8 @@
         }
 
         &__days {
-            width: 125px;       
+            width: 150px;
             .ts-column-scrollable;
-
         }
 
         &__projects {
@@ -209,5 +217,67 @@ table td {
     .item-subproject__buttons {
         /*display: none !important;*/
     }
+}
 
+
+.tasks-filter-container {
+    display:flex;
+
+    > span {
+        opacity: .3;
+        .fast-transition();
+        cursor: pointer;
+        display: flex;
+        padding: 5px 0;
+        border-radius: 15px;
+        justify-content:center; 
+        align-items:center; 
+
+        .fa, .far {
+            width:1.6em;
+            padding-left: .2em;
+            font-size: 1.5em;
+        }
+
+        .filter-label {
+            flex:1;
+            font-size:.8em;
+        }
+
+        &:hover, &.active {
+            opacity: 1;
+        }
+
+        &.active {
+            background-color: @gray-xlight;
+            margin-right: .2em;
+            padding: 5px 10px 5px 5px;
+        }
+
+        &:not(:last-child) {
+        }
+    }
+}
+
+.task-filter {
+
+    &--pending {
+        color: @dark-gray;
+    }
+
+    &--pending {
+        color: @task-pending-color;
+    }
+
+    &--progress {
+        color: @task-progress-color;
+    }
+
+    &--done {
+        color: @task-done-color;
+    }
+
+    &--failed {
+        color: @task-failed-color;
+    }
 }

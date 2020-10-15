@@ -1,16 +1,16 @@
 ﻿
 Vue.component('date-picker', VueBootstrapDatetimePicker);
 
-const Modals = {
+const Modals_TimeSheets = {
     ActivityModal: {
         Show: () => { $('#ActivityModal').modal('show') },
         Hide: () => { $('#ActivityModal').modal('hide') },
     }
 }
 
-const CurrentUserTimeSheets = () => {
-    return axios.get('/TimeSheets/CurrentUserTimeSheets');
-}
+//const CurrentUserTimeSheets = () => {
+//    return axios.get('/TimeSheets/CurrentUserTimeSheets');
+//}
 
 var enumerateDaysBetweenDates = function (startDate, endDate) {
     var dates = [];
@@ -130,6 +130,79 @@ const activityModalObject = () => {
     }
 }
 
+const getActiveActivity = (activity, tagIndex, projectIndex, subProjectIndex) => {
+    return {
+        activity,
+        tagIndex: parseInt(tagIndex),
+        projectIndex: parseInt(projectIndex),
+        subProjectIndex: parseInt(subProjectIndex)
+    }
+}
+
+/**
+ * @param {UserTimeSheetsApp} app
+ * @param {TimeSheetActivity} activities
+ */
+function SetTimeSheetProjetsActivities(app, activities) {
+
+    //console.log({ activities })
+    //app.activeActivities = [];
+
+    let filteredProjects = [...app.activeTimeSheet.projects];
+
+    for (var i = 0; i < filteredProjects.length; i++) {
+        for (var j = 0; j < filteredProjects[i].tasks.length; j++) {
+
+            //let subProject = filteredProjects[i].tasks[j]
+
+
+            let subProjectActivities = activities.filter(k => k.timeSheetProjectId === filteredProjects[i].tasks[j].id)
+
+            filteredProjects[i].tasks[j].activities = subProjectActivities
+
+
+            let activeTagIndex = subProjectActivities.findIndex(k => !k.toDate);
+
+            if (activeTagIndex > -1) {
+
+
+                let subProjectActiveActivity = subProjectActivities[activeTagIndex]
+
+                const activeActivityParsed = getActiveActivity(subProjectActiveActivity, activeTagIndex, i, j)
+
+                let activityExist = false
+                if (app.activeActivities && app.activeActivities.length) {
+                    activityExist = app.activeActivities.findIndex(k => k.projectIndex === activeActivityParsed.projectIndex && k.subProjectIndex === activeActivityParsed.subProjectIndex) > -1
+                }
+
+
+                if (!activityExist) {
+
+                    app.activeActivities.push(activeActivityParsed)
+                }
+
+                filteredProjects[i].tasks[j].isActive = true
+            }
+            else {
+
+                filteredProjects[i].tasks[j].isActive = false
+            }
+
+
+            //filteredProjects[i].tasks[j].activities = filteredProjects[i].tasks[j].activities.map(a => ({
+            //    ...a,
+            //    oFromDate: moment(a.fromDate),
+            //    oToDate: a.toDate ? moment(a.toDate) : null,
+            //}))
+        }
+    }
+
+    //console.log({filteredProjects})
+
+    app.filteredProjects = filteredProjects
+    //app.timesheetsAreLoading = false
+}
+
 var activityMethods = {
     openNewActivityModal: function (fromDate, timesheetProjectId, data) {
 
@@ -151,7 +224,7 @@ var activityMethods = {
 
         this.activityModal = activityModal
 
-        Modals.ActivityModal.Show()
+        Modals_TimeSheets.ActivityModal.Show()
     },
     openEditActivityModal: function (activity, tagIdx, subProjectIdx, projectIdx, locked = false) {
 
@@ -167,13 +240,13 @@ var activityMethods = {
         activityModal.message = ''
         activityModal.isDismissing = false
 
-        this.activeSubProject = this.filteredProjects[projectIdx].subProjects[subProjectIdx]
+        this.activeSubProject = this.filteredProjects[projectIdx].tasks[subProjectIdx]
         this.activeActivityData = { activity, tagIdx, subProjectIdx, projectIdx }
         console.log(activity, tagIdx, subProjectIdx, projectIdx)
 
         this.activityModal = activityModal
 
-        Modals.ActivityModal.Show()
+        Modals_TimeSheets.ActivityModal.Show()
     },
     addActivity: function () {
 
@@ -207,11 +280,11 @@ var activityMethods = {
 
                     const { projectIndex, subProjectIndex } = this.endActivityData
 
-                    let subProject = { ...app.filteredProjects[projectIndex].subProjects[subProjectIndex] }
+                    let subProject = { ...app.filteredProjects[projectIndex].tasks[subProjectIndex] }
                     subProject.isActive = false
                     subProject.activities.push(r.data);
 
-                    this.filteredProjects[projectIndex].subProjects[subProjectIndex] = subProject;
+                    this.filteredProjects[projectIndex].tasks[subProjectIndex] = subProject;
 
                     let activeActivityIdx = this.activeActivities.findIndex(k => k.projectIndex === projectIndex && k.subProjectIndex === subProjectIndex)
 
@@ -220,7 +293,7 @@ var activityMethods = {
                         this.activeActivities.splice(activeActivityIdx, 1)
                     }
 
-                    Modals.ActivityModal.Hide()
+                    Modals_TimeSheets.ActivityModal.Hide()
 
                     console.log('activity add', r.data)
                 }
@@ -289,7 +362,7 @@ var activityMethods = {
 
                     const { tagIdx, subProjectIdx, projectIdx } = this.activeActivityData;
 
-                    let subProject = { ...app.filteredProjects[projectIdx].subProjects[subProjectIdx] }
+                    let subProject = { ...app.filteredProjects[projectIdx].tasks[subProjectIdx] }
 
                     subProject.isLoading = false
 
@@ -318,11 +391,11 @@ var activityMethods = {
 
                     subProject.activities[tagIdx] = r.data;
 
-                    this.filteredProjects[projectIdx].subProjects[subProjectIdx] = subProject;
+                    this.filteredProjects[projectIdx].tasks[subProjectIdx] = subProject;
 
                     activityModal.message = 'Saved!';
 
-                    //Modals.ActivityModal.Hide()
+                    //Modals_TimeSheets.ActivityModal.Hide()
 
                     console.log('activity add', r.data)
                 }
@@ -368,7 +441,7 @@ var activityMethods = {
 
                     let filteredProjects = { ...this.filteredProjects }
 
-                    let subProject = filteredProjects[projectIdx].subProjects[subProjectIdx]
+                    let subProject = filteredProjects[projectIdx].tasks[subProjectIdx]
 
                     if (subProject.isActive) {
                         subProject.isActive = false
@@ -396,12 +469,12 @@ var activityMethods = {
 
                     subProject.activities = activities
 
-                    filteredProjects[projectIdx].subProjects[subProjectIdx] = subProject
+                    filteredProjects[projectIdx].tasks[subProjectIdx] = subProject
 
                     this.filteredProjects = filteredProjects
 
                     alert('Deleted');
-                    Modals.ActivityModal.Hide();
+                    Modals_TimeSheets.ActivityModal.Hide();
                 }
                 else {
                     activityModal.message = BASIC_ERROR_MESSAGE
@@ -551,6 +624,14 @@ var activityMethods = {
     }
 }
 
+
+const TASK_STATUSES_KEYS = {
+    PENDING: 0,
+    PROGRESS: 1,
+    DONE: 2,
+    FAILED_OR_TERMINATED: 3,
+}
+
 var user_timesheet_app = new Vue({
     el: '#UserTimeSheets',
     data: {
@@ -572,8 +653,51 @@ var user_timesheet_app = new Vue({
         activeActivityData: null,
         endActivityData: null,
         activeActivities: [],
+        tasksFilter: {
+            statuses: [
+                {
+                    key: null,
+                    code: 'all',
+                    name: 'All',
+                    icon: 'fa fa-stream',
+                    count: 0
+                },
+                {
+                    key: TASK_STATUSES_KEYS.PENDING,
+                    code: 'pending',
+                    name: 'Pending',
+                    icon: 'far fa-clock',
+                    count: 0
+                },
+                {
+                    key: TASK_STATUSES_KEYS.PROGRESS,
+                    code: 'progress',
+                    name: 'In Progress',
+                    icon: 'fa fa-spinner',
+                    count: 0
+                },
+                {
+                    key: TASK_STATUSES_KEYS.DONE,
+                    code: 'done',
+                    name: 'Done',
+                    icon: 'fa fa-check',
+                    count: 0
+                },
+                {
+                    key: TASK_STATUSES_KEYS.FAILED_OR_TERMINATED,
+                    code: 'failed',
+                    name: 'F/T',
+                    title: 'Failed or Terminated',
+                    icon: 'fa fa-times',
+                    count: 0
+                },
+            ],
+            selectedStatusKey: null
+        },
         readOnly: false,
-        currentUserRoles: []
+        currentUserRoles: [],
+        selectedTimeSheetId: null,
+        oNull: null
     },
     computed: {
         activeTimeSheetDisplay: function () {
@@ -616,13 +740,13 @@ var user_timesheet_app = new Vue({
             // update filtered project : set > active
             let filteredProjects = { ...this.filteredProjects }
 
-            filteredProjects[projectIndex].subProjects[subProjectIndex].isActive = true
+            filteredProjects[projectIndex].tasks[subProjectIndex].isActive = true
 
             //activityId
             console.log({ subProject })
 
             let fromDate = moment().format(dateTimeOptions.format)
-            let timesheetProjectId = filteredProjects[projectIndex].subProjects[subProjectIndex].id
+            let timesheetProjectId = filteredProjects[projectIndex].tasks[subProjectIndex].id
 
 
 
@@ -633,13 +757,13 @@ var user_timesheet_app = new Vue({
                     if (r && r.data) {
 
 
-                        const activeTagIndex = filteredProjects[projectIndex].subProjects[subProjectIndex].activities.length
+                        const activeTagIndex = filteredProjects[projectIndex].tasks[subProjectIndex].activities.length
                         const activeActivityParsed = getActiveActivity(r.data, activeTagIndex, projectIndex, subProjectIndex)
 
                         // add active activity
                         activeActivities.push(activeActivityParsed)
 
-                        filteredProjects[projectIndex].subProjects[subProjectIndex].activities.push(r.data)
+                        filteredProjects[projectIndex].tasks[subProjectIndex].activities.push(r.data)
                         //let activeActivityIdx = this.activeActivities.findIndex(k => k.projectIndex === projectIndex && k.subProjectIndex === subProjectIndex)
                     }
                     else {
@@ -687,36 +811,48 @@ var user_timesheet_app = new Vue({
             //activeActivities.splice(activeActivityIdx, 1)
         },
         openTimeSheet: function (timesheet) {
-            this.activeTimeSheetLoading = true
+
+
+            if (!timesheet) {
+                this.activeTimeSheet = null
+                return
+            }
+
             this.activeTimeSheet = {}
             this.activeTimeSheet.datesList = []
             this.activeTimeSheet.projects = []
             this.activeDateIndexIsCurrentDay = -1;
             this.activeDateIdx = -1;
 
-            if (!this.readOnly) {
-                this.readOnly = timesheet.isSigned
-            }
 
-            TimeSheetsService.GetTimeSheetProjectModel(timesheet.id)
+            this.activeTimeSheetLoading = true
+
+
+            //if (!this.readOnly) {
+            //    this.readOnly = timesheet.isSigned
+            //}
+
+            TimeSheetsService.GetTimeSheetProjectsWithTasks(timesheet.id)
                 .then(r => {
-                    console.log(r)
-                    this.activeTimeSheet = timesheet
 
-                    //id,title,description,[subProjects]
+                    this.activeTimeSheet = { ...timesheet }
+
+                    //id,title,description,[tasks]
                     // > id,title,description, [activities]
                     // > id,fromDate,toDate,comment,ipAddress,(activityId),(timeSheetId)
 
-                    this.activeTimeSheet.projects = r.data.projects.map(k => ({
-                        ...k, subProjects: k.subProjects.map(sp => ({
-                            ...sp
+                    this.activeTimeSheet.projects = r.data
 
-                        }))
-                    }))
-
+                    //.projects.map(k => ({
+                    //    ...k,
+                    //    tasks: k.tasks.map(sp => ({
+                    //        ...sp
+                    //    }))
+                    //}))
 
                     // DATES LIST
                     let datesList = enumerateDaysBetweenDates(timesheet.fromDateDisplay, timesheet.toDateDisplay).map(k => ({ oDate: moment(k), date: moment(k).format("MM/DD/YYYY"), display: moment(k).format("ddd, DD/M") }))
+
                     for (var i = 0; i < datesList.length; i++) {
                         var date = datesList[i]
 
@@ -772,6 +908,29 @@ var user_timesheet_app = new Vue({
         },
         toggleReadOnly: function () {
             this.readOnly = !this.readOnly
+        },
+        handleTimeSheetChange: function () {
+
+            const id = this.selectedTimeSheetId
+
+            if (id == null) {
+                this.openTimeSheet(null)
+            }
+
+            const timesheet = this.timesheets.find(k => k.id === id)
+
+            this.openTimeSheet(timesheet)
+        },
+        taskFilter: function (key) {
+            this.tasksFilter.selectedStatusKey = key
+        },
+        taskStatusClass: function (status) {
+            const itemClass = `task-filter--${status.code}`
+
+            return {
+                [itemClass]: true,
+                'active': this.tasksFilter.selectedStatusKey === status.key
+            }
         }
     },
     mounted: function () {
@@ -779,149 +938,61 @@ var user_timesheet_app = new Vue({
         var url_string = window.location.href
         var url = new URL(url_string);
 
-        var userId = url.searchParams.get("userId");
+        var userId = $('#UserTimeSheets').attr('data-user');
+        var activeRole = $('#UserTimeSheets').attr('data-active-role');
 
-        if (userId) {
+        //if (userId) {
 
-            GetRoles()
-                .then(r => {
-                    this.currentUserRoles = r.data
-                    //console.log('roles', r.data)
-                })
-                .catch(e => {
-                    console.error('roles', e)
-                })
+        //    //GetRoles()
+        //    //    .then(r => {
+        //    //        this.currentUserRoles = r.data
+        //    //        //console.log('roles', r.data)
+        //    //    })
+        //    //    .catch(e => {
+        //    //        console.error('roles', e)
+        //    //    })
+        //}
 
-            const timeSheetId = url.searchParams.get("timeSheetId");
+        const timeSheetId = url.searchParams.get("timeSheetId");
 
-            TimeSheetsService.GetUserTimeSheets(userId, timeSheetId)
-                .then((r) => {
-                    this.readOnly = true
-                    this.timesheets = r.data
+        TimeSheetsService.GetUserTimeSheets(userId)
+            .then((r) => {
+                //this.readOnly = true
+                this.timesheets = r.data
 
-                    for (var i = 0; i < this.timesheets.length; i++) {
-                        const timesheet = this.timesheets[i]
+                for (var i = 0; i < this.timesheets.length; i++) {
+                    const timesheet = this.timesheets[i]
 
-                        if (timesheet.id == timeSheetId) {
-                            this.openTimeSheet(timesheet)
-                        }
+                    if (timesheet.id == timeSheetId) {
+                        this.openTimeSheet(timesheet)
                     }
-                })
-                .catch((e) => {
-                    console.error({ e })
-                })
-                .then(() => {
-                    this.timesheetsAreLoading = false
-                })
-        }
-        else {
-            CurrentUserTimeSheets()
-                .then((r) => {
-                    //console.log(r.data)
-                    this.timesheets = r.data
-
-                    if (this.timesheets.length > 0) {
-                        this.openTimeSheet(this.timesheets[0])
-                    }
-
-
-                })
-                .catch((e) => {
-                    console.error({ e })
-                })
-                .then(() => {
-                    this.timesheetsAreLoading = false
-                })
-        }
-
-
-        TypeOfWorkService
-            .GetAll()
-            .done(r => {
-                this.typeOfWorkData = r
+                }
             })
-            .fail(e => console.error(e))
-
-        MeasurementUnitsService
-            .GetAll()
-            .done(r => {
-                this.measurementUnitData = r
+            .catch((e) => {
+                console.error({ e })
             })
-            .fail(e => console.error(e))
+            .then(() => {
+                this.timesheetsAreLoading = false
+            })
+
+        //else {
+        //    CurrentUserTimeSheets()
+        //        .then((r) => {
+        //            //console.log(r.data)
+        //            this.timesheets = r.data
+
+        //            if (this.timesheets.length > 0) {
+        //                this.openTimeSheet(this.timesheets[0])
+        //            }
+
+
+        //        })
+        //        .catch((e) => {
+        //            console.error({ e })
+        //        })
+        //        .then(() => {
+        //            this.timesheetsAreLoading = false
+        //        })
+        //}
     }
 })
-
-const getActiveActivity = (activity, tagIndex, projectIndex, subProjectIndex) => {
-    return {
-        activity,
-        tagIndex: parseInt(tagIndex),
-        projectIndex: parseInt(projectIndex),
-        subProjectIndex: parseInt(subProjectIndex)
-    }
-}
-
-
-/**
- * @param {UserTimeSheetsApp} app
- * @param {TimeSheetActivity} activities
- */
-function SetTimeSheetProjetsActivities(app, activities) {
-
-    //console.log({ activities })
-    //app.activeActivities = [];
-
-    let filteredProjects = [...app.activeTimeSheet.projects];
-
-    for (var i = 0; i < filteredProjects.length; i++) {
-        for (var j = 0; j < filteredProjects[i].subProjects.length; j++) {
-
-            //let subProject = filteredProjects[i].subProjects[j]
-
-
-            let subProjectActivities = activities.filter(k => k.timeSheetProjectId === filteredProjects[i].subProjects[j].id)
-
-            filteredProjects[i].subProjects[j].activities = subProjectActivities
-
-
-            let activeTagIndex = subProjectActivities.findIndex(k => !k.toDate);
-
-            if (activeTagIndex > -1) {
-
-
-                let subProjectActiveActivity = subProjectActivities[activeTagIndex]
-
-                const activeActivityParsed = getActiveActivity(subProjectActiveActivity, activeTagIndex, i, j)
-
-                let activityExist = false
-                if (app.activeActivities && app.activeActivities.length) {
-                    activityExist = app.activeActivities.findIndex(k => k.projectIndex === activeActivityParsed.projectIndex && k.subProjectIndex === activeActivityParsed.subProjectIndex) > -1
-                }
-
-
-                if (!activityExist) {
-
-                    app.activeActivities.push(activeActivityParsed)
-                }
-
-                filteredProjects[i].subProjects[j].isActive = true
-            }
-            else {
-
-                filteredProjects[i].subProjects[j].isActive = false
-            }
-
-
-            //filteredProjects[i].subProjects[j].activities = filteredProjects[i].subProjects[j].activities.map(a => ({
-            //    ...a,
-            //    oFromDate: moment(a.fromDate),
-            //    oToDate: a.toDate ? moment(a.toDate) : null,
-            //}))
-        }
-    }
-
-    //console.log({filteredProjects})
-
-    app.filteredProjects = filteredProjects
-    //app.timesheetsAreLoading = false
-}
-
