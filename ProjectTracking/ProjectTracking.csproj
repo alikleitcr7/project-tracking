@@ -197,6 +197,9 @@
     <Content Update="Views\Teams\Modals\TeamModal.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Teams\Shared\SupervisorTeams.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
 
 </Project>

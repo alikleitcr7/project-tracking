@@ -158,7 +158,7 @@ const timeSheetFormObject = (obj) => {
 }
 
 new Vue({
-    el: '#Profile',
+    el: '#Schedules',
     data: {
         isInAdministration: false,
         //timeSheetStatuses: [],
@@ -736,10 +736,8 @@ new Vue({
                 console.error('error', e)
             })
 
+
         this.filterTimeSheets()
-
-
-
     }
 });
 

@@ -1,0 +1,61 @@
+﻿@using ProjectTracking.Models.Teams
+@* user: id,name *@
+@model SupervisorTeamsViewModel
+
+@{
+    ViewData["Title"] = $"{Model.SupervisorName} Teams";
+}
+
+<div id="SupervisorTeams" v-cloak class="v-container" data-user="@Model.SupervisorId">
+
+    @if (Model.IncludeTitle)
+    {
+        @*<h3> <i class="fa fa-coffee"></i> @ViewData["Title"] </h3>*@
+    }
+
+    @* loading *@
+
+    <h4 v-if="teams.isLoading" class="c-loading-title"></h4>
+
+    <div class="c-box-view">
+        <div v-if="teams.isLoading" class="c-box c-box--loading" v-for="i in [,,,]">
+            <span class="c-box-title"></span>
+        </div>
+    </div>
+
+    @* view *@
+
+    <h4 v-if="teams.message">{{teams.message}}</h4>
+
+    <div v-if="teams.data">
+
+        <h4 v-if="!teams.data.supervisingTeams.length && !teams.data.supervisedTeams.length">Nothing Here Yet! </h4>
+
+        <h4 v-if="teams.data.supervisingTeams.length">
+            <i class="fa fa-users"></i> Supervising Teams
+        </h4>
+
+        <div class="c-box-view">
+
+
+            <a class="c-box" :href="`/teams/${team.id}`" v-for="team in teams.data.supervisingTeams">
+                <span class="c-box-title">{{team.name}}</span>
+                <p>{{getMembersText(team.membersCount)}}</p>
+                <p>{{getProjectsText(team.projectsCount)}}</p>
+            </a>
+        </div>
+
+        <h4 v-if="teams.data.supervisedTeams.length"><i class="fa  fa-history"></i> Supervised Teams</h4>
+
+        <div class="c-box-view">
+
+            <div class="c-box"  v-for="team in teams.data.supervisedTeams">
+                <span class="c-box-title">{{team.name}}</span>
+                <small>{{team.dateAddedDisplay}}</small>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>

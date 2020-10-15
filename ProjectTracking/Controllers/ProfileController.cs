@@ -46,5 +46,25 @@ namespace ProjectTracking.Controllers
 
             return View(user);
         }
+
+        //[Route("/supervisor/{userId}")]
+        //public IActionResult SupervisorTeams(string userId)
+        //{
+        //    User user = _userMethods.GetById(userId);
+
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    Models.Teams.SupervisorTeamsViewModel supervisorTeamsViewModel = new Models.Teams.SupervisorTeamsViewModel()
+        //    {
+        //        IncludeTitle = true,
+        //        SupervisorId = user.Id,
+        //        SupervisorName = user.FullName
+        //    };
+
+        //    return View(supervisorTeamsViewModel);
+        //}
     }
 }

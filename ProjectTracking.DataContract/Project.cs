@@ -30,7 +30,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return DateAdded.ToString("dd-MM-yyyy");
+                return DateAdded.ToDisplayDate();
             }
         }
 
@@ -38,21 +38,21 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return StartDate.HasValue ? StartDate.Value.ToString("dd-MM-yyyy") : "-";
+                return StartDate.ToDisplayDate();
             }
         }
         public string PlannedEndDisplay
         {
             get
             {
-                return PlannedEnd.HasValue ? PlannedEnd.Value.ToString("dd-MM-yyyy") : "-";
+                return PlannedEnd.ToDisplayDate();
             }
         }
         public string ActualEndDisplay
         {
             get
             {
-                return ActualEnd.HasValue ? ActualEnd.Value.ToString("dd-MM-yyyy") : "-";
+                return ActualEnd.ToDisplayDate();
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using ProjectTracking.DataContract;
+using ProjectTracking.Models.Teams;
 using System.Collections.Generic;
 
 namespace ProjectTracking.Data.Methods.Interfaces
@@ -18,5 +19,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         Team GetSupervisingTeamId(string userId);
         System.Threading.Tasks.Task<Team> Save(Models.Teams.TeamSaveModel model);
         List<SupervisorLog> GetSupervisorLog(int teamId);
+        SupervisorTeamsModel GetSupervisorTeamsModel(string userId);
     }
 }

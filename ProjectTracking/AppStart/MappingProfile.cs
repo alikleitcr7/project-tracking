@@ -12,6 +12,12 @@ namespace ProjectTracking.AppStart
     {
         public MappingProfile()
         {
+
+            #region Models
+
+
+            #endregion
+
             CreateMap<Project, DataContract.Project>().ForAllMembers(k => k.AllowNull());
             CreateMap<DataContract.Project, Project>().ForAllMembers(k => k.AllowNull());
 

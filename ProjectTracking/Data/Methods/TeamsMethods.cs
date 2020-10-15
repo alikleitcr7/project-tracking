@@ -314,10 +314,11 @@ namespace ProjectTracking.Data.Methods
         {
             var logs = _context.SupervisorLogs
                 .AsNoTracking()
-                .Include(k=>k.User)
-                .Include(k=>k.AssignedByUser)
+                .Include(k => k.User)
+                .Include(k => k.AssignedByUser)
                 .Where(k => k.TeamId == teamId)
-                .Select(k => new SupervisorLog() {
+                .Select(k => new SupervisorLog()
+                {
                     ID = k.ID,
                     TeamId = k.TeamId,
                     UserId = k.UserId,
@@ -378,6 +379,76 @@ namespace ProjectTracking.Data.Methods
         public Team GetSupervisingTeamId(string userId)
         {
             throw new NotImplementedException();
+        }
+
+        public SupervisorTeamsModel GetSupervisorTeamsModel(string userId)
+        {
+            //List<SupervisingTeamModel> supervisingTeamModels = new List<SupervisingTeamModel>();
+
+            // supervising
+            List<SupervisingTeamModel> supervisingTeamModels = _context.Teams
+                .Where(k => k.SupervisorId == userId)
+                .Select(k=> new SupervisingTeamModel() {
+                    DateAdded = k.DateAdded,
+                    ID = k.ID,
+                    Name = k.Name,
+                    ProjectsCount = k.TeamsProjects.Count(),
+                    MembersCount = k.Members.Count()
+                }).ToList();
+
+
+            // set projects and members count
+            //foreach (DataSets.Team dbTeam in dbSupervisingTeams)
+            //{
+            //    supervisingTeamModels.Add(new SupervisingTeamModel()
+            //    {
+            //        DateAdded = dbTeam.DateAdded,
+            //        ID = dbTeam.ID,
+            //        Name = dbTeam.Name,
+            //        ProjectsCount = dbTeam.TeamsProjects.Count(),
+            //        MembersCount = dbTeam.Members.Count()
+            //    });
+            //}
+
+            // supervised
+            //List<SupervisedTeamModel> supervisedTeamModels = new List<SupervisedTeamModel>();
+
+            //IQueryable<DataSets.SupervisorLog> supervisorLogs = _context.SupervisorLogs
+            //    .Include(k => k.Team)
+            //    .Include(k => k.AssignedByUser)
+            //    .Where(s => s.UserId == userId);
+
+            List<SupervisedTeamModel> supervisedTeamModels = _context.SupervisorLogs
+             .Where(s => s.UserId == userId)
+             .Select(k => new SupervisedTeamModel()
+             {
+                 DateAdded = k.Team.DateAdded,
+                 ID = k.Team.ID,
+                 Name = k.Team.Name,
+                 DateAssigned = k.DateAssigned,
+                 AssignedByName = k.AssignedByUser.FirstName + " " + k.AssignedByUser.LastName,
+                 AssignedById = k.AssignedByUser.Id
+             }).ToList();
+
+
+            //foreach (DataSets.SupervisorLog dbLog in supervisorLogs)
+            //{
+            //    supervisedTeamModels.Add(new SupervisedTeamModel()
+            //    {
+            //        DateAdded = dbLog.Team.DateAdded,
+            //        ID = dbLog.Team.ID,
+            //        Name = dbLog.Team.Name,
+            //        DateAssigned = dbLog.DateAssigned,
+            //        AssignedByName = dbLog.AssignedByUser.FirstName + " " + dbLog.AssignedByUser.LastName,
+            //        AssignedById = dbLog.AssignedByUser.Id
+            //    });
+            //}
+
+            return new SupervisorTeamsModel()
+            {
+                SupervisingTeams = supervisingTeamModels,
+                SupervisedTeams = supervisedTeamModels
+            };
         }
 
         //public Team EditDepartment(int id, Team department)

@@ -5,8 +5,11 @@
 @main-light: #5bcbee;
 @main-xlight: #6bcfee;
 @main-xxlight: #73d3f1;
-@light-gray: rgba(243, 241, 241, 0.90);
+@light-gray: rgba(238, 238, 238, 0.94);
+@gray-xlight: rgb(238, 238, 238);
+@gray-light: rgb(209, 209, 209);
 @gray: rgba(122, 122, 122, 0.93);
+@box-gray: #dbdbdd;
 
 @sidebar-width: 120px;
 @sidebar-width-sm: 50px;
@@ -178,6 +181,7 @@
     -moz-box-shadow: -2px 3px 20px -10px rgba(0,0,0,0.75);
     box-shadow: -2px 3px 20px -10px rgba(0,0,0,0.75);
 }
+
 
 .BoxShadow-Right {
     -webkit-box-shadow: 11px 0px 20px -17px rgba(0,0,0,0.75);
@@ -458,7 +462,7 @@
 .skeleton() {
     position: relative;
     overflow: hidden;
-    background-color: #DDDBDD;
+    background-color: @box-gray;
 
     &::after {
         position: absolute;
@@ -471,6 +475,24 @@
         animation: shimmer 2s infinite;
         content: '';
     }
+}
+
+.box-shadow() {
+    -webkit-box-shadow: -2px 3px 20px -10px rgba(0,0,0,0.75);
+    -moz-box-shadow: -2px 3px 20px -10px rgba(0,0,0,0.75);
+    box-shadow: -2px 3px 20px -10px rgba(0,0,0,0.75);
+}
+.box-shadow-sm() {
+    -webkit-box-shadow: -1px 1px 15px -10px rgba(0,0,0,.95);
+    -moz-box-shadow: -1px 1px 15px -10px rgba(0,0,0,.95);
+    box-shadow: -1px 1px 15px -10px rgba(0,0,0,.95);
+}
+
+.fast-transition() {
+    -moz-transition: 100ms;
+    -o-transition: 100ms;
+    -webkit-transition: 100ms;
+    transition: 100ms;
 }
 
 @keyframes shimmer {
