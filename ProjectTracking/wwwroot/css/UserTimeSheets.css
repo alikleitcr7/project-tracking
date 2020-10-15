@@ -93,7 +93,7 @@
   background-color: #1776b0;
 }
 .main-light-background {
-  background-color: #73d3f1;
+  background-color: #c9eefa;
 }
 .table-child {
   font-size: 0.9em;
@@ -389,7 +389,7 @@
   -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
   box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
-  border-radius: 5px;
+  border-radius: 15px;
 }
 #UserTimeSheets {
   display: flex;
@@ -417,7 +417,7 @@
   font-weight: bold;
 }
 #UserTimeSheets .list-group-item:hover {
-  background-color: #73d3f1;
+  background-color: #c9eefa;
 }
 #UserTimeSheets .list-group-item.active-tab {
   background-color: #1776b0;
@@ -449,11 +449,23 @@
   -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
   box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
-  border-radius: 5px;
+  border-radius: 15px;
 }
 #UserTimeSheets .user-timesheets-content__projects {
   flex: 1;
+  width: 280px;
   padding: 0 10px;
+  -webkit-box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
+  -moz-box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
+  box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
+  margin: 0 1em;
+  background-color: #eeeeee;
+  position: relative;
+  border-radius: 15px;
+}
+#UserTimeSheets .user-timesheets-content__projects .assigned-tasks-container {
+  height: 70vh;
+  overflow-y: auto;
 }
 #UserTimeSheets .user-timesheets-content__projects .timesheet-subProjects .item-subproject-activity {
   margin: 0 5px;
@@ -474,13 +486,13 @@
 }
 .item-subproject {
   display: flex;
-  background-color: #fff;
+  /*background-color: #fff;*/
   cursor: default !important;
   border-radius: 5px;
   margin: 5px;
-}
-.item-subproject:hover {
-  background-color: #fff !important;
+  /*&:hover {
+        background-color: #fff !important;
+    }*/
 }
 .item-subproject > span {
   padding: 5px;
@@ -565,6 +577,24 @@ table td {
 }
 .is-readonly .item-subproject__buttons {
   /*display: none !important;*/
+}
+.assigned-tasks {
+  padding: 0.4em 1em 1em 1em;
+  margin: 1em 0;
+  background-color: rgba(255, 255, 255, 0.69);
+  border-radius: 15px;
+}
+.assigned-tasks .assigned-task {
+  padding: 0.5em;
+  cursor: pointer;
+  border-radius: 7px;
+}
+.assigned-tasks .assigned-task:not(.active):hover {
+  background-color: #c9eefa;
+}
+.assigned-tasks .assigned-task .active {
+  background-color: #2286c3;
+  color: #fff;
 }
 .tasks-filter-container {
   display: flex;

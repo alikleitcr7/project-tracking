@@ -230,7 +230,6 @@ namespace ProjectTracking.Controllers
         }
 
 
-
         [HttpGet]
         public IActionResult GetTimeSheetProjectsWithTasks(int timeSheetId)
         {

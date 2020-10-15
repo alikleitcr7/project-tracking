@@ -43,7 +43,7 @@ namespace ProjectTracking.Data.Methods
                 if (statusChanged)
                 {
                     // append project's status modification
-                    dbTask.ProjectTaskStatusModifications.Add(new DataSets.ProjectTaskStatusModification()
+                    db.ProjectTaskStatusModifications.Add(new DataSets.ProjectTaskStatusModification()
                     {
                         ProjectTaskId = dbTask.ID,
                         StatusCode = dbTask.StatusCode,

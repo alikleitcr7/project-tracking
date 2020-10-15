@@ -660,28 +660,28 @@ var user_timesheet_app = new Vue({
                     code: 'all',
                     name: 'All',
                     icon: 'fa fa-stream',
-                    count: 0
+                    
                 },
                 {
                     key: TASK_STATUSES_KEYS.PENDING,
                     code: 'pending',
                     name: 'Pending',
                     icon: 'far fa-clock',
-                    count: 0
+                    
                 },
                 {
                     key: TASK_STATUSES_KEYS.PROGRESS,
                     code: 'progress',
                     name: 'In Progress',
                     icon: 'fa fa-spinner',
-                    count: 0
+                    
                 },
                 {
                     key: TASK_STATUSES_KEYS.DONE,
                     code: 'done',
                     name: 'Done',
                     icon: 'fa fa-check',
-                    count: 0
+                    
                 },
                 {
                     key: TASK_STATUSES_KEYS.FAILED_OR_TERMINATED,
@@ -689,7 +689,7 @@ var user_timesheet_app = new Vue({
                     name: 'F/T',
                     title: 'Failed or Terminated',
                     icon: 'fa fa-times',
-                    count: 0
+                    
                 },
             ],
             selectedStatusKey: null
@@ -697,7 +697,12 @@ var user_timesheet_app = new Vue({
         readOnly: false,
         currentUserRoles: [],
         selectedTimeSheetId: null,
-        oNull: null
+        oNull: null,
+        taskActivities: {
+            data: [],
+            message: '',
+            isLoading: true
+        }
     },
     computed: {
         activeTimeSheetDisplay: function () {
@@ -720,6 +725,38 @@ var user_timesheet_app = new Vue({
             var userId = getParam("userId");
 
             return userId && (currentUserRoles.includes('Admin') || currentUserRoles.includes('Manager'))
+        },
+        filteredTimeSheetProjects: function () {
+
+            const timesheetProjects = this.activeTimeSheet.projects
+
+            if (!timesheetProjects || !timesheetProjects.length)
+                return []
+
+            let filteredProjects = [...timesheetProjects];
+
+            const status = this.tasksFilter.selectedStatusKey
+
+            // map defines a new ref for that object (VDOM)
+            return filteredProjects.map(k => ({ ...k })).filter(k => {
+
+                console.log({ status, tasks: k.tasks.length })
+
+                if (status === null) {
+                    return true
+                }
+
+                // filter status
+                k.tasks = k.tasks.filter(t => status === TASK_STATUSES_KEYS.FAILED_OR_TERMINATED ? t.statusCode >= status : t.statusCode === status)
+
+                // dont show project if no tasks under it
+                return k.tasks.length
+            })
+        },
+        filteredTimeSheetProjectsTasksCount: function () {
+
+            return this.filteredTimeSheetProjects
+                .map(k => k.tasks.length).reduce((a, b) => a + b, 0)
         }
     },
     methods: {
@@ -894,10 +931,63 @@ var user_timesheet_app = new Vue({
             this.activeDate = moment(this.activeTimeSheet.datesList[idx].date, 'MM/DD/YYYY')
             this.activeDateIdx = idx
 
+            // get activities
             TimeSheetsService.GetActivitiesByDate(this.activeTimeSheet.id, this.activeTimeSheet.datesList[idx].date)
                 .then(r => {
-                    //console.log({ r })
-                    SetTimeSheetProjetsActivities(this, r.data)
+
+                    const activities = r.data
+
+                    let filteredProjects = [...this.activeTimeSheet.projects];
+
+                    for (var i = 0; i < filteredProjects.length; i++) {
+                        for (var j = 0; j < filteredProjects[i].tasks.length; j++) {
+
+                            //let subProject = filteredProjects[i].tasks[j]
+
+                            let subProjectActivities = activities.filter(k => k.timeSheetProjectId === filteredProjects[i].tasks[j].id)
+
+                            filteredProjects[i].tasks[j].activities = subProjectActivities
+
+                            let activeTagIndex = subProjectActivities.findIndex(k => !k.toDate);
+
+                            if (activeTagIndex > -1) {
+
+                                let subProjectActiveActivity = subProjectActivities[activeTagIndex]
+
+                                const activeActivityParsed = getActiveActivity(subProjectActiveActivity, activeTagIndex, i, j)
+
+                                let activityExist = false
+                                if (this.activeActivities && this.activeActivities.length) {
+                                    activityExist = this.activeActivities.findIndex(k => k.projectIndex === activeActivityParsed.projectIndex && k.subProjectIndex === activeActivityParsed.subProjectIndex) > -1
+                                }
+
+
+                                if (!activityExist) {
+
+                                    this.activeActivities.push(activeActivityParsed)
+                                }
+
+                                filteredProjects[i].tasks[j].isActive = true
+                            }
+                            else {
+
+                                filteredProjects[i].tasks[j].isActive = false
+                            }
+
+
+                            //filteredProjects[i].tasks[j].activities = filteredProjects[i].tasks[j].activities.map(a => ({
+                            //    ...a,
+                            //    oFromDate: moment(a.fromDate),
+                            //    oToDate: a.toDate ? moment(a.toDate) : null,
+                            //}))
+                        }
+                    }
+
+                    //console.log({filteredProjects})
+
+                    this.filteredProjects = filteredProjects
+
+                    //SetTimeSheetProjetsActivities(this, r.data)
                 })
                 .catch(e => {
                     console.warn({ e })
@@ -931,7 +1021,7 @@ var user_timesheet_app = new Vue({
                 [itemClass]: true,
                 'active': this.tasksFilter.selectedStatusKey === status.key
             }
-        }
+        },
     },
     mounted: function () {
 

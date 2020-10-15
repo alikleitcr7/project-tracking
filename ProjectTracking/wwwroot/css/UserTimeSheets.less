@@ -13,7 +13,7 @@
     max-height: 80vh;
     overflow-y: auto;
     .box-shadow();
-    border-radius: 5px;
+    border-radius: 15px;
 }
 
 #UserTimeSheets {
@@ -80,7 +80,18 @@
 
         &__projects {
             flex: 1;
+            width: 280px;
             padding: 0 10px;
+            .box-shadow-sm();
+            margin: 0 1em;
+            background-color: @gray-xlight;
+            position: relative;
+            border-radius: 15px;
+
+            .assigned-tasks-container {
+                height: 70vh;
+                overflow-y: auto;
+            }
 
             .timesheet-subProjects {
                 .item-subproject-activity {
@@ -108,15 +119,13 @@
 
 .item-subproject {
     display: flex;
-    background-color: #fff;
+    /*background-color: #fff;*/
     cursor: default !important;
     border-radius: 5px;
     margin: 5px;
-
-    &:hover {
+    /*&:hover {
         background-color: #fff !important;
-    }
-
+    }*/
     > span {
         padding: 5px;
     }
@@ -220,8 +229,31 @@ table td {
 }
 
 
+.assigned-tasks {
+    padding: .4em 1em 1em 1em;
+    margin: 1em 0;
+    background-color: rgba(255, 255, 255, 0.69);
+    border-radius: 15px;
+
+    .assigned-task {
+        padding: .5em;
+        cursor: pointer;
+        border-radius: 7px;
+
+
+        &:not(.active):hover {
+            background-color: @main-xxlight;
+        }
+
+        .active {
+            background-color: @main-color;
+            color: #fff;
+        }
+    }
+}
+
 .tasks-filter-container {
-    display:flex;
+    display: flex;
 
     > span {
         opacity: .3;
@@ -230,18 +262,18 @@ table td {
         display: flex;
         padding: 5px 0;
         border-radius: 15px;
-        justify-content:center; 
-        align-items:center; 
+        justify-content: center;
+        align-items: center;
 
         .fa, .far {
-            width:1.6em;
+            width: 1.6em;
             padding-left: .2em;
             font-size: 1.5em;
         }
 
         .filter-label {
-            flex:1;
-            font-size:.8em;
+            flex: 1;
+            font-size: .8em;
         }
 
         &:hover, &.active {
