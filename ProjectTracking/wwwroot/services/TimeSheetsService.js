@@ -71,8 +71,8 @@ const TimeSheetsService = {
         let url = TIMESHEETS_SERVICE_URI(`GetActivities?timesheetId=${timesheetId}`)
         return axios.get(url)
     },
-    GetActivitiesByDate: function (timesheetId, date) {
-        let url = TIMESHEETS_SERVICE_URI(`GetActivitiesByDate?timesheetId=${timesheetId}&date=${date}`)
+    GetActivitiesByDate: function (taskId, date) {
+        let url = TIMESHEETS_SERVICE_URI(`GetActivitiesByDate?taskId=${taskId}&date=${date}`)
         return axios.get(url)
     },
     GetTimeSheetProjects: function (timesheetId) {

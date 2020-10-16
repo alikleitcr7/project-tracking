@@ -660,28 +660,28 @@ var user_timesheet_app = new Vue({
                     code: 'all',
                     name: 'All',
                     icon: 'fa fa-stream',
-                    
+
                 },
                 {
                     key: TASK_STATUSES_KEYS.PENDING,
                     code: 'pending',
                     name: 'Pending',
                     icon: 'far fa-clock',
-                    
+
                 },
                 {
                     key: TASK_STATUSES_KEYS.PROGRESS,
                     code: 'progress',
                     name: 'In Progress',
                     icon: 'fa fa-spinner',
-                    
+
                 },
                 {
                     key: TASK_STATUSES_KEYS.DONE,
                     code: 'done',
                     name: 'Done',
                     icon: 'fa fa-check',
-                    
+
                 },
                 {
                     key: TASK_STATUSES_KEYS.FAILED_OR_TERMINATED,
@@ -689,7 +689,7 @@ var user_timesheet_app = new Vue({
                     name: 'F/T',
                     title: 'Failed or Terminated',
                     icon: 'fa fa-times',
-                    
+
                 },
             ],
             selectedStatusKey: null
@@ -927,9 +927,12 @@ var user_timesheet_app = new Vue({
         },
         openTimeSheetDate: function (idx) {
 
-            this.filteredProjectsLoading = true
             this.activeDate = moment(this.activeTimeSheet.datesList[idx].date, 'MM/DD/YYYY')
             this.activeDateIdx = idx
+
+            return
+
+            this.filteredProjectsLoading = true
 
             // get activities
             TimeSheetsService.GetActivitiesByDate(this.activeTimeSheet.id, this.activeTimeSheet.datesList[idx].date)
@@ -1022,6 +1025,9 @@ var user_timesheet_app = new Vue({
                 'active': this.tasksFilter.selectedStatusKey === status.key
             }
         },
+        openTaskActivities: function (task) {
+
+        }
     },
     mounted: function () {
 

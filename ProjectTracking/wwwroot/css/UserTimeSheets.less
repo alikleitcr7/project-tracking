@@ -79,7 +79,6 @@
         }
 
         &__projects {
-            flex: 1;
             width: 280px;
             padding: 0 10px;
             .box-shadow-sm();
@@ -87,6 +86,11 @@
             background-color: @gray-xlight;
             position: relative;
             border-radius: 15px;
+            .fast-transition();
+
+            &.collapsed {
+                display: none;
+            }
 
             .assigned-tasks-container {
                 height: 70vh;
@@ -114,8 +118,32 @@
                 }
             }
         }
+
+        .task-activities {
+            flex: 1;
+
+            .c-box-view {
+                flex-wrap: wrap;
+                overflow: auto;
+                max-height: 80vh;
+
+                .c-box {
+                    min-height: 60px;
+                    padding: .5em;
+                    min-width: 120px;
+                }
+
+                &--loading {
+                    .c-box-title {
+                        min-height: .9em;
+                    }
+                }
+            }
+        }
     }
 }
+
+
 
 .item-subproject {
     display: flex;

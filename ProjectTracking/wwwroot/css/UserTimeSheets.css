@@ -452,7 +452,6 @@
   border-radius: 15px;
 }
 #UserTimeSheets .user-timesheets-content__projects {
-  flex: 1;
   width: 280px;
   padding: 0 10px;
   -webkit-box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
@@ -462,6 +461,13 @@
   background-color: #eeeeee;
   position: relative;
   border-radius: 15px;
+  -moz-transition: 100ms;
+  -o-transition: 100ms;
+  -webkit-transition: 100ms;
+  transition: 100ms;
+}
+#UserTimeSheets .user-timesheets-content__projects.collapsed {
+  display: none;
 }
 #UserTimeSheets .user-timesheets-content__projects .assigned-tasks-container {
   height: 70vh;
@@ -483,6 +489,22 @@
 }
 #UserTimeSheets .user-timesheets-content__projects .timesheet-subProjects .item-subproject-activity:hover {
   background-color: #5bcbee;
+}
+#UserTimeSheets .user-timesheets-content .task-activities {
+  flex: 1;
+}
+#UserTimeSheets .user-timesheets-content .task-activities .c-box-view {
+  flex-wrap: wrap;
+  overflow: auto;
+  max-height: 80vh;
+}
+#UserTimeSheets .user-timesheets-content .task-activities .c-box-view .c-box {
+  min-height: 60px;
+  padding: 0.5em;
+  min-width: 120px;
+}
+#UserTimeSheets .user-timesheets-content .task-activities .c-box-view--loading .c-box-title {
+  min-height: 0.9em;
 }
 .item-subproject {
   display: flex;
