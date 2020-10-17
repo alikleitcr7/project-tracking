@@ -286,6 +286,22 @@ var user_timesheet_app = new Vue({
 
             return toDate ? (isDeleting ? 'Deleting...' : 'Delete') : (isDeleting ? 'Dismiss...' : 'Dismiss')
         },
+        activityModalFeedbackLabel: function () {
+
+            const { isSaved, isDeleted, form: { toDate } } = this.activityModal
+
+
+            if (isSaved) {
+                return toDate ? 'Saved!' : 'Done!'
+            }
+
+            if (isDeleted) {
+                return toDate ? 'Deleted!' : 'Dismissed!'
+            }
+
+            return null
+        },
+
     },
     methods: {
         deleteActivity: function () {
@@ -324,10 +340,17 @@ var user_timesheet_app = new Vue({
 
                     let activityToDeleteIdx = activities.findIndex(k => k.id === id)
 
-
+                    // remove from view actvities
                     if (activityToDeleteIdx !== -1) {
                         activities.splice(activityToDeleteIdx, 1)
                         this.taskActivities.data = activities
+                    }
+
+
+                    // if it is an active activity -> clear
+
+                    if (this.activeActivity && this.activeActivity.id === id) {
+                        this.activeActivity = null
                     }
 
                     activityModal.isDeleted = true

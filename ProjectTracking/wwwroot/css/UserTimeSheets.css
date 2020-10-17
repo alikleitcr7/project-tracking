@@ -694,3 +694,19 @@ table td {
 .task-filter--failed {
   color: #bb0000;
 }
+#ActivityModal .table {
+  margin-bottom: 0;
+}
+#ActivityModal .activity-action-feedback {
+  max-width: 100px;
+  margin: auto;
+  padding: 1em;
+  text-align: center;
+}
+#ActivityModal .activity-action-feedback > i {
+  color: #2286c3;
+  font-size: 4em;
+}
+#ActivityModal .activity-action-feedback .s-btn {
+  margin-top: 1em;
+}

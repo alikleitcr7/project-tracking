@@ -123,8 +123,8 @@
             flex: 1;
 
             .nothing-here {
-                font-size:2em;
-                padding:1em 0;
+                font-size: 2em;
+                padding: 1em 0;
             }
 
             .c-box-view {
@@ -287,7 +287,6 @@ table td {
     }
 }
 
-
 .assigned-tasks {
     padding: .4em 1em 1em 1em;
     margin: 1em 0;
@@ -370,5 +369,29 @@ table td {
 
     &--failed {
         color: @task-failed-color;
+    }
+}
+
+#ActivityModal {
+
+    .table {
+        margin-bottom: 0;
+    }
+
+
+    .activity-action-feedback {
+        max-width: 100px;
+        margin: auto;
+        padding: 1em;
+        text-align: center;
+
+        > i {
+            color: @main-color;
+            font-size: 4em;
+        }
+
+        .s-btn {
+            margin-top: 1em;
+        }
     }
 }
