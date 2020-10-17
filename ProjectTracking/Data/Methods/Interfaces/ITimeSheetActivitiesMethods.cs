@@ -14,7 +14,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         TimeSheetActivity Get(int id);
         List<TimeSheetActivity> GetByTimeSheet(int timesheetId);
         //TimeSheetActivity Update(TimeSheetActivity activity, string ipAddress);
-        bool Delete(int id);
+        void Delete(int id);
 
         TimeSheetActivity Start(int timeSheetTaskId, string ipAddress);
         TimeSheetActivity Stop(TimeSheetActivityStopModel model);

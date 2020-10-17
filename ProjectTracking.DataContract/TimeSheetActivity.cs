@@ -94,9 +94,10 @@ namespace ProjectTracking.DataContract
     public class TimeSheetActivity : TimeSheetActivityBase
     {
         public int TimeSheetTaskId { get; set; }
+        public DateTime? DeletedAt { get; set; }
         //public virtual TimeSheetTask TimeSheetTask { get; set; }
 
-        public  List<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
+        public List<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
     }
 
     public class TimeSheetActivityLog : TimeSheetActivityBase

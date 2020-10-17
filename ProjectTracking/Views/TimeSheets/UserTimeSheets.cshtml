@@ -18,11 +18,11 @@
         </select>
 
         @*
-        <ul class="list-group">
-            <li v-for="timesheet in timesheets" class="list-group-item" v-on:click="openTimeSheet(timesheet)" v-bind:class="{'active-tab': (activeTimeSheet !== null && activeTimeSheet.id === timesheet.id) }">
-                {{timesheet.fromDateDisplay}} - {{timesheet.toDateDisplay}}
-            </li>
-        </ul>
+            <ul class="list-group">
+                <li v-for="timesheet in timesheets" class="list-group-item" v-on:click="openTimeSheet(timesheet)" v-bind:class="{'active-tab': (activeTimeSheet !== null && activeTimeSheet.id === timesheet.id) }">
+                    {{timesheet.fromDateDisplay}} - {{timesheet.toDateDisplay}}
+                </li>
+            </ul>
         *@
     </div>
 
@@ -71,33 +71,33 @@
                         </div>
 
                         @*<table class="timesheet-tasks">
-                            <tbody>
-                                <template v-for="(subProject,subProjectIdx) in proj.tasks">
-                                    <tr>
-                                        <td>
-                                            <span class="item-subproject">
-                                                <span class="item-subproject__title">
-                                                    <span>
-                                                        {{subProject.title}}
+                                <tbody>
+                                    <template v-for="(subProject,subProjectIdx) in proj.tasks">
+                                        <tr>
+                                            <td>
+                                                <span class="item-subproject">
+                                                    <span class="item-subproject__title">
+                                                        <span>
+                                                            {{subProject.title}}
+                                                        </span>
+                                                    </span>
+                                                    <span class="item-subproject__buttons" v-show="!readOnly && !activeTimeSheetDateIsLocked">
+                                                        <span v-bind:class="{'active': subProject.isActive, 'disabled' :activeActivities && activeActivities.length > 0 }" v-on:click="startActiveActivity(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-play"></span>
+                                                        <span v-bind:class="{'disabled':!subProject.isActive}" v-on:click="Z(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-stop"></span>
                                                     </span>
                                                 </span>
-                                                <span class="item-subproject__buttons" v-show="!readOnly && !activeTimeSheetDateIsLocked">
-                                                    <span v-bind:class="{'active': subProject.isActive, 'disabled' :activeActivities && activeActivities.length > 0 }" v-on:click="startActiveActivity(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-play"></span>
-                                                    <span v-bind:class="{'disabled':!subProject.isActive}" v-on:click="Z(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-stop"></span>
-                                                </span>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="item-subproject__tags">
-                                                <span class="item-subproject-activity" v-bind:class="{'disabled':!activity.toDate }" v-for="(activity, tagIdx) in subProject.activities" v-on:click="openEditActivityModal(activity, tagIdx,subProjectIdx,idx)">
-                                                    {{tagIdx < subProject.activities.length - 1? activity.tagDisplayHours : activity.tagDisplay}}
-                                                </span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>*@
+                                            </td>
+                                            <td>
+                                                <div class="item-subproject__tags">
+                                                    <span class="item-subproject-activity" v-bind:class="{'disabled':!activity.toDate }" v-for="(activity, tagIdx) in subProject.activities" v-on:click="openEditActivityModal(activity, tagIdx,subProjectIdx,idx)">
+                                                        {{tagIdx < subProject.activities.length - 1? activity.tagDisplayHours : activity.tagDisplay}}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>*@
 
 
                     </div>
@@ -126,10 +126,10 @@
                         <span class="c-box-title"></span>
                     </div>
 
-                    <div class="c-box c-box-clickable" 
+                    <div class="c-box c-box-clickable"
                          v-for="activity in taskActivities.data"
-                         @@click="openActivityCommitModal(activity)" 
-                         :class="{'active':!activity.toDate}" >
+                         @@click="openActivityCommitModal(activity)"
+                         :class="{'active':!activity.toDate}">
                         <div class="c-box-title">{{getActivityTitle(activity)}}</div>
                         <small>{{activity.fromDateDisplay}}</small>
                     </div>
@@ -153,7 +153,7 @@
                     <h4 class="modal-title">Activity - {{activityModal.title}} {{activityModal.form.id === 0 ? '(New)' : `(A${activityModal.form.id})`}} - {{activeSubProject ? activeSubProject.title : ''}}  <i class="main-dark-color"> @@{{activityModal.form.ipAddressDisplay}}</i> </h4>
                 </div>
 
-                <div class="modal-body" v-bind:class="{'disabled-section': activityModal.isLoading || activityModal.isDeleting , 'disabled-section' : readOnly }">
+                <div v-if="!(activityModal.isDeleted || activityModal.isSaved)" class="modal-body" v-bind:class="{'disabled-section': activityModal.isLoading || activityModal.isDeleting , 'disabled-section' : readOnly }">
 
                     <div class="modal-controls">
 
@@ -189,18 +189,26 @@
                     <h5 v-if="activityModal.message" class="display-message text-center">{{activityModal.message}}</h5>
                 </div>
 
-                <div class="modal-footer">
+                <div v-if="activityModal.isDeleted">
+                    <h3>Deleted!</h3>
+                </div>
+                
+                <div v-if="activityModal.isSaved">
+                    <h3>Saved!</h3>
+                </div>
+
+                <div class="modal-footer" v-if="!(activityModal.isDeleted || activityModal.isSaved)">
                     <button v-if="!readOnly"
                             :disabled="activityModal.isLoading"
                             type="button"
                             class="s-btn s-btn-primary"
-                            v-on:click="commitActivity">
+                            v-on:click="saveActivity()">
                         {{activityModalSaveButtonLabel}}
                     </button>
                     @*<button v-if="!readOnly && activityModal.form.toDate" type="button" class="s-btn s-btn-primary" v-on:click="commitActivity">{{activityModal.isSaving? 'Saving...': 'Save'}}</button>*@
                     <a v-if="activityModal.form.toDate" target="_blank" class="s-btn s-btn-outline" v-bind:href="`/timesheets/TimeSheetActivityLog?activityId=${activityModal.form.id}`">Logs</a>
-                    <button v-show="!readOnly &&  !activityModal.form.toDate" type="button" class="s-btn s-btn-o-danger" v-on:click="dismissActivity">{{activityModal.isDismissing? 'Dismissing...': 'Dismiss'}}</button>
-                    <button v-show="!readOnly && activityModal.form.toDate" type="button" class="s-btn s-btn-o-danger" v-on:click="deleteActivity">{{activityModal.isDeleting ? 'Deleting...' : 'Delete'}}</button>
+                    <button v-if="!readOnly" type="button" class="s-btn s-btn-o-danger" v-on:click="deleteActivity">{{activityModalDeleteButtonLabel}}</button>
+                    @*<button v-show="!readOnly && activityModal.form.toDate" type="button" class="s-btn s-btn-o-danger" v-on:click="deleteActivity">{{activityModal.isDeleting ? 'Deleting...' : 'Delete'}}</button>*@
                 </div>
 
             </div>
@@ -214,16 +222,16 @@
 
 @section scripts{
 
-<script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
-<script src="~/services/TimeSheetsService.js"></script>
-<script src="~/services/TypeOfWorkService.js"></script>
-<script src="~/services/MeasurementUnitsService.js"></script>
-<script src="~/services/TimeSheetActivitiesService.js"></script>
-<script src="~/services/ProjectFilesService.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
+    <script src="~/services/TimeSheetsService.js"></script>
+    <script src="~/services/TypeOfWorkService.js"></script>
+    <script src="~/services/MeasurementUnitsService.js"></script>
+    <script src="~/services/TimeSheetActivitiesService.js"></script>
+    <script src="~/services/ProjectFilesService.js"></script>
 
-<script src="~/js/UserTimeSheets.js"></script>
+    <script src="~/js/UserTimeSheets.js"></script>
 }
 
 @section styles {
-<link href="~/css/UserTimeSheets.min.css" rel="stylesheet" />
+    <link href="~/css/UserTimeSheets.min.css" rel="stylesheet" />
 }

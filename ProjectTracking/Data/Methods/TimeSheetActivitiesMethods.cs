@@ -31,7 +31,9 @@ namespace ProjectTracking.Data.Methods
         {
             // get the record 
 
-            var dbRecord = db.TimeSheetTasks.FirstOrDefault(k => k.ID == timeSheetTaskId);
+            var dbRecord = db.TimeSheetTasks
+                .Include(k => k.TimeSheet)
+                .FirstOrDefault(k => k.ID == timeSheetTaskId);
 
             if (dbRecord == null)
             {
@@ -39,8 +41,10 @@ namespace ProjectTracking.Data.Methods
             }
 
             // check if there are any active activities on that timesheet
-            var hasActiveActivity = db.TimeSheetActivities.Any(k =>
-            db.TimeSheetTasks.Any(t => t.ID == k.TimeSheetTaskId && t.TimeSheetId == dbRecord.TimeSheetId && !k.ToDate.HasValue));
+            //var hasActiveActivity = db.TimeSheetActivities.Any(k =>
+            //db.TimeSheetTasks.Any(t => t.ID == k.TimeSheetTaskId && t.TimeSheetId == dbRecord.TimeSheetId && !k.ToDate.HasValue));
+
+            bool hasActiveActivity = UserHasActiveActivity(dbRecord.TimeSheet.UserId);
 
             if (hasActiveActivity)
             {
@@ -163,6 +167,13 @@ namespace ProjectTracking.Data.Methods
             return _mapper.Map<TimeSheetActivity>(dbActivity);
         }
 
+        private bool UserHasActiveActivity(string userId)
+        {
+            List<int> timesheetIds = db.TimeSheets.Where(k => k.UserId == userId).Select(k => k.ID).ToList();
+
+            return db.TimeSheetActivities.Any(k => db.TimeSheetTasks.Any(t => t.ID == k.TimeSheetTaskId) && !k.ToDate.HasValue && !k.DeletedAt.HasValue);
+        }
+
         public TimeSheetActivity GetUserActiveActivity(string userId)
         {
             List<int> timesheetIds = db.TimeSheets.Where(k => k.UserId == userId).Select(k => k.ID).ToList();
@@ -173,8 +184,7 @@ namespace ProjectTracking.Data.Methods
             }
 
             var dbActiveActivity = db.TimeSheetActivities.Include(k => k.IpAddress).
-                FirstOrDefault(k => db.TimeSheetTasks.Any(t => t.ID == k.TimeSheetTaskId) && !k.ToDate.HasValue);
-
+                FirstOrDefault(k => db.TimeSheetTasks.Any(t => t.ID == k.TimeSheetTaskId) && !k.ToDate.HasValue && !k.DeletedAt.HasValue);
 
 
             return dbActiveActivity != null ? _mapper.Map<TimeSheetActivity>(dbActiveActivity) : null;
@@ -255,7 +265,6 @@ namespace ProjectTracking.Data.Methods
         //    }
         //}
 
-
         public TimeSheetActivity Get(int id)
         {
             DataSets.TimeSheetActivity dbActivity = db.TimeSheetActivities
@@ -288,7 +297,7 @@ namespace ProjectTracking.Data.Methods
         {
             List<DataSets.TimeSheetActivity> dbActivities = db.TimeSheetActivities
                                                               .Include(k => k.TimeSheetTask)
-                                                              .Where(k => k.TimeSheetTask.TimeSheetId == timesheetId)
+                                                              .Where(k => k.TimeSheetTask.TimeSheetId == timesheetId && !k.DeletedAt.HasValue)
                                                               .ToList();
 
             if (dbActivities == null)
@@ -298,24 +307,31 @@ namespace ProjectTracking.Data.Methods
 
             List<TimeSheetActivity> activities = dbActivities.Select(_mapper.Map<TimeSheetActivity>).ToList();
 
-            PopulateIpAddresses(activities, db.IpAddresses.ToList());
+            //PopulateIpAddresses(activities, db.IpAddresses.ToList());
 
             return activities;
         }
 
-
-        public bool Delete(int id)
+        public void Delete(int id)
         {
             DataSets.TimeSheetActivity dbActivity = db.TimeSheetActivities.FirstOrDefault(k => k.ID == id);
 
-            if (dbActivity != null)
+            if (dbActivity == null)
             {
-                db.TimeSheetActivities.Remove(dbActivity);
-
-                return db.SaveChanges() > 0;
+                throw new ClientException("dont exist");
             }
 
-            return false;
+            dbActivity.DeletedAt = DateTime.Now;
+
+            db.SaveChanges();
+            //if (dbActivity != null)
+            //{
+            //    db.TimeSheetActivities.Remove(dbActivity);
+
+            //    return db.SaveChanges() > 0;
+            //}
+
+            //return false;
         }
 
         public User GetActivityUser(int id)
@@ -369,56 +385,56 @@ namespace ProjectTracking.Data.Methods
 
         #region STATIC
 
-        public static void PopulateIpAddress(DataContract.TimeSheetActivity activity, List<DataSets.IpAddress> ips)
-        {
-            //if (activity != null && activity.IpAddress != null)
-            //{
-            //    DataSets.IpAddress address = ips.FirstOrDefault(k => k.Address == activity.IpAddress);
+        //public static void PopulateIpAddress(DataContract.TimeSheetActivity activity, List<DataSets.IpAddress> ips)
+        //{
+        //    //if (activity != null && activity.IpAddress != null)
+        //    //{
+        //    //    DataSets.IpAddress address = ips.FirstOrDefault(k => k.Address == activity.IpAddress);
 
-            //    if (address != null)
-            //    {
-            //        activity.IpAddressDisplay = address.Title;
-            //    }
-            //}
-        }
+        //    //    if (address != null)
+        //    //    {
+        //    //        activity.IpAddressDisplay = address.Title;
+        //    //    }
+        //    //}
+        //}
 
-        public static void PopulateIpAddress(DataContract.TimeSheetActivityLog activity, List<DataSets.IpAddress> ips)
-        {
-            //if (activity != null && activity.IpAddress != null)
-            //{
-            //    DataSets.IpAddress address = ips.FirstOrDefault(k => k.Address == activity.IpAddress);
+        //    public static void PopulateIpAddress(DataContract.TimeSheetActivityLog activity, List<DataSets.IpAddress> ips)
+        //    {
+        //        //if (activity != null && activity.IpAddress != null)
+        //        //{
+        //        //    DataSets.IpAddress address = ips.FirstOrDefault(k => k.Address == activity.IpAddress);
 
-            //    if (address != null)
-            //    {
-            //        activity.IpAddressDisplay = address.Title;
-            //    }
-            //}
-        }
+        //        //    if (address != null)
+        //        //    {
+        //        //        activity.IpAddressDisplay = address.Title;
+        //        //    }
+        //        //}
+        //    //}
 
-        public static void PopulateIpAddresses(List<DataContract.TimeSheetActivity> activities, List<DataSets.IpAddress> ips)
-        {
-            //if (activities.Count > 0)
-            //{
-            //    //List<DataSets.IpAddress> ips = db.IpAddresses.ToList();
+        //    //public static void PopulateIpAddresses(List<DataContract.TimeSheetActivity> activities, List<DataSets.IpAddress> ips)
+        //    //{
+        //    //    //if (activities.Count > 0)
+        //    //    //{
+        //    //    //    //List<DataSets.IpAddress> ips = db.IpAddresses.ToList();
 
-            //    foreach (DataContract.TimeSheetActivity activity in activities)
-            //    {
-            //        PopulateIpAddress(activity, ips);
-            //    }
-            //}
-        }
-        public static void PopulateIpAddresses(List<DataContract.TimeSheetActivityLog> activities, List<DataSets.IpAddress> ips)
-        {
-            //if (activities.Count > 0)
-            //{
-            //    //List<DataSets.IpAddress> ips = db.IpAddresses.ToList();
+        //    //    //    foreach (DataContract.TimeSheetActivity activity in activities)
+        //    //    //    {
+        //    //    //        PopulateIpAddress(activity, ips);
+        //    //    //    }
+        //    //    //}
+        //    //}
+        //    //public static void PopulateIpAddresses(List<DataContract.TimeSheetActivityLog> activities, List<DataSets.IpAddress> ips)
+        //    //{
+        //    //    //if (activities.Count > 0)
+        //    //    //{
+        //    //    //    //List<DataSets.IpAddress> ips = db.IpAddresses.ToList();
 
-            //    foreach (DataContract.TimeSheetActivityLog activity in activities)
-            //    {
-            //        PopulateIpAddress(activity, ips);
-            //    }
-            //}
-        }
+        //    //    //    foreach (DataContract.TimeSheetActivityLog activity in activities)
+        //    //    //    {
+        //    //    //        PopulateIpAddress(activity, ips);
+        //    //    //    }
+        //    //    //}
+        //    //}
 
         public ProjectTask GetActivityProjectTask(int id)
         {
@@ -429,5 +445,6 @@ namespace ProjectTracking.Data.Methods
 
 
         #endregion
+
     }
 }

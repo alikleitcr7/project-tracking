@@ -53,6 +53,6 @@ const TimeSheetActivitiesService = {
 
         let url = TIMESHEET_ACTIVITIES_SERVICE_URI(`Delete?id=${id}`)
 
-        return axios.post(url)
+        return axios.delete(url)
     }
 }

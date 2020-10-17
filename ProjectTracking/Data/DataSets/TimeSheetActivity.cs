@@ -32,9 +32,10 @@ namespace ProjectTracking.Data.DataSets
     {
         [Column(Order = 1)]
         public int TimeSheetTaskId { get; set; }
+        public DateTime? DeletedAt { get; set; }
         public virtual TimeSheetTask TimeSheetTask { get; set; }
 
-        public  virtual ICollection<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
+        public virtual ICollection<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
     }
 
     public class TimeSheetActivityLog : TimeSheetActivityBase

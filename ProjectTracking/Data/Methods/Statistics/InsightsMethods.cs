@@ -84,13 +84,9 @@ namespace ProjectTracking.Data.Methods.Statistics
                       .Select(_mapper.Map<TimeSheetActivity>)
                       .ToList();
 
-            TimeSheetActivitiesMethods.PopulateIpAddresses(records, _db.IpAddresses.ToList());
+            //TimeSheetActivitiesMethods.PopulateIpAddresses(records, _db.IpAddresses.ToList());
 
             return records;
         }
-
-
-
-
     }
 }

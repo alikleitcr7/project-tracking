@@ -271,11 +271,14 @@ namespace ProjectTracking.Data.Methods
         public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, int? taskId, DateTime date)
         {
             var dbTimeSheetActivities = db.TimeSheetActivities
-                .Include(k => k.TimeSheetTask)
+                //.Include(k => k.TimeSheetTask)
+                .Include(k => k.IpAddress)
                 .Where(k => k.TimeSheetTask != null && k.TimeSheetTask.ProjectTaskId == taskId
                             && k.FromDate.Month == date.Month
                             && k.FromDate.Day == date.Day
-                            && k.FromDate.Year == date.Year).ToList();
+                            && k.FromDate.Year == date.Year
+                            && !k.DeletedAt.HasValue
+                            ).ToList();
 
             if (dbTimeSheetActivities.Count == 0)
             {
@@ -284,7 +287,7 @@ namespace ProjectTracking.Data.Methods
 
             List<TimeSheetActivity> activities = dbTimeSheetActivities.Select(_mapper.Map<TimeSheetActivity>).ToList();
 
-            TimeSheetActivitiesMethods.PopulateIpAddresses(activities, db.IpAddresses.ToList());
+            //TimeSheetActivitiesMethods.PopulateIpAddresses(activities, db.IpAddresses.ToList());
 
             return activities;
         }

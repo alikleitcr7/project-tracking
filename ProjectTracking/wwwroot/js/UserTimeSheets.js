@@ -106,6 +106,8 @@ const activityModalObject = () => {
         isSaving: false,
         isDismissing: false,
         isLocked: false,
+        isDeleted: false,
+        isSaved: false,
         message: ''
     }
 }
@@ -118,492 +120,6 @@ const getActiveActivity = (activity, tagIndex, projectIndex, subProjectIndex) =>
         subProjectIndex: parseInt(subProjectIndex)
     }
 }
-
-/**
- * @param {UserTimeSheetsApp} app
- * @param {TimeSheetActivity} activities
- */
-function SetTimeSheetProjetsActivities(app, activities) {
-
-    //console.log({ activities })
-    //app.activeActivities = [];
-
-    let filteredProjects = [...app.activeTimeSheet.projects];
-
-    for (var i = 0; i < filteredProjects.length; i++) {
-        for (var j = 0; j < filteredProjects[i].tasks.length; j++) {
-
-            //let subProject = filteredProjects[i].tasks[j]
-
-
-            let subProjectActivities = activities.filter(k => k.timeSheetProjectId === filteredProjects[i].tasks[j].id)
-
-            filteredProjects[i].tasks[j].activities = subProjectActivities
-
-
-            let activeTagIndex = subProjectActivities.findIndex(k => !k.toDate);
-
-            if (activeTagIndex > -1) {
-
-
-                let subProjectActiveActivity = subProjectActivities[activeTagIndex]
-
-                const activeActivityParsed = getActiveActivity(subProjectActiveActivity, activeTagIndex, i, j)
-
-                let activityExist = false
-                if (app.activeActivities && app.activeActivities.length) {
-                    activityExist = app.activeActivities.findIndex(k => k.projectIndex === activeActivityParsed.projectIndex && k.subProjectIndex === activeActivityParsed.subProjectIndex) > -1
-                }
-
-
-                if (!activityExist) {
-
-                    app.activeActivities.push(activeActivityParsed)
-                }
-
-                filteredProjects[i].tasks[j].isActive = true
-            }
-            else {
-
-                filteredProjects[i].tasks[j].isActive = false
-            }
-
-
-            //filteredProjects[i].tasks[j].activities = filteredProjects[i].tasks[j].activities.map(a => ({
-            //    ...a,
-            //    oFromDate: moment(a.fromDate),
-            //    oToDate: a.toDate ? moment(a.toDate) : null,
-            //}))
-        }
-    }
-
-    //console.log({filteredProjects})
-
-    app.filteredProjects = filteredProjects
-    //app.timesheetsAreLoading = false
-}
-
-var activityMethods = {
-    openNewActivityModal: function (fromDate, timesheetProjectId, data) {
-
-        this.endActivityData = data
-
-
-        /** @type {ActivityModalObject} */
-        let activityModal = { ...this.activityModal }
-
-        // reset form
-        activityModal.form = activityModalForm()
-        activityModal.form.timeSheetProjectId = timesheetProjectId;
-        //activityModal.form.fromDate = fromDate;
-        //activityModal.form.toDate = moment().format(dateTimeOptions.format);
-
-        activityModal.isDeleting = false
-        activityModal.isSaving = false
-        activityModal.isDismissing = false
-
-        this.activityModal = activityModal
-
-        Modals_TimeSheets.ActivityModal.Show()
-    },
-    openEditActivityModal: function (activity, tagIdx, subProjectIdx, projectIdx, locked = false) {
-
-        /** @type {ActivityModalObject} */
-        let activityModal = { ...this.activityModal }
-
-        // set form
-        activityModal.form = activityModalForm(activity)
-        console.log({ form: activityModal.form })
-        activityModal.isDeleting = false
-        activityModal.isLoading = false
-        activityModal.isLocked = locked
-        activityModal.message = ''
-        activityModal.isDismissing = false
-
-        this.activeSubProject = this.filteredProjects[projectIdx].tasks[subProjectIdx]
-        this.activeActivityData = { activity, tagIdx, subProjectIdx, projectIdx }
-        console.log(activity, tagIdx, subProjectIdx, projectIdx)
-
-        this.activityModal = activityModal
-
-        Modals_TimeSheets.ActivityModal.Show()
-    },
-    addActivity: function () {
-
-        /** @type {UserTimeSheetsApp} */
-        const app = this;
-
-        /** @type {ActivityModalObject} */
-        let activityModal = { ...this.activityModal }
-
-        // validate
-        if (activityModal.form.number !== null && activityModal.form.number !== '' && !isNumber(activityModal.form.number)) {
-
-            this.activityModal.message = 'Number field should be a valid number';
-
-            return;
-        }
-
-        /** @type {TimeSheetActivity} */
-        const activity = activityDataContractObject(activityModal.form)
-
-        this.activityModal.message = '';
-
-        // set loading
-        activityModal.isLoading = true;
-        this.activityModal = activityModal
-
-        // send add request
-        TimeSheetActivitiesService.Add(activity)
-            .then((r) => {
-                if (r && r.data) {
-
-                    const { projectIndex, subProjectIndex } = this.endActivityData
-
-                    let subProject = { ...app.filteredProjects[projectIndex].tasks[subProjectIndex] }
-                    subProject.isActive = false
-                    subProject.activities.push(r.data);
-
-                    this.filteredProjects[projectIndex].tasks[subProjectIndex] = subProject;
-
-                    let activeActivityIdx = this.activeActivities.findIndex(k => k.projectIndex === projectIndex && k.subProjectIndex === subProjectIndex)
-
-                    if (activeActivityIdx !== -1) {
-                        console.log('removing from active activities')
-                        this.activeActivities.splice(activeActivityIdx, 1)
-                    }
-
-                    Modals_TimeSheets.ActivityModal.Hide()
-
-                    console.log('activity add', r.data)
-                }
-                else {
-                    activityModal.message = BASIC_ERROR_MESSAGE;
-                }
-            })
-            .catch((e) => {
-                console.log(e)
-                activityModal.message = BASIC_ERROR_MESSAGE;
-            })
-            .then(() => {
-
-                activityModal.isLoading = false;
-                this.activityModal = activityModal
-            });
-    },
-    saveActivity: function () {
-
-        /** @type {UserTimeSheetsApp} */
-        const app = this;
-
-        /** @type {ActivityModalObject} */
-        let activityModal = { ...this.activityModal }
-
-        // validate
-        if (activityModal.form.number !== null && activityModal.form.number !== '' && !isNumber(activityModal.form.number)) {
-
-            this.activityModal.message = 'Number field should be a valid number';
-
-            return;
-        }
-
-        /** @type {TimeSheetActivity} */
-        const activity = activityDataContractObject(activityModal.form)
-
-        this.activityModal.message = '';
-
-        // set loading
-        this.activityModal = activityModal
-
-        const tsFromDate = app.activeTimeSheet.fromDate
-        const tsToDateLimit = moment(app.activeTimeSheet.toDate).add(5, 'days');
-        //console.log({tsToDateLimit})
-        if (!moment(activity.FromDate).isBefore(activity.ToDate)) {
-            alert("from date must be before to date")
-            return
-        }
-
-        const fromDateValid = moment(activity.FromDate).isBetween(tsFromDate, tsToDateLimit)
-        const toDateValid = moment(activity.ToDate).isBetween(tsFromDate, tsToDateLimit)
-
-        if (!fromDateValid || !toDateValid) {
-            alert("from/to date must fall between timesheet's from/to date")
-            return;
-        }
-
-
-        activityModal.isSaving = true;
-        this.activityModal = activityModal
-
-        // send add request
-        TimeSheetActivitiesService.Update(activity)
-            .then((r) => {
-                if (r && r.data) {
-
-                    const { tagIdx, subProjectIdx, projectIdx } = this.activeActivityData;
-
-                    let subProject = { ...app.filteredProjects[projectIdx].tasks[subProjectIdx] }
-
-                    subProject.isLoading = false
-
-                    console.log({ activeActivities: this.activeActivities })
-
-                    const activeActivity = this.activeActivities.find(k => k.activity.id === r.data.id);
-                    console.log({ activeActivity })
-                    if (activeActivity && subProject.isActive) {
-
-                        console.log('is active')
-                        subProject.isActive = false
-
-                        /**@type {Array<ActiveActivity>} */
-                        let activeActivities = [...this.activeActivities]
-
-                        let activeTagIdx = activeActivities.findIndex(k => k.activity.id === r.data.id)
-
-                        if (activeTagIdx > -1) {
-                            activeActivities.splice(activeTagIdx, 1)
-
-                            this.activeActivities = activeActivities
-                        }
-
-                    }
-
-
-                    subProject.activities[tagIdx] = r.data;
-
-                    this.filteredProjects[projectIdx].tasks[subProjectIdx] = subProject;
-
-                    activityModal.message = 'Saved!';
-
-                    //Modals_TimeSheets.ActivityModal.Hide()
-
-                    console.log('activity add', r.data)
-                }
-                else {
-                    activityModal.message = BASIC_ERROR_MESSAGE;
-                }
-            })
-            .catch((e) => {
-                console.error(e)
-                activityModal.message = BASIC_ERROR_MESSAGE;
-            })
-            .then(() => {
-
-                activityModal.isSaving = false;
-                this.activityModal = activityModal
-            });
-    },
-    dismissActivity: function () {
-
-    },
-    deleteActivity: function () {
-
-        if (!confirm('Confirm Deletion')) {
-            return;
-        }
-
-        /**@type {ActivityModalObject} */
-        let activityModal = this.activityModal
-
-        activityModal.isDeleting = true
-
-        this.activityModal = activityModal
-
-        const { tagIdx, subProjectIdx, projectIdx } = this.activeActivityData;
-
-        /**@type {TimeSheetActivity} */
-        const activity = this.activeActivityData.activity
-
-        TimeSheetActivitiesService.Delete(activity.id)
-            .then(r => {
-                console.log({ r })
-                if (r) {
-
-                    let filteredProjects = { ...this.filteredProjects }
-
-                    let subProject = filteredProjects[projectIdx].tasks[subProjectIdx]
-
-                    if (subProject.isActive) {
-                        subProject.isActive = false
-
-                        /**@type {Array<ActiveActivity>} */
-                        let activeActivities = [...this.activeActivities]
-
-                        let activeTagIdx = activeActivities.findIndex(k => k.activity.id === activity.id)
-
-                        if (activeTagIdx > -1) {
-                            activeActivities.splice(activeTagIdx, 1)
-
-                            this.activeActivities = activeActivities
-                        }
-
-                    }
-
-
-
-
-
-                    let activities = [...subProject.activities]
-
-                    activities.splice(tagIdx, 1)
-
-                    subProject.activities = activities
-
-                    filteredProjects[projectIdx].tasks[subProjectIdx] = subProject
-
-                    this.filteredProjects = filteredProjects
-
-                    alert('Deleted');
-                    Modals_TimeSheets.ActivityModal.Hide();
-                }
-                else {
-                    activityModal.message = BASIC_ERROR_MESSAGE
-                }
-            })
-            .catch(e => {
-
-                activityModal.message = BASIC_INTERNAL_ERROR_MESSAGE
-                console.error(e)
-            })
-            .then(() => {
-
-                activityModal.isDeleting = false
-                this.activityModal = activityModal
-            })
-
-        ///** @type {ActivityModalObject} */
-        //let activityModal = { ...this.activityModal }
-
-        //let data = [...this.projects.data];
-
-        //let project = data[idx];
-
-        //InventoryProjectsService.Delete(project.id).done((r) => {
-
-        //    if (r) {
-        //        console.log({ data, idx })
-        //        data.splice(idx, 1);
-        //        this.projects.data = data
-        //        this.projects.message = 'Deleted!';
-        //    }
-        //    else {
-        //        this.projects.message = BASIC_ERROR_MESSAGE;
-        //    }
-
-        //}).fail((e) => {
-
-        //    console.error({ e })
-        //    this.projects.message = BASIC_ERROR_MESSAGE;
-
-        //}).always(() => {
-        //    this.projects.isLoading = false
-        //});
-    },
-    handleFileFocus: function () {
-
-        let files = { ...this.activityModal.files };
-
-        let fileName = this.activityModal.form.fileName
-
-        files.isVisible = fileName && fileName.length > 0
-        files.isFocused = true
-
-        this.activityModal.files = files
-
-    },
-    handleFileBlur: function (e) {
-
-
-        let targetClassName = e.explicitOriginalTarget &&
-            e.explicitOriginalTarget.parentElement &&
-            e.explicitOriginalTarget.parentElement.className
-
-
-        if (targetClassName === undefined && e.target) {
-            targetClassName = e.target.name
-        }
-
-        const hintListClasses = ['hint-list', 'hint-list__item', 'fileName']
-        const isHintList = targetClassName ? hintListClasses.includes(targetClassName) : false
-
-        if (!isHintList) {
-            this.closeFilesHints()
-        }
-
-    },
-    handleFileClick: function (file) {
-
-
-        this.activityModal.form.fileId = file.id
-        this.activityModal.form.fileName = file.name
-
-        this.closeFilesHints()
-    },
-    closeFilesHints: function () {
-
-        let files = { ...this.activityModal.files }
-
-        files.isFocused = false
-        //files.data = []
-        files.isVisible = false
-
-        this.activityModal.files = files
-    },
-    handleFileChange: function (e) {
-
-        const { value } = e.target;
-        console.log({ value });
-
-
-        this.activityModal.form.fileId = null
-
-        if (delayTimer) {
-            clearTimeout(delayTimer);
-        }
-
-        let files = { ...this.activityModal.files }
-
-        files.data = []
-        files.hasResults = true
-        files.isDirty = true
-
-        if (!value) {
-            this.closeFilesHints()
-            return;
-        }
-
-        this.activityModal.files = files
-
-        /** @type {TimeSheetProjectModelSubProject} */
-        const activeSubProject = this.activeSubProject;
-
-        //console.log({ activeSubProject })
-
-        delayTimer = setTimeout(() => {
-
-            this.activityModal.files.isVisible = true
-            this.activityModal.files.areLoading = true;
-
-            ProjectFilesService.Search(value, activeSubProject.parentId)
-                .done(r => {
-                    const data = r;
-                    //console.log({ data });
-
-                    files.data = data
-
-                    files.hasResults = files.data.length > 0
-                    this.activityModal.files = files
-
-                })
-                .fail(e => console.error(e))
-                .always(() => {
-                    files.areLoading = false
-                })
-
-        }, 500);
-    }
-}
-
 
 const TASK_STATUSES_KEYS = {
     PENDING: 0,
@@ -757,10 +273,77 @@ var user_timesheet_app = new Vue({
             }
 
             return toDate ? (isLoading ? 'Saving...' : 'Save') : (isLoading ? 'Commit...' : 'Commit')
-        }
+        },
+        activityModalDeleteButtonLabel: function () {
+
+            const { id, fromDate, toDate } = this.activityModal.form
+
+            const isDeleting = this.activityModal.isDeleting
+
+            if (!id) {
+                return ''
+            }
+
+            return toDate ? (isDeleting ? 'Deleting...' : 'Delete') : (isDeleting ? 'Dismiss...' : 'Dismiss')
+        },
     },
     methods: {
-        ...activityMethods,
+        deleteActivity: function () {
+
+            if (!confirm('Confirm Deletion')) {
+                return;
+            }
+
+            /**@type {ActivityModalObject} */
+            let activityModal = { ...this.activityModal }
+
+            activityModal.isDeleted = false
+            activityModal.isDeleting = true
+
+            this.activityModal = activityModal
+
+
+            //const { tagIdx, subProjectIdx, projectIdx } = this.activeActivityData;
+
+            /**@type {TimeSheetActivity} */
+            //const activity = this.activeActivityData.activity
+
+            const id = activityModal.form.id;
+
+            TimeSheetActivitiesService.Delete(id)
+                .then(r => {
+
+                    const deleted = r.data
+
+                    if (!deleted) {
+                        activityModal.message = BASIC_ERROR_MESSAGE
+                        return
+                    }
+
+                    let activities = [...this.taskActivities.data]
+
+                    let activityToDeleteIdx = activities.findIndex(k => k.id === id)
+
+
+                    if (activityToDeleteIdx !== -1) {
+                        activities.splice(activityToDeleteIdx, 1)
+                        this.taskActivities.data = activities
+                    }
+
+                    activityModal.isDeleted = true
+                })
+                .catch(e => {
+
+                    console.error('delete', e)
+                    activityModal.message = getAxiosErrorMessage(e)
+                })
+                .then(() => {
+
+                    activityModal.isDeleting = false
+                    this.activityModal = activityModal
+                })
+
+        },
         startActivity: function () {
 
             const task = this.selectedTask
@@ -819,28 +402,32 @@ var user_timesheet_app = new Vue({
 
             //activityModal.form.id = activity.id
 
+            activityModal.isDeleted = false
+            activityModal.isSaved = false
             activityModal.isDeleting = false
             activityModal.isLoading = false
             activityModal.isLocked = false
             activityModal.message = ''
-            activityModal.isDismissing = false
+            //activityModal.isDismissing = false
 
             this.activityModal = activityModal
 
             Modals_TimeSheets.ActivityModal.Show()
         },
-        commitActivity: function () {
+        saveActivity: function () {
 
             //const task = this.activeTask
-            const activity = this.activeActivity
-
-            if (!activity) {
-                console.error('no active activity')
-                return
-            }
+            //const activity = this.activeActivity
 
             /** @type {ActivityModalObject} */
             let activityModal = { ...this.activityModal }
+            let form = activityModal.form
+
+
+            if (!form.id) {
+                console.error('no active activity in the form')
+                return
+            }
 
             activityModal.message = ''
 
@@ -849,7 +436,6 @@ var user_timesheet_app = new Vue({
                 this.activityModal = activityModal
                 return
             }
-
 
             this.activityModal = activityModal
 
@@ -876,6 +462,7 @@ var user_timesheet_app = new Vue({
                     activityId: activityModal.form.id,
                 }
             }
+
             if (isUpdate) {
                 TimeSheetActivitiesService.Update(model)
                     .then(r => {
@@ -887,11 +474,12 @@ var user_timesheet_app = new Vue({
                             return
                         }
 
+                        activityModal.isSaved = true
                         //this.activeTask = null
                         //this.activeActivity = null
 
                         this.taskActivities.data = this.taskActivities.data
-                            .map(k => k.id === model.activityId ? record : k)
+                            .map(k => k.id === model.id ? record : k)
                     })
                     .catch(e => {
 
@@ -915,6 +503,8 @@ var user_timesheet_app = new Vue({
                             return
                         }
 
+                        activityModal.isSaved = true
+
                         this.activeTask = null
                         this.activeActivity = null
 
@@ -933,95 +523,9 @@ var user_timesheet_app = new Vue({
                     })
             }
 
-
         },
         getActivityTitle: function (activity) {
             return activity.toDate ? activity.message : 'Active'
-        },
-        startActiveActivity: function (projectIndex, subProjectIndex, subProject) {
-
-            console.log('starting activity', { projectIndex, subProjectIndex })
-
-            let activeActivities = [...this.activeActivities]
-
-            let activeActivityIdx = activeActivities.findIndex(k => k.projectIndex === projectIndex && k.subProjectIndex === subProjectIndex)
-
-            if (activeActivityIdx > -1) {
-                alert('Already Active')
-                return;
-            }
-
-            // update filtered project : set > active
-            let filteredProjects = { ...this.filteredProjects }
-
-            filteredProjects[projectIndex].tasks[subProjectIndex].isActive = true
-
-            //activityId
-            console.log({ subProject })
-
-            let fromDate = moment().format(dateTimeOptions.format)
-            let timesheetProjectId = filteredProjects[projectIndex].tasks[subProjectIndex].id
-
-
-            let activity = activityDataContractStartObject(timesheetProjectId, fromDate)
-
-            TimeSheetActivitiesService.Save(activity)
-                .then((r) => {
-                    if (r && r.data) {
-
-
-                        const activeTagIndex = filteredProjects[projectIndex].tasks[subProjectIndex].activities.length
-                        const activeActivityParsed = getActiveActivity(r.data, activeTagIndex, projectIndex, subProjectIndex)
-
-                        // add active activity
-                        activeActivities.push(activeActivityParsed)
-
-                        filteredProjects[projectIndex].tasks[subProjectIndex].activities.push(r.data)
-                        //let activeActivityIdx = this.activeActivities.findIndex(k => k.projectIndex === projectIndex && k.subProjectIndex === subProjectIndex)
-                    }
-                    else {
-                        alert(BASIC_ERROR_MESSAGE)
-                    }
-                })
-                .catch((e) => {
-                    console.log(e)
-                    alert(BASIC_INTERNAL_ERROR_MESSAGE)
-                })
-                .then(() => {
-                    this.activeActivities = activeActivities
-                    this.filteredProjects = filteredProjects
-                });
-
-            // set app data
-        },
-        endActiveActivity: function (projectIndex, subProjectIndex, subProject) {
-
-            let activeActivities = [...this.activeActivities]
-
-            projectIndex = parseInt(projectIndex)
-            subProjectIndex = parseInt(subProjectIndex)
-
-            let activeActivityIdx = activeActivities.findIndex(k => k.projectIndex === projectIndex && k.subProjectIndex === subProjectIndex)
-
-            if (activeActivityIdx === -1) {
-                alert('Project Did Not Start')
-                return;
-            }
-
-            /** @type {ActiveActivity} */
-            let activity = activeActivities[activeActivityIdx]
-
-            //const endActivityData = { projectIndex, subProjectIndex, subProject }
-            console.log({ activity })
-
-
-            activity.activity.toDate = moment().format(dateTimeOptions.format);
-
-            this.openEditActivityModal(activity.activity, activity.tagIndex, activity.subProjectIndex, activity.projectIndex, true)
-
-            //this.openNewActivityModal(activity.fromDate, activity.timesheetProjectId, endActivityData)
-            this.activeSubProject = subProject
-            //activeActivities.splice(activeActivityIdx, 1)
         },
         openTimeSheet: function (timesheet) {
 

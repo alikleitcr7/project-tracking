@@ -97,6 +97,25 @@ namespace ProjectTracking.Controllers
             }
         }
 
+        [HttpDelete]
+        public IActionResult Delete(int id)
+        {
+            try
+            {
+                _activitiesMethods.Delete(id);
+
+                return Ok(true);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
         //public TimeSheetActivity Add([FromBody]TimeSheetActivity activity)
         //{
 
@@ -135,9 +154,5 @@ namespace ProjectTracking.Controllers
         //    return _activitiesMethods.Update(activity, ipAddress);
         //}
 
-        public bool Delete(int id)
-        {
-            return _activitiesMethods.Delete(id);
-        }
     }
 }
