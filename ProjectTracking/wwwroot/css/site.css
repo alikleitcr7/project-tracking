@@ -637,6 +637,14 @@ p.skeleton-loading-item::after {
 .s-btn.s-btn-danger:hover {
   background-color: #860707;
 }
+.s-btn.s-btn-o-danger {
+  background-color: transparent;
+  border: 1px solid #b00808;
+  color: #b00808;
+}
+.s-btn.s-btn-o-danger:hover {
+  background-color: rgba(212, 212, 212, 0.34);
+}
 .s-btn.s-btn-lg {
   padding: 1em 1.3em;
 }

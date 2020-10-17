@@ -747,6 +747,16 @@ var user_timesheet_app = new Vue({
             const { activeDateIdx, activeDateIndexIsCurrentDay } = this
 
             return activeDateIdx === activeDateIndexIsCurrentDay
+        },
+        activityModalSaveButtonLabel: function () {
+            const { id, fromDate, toDate } = this.activityModal.form
+            const isLoading = this.activityModal.isLoading
+
+            if (!id) {
+                return ''
+            }
+
+            return toDate ? (isLoading ? 'Saving...' : 'Save') : (isLoading ? 'Commit...' : 'Commit')
         }
     },
     methods: {
@@ -789,12 +799,12 @@ var user_timesheet_app = new Vue({
                     this.taskActivities.isStarting = false
                 })
         },
-        openActivityCommitModal: function () {
+        openActivityCommitModal: function (activity) {
 
             //const task = this.activeTask
 
             /** @type {ActivityModalForm} */
-            const activity = this.activeActivity
+            activity = activity || this.activeActivity
 
             if (!activity) {
                 console.error('no active activity')
@@ -840,43 +850,90 @@ var user_timesheet_app = new Vue({
                 return
             }
 
-            // set form
-            activityModal.isLoading = true
-
 
             this.activityModal = activityModal
 
-            const model = {
-                activityId: activityModal.form.id,
-                message: activityModal.form.message
+            let model = {
+                message: activityModal.form.message,
             }
 
-            TimeSheetActivitiesService.Stop(model)
-                .then(r => {
+            const isUpdate = activityModal.form.toDate != null
 
-                    const record = r.data
+            activityModal.isLoading = true
 
-                    if (!record) {
-                        this.taskActivities.message = BASIC_ERROR_MESSAGE
-                        return
-                    }
+            if (isUpdate) {
 
-                    this.activeTask = null
-                    this.activeActivity = null
+                model = {
+                    ...model,
+                    id: activityModal.form.id,
+                    fromDate: activityModal.form.fromDate,
+                    toDate: activityModal.form.toDate
+                }
+            }
+            else {
+                model = {
+                    ...model,
+                    activityId: activityModal.form.id,
+                }
+            }
+            if (isUpdate) {
+                TimeSheetActivitiesService.Update(model)
+                    .then(r => {
 
-                    this.taskActivities.data = this.taskActivities.data
-                        .map(k => k.id === model.activityId ? record : k)
-                })
-                .catch(e => {
+                        const record = r.data
 
-                    console.error('stop', e)
+                        if (!record) {
+                            this.taskActivities.message = BASIC_ERROR_MESSAGE
+                            return
+                        }
 
-                    activityModal.message = getAxiosErrorMessage(e)
-                })
-                .then(() => {
-                    activityModal.isLoading = true
-                    this.activityModal = activityModal
-                })
+                        //this.activeTask = null
+                        //this.activeActivity = null
+
+                        this.taskActivities.data = this.taskActivities.data
+                            .map(k => k.id === model.activityId ? record : k)
+                    })
+                    .catch(e => {
+
+                        console.error('stop', e)
+
+                        activityModal.message = getAxiosErrorMessage(e)
+                    })
+                    .then(() => {
+                        activityModal.isLoading = false
+                        this.activityModal = activityModal
+                    })
+            }
+            else {
+                TimeSheetActivitiesService.Stop(model)
+                    .then(r => {
+
+                        const record = r.data
+
+                        if (!record) {
+                            this.taskActivities.message = BASIC_ERROR_MESSAGE
+                            return
+                        }
+
+                        this.activeTask = null
+                        this.activeActivity = null
+
+                        this.taskActivities.data = this.taskActivities.data
+                            .map(k => k.id === model.activityId ? record : k)
+                    })
+                    .catch(e => {
+
+                        console.error('stop', e)
+
+                        activityModal.message = getAxiosErrorMessage(e)
+                    })
+                    .then(() => {
+                        activityModal.isLoading = false
+                        this.activityModal = activityModal
+                    })
+            }
+
+
         },
         getActivityTitle: function (activity) {
             return activity.toDate ? activity.message : 'Active'
@@ -1191,7 +1248,7 @@ var user_timesheet_app = new Vue({
                     taskActivities.isLoading = false
                     this.taskActivities = taskActivities
                 })
-        }
+        },
     },
     mounted: function () {
 

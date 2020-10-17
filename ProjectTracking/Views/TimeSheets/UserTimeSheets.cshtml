@@ -126,8 +126,10 @@
                         <span class="c-box-title"></span>
                     </div>
 
-
-                    <div class="c-box" :class="{'active':!activity.toDate}" v-for="activity in taskActivities.data">
+                    <div class="c-box c-box-clickable" 
+                         v-for="activity in taskActivities.data"
+                         @@click="openActivityCommitModal(activity)" 
+                         :class="{'active':!activity.toDate}" >
                         <div class="c-box-title">{{getActivityTitle(activity)}}</div>
                         <small>{{activity.fromDateDisplay}}</small>
                     </div>
@@ -157,7 +159,7 @@
 
                         <table class="table table-borderless">
 
-                            <tr v-bind:class="{'disabled-section':activityModal.isLocked}" v-show="activityModal.toDate">
+                            <tr v-bind:class="{'disabled-section':activityModal.isLocked}" v-show="activityModal.form.toDate">
                                 <td>
                                     <div class="modal-control">
                                         <label>From Date</label>
@@ -188,11 +190,17 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button v-if="!readOnly && !activityModal.toDate" type="button" class="btn btn-default" v-on:click="commitActivity">Commit</button>
-                    <button v-show="!readOnly && activityModal.toDate" type="button" class="btn btn-default" v-on:click="saveActivity">{{activityModal.isSaving? 'Saving...': 'Save'}}</button>
-                    <a v-show="activityModal.form.id !== 0" target="_blank" class="btn btn-default" v-bind:href="`/timesheets/TimeSheetActivityLog?activityId=${activityModal.form.id}`">Logs</a>
-                    <button v-show="!readOnly &&  activityModal.form.id === 0" type="button" class="btn btn-default" v-on:click="dismissActivity">{{activityModal.isDismissing? 'Dismissing...': 'Dismiss'}}</button>
-                    <button v-show="!readOnly && activityModal.form.id !== 0" type="button" class="btn btn-danger" v-on:click="deleteActivity">{{activityModal.isDeleting ? 'Deleting...' : 'Delete'}}</button>
+                    <button v-if="!readOnly"
+                            :disabled="activityModal.isLoading"
+                            type="button"
+                            class="s-btn s-btn-primary"
+                            v-on:click="commitActivity">
+                        {{activityModalSaveButtonLabel}}
+                    </button>
+                    @*<button v-if="!readOnly && activityModal.form.toDate" type="button" class="s-btn s-btn-primary" v-on:click="commitActivity">{{activityModal.isSaving? 'Saving...': 'Save'}}</button>*@
+                    <a v-if="activityModal.form.toDate" target="_blank" class="s-btn s-btn-outline" v-bind:href="`/timesheets/TimeSheetActivityLog?activityId=${activityModal.form.id}`">Logs</a>
+                    <button v-show="!readOnly &&  !activityModal.form.toDate" type="button" class="s-btn s-btn-o-danger" v-on:click="dismissActivity">{{activityModal.isDismissing? 'Dismissing...': 'Dismiss'}}</button>
+                    <button v-show="!readOnly && activityModal.form.toDate" type="button" class="s-btn s-btn-o-danger" v-on:click="deleteActivity">{{activityModal.isDeleting ? 'Deleting...' : 'Delete'}}</button>
                 </div>
 
             </div>

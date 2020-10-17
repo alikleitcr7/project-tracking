@@ -404,7 +404,12 @@
   display: flex;
   flex-wrap: nowrap;
 }
-.c-box-view a.c-box:hover {
+.c-box-view a.c-box,
+.c-box-view .c-box-clickable {
+  cursor: pointer;
+}
+.c-box-view a.c-box:hover,
+.c-box-view .c-box-clickable:hover {
   background-color: #d1d1d1;
 }
 .c-box-view .c-box {
