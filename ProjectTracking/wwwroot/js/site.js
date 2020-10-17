@@ -348,6 +348,17 @@ function getAxiosErrorMessage(e) {
 
 //#endregion 
 
+//function smoothScrollTo(el) {
+
+
+//    event.preventDefault();
+
+//    $('html, body').animate({
+//        scrollTop: $(el).offset().top
+//    }, 500);
+
+//}
+
 //#region Moment Extensions
 
 function calculateBusinessDays(d1, d2, holidays) {

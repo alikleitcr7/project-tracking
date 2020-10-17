@@ -1,12 +1,13 @@
 ﻿@{
     ViewData["Title"] = "User Time Sheets";
 
-    string userId = ViewData["ID"].ToString();
+    string userId = ViewData["UserId"].ToString();
+    string timeSheetId = ViewData["TimeSheetId"]?.ToString();
 }
 
 
 
-<div id="UserTimeSheets" data-user="@userId" data-active-role="0" class="v-container" v-bind:class="{'is-readonly':readOnly}" v-cloak>
+<div id="UserTimeSheets" data-user="@userId" data-timesheet="@timeSheetId" data-active-role="0" class="v-container" v-bind:class="{'is-readonly':readOnly}" v-cloak>
     <h3 v-show="timesheetsAreLoading">Loading...</h3>
     <h3 v-show="!timesheetsAreLoading && !timesheets.length">Nothing Here Yet! <i class="far fa-smile-beam"></i> </h3>
 
@@ -122,8 +123,8 @@
                     <div class="mark-as-container">
                         <div class="dropdown">
                             <button class="s-btn s-btn-outline   dropdown-toggle" type="button" data-toggle="dropdown">
-                                <i :class="getMarkAsIcon()"></i> 
-                                 Mark as <span v-if="selectedTask.statusIsChanging">...</span>
+                                <i :class="getMarkAsIcon()"></i>
+                                Mark as <span v-if="selectedTask.statusIsChanging">...</span>
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">

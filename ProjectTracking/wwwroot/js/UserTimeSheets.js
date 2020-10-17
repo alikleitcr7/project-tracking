@@ -615,7 +615,21 @@ var user_timesheet_app = new Vue({
                     this.activeTimeSheet.datesList = datesList
 
                     if (this.activeDateIndexIsCurrentDay > -1) {
+
+
                         this.openTimeSheetDate(this.activeDateIndexIsCurrentDay)
+
+
+                        setTimeout(() => {
+                            console.log('smooth')
+
+                            const el = $('.user-timesheets-content__days .list-group-item.is-current-day')
+
+                            $('.user-timesheets-content__days').animate({
+                                scrollTop: $(el).offset().top / 2
+                            }, 800);
+
+                        }, 100)
                     }
 
                     //,
@@ -885,7 +899,10 @@ var user_timesheet_app = new Vue({
         var url = new URL(url_string);
 
         var userId = $('#UserTimeSheets').attr('data-user');
+        var timeSheetId = $('#UserTimeSheets').attr('data-timesheet');
         var activeRole = $('#UserTimeSheets').attr('data-active-role');
+
+
 
         //if (userId) {
 
@@ -899,18 +916,22 @@ var user_timesheet_app = new Vue({
         //    //    })
         //}
 
-        const timeSheetId = url.searchParams.get("timeSheetId");
+        //const timeSheetId = url.searchParams.get("timeSheetId");
 
         TimeSheetsService.GetUserTimeSheets(userId)
             .then((r) => {
                 //this.readOnly = true
                 this.timesheets = r.data
 
-                for (var i = 0; i < this.timesheets.length; i++) {
-                    const timesheet = this.timesheets[i]
+                if (timeSheetId) {
 
-                    if (timesheet.id == timeSheetId) {
-                        this.openTimeSheet(timesheet)
+                    for (var i = 0; i < this.timesheets.length; i++) {
+                        const timesheet = this.timesheets[i]
+
+                        if (timesheet.id == timeSheetId) {
+                            this.selectedTimeSheetId = timeSheetId
+                            this.openTimeSheet(timesheet)
+                        }
                     }
                 }
             })

@@ -53,10 +53,14 @@ namespace ProjectTracking.Controllers
             return View();
         }
 
-        [Route("/timesheets/explore/{userId}")]
-        public IActionResult UserTimeSheets(string userId)
+        [Route("/timesheets/explore")]
+        public IActionResult UserTimeSheets(string uid, string tid)
         {
-            ViewData["ID"] = userId ?? User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
+            // uid: userId
+            // tid: timesheetId
+
+            ViewData["UserId"] = uid ?? User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
+            ViewData["TimeSheetId"] = tid;
 
             return View();
         }

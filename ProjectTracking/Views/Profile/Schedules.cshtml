@@ -9,7 +9,7 @@
             Add TimeSheet
         </button>
 
-        <a class="s-btn s-btn-outline" v-bind:href="`/timesheets/explore/${userId}`">Explore
+        <a class="s-btn s-btn-outline" v-bind:href="`/timesheets/explore?uid=${userId}`">Explore
          <i class="fa fa-angle-right"></i>
         </a>
 
@@ -57,9 +57,13 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-sm btn-default" v-on:click="openTimeSheetProjectsModal(timeSheet)">Projects</button>
                         <button type="button" class="btn btn-sm btn-default" v-on:click="editTimeSheet(timeSheet)">Edit</button>
-                        <a class="btn btn-sm btn-default" v-bind:href="`/timesheets?id=${timeSheet.id}`">Time Sheet</a>
+                        @*<a class="btn btn-sm btn-default" v-bind:href="`/timesheets?id=${timeSheet.id}`">Time Sheet</a>*@
+                        <a class="btn btn-sm btn-default" v-bind:href="`/timesheets/explore?uid=${userId}&tid=${timeSheet.id}`">
+                            Explore
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+
                         <button type="button"
-                                
                                 class="btn btn-sm btn-danger"
                                 v-on:click="deleteTimeSheet(timeSheet,idx)">
                             Delete
