@@ -17,7 +17,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         List<TimeSheet> GetByUser(string userId, int? year = null, bool includeTasks = true);
         List<TimeSheetTask> GetTimeSheetTasks(int timeSheetId, bool includeActivitie = true);
         List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId);
-        List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, DateTime date);
+        List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, int? taskId, DateTime date);
         bool AddTasks(int timeSheetId, List<int> projectIds);
         bool AddTasks(int timeSheetId, int projectId);
         bool RemoveTasks(int timeSheetId, List<int> projectIds);

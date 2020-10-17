@@ -493,6 +493,10 @@
 #UserTimeSheets .user-timesheets-content .task-activities {
   flex: 1;
 }
+#UserTimeSheets .user-timesheets-content .task-activities .nothing-here {
+  font-size: 2em;
+  padding: 1em 0;
+}
 #UserTimeSheets .user-timesheets-content .task-activities .c-box-view {
   flex-wrap: wrap;
   overflow: auto;
@@ -500,11 +504,33 @@
 }
 #UserTimeSheets .user-timesheets-content .task-activities .c-box-view .c-box {
   min-height: 60px;
-  padding: 0.5em;
+  padding: 0.5em 0.7em;
   min-width: 120px;
+}
+#UserTimeSheets .user-timesheets-content .task-activities .c-box-view .c-box.active {
+  border: 2px solid #2286c3;
+  animation: border-pulse 2s infinite;
+}
+#UserTimeSheets .user-timesheets-content .task-activities .c-box-view .c-box-title {
+  font-weight: 400;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #UserTimeSheets .user-timesheets-content .task-activities .c-box-view--loading .c-box-title {
   min-height: 0.9em;
+}
+@keyframes border-pulse {
+  0% {
+    border-color: #2286c3;
+  }
+  50% {
+    border-color: #6bcfee;
+  }
+  100% {
+    border-color: #2286c3;
+  }
 }
 .item-subproject {
   display: flex;
@@ -614,7 +640,7 @@ table td {
 .assigned-tasks .assigned-task:not(.active):hover {
   background-color: #c9eefa;
 }
-.assigned-tasks .assigned-task .active {
+.assigned-tasks .assigned-task.active {
   background-color: #2286c3;
   color: #fff;
 }

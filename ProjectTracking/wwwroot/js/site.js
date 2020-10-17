@@ -343,7 +343,7 @@ function getAxiosErrorMessage(e) {
         }
     }
 
-    return 'Something went wrong, check your connecttion and try again!.'
+    return 'Something went wrong, check your connection and try again!.'
 }
 
 //#endregion 

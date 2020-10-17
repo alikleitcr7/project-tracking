@@ -35,90 +35,70 @@ var delayTimer;
 // ACTIVITY MODAL DATA
 const activityModalForm = (activity) => {
 
-    if (activity !== undefined) {
+    if (activity) {
         return {
             id: activity.id,
-            timeSheetProjectId: activity.timeSheetProjectId,
-            fileId: activity.projectFileId,
-            fileName: activity.projectFile ? activity.projectFile.name : '',
-            typeOfWorkId: activity.typeOfWorkId,
-            measurementUnitId: activity.measurementUnitId,
-            number: activity.number,
+            timeSheetTaskId: activity.timeSheetTaskId,
             fromDate: activity.fromDate ? moment(activity.fromDate) : null,
             toDate: activity.toDate ? moment(activity.toDate) : null,
-            comment: activity.comment,
-            ipAddress: activity.ipAddress,
-            ipAddressTitle: activity.ipAddressTitle,
+            message: activity.message,
+            ipAddressDisplay: activity.ipAddressDisplay,
         }
     }
 
     return {
-        id: 0,
-        timeSheetProjectId: 0,
-        fileId: null,
-        fileName: null,
-        typeOfWorkId: null,
-        measurementUnitId: null,
-        number: null,
+        id: null,
+        timeSheetTaskId: null,
         fromDate: null,
         toDate: null,
-        comment: '',
-        ipAddress: '',
-        ipAddressTitle: '',
+        message: '',
+        ipAddressDisplay: '',
     }
 }
 
-const activityDataContractStartObject = (timeSheetProjectId, fromDate) => {
+//const activityDataContractStartObject = (timeSheetProjectId, fromDate) => {
 
-    return {
-        FromDate: fromDate,
-        TimeSheetProjectId: timeSheetProjectId
-    }
-}
+//    return {
+//        FromDate: fromDate,
+//        TimeSheetProjectId: timeSheetProjectId
+//    }
+//}
 
-const activityDataContractObject = (activity) => {
+//const activityDataContractObject = (activity) => {
 
-    let ProjectFile = null;
+//    let ProjectFile = null;
 
-    if (activity.fileId) {
-        ProjectFile = {
-            ID: activity.fileId,
-            Name: activity.fileName
-        }
-    }
-    else if (activity.fileName) {
-        ProjectFile = {
-            ID: 0,
-            Name: activity.fileName
-        }
-    }
+//    if (activity.fileId) {
+//        ProjectFile = {
+//            ID: activity.fileId,
+//            Name: activity.fileName
+//        }
+//    }
+//    else if (activity.fileName) {
+//        ProjectFile = {
+//            ID: 0,
+//            Name: activity.fileName
+//        }
+//    }
 
-    return {
-        ID: activity.id,
-        TypeOfWorkId: activity.typeOfWorkId,
-        MeasurementUnitId: activity.measurementUnitId,
-        Number: activity.number,
-        FromDate: activity.fromDate,
-        ToDate: activity.toDate,
-        Comment: activity.comment,
-        ProjectFile,
-        ProjectFileId: ProjectFile ? ProjectFile.ID : null,
-        TimeSheetProjectId: activity.timeSheetProjectId
-    }
-}
+//    return {
+//        ID: activity.id,
+//        TypeOfWorkId: activity.typeOfWorkId,
+//        MeasurementUnitId: activity.measurementUnitId,
+//        Number: activity.number,
+//        FromDate: activity.fromDate,
+//        ToDate: activity.toDate,
+//        Comment: activity.comment,
+//        ProjectFile,
+//        ProjectFileId: ProjectFile ? ProjectFile.ID : null,
+//        TimeSheetProjectId: activity.timeSheetProjectId
+//    }
+//}
 
 const activityModalObject = () => {
     return {
         title: '',
-        files: {
-            areLoading: false,
-            hasResults: false,
-            data: [],
-            isFocused: false,
-            isDirty: false,
-            isVisible: false
-        },
-        data: [],
+        //data: [],
         form: activityModalForm(),
         backupEdit: activityModalForm(),
         isLoading: false,
@@ -215,8 +195,8 @@ var activityMethods = {
         // reset form
         activityModal.form = activityModalForm()
         activityModal.form.timeSheetProjectId = timesheetProjectId;
-        activityModal.form.fromDate = fromDate;
-        activityModal.form.toDate = moment().format(dateTimeOptions.format);
+        //activityModal.form.fromDate = fromDate;
+        //activityModal.form.toDate = moment().format(dateTimeOptions.format);
 
         activityModal.isDeleting = false
         activityModal.isSaving = false
@@ -698,9 +678,14 @@ var user_timesheet_app = new Vue({
         currentUserRoles: [],
         selectedTimeSheetId: null,
         oNull: null,
+        selectedTask: null,
+        activeTask: null,
+        activeActivity: null,
+        activeActivityIsLoading: true,
         taskActivities: {
             data: [],
             message: '',
+            isStarting: false,
             isLoading: true
         }
     },
@@ -757,10 +742,145 @@ var user_timesheet_app = new Vue({
 
             return this.filteredTimeSheetProjects
                 .map(k => k.tasks.length).reduce((a, b) => a + b, 0)
+        },
+        activeDateIndexIsToday: function () {
+            const { activeDateIdx, activeDateIndexIsCurrentDay } = this
+
+            return activeDateIdx === activeDateIndexIsCurrentDay
         }
     },
     methods: {
         ...activityMethods,
+        startActivity: function () {
+
+            const task = this.selectedTask
+
+            if (!task) {
+                console.error('no task selected')
+                return
+            }
+
+            if (this.activeTask) {
+                alert(`There is already an active activity on task "${task.title}"`)
+                return
+            }
+
+            this.taskActivities.isStarting = true
+            this.taskActivities.message = ''
+
+            TimeSheetActivitiesService.Start(task.timeSheetTaskId)
+                .then(r => {
+
+                    const record = r.data
+
+                    if (!record) {
+                        this.taskActivities.message = BASIC_ERROR_MESSAGE
+                        return
+                    }
+
+                    this.activeTask = { ...task }
+                    this.activeActivity = record
+                    this.taskActivities.data = [...this.taskActivities.data, record]
+                })
+                .catch(e => {
+                    this.taskActivities.message = getAxiosErrorMessage(e)
+                })
+                .then(() => {
+                    this.taskActivities.isStarting = false
+                })
+        },
+        openActivityCommitModal: function () {
+
+            //const task = this.activeTask
+
+            /** @type {ActivityModalForm} */
+            const activity = this.activeActivity
+
+            if (!activity) {
+                console.error('no active activity')
+                return
+            }
+
+            /** @type {ActivityModalObject} */
+            let activityModal = { ...this.activityModal }
+
+            // set form
+            activityModal.form = activityModalForm(activity)
+
+            //activityModal.form.id = activity.id
+
+            activityModal.isDeleting = false
+            activityModal.isLoading = false
+            activityModal.isLocked = false
+            activityModal.message = ''
+            activityModal.isDismissing = false
+
+            this.activityModal = activityModal
+
+            Modals_TimeSheets.ActivityModal.Show()
+        },
+        commitActivity: function () {
+
+            //const task = this.activeTask
+            const activity = this.activeActivity
+
+            if (!activity) {
+                console.error('no active activity')
+                return
+            }
+
+            /** @type {ActivityModalObject} */
+            let activityModal = { ...this.activityModal }
+
+            activityModal.message = ''
+
+            if (!activityModal.form.message) {
+                activityModal.message = 'message is required'
+                this.activityModal = activityModal
+                return
+            }
+
+            // set form
+            activityModal.isLoading = true
+
+
+            this.activityModal = activityModal
+
+            const model = {
+                activityId: activityModal.form.id,
+                message: activityModal.form.message
+            }
+
+            TimeSheetActivitiesService.Stop(model)
+                .then(r => {
+
+                    const record = r.data
+
+                    if (!record) {
+                        this.taskActivities.message = BASIC_ERROR_MESSAGE
+                        return
+                    }
+
+                    this.activeTask = null
+                    this.activeActivity = null
+
+                    this.taskActivities.data = this.taskActivities.data
+                        .map(k => k.id === model.activityId ? record : k)
+                })
+                .catch(e => {
+
+                    console.error('stop', e)
+
+                    activityModal.message = getAxiosErrorMessage(e)
+                })
+                .then(() => {
+                    activityModal.isLoading = true
+                    this.activityModal = activityModal
+                })
+        },
+        getActivityTitle: function (activity) {
+            return activity.toDate ? activity.message : 'Active'
+        },
         startActiveActivity: function (projectIndex, subProjectIndex, subProject) {
 
             console.log('starting activity', { projectIndex, subProjectIndex })
@@ -786,10 +906,9 @@ var user_timesheet_app = new Vue({
             let timesheetProjectId = filteredProjects[projectIndex].tasks[subProjectIndex].id
 
 
-
             let activity = activityDataContractStartObject(timesheetProjectId, fromDate)
 
-            TimeSheetActivitiesService.Add(activity)
+            TimeSheetActivitiesService.Save(activity)
                 .then((r) => {
                     if (r && r.data) {
 
@@ -849,6 +968,7 @@ var user_timesheet_app = new Vue({
         },
         openTimeSheet: function (timesheet) {
 
+            this.selectedTask = null
 
             if (!timesheet) {
                 this.activeTimeSheet = null
@@ -861,9 +981,7 @@ var user_timesheet_app = new Vue({
             this.activeDateIndexIsCurrentDay = -1;
             this.activeDateIdx = -1;
 
-
             this.activeTimeSheetLoading = true
-
 
             //if (!this.readOnly) {
             //    this.readOnly = timesheet.isSigned
@@ -1027,6 +1145,52 @@ var user_timesheet_app = new Vue({
         },
         openTaskActivities: function (task) {
 
+            if (!task) {
+                this.selectedTask = null
+                return
+            }
+
+            const activeTimeSheet = this.activeTimeSheet
+
+            if (!activeTimeSheet) {
+                console.error('no active timesheet')
+                return
+            }
+
+
+            const activeDateIdx = this.activeDateIdx
+
+            if (activeDateIdx === -1) {
+                console.error('no active date')
+                return
+            }
+
+            const date = this.activeTimeSheet.datesList[activeDateIdx].date;
+
+            let taskActivities = { ...this.taskActivities }
+
+            taskActivities.message = ''
+            taskActivities.isLoading = true
+            taskActivities.data = []
+
+            this.taskActivities = taskActivities
+
+            this.selectedTask = { ...task }
+
+            TimeSheetsService.GetActivitiesByDate(activeTimeSheet.id, task.id, date)
+                .then(r => {
+                    const data = r.data
+
+                    taskActivities.data = data || []
+                })
+                .catch(e => {
+                    taskActivities.message = getAxiosErrorMessage(e)
+                })
+                .then(() => {
+
+                    taskActivities.isLoading = false
+                    this.taskActivities = taskActivities
+                })
         }
     },
     mounted: function () {
@@ -1069,6 +1233,20 @@ var user_timesheet_app = new Vue({
             })
             .then(() => {
                 this.timesheetsAreLoading = false
+            })
+
+        TimeSheetActivitiesService.GetUserActiveActivity(userId)
+            .then((r) => {
+                const record = r.data
+
+                this.activeActivity = record
+            })
+            .catch((e) => {
+                const errorMessage = getAxiosErrorMessage(e)
+                console.error(errorMessage)
+            })
+            .then(() => {
+                this.activeActivityIsLoading = false
             })
 
         //else {

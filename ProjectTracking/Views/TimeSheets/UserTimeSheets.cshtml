@@ -10,7 +10,7 @@
     <h3 v-show="timesheetsAreLoading">Loading...</h3>
     <h3 v-show="!timesheetsAreLoading && !timesheets.length">Nothing Here Yet! <i class="far fa-smile-beam"></i> </h3>
 
-    <div class="user-timesheets">
+    <div class="user-timesheets" v-show="timesheets.length">
 
         <select v-on:change="handleTimeSheetChange" class="form-control w-200-px" v-model="selectedTimeSheetId">
             <option :value="oNull">- Select a Schedule - </option>
@@ -25,7 +25,6 @@
         </ul>
         *@
     </div>
-
 
     <div class="user-timesheets-content" v-show="activeTimeSheet">
 
@@ -66,7 +65,7 @@
 
                         <h5>{{project.title}}</h5>
 
-                        <div class="assigned-task" v-for="(task,taskIdx) in project.tasks"
+                        <div class="assigned-task" :class="{'active':(selectedTask ? selectedTask.id === task.id :false)}" v-for="(task,taskIdx) in project.tasks"
                              @@click="openTaskActivities(task)">
                             {{task.title}}
                         </div>
@@ -84,7 +83,7 @@
                                                 </span>
                                                 <span class="item-subproject__buttons" v-show="!readOnly && !activeTimeSheetDateIsLocked">
                                                     <span v-bind:class="{'active': subProject.isActive, 'disabled' :activeActivities && activeActivities.length > 0 }" v-on:click="startActiveActivity(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-play"></span>
-                                                    <span v-bind:class="{'disabled':!subProject.isActive}" v-on:click="endActiveActivity(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-stop"></span>
+                                                    <span v-bind:class="{'disabled':!subProject.isActive}" v-on:click="Z(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-stop"></span>
                                                 </span>
                                             </span>
                                         </td>
@@ -107,12 +106,30 @@
 
             </div>
 
-            <div class="task-activities">
+            <div class="task-activities" v-if="selectedTask">
+
+                <template v-if="activeDateIndexIsToday">
+
+                    <h5 v-if="selectedTask">{{selectedTask.title}} Activities</h5>
+
+                    <button v-if="!activeActivity" class="s-btn s-btn-outline s-btn-sm" @@click="startActivity()">Start <i class="fa fa-play"></i> </button>
+                    <button v-if="activeActivity" class="s-btn s-btn-primary s-btn-sm" @@click="openActivityCommitModal()">Stop <i class="fa fa-stop"></i> </button>
+
+                </template>
+
+                <p v-if="!taskActivities.data.length" class="nothing-here">Nothing Here! <i class="fa fa-cat"></i>  </p>
+                <h5 v-if="taskActivities.message">{{taskActivities.message}}</h5>
 
                 <div class="c-box-view">
 
-                    <div class="c-box c-box--loading" v-for="i in [,,,,,,,,,,,,,,,]">
+                    <div v-if="taskActivities.isLoading" class="c-box c-box--loading" v-for="i in [,,,]">
                         <span class="c-box-title"></span>
+                    </div>
+
+
+                    <div class="c-box" :class="{'active':!activity.toDate}" v-for="activity in taskActivities.data">
+                        <div class="c-box-title">{{getActivityTitle(activity)}}</div>
+                        <small>{{activity.fromDateDisplay}}</small>
                     </div>
 
                 </div>
@@ -125,13 +142,13 @@
 
     <div id="ActivityModal" class="modal " role="dialog">
 
-        <div class="modal-dialog">
+        <div class="modal-dialog ">
 
             <div class="modal-content">
 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Activity - {{activityModal.title}} {{activityModal.form.id === 0 ? '(New)' : `(A${activityModal.form.id})`}} - {{activeSubProject ? activeSubProject.title : ''}}  <i class="main-dark-color"> @@{{activityModal.form.ipAddressTitle ? activityModal.form.ipAddressTitle : activityModal.form.ipAddress}}</i> </h4>
+                    <h4 class="modal-title">Activity - {{activityModal.title}} {{activityModal.form.id === 0 ? '(New)' : `(A${activityModal.form.id})`}} - {{activeSubProject ? activeSubProject.title : ''}}  <i class="main-dark-color"> @@{{activityModal.form.ipAddressDisplay}}</i> </h4>
                 </div>
 
                 <div class="modal-body" v-bind:class="{'disabled-section': activityModal.isLoading || activityModal.isDeleting , 'disabled-section' : readOnly }">
@@ -139,7 +156,8 @@
                     <div class="modal-controls">
 
                         <table class="table table-borderless">
-                            <tr v-bind:class="{'disabled-section':activityModal.isLocked}">
+
+                            <tr v-bind:class="{'disabled-section':activityModal.isLocked}" v-show="activityModal.toDate">
                                 <td>
                                     <div class="modal-control">
                                         <label>From Date</label>
@@ -154,55 +172,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
-                                    <div class="modal-control">
-                                        <label>Type Of Work</label>
-                                        <select class="form-control" v-model="activityModal.form.typeOfWorkId">
-                                            <option :value="null">-</option>
-                                            <option v-for="opt in typeOfWorkData" v-bind:value="opt.id">{{opt.name}}</option>
-                                        </select>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="modal-control">
-                                        <label>Measurement Unit</label>
-                                        <select class="form-control" v-model="activityModal.form.measurementUnitId">
-                                            <option :value="null">-</option>
-                                            <option v-for="opt in measurementUnitData" v-bind:value="opt.id">{{opt.name}}</option>
-                                        </select>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="modal-control">
-                                        <label>File Name ({{activityModal.form.fileId ? 'existing file: ' + activityModal.form.fileId : 'new file'}})</label>
-                                        <input type="text" class="form-control"
-                                               v-on:input="handleFileChange"
-                                               v-on:focus="handleFileFocus"
-                                               v-on:blur="handleFileBlur"
-                                               name="fileName"
-                                               v-model="activityModal.form.fileName" />
-
-                                        <div class="hint-list" v-show="activityModal.files.isVisible">
-                                            <p v-show="activityModal.files.areLoading">Loading...</p>
-                                            <p v-show="activityModal.files.isDirty && !activityModal.files.hasResults">No Results</p>
-                                            <span class="hint-list__item" v-for="file in activityModal.files.data" v-on:click="handleFileClick(file)">{{file.name}}</span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="modal-control">
-                                        <label>Number</label>
-                                        <input type="text" class="form-control" v-model="activityModal.form.number" />
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
                                 <td colspan="2">
                                     <div class="modal-control">
-                                        <label>Comment</label>
-                                        <textarea class="form-control" rows="2" v-model="activityModal.form.comment"></textarea>
+                                        <label>Enter a message</label>
+                                        <textarea class="form-control" rows="2" v-model="activityModal.form.message"></textarea>
                                     </div>
                                 </td>
                             </tr>
@@ -211,20 +184,21 @@
 
                     </div>
 
-                    <h5 class="display-message text-center">{{activityModal.message}}</h5>
+                    <h5 v-if="activityModal.message" class="display-message text-center">{{activityModal.message}}</h5>
                 </div>
 
                 <div class="modal-footer">
-                    <button v-show="!readOnly && activityModal.form.id === 0" type="button" class="btn btn-default" v-on:click="addActivity">Add</button>
-                    <button v-show="!readOnly && activityModal.form.id !== 0" type="button" class="btn btn-default" v-on:click="saveActivity">{{activityModal.isSaving? 'Saving...': 'Save'}}</button>
+                    <button v-if="!readOnly && !activityModal.toDate" type="button" class="btn btn-default" v-on:click="commitActivity">Commit</button>
+                    <button v-show="!readOnly && activityModal.toDate" type="button" class="btn btn-default" v-on:click="saveActivity">{{activityModal.isSaving? 'Saving...': 'Save'}}</button>
                     <a v-show="activityModal.form.id !== 0" target="_blank" class="btn btn-default" v-bind:href="`/timesheets/TimeSheetActivityLog?activityId=${activityModal.form.id}`">Logs</a>
                     <button v-show="!readOnly &&  activityModal.form.id === 0" type="button" class="btn btn-default" v-on:click="dismissActivity">{{activityModal.isDismissing? 'Dismissing...': 'Dismiss'}}</button>
                     <button v-show="!readOnly && activityModal.form.id !== 0" type="button" class="btn btn-danger" v-on:click="deleteActivity">{{activityModal.isDeleting ? 'Deleting...' : 'Delete'}}</button>
-                    <button v-show="activityModal.form.id !== 0" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
 
             </div>
+
         </div>
+
     </div>
 
 </div>

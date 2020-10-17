@@ -122,6 +122,11 @@
         .task-activities {
             flex: 1;
 
+            .nothing-here {
+                font-size:2em;
+                padding:1em 0;
+            }
+
             .c-box-view {
                 flex-wrap: wrap;
                 overflow: auto;
@@ -129,8 +134,21 @@
 
                 .c-box {
                     min-height: 60px;
-                    padding: .5em;
+                    padding: .5em .7em;
                     min-width: 120px;
+
+                    &.active {
+                        border: 2px solid @main-color;
+                        animation: border-pulse 2s infinite;
+                    }
+                }
+
+                .c-box-title {
+                    font-weight: 400;
+                    max-width: 100px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
 
                 &--loading {
@@ -143,6 +161,19 @@
     }
 }
 
+@keyframes border-pulse {
+    0% {
+        border-color: @main-color;
+    }
+
+    50% {
+        border-color: @main-xlight;
+    }
+
+    100% {
+        border-color: @main-color;
+    }
+}
 
 
 .item-subproject {
@@ -273,7 +304,7 @@ table td {
             background-color: @main-xxlight;
         }
 
-        .active {
+        &.active {
             background-color: @main-color;
             color: #fff;
         }

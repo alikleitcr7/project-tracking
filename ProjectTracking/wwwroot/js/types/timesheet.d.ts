@@ -104,14 +104,10 @@ declare interface ActiveActivity {
 
 declare interface ActivityModalForm {
     id: number;
-    timeSheetProjectId: number;
-    fileName: string,
-    typeOfWorkId: number,
-    measurementUnitId: number,
-    number: number,
+    timeSheetTaskId: number;
     fromDate: Date;
     toDate: Date;
-    comments: string;
+    message: string;
 }
 
 declare interface ActivityModalObject {

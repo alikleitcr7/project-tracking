@@ -268,11 +268,11 @@ namespace ProjectTracking.Data.Methods
             }).ToList();
         }
 
-        public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, DateTime date)
+        public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, int? taskId, DateTime date)
         {
             var dbTimeSheetActivities = db.TimeSheetActivities
                 .Include(k => k.TimeSheetTask)
-                .Where(k => k.TimeSheetTask != null && k.TimeSheetTask.TimeSheetId == timeSheetId
+                .Where(k => k.TimeSheetTask != null && k.TimeSheetTask.ProjectTaskId == taskId
                             && k.FromDate.Month == date.Month
                             && k.FromDate.Day == date.Day
                             && k.FromDate.Year == date.Year).ToList();
@@ -445,22 +445,30 @@ namespace ProjectTracking.Data.Methods
 
         public List<Project> GetTimeSheetProjectsWithTasks(int timeSheetId)
         {
+            //List<Project> projects = new List<Project>();
             List<Project> projects = new List<Project>();
 
             // get timesheet tasks
-            List<ProjectTask> tasks = db.ProjectTasks
-                .AsNoTracking()
-                .Where(k => k.TimeSheetTasks.Any(t => t.TimeSheetId == timeSheetId))
-                .Select(_mapper.Map<ProjectTask>)
-                .ToList();
+            //List<ProjectTask> tasks = db.ProjectTasks
+            //    .AsNoTracking()
+            //    .Where(k => k.TimeSheetTasks.Any(t => t.TimeSheetId == timeSheetId))
+            //    .Select(_mapper.Map<ProjectTask>)
+            //    .ToList();
+
+            List<TimeSheetTask> timeSheetTasks = db.TimeSheetTasks
+               .AsNoTracking()
+               .Include(k => k.ProjectTask)
+               .Where(k => k.TimeSheetId == timeSheetId)
+               .Select(_mapper.Map<TimeSheetTask>)
+               .ToList();
 
             // return if no tasks
-            if (tasks.Count == 0)
+            if (timeSheetTasks.Count == 0)
             {
                 return projects;
             }
 
-            List<int> projectsIds = tasks.Select(k => k.ProjectId).ToList();
+            List<int> projectsIds = timeSheetTasks.Select(k => k.ProjectTask.ProjectId).ToList();
 
             // get tasks' projects
             projects = db.Projects
@@ -472,7 +480,16 @@ namespace ProjectTracking.Data.Methods
             // connect projects with their tasks
             foreach (Project project in projects)
             {
-                project.Tasks = tasks.Where(k => k.ProjectId == project.ID).ToList();
+                project.Tasks = timeSheetTasks.Where(k => k.ProjectTask.ProjectId == project.ID)
+                    .Select(k =>
+                    {
+                        ProjectTask task = k.ProjectTask;
+
+                        task.TimeSheetTaskId = k.ID;
+
+                        return task;
+                    })
+                    .ToList();
             }
 
             return projects;

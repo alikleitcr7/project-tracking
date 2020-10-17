@@ -71,8 +71,12 @@ const TimeSheetsService = {
         let url = TIMESHEETS_SERVICE_URI(`GetActivities?timesheetId=${timesheetId}`)
         return axios.get(url)
     },
-    GetActivitiesByDate: function (taskId, date) {
-        let url = TIMESHEETS_SERVICE_URI(`GetActivitiesByDate?taskId=${taskId}&date=${date}`)
+    GetActivitiesByDate: function (timeSheetId, taskId, date) {
+
+        const query = serialize({ timeSheetId, taskId, date })
+
+        let url = TIMESHEETS_SERVICE_URI(`GetActivitiesByDate?${query}`)
+
         return axios.get(url)
     },
     GetTimeSheetProjects: function (timesheetId) {

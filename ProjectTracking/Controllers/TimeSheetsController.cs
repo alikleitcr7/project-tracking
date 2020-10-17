@@ -304,9 +304,9 @@ namespace ProjectTracking.Controllers
             }
         }
 
-        public List<TimeSheetActivity> GetActivitiesByDate(int timesheetId, DateTime date)
+        public List<TimeSheetActivity> GetActivitiesByDate(int timeSheetId, int? taskId, DateTime date)
         {
-            return _timeSheets.GetTimeSheetActivities(timesheetId, date);
+            return _timeSheets.GetTimeSheetActivities(timeSheetId, taskId, date);
         }
 
         public List<DataContract.TimeSheet> CurrentUserTimeSheets()
