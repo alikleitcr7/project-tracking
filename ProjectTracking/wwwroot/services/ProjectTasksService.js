@@ -44,8 +44,8 @@ const ProjectTasksService = {
 
         const query = serialize({ taskId, statusCode })
 
-        const url = PROJECT_TASKS_SERVICE_URI(`GetProjectStatuses?${query}`)
+        const url = PROJECT_TASKS_SERVICE_URI(`ChangeStatus?${query}`)
 
-        return axios.get(url);
+        return axios.put(url);
     },
 }

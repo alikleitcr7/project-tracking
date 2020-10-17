@@ -8,7 +8,6 @@
     }
 }
 
-
 .ts-column-scrollable {
     max-height: 80vh;
     overflow-y: auto;
@@ -122,6 +121,19 @@
         .task-activities {
             flex: 1;
 
+            .task-activities-actions {
+
+                .s-btn {
+                    border-radius: 15px;
+                }
+            }
+
+            .fa-stop, .fa-play {
+                font-size: .7em;
+                margin-right: 2px;
+                transform: translateY(-2px);
+            }
+
             .nothing-here {
                 font-size: 2em;
                 padding: 1em 0;
@@ -130,7 +142,7 @@
             .c-box-view {
                 flex-wrap: wrap;
                 overflow: auto;
-                max-height: 80vh;
+                max-height: 70vh;
 
                 .c-box {
                     min-height: 60px;
@@ -174,7 +186,6 @@
         border-color: @main-color;
     }
 }
-
 
 .item-subproject {
     display: flex;
@@ -240,7 +251,6 @@ table td {
     position: relative;
 }
 
-
 .modal-control {
     position: relative;
 }
@@ -294,9 +304,9 @@ table td {
     border-radius: 15px;
 
     .assigned-task {
-        padding: .5em;
+        padding: .5em .7em;
         cursor: pointer;
-        border-radius: 7px;
+        border-radius: 15px;
 
 
         &:not(.active):hover {
@@ -352,23 +362,50 @@ table td {
 .task-filter {
 
     &--pending {
-        color: @dark-gray;
-    }
-
-    &--pending {
-        color: @task-pending-color;
+        color: @task-pending-color !important;
     }
 
     &--progress {
-        color: @task-progress-color;
+        color: @task-progress-color !important;
     }
 
     &--done {
-        color: @task-done-color;
+        color: @task-done-color !important;
     }
 
     &--failed {
-        color: @task-failed-color;
+        color: @task-failed-color !important;
+    }
+}
+
+
+
+.mark-as-container {
+    display: inline-block;
+    margin-left: 5px;
+
+    .fa-thumbtack {
+        font-size: .9em;
+    }
+
+    .dropdown-menu {
+        border-radius: 0 15px 15px 15px;
+        padding:0;
+
+        li > a {
+            padding: 5px 15px;
+
+            > span {
+                display: inline-block;
+                padding-left: 5px;
+                color: @dark-gray;
+            }
+
+            &.active {
+                font-weight: 600;
+                background-color: @light-gray;
+            }
+        }
     }
 }
 

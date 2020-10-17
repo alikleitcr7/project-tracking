@@ -25,7 +25,10 @@ namespace ProjectTracking.Data.DataSets
         public DateTime? PlannedEnd { get; set; }
         public DateTime? ActualEnd { get; set; }
 
+        public string StatusByUserId { get; set; }
 
+
+        public ApplicationUser StatusByUser { get; set; }
         public Project Project { get; set; }
         public List<TimeSheetTask> TimeSheetTasks { get; set; }
         public List<ProjectTaskStatusModification> ProjectTaskStatusModifications { get; set; }

@@ -16,9 +16,10 @@ h1, h2, h3, h4, h5, h6 {
     color: @dark-gray;
 }
 
-.text-bold{
-    font-weight:600;
+.text-bold {
+    font-weight: 600;
 }
+
 body {
     position: relative;
     /*background-color:#fafafa;*/
@@ -112,7 +113,7 @@ body {
     cursor: pointer;
 }
 
-.dropdown-menu {
+/*.dropdown-menu {
     > li > a {
         color: @main-dark;
         cursor: pointer;
@@ -130,7 +131,7 @@ body {
             }
         }
     }
-}
+}*/
 
 .input-group-container {
     display: flex;
@@ -189,6 +190,7 @@ p.skeleton-loading-item {
 
     &.s-btn-primary {
         color: #fff;
+        border: 1px solid @main-color;
 
         &:hover {
             background-color: @main-dark;
@@ -197,7 +199,17 @@ p.skeleton-loading-item {
 
     &.s-btn-outline {
         background-color: transparent;
-        border: 1px solid @main-color;
+        border: 1px solid @gray;
+        color: @gray;
+
+        &:hover {
+            background-color: rgba(212, 212, 212, 0.34);
+        }
+    }
+
+    &.s-btn-outline-main {
+        background-color: transparent;
+        border: 1px solid @main-dark;
         color: @main-dark;
 
         &:hover {

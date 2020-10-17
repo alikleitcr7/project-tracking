@@ -548,7 +548,35 @@ const bootboxExtension = {
                 }
             }
         });
-    }
+    },
+    confirm: (title, message, cancelCallBack, okCallBack) => {
+        bootbox.dialog({
+            title,
+            message,
+            size: 'sm',
+            className: `bootbox-default`,
+            buttons: {
+                cancel: {
+                    label: "Cancel",
+                    className: 's-btn s-btn-outline',
+                    callback: () => {
+                        if (cancelCallBack) {
+                            cancelCallBack();
+                        }
+                    }
+                },
+                ok: {
+                    label: "Continue",
+                    className: 's-btn s-btn-primary',
+                    callback: () => {
+                        if (okCallBack) {
+                            okCallBack();
+                        }
+                    }
+                }
+            }
+        });
+    },
 }
 
 //#endregion 

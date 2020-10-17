@@ -43,7 +43,7 @@
   font-weight: 600;
 }
 .flex-right-left .small-date {
-  color: rgba(122, 122, 122, 0.93);
+  color: #5f5f5f;
   font-size: 12px;
 }
 .flex-right-left .left-side {
@@ -493,6 +493,15 @@
 #UserTimeSheets .user-timesheets-content .task-activities {
   flex: 1;
 }
+#UserTimeSheets .user-timesheets-content .task-activities .task-activities-actions .s-btn {
+  border-radius: 15px;
+}
+#UserTimeSheets .user-timesheets-content .task-activities .fa-stop,
+#UserTimeSheets .user-timesheets-content .task-activities .fa-play {
+  font-size: 0.7em;
+  margin-right: 2px;
+  transform: translateY(-2px);
+}
 #UserTimeSheets .user-timesheets-content .task-activities .nothing-here {
   font-size: 2em;
   padding: 1em 0;
@@ -500,7 +509,7 @@
 #UserTimeSheets .user-timesheets-content .task-activities .c-box-view {
   flex-wrap: wrap;
   overflow: auto;
-  max-height: 80vh;
+  max-height: 70vh;
 }
 #UserTimeSheets .user-timesheets-content .task-activities .c-box-view .c-box {
   min-height: 60px;
@@ -564,7 +573,7 @@
 }
 .item-subproject__buttons > span {
   cursor: pointer;
-  color: rgba(122, 122, 122, 0.93);
+  color: #5f5f5f;
   display: inline;
   opacity: 0.6;
   transition: 100ms all ease-out;
@@ -603,7 +612,7 @@ table td {
   -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
   box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
-  border: 1px solid rgba(122, 122, 122, 0.93);
+  border: 1px solid #5f5f5f;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
 }
@@ -633,9 +642,9 @@ table td {
   border-radius: 15px;
 }
 .assigned-tasks .assigned-task {
-  padding: 0.5em;
+  padding: 0.5em 0.7em;
   cursor: pointer;
-  border-radius: 7px;
+  border-radius: 15px;
 }
 .assigned-tasks .assigned-task:not(.active):hover {
   background-color: #c9eefa;
@@ -680,19 +689,39 @@ table td {
   padding: 5px 10px 5px 5px;
 }
 .task-filter--pending {
-  color: #333;
-}
-.task-filter--pending {
-  color: #f78438;
+  color: #f78438 !important;
 }
 .task-filter--progress {
-  color: #4b59ff;
+  color: #4b59ff !important;
 }
 .task-filter--done {
-  color: #3fcc35;
+  color: #3fcc35 !important;
 }
 .task-filter--failed {
-  color: #bb0000;
+  color: #bb0000 !important;
+}
+.mark-as-container {
+  display: inline-block;
+  margin-left: 5px;
+}
+.mark-as-container .fa-thumbtack {
+  font-size: 0.9em;
+}
+.mark-as-container .dropdown-menu {
+  border-radius: 0 15px 15px 15px;
+  padding: 0;
+}
+.mark-as-container .dropdown-menu li > a {
+  padding: 5px 15px;
+}
+.mark-as-container .dropdown-menu li > a > span {
+  display: inline-block;
+  padding-left: 5px;
+  color: #333;
+}
+.mark-as-container .dropdown-menu li > a.active {
+  font-weight: 600;
+  background-color: rgba(238, 238, 238, 0.94);
 }
 #ActivityModal .table {
   margin-bottom: 0;

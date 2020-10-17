@@ -26,7 +26,7 @@ namespace ProjectTracking
         public float? MonthlySalary { get; set; }
         public float? HourlyRate { get; set; }
         public short? EmploymentTypeCode { get; set; }
-      
+
         [Range(0, 2)]
         public short RoleCode { get; set; }
 
@@ -43,6 +43,8 @@ namespace ProjectTracking
         public List<Team> SupervisedTeams { get; set; }
         public List<Team> AssignedSupervisorForTeams { get; set; }
         public List<Project> AddedByUserProject { get; set; }
+        public List<ProjectTask> ProjectTaskStatusByUser { get; set; }
+        public List<ProjectTaskStatusModification> ProjectTaskStatusModificationByUser { get; set; }
         //public ApplicationIdentityRole Role { get; set; }
 
         //public Role Role { get; set; }

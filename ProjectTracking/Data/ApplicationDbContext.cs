@@ -195,6 +195,20 @@ namespace ProjectTracking.Data
                    .WithMany(k => k.ProjectTaskStatusModifications)
                    .OnDelete(DeleteBehavior.Cascade);
 
+
+            builder.Entity<ProjectTaskStatusModification>()
+                   .HasOne(k => k.ModifiedByUser)
+                   .WithMany(k => k.ProjectTaskStatusModificationByUser)
+                   .HasForeignKey(k => k.ModifiedByUserId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ProjectTask>()
+                   .HasOne(k => k.StatusByUser)
+                   .WithMany(k => k.ProjectTaskStatusByUser)
+                   .HasForeignKey(k => k.StatusByUserId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+
             #region Supervisor
 
             //builder.Entity<Superviser>()

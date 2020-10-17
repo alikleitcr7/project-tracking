@@ -12,7 +12,7 @@ using ProjectTracking.Models.Projects;
 namespace ProjectTracking.Controllers
 {
     [Route("ProjectTasks")]
-    public class ProjectTasksController : Controller
+    public class ProjectTasksController : BaseController
     {
         private readonly IProjectsMethods _projectsMethods;
         private readonly ITasksMethods _tasksMethods;
@@ -47,6 +47,8 @@ namespace ProjectTracking.Controllers
 
             try
             {
+                model.SetStatusByUserId(GetCurrentUserId());
+
                 return Ok(_tasksMethods.Save(model));
             }
             catch (ClientException ex)
@@ -153,7 +155,7 @@ namespace ProjectTracking.Controllers
         {
             try
             {
-                _tasksMethods.ChangeStatus(taskId, statusCode);
+                _tasksMethods.ChangeStatus(taskId, statusCode, GetCurrentUserId());
 
                 return Ok(true);
             }

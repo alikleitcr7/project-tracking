@@ -56,6 +56,11 @@ const activityModalForm = (activity) => {
     }
 }
 
+
+function getTaskFilterClass(status) {
+    return `task-filter--${status.code}`
+}
+
 //const activityDataContractStartObject = (timeSheetProjectId, fromDate) => {
 
 //    return {
@@ -301,7 +306,12 @@ var user_timesheet_app = new Vue({
 
             return null
         },
+        markAsStatuses: function () {
 
+            const markAsAllowed = [TASK_STATUSES_KEYS.PENDING, TASK_STATUSES_KEYS.PROGRESS, TASK_STATUSES_KEYS.DONE]
+
+            return this.tasksFilter.statuses.filter(k => markAsAllowed.includes(k.key))
+        }
     },
     methods: {
         deleteActivity: function () {
@@ -720,11 +730,19 @@ var user_timesheet_app = new Vue({
             this.tasksFilter.selectedStatusKey = key
         },
         taskStatusClass: function (status) {
-            const itemClass = `task-filter--${status.code}`
+            const itemClass = getTaskFilterClass(status)
 
             return {
                 [itemClass]: true,
                 'active': this.tasksFilter.selectedStatusKey === status.key
+            }
+        },
+        markAsStatusClass: function (status, activeStatus) {
+            const itemClass = getTaskFilterClass(status)
+
+            return {
+                [itemClass]: true,
+                'active': activeStatus === status.key
             }
         },
         openTaskActivities: function (task) {
@@ -776,6 +794,90 @@ var user_timesheet_app = new Vue({
                     this.taskActivities = taskActivities
                 })
         },
+        markTaskAs: function (status) {
+
+            const selectedTask = { ...this.selectedTask }
+
+            if (!selectedTask) {
+                console.error('no selected task')
+                return
+            }
+
+
+            if (selectedTask.statusCode === status.key) {
+                return
+            }
+
+            bootboxExtension.confirm('Status Change', `You are about to change the current task status`, null, () => {
+
+
+                let selectedTask = { ...this.selectedTask }
+
+                selectedTask.statusIsChanging = true
+                this.selectedTask = selectedTask
+
+
+                ProjectTasksService.ChangeStatus(selectedTask.id, status.key)
+                    .then((r) => {
+
+                        const record = r.data
+
+                        if (!record) {
+                            bootbox.alert(BASIC_ERROR_MESSAGE)
+                            return
+                        }
+
+                        //const timesheetProjects = this.activeTimeSheet.projects
+
+                        const taskId = selectedTask.id
+                        const projectId = selectedTask.projectId
+
+
+                        // update task in projects list
+                        this.activeTimeSheet.projects = this.activeTimeSheet.projects
+                            .map(k => k.id !== projectId ? k : ({
+                                ...k,
+                                tasks: k.tasks.map(t => t.id !== taskId ? t : ({ ...t, statusCode: status.key }))
+                            }))
+
+
+                        // update selected task
+                        selectedTask.statusCode = status.key
+
+
+                        //const projectIdx = timesheetProjects.findIndex(k => k.id === projectId)
+                        //if (projectId > -1) {
+                        //    const taskIdx = 
+                        //}
+                    })
+                    .catch((e) => {
+                        const errorMessage = getAxiosErrorMessage(e)
+                        bootbox.alert(errorMessage)
+                    })
+                    .then(() => {
+                        selectedTask.statusIsChanging = false
+                        this.selectedTask = selectedTask
+                    })
+            })
+        },
+        getMarkAsIcon: function () {
+            const task = this.selectedTask
+
+            if (!task) {
+                return null
+            }
+
+
+            const statusCode = task.statusCode
+
+            const filterStatus = this.tasksFilter.statuses.find(k => k.key === statusCode)
+
+            if (!filterStatus) {
+                return null
+            }
+
+            return filterStatus.icon + ' ' + getTaskFilterClass(filterStatus)
+        }
     },
     mounted: function () {
 

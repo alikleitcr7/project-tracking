@@ -11,7 +11,9 @@ namespace ProjectTracking.Data.DataSets
         public DateTime DateModified { get; set; }
         [Column(Order = 2)]
         public short StatusCode { get; set; }
+        public string ModifiedByUserId { get; set; }
 
+        public ApplicationUser ModifiedByUser { get; set; }
         public ProjectTask ProjectTask { get; set; }
     }
 

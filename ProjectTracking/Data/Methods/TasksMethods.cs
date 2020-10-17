@@ -47,6 +47,7 @@ namespace ProjectTracking.Data.Methods
                     {
                         ProjectTaskId = dbTask.ID,
                         StatusCode = dbTask.StatusCode,
+                        ModifiedByUserId = dbTask.StatusByUserId,
                         DateModified = DateTime.Now
                     });
                 }
@@ -59,6 +60,7 @@ namespace ProjectTracking.Data.Methods
                 dbTask.PlannedEnd = model.plannedEnd;
                 dbTask.ActualEnd = model.actualEnd;
                 dbTask.StatusCode = model.statusCode;
+                dbTask.StatusByUserId = model.GetStatusByUserId();
 
                 db.SaveChanges();
 
@@ -85,7 +87,8 @@ namespace ProjectTracking.Data.Methods
                     StartDate = model.startDate,
                     PlannedEnd = model.plannedEnd,
                     ActualEnd = model.actualEnd,
-                    StatusCode = model.statusCode
+                    StatusCode = model.statusCode,
+                    StatusByUserId = model.GetStatusByUserId()
                 };
 
                 // add the task 
@@ -101,12 +104,14 @@ namespace ProjectTracking.Data.Methods
 
         public List<ProjectTaskStatusModification> GetStatusModifications(int taskId)
         {
-            var dbTask = db.ProjectTasks.Include(k => k.ProjectTaskStatusModifications)
+            var dbTask = db.ProjectTasks
+                .Include(k => k.ProjectTaskStatusModifications)
+                .ThenInclude(k => k.ModifiedByUser)
                 .FirstOrDefault(k => k.ID == taskId);
 
             if (dbTask == null)
             {
-                throw new ClientException("project dont exist");
+                throw new ClientException("task dont exist");
             }
 
             if (dbTask.ProjectTaskStatusModifications == null)
@@ -114,10 +119,13 @@ namespace ProjectTracking.Data.Methods
                 return null;
             }
 
-            return dbTask.ProjectTaskStatusModifications.OrderByDescending(k => k.DateModified).Select(_mapper.Map<ProjectTaskStatusModification>).ToList();
+            return dbTask.ProjectTaskStatusModifications
+                .OrderByDescending(k => k.DateModified)
+                .Select(_mapper.Map<ProjectTaskStatusModification>)
+                .ToList();
         }
 
-        public void ChangeStatus(int taskId, short statusCode)
+        public void ChangeStatus(int taskId, short statusCode, string byUserId)
         {
             var dbTask = db.ProjectTasks.FirstOrDefault(k => k.ID == taskId);
 
@@ -126,8 +134,26 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException("record not found");
             }
 
-            dbTask.StatusCode = statusCode;
+            bool hasChange = dbTask.StatusCode != statusCode;
 
+            if (!hasChange)
+            {
+                return;
+            }
+
+            // append project's status modification
+            db.ProjectTaskStatusModifications.Add(new DataSets.ProjectTaskStatusModification()
+            {
+                ProjectTaskId = dbTask.ID,
+                StatusCode = dbTask.StatusCode,
+                ModifiedByUserId = dbTask.StatusByUserId,
+                DateModified = DateTime.Now
+            });
+
+            // set new status by user
+            dbTask.StatusCode = statusCode;
+            dbTask.StatusByUserId = byUserId;
+           
             db.SaveChanges();
         }
 
@@ -135,7 +161,7 @@ namespace ProjectTracking.Data.Methods
         {
             IQueryable<DataSets.ProjectTask> query = db.ProjectTasks;
 
-            query = query.Where(k => k.ProjectId == projectId);
+            query = query.Where(k => k.ProjectId == projectId).Include(k => k.StatusByUser);
 
             if (!string.IsNullOrEmpty(keyword))
             {

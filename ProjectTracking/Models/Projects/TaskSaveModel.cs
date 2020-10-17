@@ -20,5 +20,17 @@ namespace ProjectTracking.Models.Projects
         public DateTime? plannedEnd { get; set; }
         public DateTime? actualEnd { get; set; }
         public List<int> teamsIds { get; set; }
+
+        private string statusByUserId;
+
+        public string GetStatusByUserId()
+        {
+            return statusByUserId;
+        }
+
+        public void SetStatusByUserId(string userId)
+        {
+            statusByUserId = userId;
+        }
     }
 }
