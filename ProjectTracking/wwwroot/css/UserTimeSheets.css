@@ -742,3 +742,10 @@ table td {
 #ActivityModal .activity-action-feedback .s-btn {
   margin-top: 1em;
 }
+#ActivityModal .readonly-section input,
+#ActivityModal .readonly-section select,
+#ActivityModal .readonly-section textarea {
+  pointer-events: none;
+  background-color: #eeeeee;
+  border: none;
+}

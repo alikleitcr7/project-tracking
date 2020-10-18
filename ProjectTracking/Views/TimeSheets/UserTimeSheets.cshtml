@@ -195,13 +195,13 @@
                     <h4 class="modal-title">Activity - {{activityModal.title}} {{activityModal.form.id === 0 ? '(New)' : `(A${activityModal.form.id})`}} - {{activeSubProject ? activeSubProject.title : ''}}  <i class="main-dark-color"> @@{{activityModal.form.ipAddressDisplay}}</i> </h4>
                 </div>
 
-                <div v-if="!(activityModal.isDeleted || activityModal.isSaved)" class="modal-body" v-bind:class="{'disabled-section': activityModal.isLoading || activityModal.isDeleting , 'disabled-section' : readOnly }">
+                <div v-if="!(activityModal.isDeleted || activityModal.isSaved)" class="modal-body" v-bind:class="{'disabled-section': activityModal.isLoading || activityModal.isDeleting , 'readonly-section' : readOnly }">
 
                     <div class="modal-controls">
 
                         <table class="table table-borderless">
 
-                            <tr v-bind:class="{'disabled-section':activityModal.isLocked}" v-show="activityModal.form.toDate">
+                            <tr v-bind:class="{'readonly-section':activityModal.isLocked}" v-show="activityModal.form.toDate">
                                 <td>
                                     <div class="modal-control">
                                         <label>From Date</label>
@@ -221,7 +221,7 @@
                                         <label>{{readOnly ? 'Message':'Enter a message '}}</label>
                                         <textarea class="form-control" rows="2" v-model="activityModal.form.message"></textarea>
                                     </div>
-                                    <h5 v-if="activityModal.form.deletedAtDisplay">{{activityModal.form.deletedAtDisplay}}</h5>
+                                    <p class="text-danger " v-if="activityModal.form.deletedAtDisplay !== '-'">Deleted at {{activityModal.form.deletedAtDisplay}}</p>
                                 </td>
                             </tr>
 
