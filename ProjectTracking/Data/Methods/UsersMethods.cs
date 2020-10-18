@@ -194,9 +194,25 @@ namespace ProjectTracking.Data.Methods
             return db.Users.Where(k => db.SupervisorLogs.Any(s => s.UserId == supervisorId && s.TeamId == k.TeamId))
                            .Select(k => k.Id).ToList();
         }
+
+        public bool IsSupervisorOf(string supervisorId, string userId)
+        {
+            // get user's team
+            int? teamId = db.Users.FirstOrDefault(k => k.Id == userId)?.TeamId;
+
+            // user is not part of a team so he is not currently supervised
+            if (!teamId.HasValue)
+            {
+                return false;
+            }
+
+            // check if the supervisor is supervising that team
+            return db.Teams.Any(k => k.ID == teamId.Value && k.SupervisorId == supervisorId);
+        }
+
         public bool IsSupervisor(string userId)
         {
-            return db.SupervisorLogs.Any(k => k.UserId == userId);
+            return db.Teams.Any(k => k.SupervisorId == userId);
         }
 
         public void AssignTeamSupervisor(string assignedById, string userId, int teamId)

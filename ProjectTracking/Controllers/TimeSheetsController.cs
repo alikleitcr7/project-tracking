@@ -18,7 +18,7 @@ using ProjectTracking.Models.TimeSheet;
 namespace ProjectTracking.Controllers
 {
     [Route("[controller]/[action]")]
-    public class TimeSheetsController : Controller
+    public class TimeSheetsController : BaseController
     {
 
         private readonly ITimeSheetsMethods _timeSheets;
@@ -54,15 +54,27 @@ namespace ProjectTracking.Controllers
         }
 
         [Route("/timesheets/explore")]
-        public IActionResult UserTimeSheets(string uid, string tid)
+        public IActionResult UserTimeSheets(string uid, int? tid)
         {
             // uid: userId
             // tid: timesheetId
 
-            ViewData["UserId"] = uid ?? User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
-            ViewData["TimeSheetId"] = tid;
+            string currentUserId = GetCurrentUserId();
+            string userId = uid ?? currentUserId;
 
-            return View();
+            bool isSameUser = currentUserId == userId;
+
+            TimeSheetExploreModel model = new TimeSheetExploreModel()
+            {
+                UserId = userId,
+                CurrentUserId = currentUserId,
+                IsSameUser = isSameUser,
+                CurrentUserIsSupervisor = isSameUser ? false : _users.IsSupervisorOf(currentUserId, userId),
+                CurrentUserRole = GetCurrentUserRole(),
+                TimeSheetId = tid
+            };
+
+            return View(model);
         }
 
         [HttpDelete]
@@ -308,9 +320,9 @@ namespace ProjectTracking.Controllers
             }
         }
 
-        public List<TimeSheetActivity> GetActivitiesByDate(int timeSheetId, int? taskId, DateTime date)
+        public List<TimeSheetActivity> GetActivitiesByDate(int timeSheetId, int? taskId, DateTime date, bool includeDeleted)
         {
-            return _timeSheets.GetTimeSheetActivities(timeSheetId, taskId, date);
+            return _timeSheets.GetTimeSheetActivities(timeSheetId, taskId, date, includeDeleted);
         }
 
         public List<DataContract.TimeSheet> CurrentUserTimeSheets()

@@ -53,6 +53,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         List<User> GetUsersByRole(int roleCode);
         List<KeyValuePair<string, string>> GetUsersByRoleKeyValue(int roleCode);
         void SetRole(string userId, short roleCode);
+        bool IsSupervisorOf(string supervisorId, string userId);
         #endregion
     }
 }

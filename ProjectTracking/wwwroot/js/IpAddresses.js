@@ -40,7 +40,7 @@ var ipAddressesMethods = {
 
         this.ipAddresses.isLoading = true;
 
-        IpAddressesService.Create(address, title).done((r) => {
+        IpAddressesService.Update(address,title).done((r) => {
 
             this.ipAddresses.form = ipAddressFormObject();
 
@@ -131,7 +131,7 @@ var ipAddressesMethods = {
             return;
         }
 
-        IpAddressesService.Update(id, address, title)
+        IpAddressesService.Update( address, title)
             .done((r) => {
 
                 if (r) {

@@ -1,13 +1,20 @@
-﻿@{
+﻿@model ProjectTracking.Models.TimeSheet.TimeSheetExploreModel
+
+@{
     ViewData["Title"] = "User Time Sheets";
 
-    string userId = ViewData["UserId"].ToString();
-    string timeSheetId = ViewData["TimeSheetId"]?.ToString();
+    string timesheetId = Model.TimeSheetId.HasValue ? Model.TimeSheetId.ToString() : "";
+
 }
 
 
 
-<div id="UserTimeSheets" data-user="@userId" data-timesheet="@timeSheetId" data-active-role="0" class="v-container" v-bind:class="{'is-readonly':readOnly}" v-cloak>
+<div id="UserTimeSheets"
+     data-user="@Model.UserId"
+     data-timesheet="@timesheetId"
+     data-active-role="@Model.CurrentUserRole"
+     data-active-user="@Model.CurrentUserId"
+     data-active-supervisor="@Model.CurrentUserIsSupervisor" class="v-container" v-bind:class="{'is-readonly':readOnly}" v-cloak>
     <h3 v-show="timesheetsAreLoading">Loading...</h3>
     <h3 v-show="!timesheetsAreLoading && !timesheets.length">Nothing Here Yet! <i class="far fa-smile-beam"></i> </h3>
 
@@ -19,11 +26,11 @@
         </select>
 
         @*
-            <ul class="list-group">
-                <li v-for="timesheet in timesheets" class="list-group-item" v-on:click="openTimeSheet(timesheet)" v-bind:class="{'active-tab': (activeTimeSheet !== null && activeTimeSheet.id === timesheet.id) }">
-                    {{timesheet.fromDateDisplay}} - {{timesheet.toDateDisplay}}
-                </li>
-            </ul>
+        <ul class="list-group">
+            <li v-for="timesheet in timesheets" class="list-group-item" v-on:click="openTimeSheet(timesheet)" v-bind:class="{'active-tab': (activeTimeSheet !== null && activeTimeSheet.id === timesheet.id) }">
+                {{timesheet.fromDateDisplay}} - {{timesheet.toDateDisplay}}
+            </li>
+        </ul>
         *@
     </div>
 
@@ -76,33 +83,33 @@
                         </div>
 
                         @*<table class="timesheet-tasks">
-                                <tbody>
-                                    <template v-for="(subProject,subProjectIdx) in proj.tasks">
-                                        <tr>
-                                            <td>
-                                                <span class="item-subproject">
-                                                    <span class="item-subproject__title">
-                                                        <span>
-                                                            {{subProject.title}}
-                                                        </span>
-                                                    </span>
-                                                    <span class="item-subproject__buttons" v-show="!readOnly && !activeTimeSheetDateIsLocked">
-                                                        <span v-bind:class="{'active': subProject.isActive, 'disabled' :activeActivities && activeActivities.length > 0 }" v-on:click="startActiveActivity(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-play"></span>
-                                                        <span v-bind:class="{'disabled':!subProject.isActive}" v-on:click="Z(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-stop"></span>
+                            <tbody>
+                                <template v-for="(subProject,subProjectIdx) in proj.tasks">
+                                    <tr>
+                                        <td>
+                                            <span class="item-subproject">
+                                                <span class="item-subproject__title">
+                                                    <span>
+                                                        {{subProject.title}}
                                                     </span>
                                                 </span>
-                                            </td>
-                                            <td>
-                                                <div class="item-subproject__tags">
-                                                    <span class="item-subproject-activity" v-bind:class="{'disabled':!activity.toDate }" v-for="(activity, tagIdx) in subProject.activities" v-on:click="openEditActivityModal(activity, tagIdx,subProjectIdx,idx)">
-                                                        {{tagIdx < subProject.activities.length - 1? activity.tagDisplayHours : activity.tagDisplay}}
-                                                    </span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </template>
-                                </tbody>
-                            </table>*@
+                                                <span class="item-subproject__buttons" v-show="!readOnly && !activeTimeSheetDateIsLocked">
+                                                    <span v-bind:class="{'active': subProject.isActive, 'disabled' :activeActivities && activeActivities.length > 0 }" v-on:click="startActiveActivity(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-play"></span>
+                                                    <span v-bind:class="{'disabled':!subProject.isActive}" v-on:click="Z(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-stop"></span>
+                                                </span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="item-subproject__tags">
+                                                <span class="item-subproject-activity" v-bind:class="{'disabled':!activity.toDate }" v-for="(activity, tagIdx) in subProject.activities" v-on:click="openEditActivityModal(activity, tagIdx,subProjectIdx,idx)">
+                                                    {{tagIdx < subProject.activities.length - 1? activity.tagDisplayHours : activity.tagDisplay}}
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>*@
 
 
                     </div>
@@ -117,28 +124,38 @@
 
                     <h5 v-if="selectedTask">{{selectedTask.title}} Activities</h5>
 
-                    <button v-if="!activeActivity" class="s-btn s-btn-outline " @@click="startActivity()"><i class="fa fa-play"></i> Start</button>
-                    <button v-if="activeActivity" class="s-btn s-btn-primary " @@click="openActivityCommitModal()"><i class="fa fa-stop"></i> Stop</button>
+                    <template v-if="!readOnly">
 
-                    <div class="mark-as-container">
-                        <div class="dropdown">
-                            <button class="s-btn s-btn-outline   dropdown-toggle" type="button" data-toggle="dropdown">
-                                <i :class="getMarkAsIcon()"></i>
-                                Mark as <span v-if="selectedTask.statusIsChanging">...</span>
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
+                        <button v-if="!activeActivity" class="s-btn s-btn-outline " @@click="startActivity()"><i class="fa fa-play"></i> Start</button>
+                        <button v-if="activeActivity" class="s-btn s-btn-primary " @@click="openActivityCommitModal()"><i class="fa fa-stop"></i> Stop</button>
 
-                                <li v-for="status in markAsStatuses" @@click="markTaskAs(status)">
-                                    <a href="#" :class="markAsStatusClass(status,selectedTask.statusCode)">
-                                        <i :class="status.icon"></i>
-                                        <span>{{status.name}}</span>
-                                    </a>
-                                </li>
+                        <div class="mark-as-container">
+                            <div class="dropdown">
+                                <button class="s-btn s-btn-outline   dropdown-toggle" type="button" data-toggle="dropdown">
+                                    <i :class="getMarkAsIcon()"></i>
+                                    Mark as <span v-if="selectedTask.statusIsChanging">...</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
 
-                            </ul>
+                                    <li v-for="status in markAsStatuses" @@click="markTaskAs(status)">
+                                        <a href="#" :class="markAsStatusClass(status,selectedTask.statusCode)">
+                                            <i :class="status.icon"></i>
+                                            <span>{{status.name}}</span>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+
+                    </template>
+                    <template v-else="taskActivitiesHasDeleted">
+                        <label class="">
+                            <input type="checkbox" v-model="taskActivities.showDeleted" />
+                            Show Deleted
+                        </label>
+                    </template>
 
                 </div>
 
@@ -151,10 +168,10 @@
                         <span class="c-box-title"></span>
                     </div>
 
-                    <div class="c-box c-box-clickable"
-                         v-for="activity in taskActivities.data"
+                    <div class="c-box"
+                         v-for="activity in taskActivitiesView"
                          @@click="openActivityCommitModal(activity)"
-                         :class="{'active':!activity.toDate}">
+                         :class="{'active':!activity.toDate, 'activity-deleted' :activity.deletedAt !== null  , 'c-box-clickable':(activity.toDate || !readOnly)}">
                         <div class="c-box-title">{{getActivityTitle(activity)}}</div>
                         <small>{{activity.fromDateDisplay}}</small>
                     </div>
@@ -201,11 +218,13 @@
                             <tr>
                                 <td colspan="2">
                                     <div class="modal-control">
-                                        <label>Enter a message</label>
+                                        <label>{{readOnly ? 'Message':'Enter a message '}}</label>
                                         <textarea class="form-control" rows="2" v-model="activityModal.form.message"></textarea>
                                     </div>
+                                    <h5 v-if="activityModal.form.deletedAtDisplay">{{activityModal.form.deletedAtDisplay}}</h5>
                                 </td>
                             </tr>
+
 
                         </table>
 
@@ -246,17 +265,20 @@
 
 @section scripts{
 
-    <script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
-    @*<script src="~/services/TypeOfWorkService.js"></script>*@
-    @*<script src="~/services/MeasurementUnitsService.js"></script>*@
-    <script src="~/services/TimeSheetsService.js"></script>
-    <script src="~/services/TimeSheetActivitiesService.js"></script>
-    <script src="~/services/ProjectTasksService.js"></script>
-    @*<script src="~/services/ProjectFilesService.js"></script>*@
+<script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
+    @*
+<script src="~/services/TypeOfWorkService.js"></script>*@
+    @*
+<script src="~/services/MeasurementUnitsService.js"></script>*@
+<script src="~/services/TimeSheetsService.js"></script>
+<script src="~/services/TimeSheetActivitiesService.js"></script>
+<script src="~/services/ProjectTasksService.js"></script>
+    @*
+<script src="~/services/ProjectFilesService.js"></script>*@
 
-    <script src="~/js/UserTimeSheets.js"></script>
+<script src="~/js/UserTimeSheets.js"></script>
 }
 
 @section styles {
-    <link href="~/css/UserTimeSheets.min.css" rel="stylesheet" />
+<link href="~/css/UserTimeSheets.min.css" rel="stylesheet" />
 }

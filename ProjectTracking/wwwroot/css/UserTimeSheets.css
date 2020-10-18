@@ -502,6 +502,9 @@
   margin-right: 2px;
   transform: translateY(-2px);
 }
+#UserTimeSheets .user-timesheets-content .task-activities .activity-deleted {
+  background-color: #edb9b9;
+}
 #UserTimeSheets .user-timesheets-content .task-activities .nothing-here {
   font-size: 2em;
   padding: 1em 0;

@@ -24,11 +24,11 @@ const IpAddressesService = {
 
         return $.ajax(payload);
     },
-    Update: function (id, address, title) {
+    Update: function ( address, title) {
 
         let data = new FormData();
 
-        data.append('id', id);
+        //data.append('id', id);
         data.append('address', address);
         data.append('title', title);
 

@@ -268,7 +268,7 @@ namespace ProjectTracking.Data.Methods
             }).ToList();
         }
 
-        public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, int? taskId, DateTime date)
+        public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, int? taskId, DateTime date, bool includeDeleted)
         {
             var dbTimeSheetActivities = db.TimeSheetActivities
                 //.Include(k => k.TimeSheetTask)
@@ -277,7 +277,7 @@ namespace ProjectTracking.Data.Methods
                             && k.FromDate.Month == date.Month
                             && k.FromDate.Day == date.Day
                             && k.FromDate.Year == date.Year
-                            && !k.DeletedAt.HasValue
+                            && (includeDeleted ? true : !k.DeletedAt.HasValue)
                             ).ToList();
 
             if (dbTimeSheetActivities.Count == 0)

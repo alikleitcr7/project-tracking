@@ -1,5 +1,4 @@
-﻿
-Vue.component('date-picker', VueBootstrapDatetimePicker);
+﻿Vue.component('date-picker', VueBootstrapDatetimePicker);
 
 const Modals_TimeSheets = {
     ActivityModal: {
@@ -31,7 +30,6 @@ var enumerateDaysBetweenDates = function (startDate, endDate) {
 
 var delayTimer;
 
-
 // ACTIVITY MODAL DATA
 const activityModalForm = (activity) => {
 
@@ -43,6 +41,7 @@ const activityModalForm = (activity) => {
             toDate: activity.toDate ? moment(activity.toDate) : null,
             message: activity.message,
             ipAddressDisplay: activity.ipAddressDisplay,
+            deletedAtDisplay: activity.deletedAtDisplay,
         }
     }
 
@@ -53,6 +52,7 @@ const activityModalForm = (activity) => {
         toDate: null,
         message: '',
         ipAddressDisplay: '',
+        deletedAtDisplay: null,
     }
 }
 
@@ -137,8 +137,6 @@ var user_timesheet_app = new Vue({
     el: '#UserTimeSheets',
     data: {
         timesheets: [],
-        typeOfWorkData: [],
-        measurementUnitData: [],
         timesheetsAreLoading: true,
         activeTimeSheet: null,
         activeTimeSheetLoading: false,
@@ -207,7 +205,8 @@ var user_timesheet_app = new Vue({
             data: [],
             message: '',
             isStarting: false,
-            isLoading: true
+            isLoading: true,
+            showDeleted: false
         }
     },
     computed: {
@@ -311,6 +310,19 @@ var user_timesheet_app = new Vue({
             const markAsAllowed = [TASK_STATUSES_KEYS.PENDING, TASK_STATUSES_KEYS.PROGRESS, TASK_STATUSES_KEYS.DONE]
 
             return this.tasksFilter.statuses.filter(k => markAsAllowed.includes(k.key))
+        },
+        taskActivitiesHasDeleted: function () {
+            return this.taskActivities.data.findIndex(k => k.deletedAt !== null) > -1
+        },
+        taskActivitiesView: function () {
+
+            const showDeleted = this.taskActivities.showDeleted
+
+            if (showDeleted) {
+                return this.taskActivities.data
+            }
+
+            return this.taskActivities.data.filter(k => k.deletedAt === null)
         }
     },
     methods: {
@@ -416,6 +428,10 @@ var user_timesheet_app = new Vue({
                 })
         },
         openActivityCommitModal: function (activity) {
+
+            if (!activity.toDate && this.readOnly) {
+                return
+            }
 
             //const task = this.activeTask
 
@@ -621,7 +637,6 @@ var user_timesheet_app = new Vue({
 
 
                         setTimeout(() => {
-                            console.log('smooth')
 
                             const el = $('.user-timesheets-content__days .list-group-item.is-current-day')
 
@@ -793,7 +808,7 @@ var user_timesheet_app = new Vue({
 
             this.selectedTask = { ...task }
 
-            TimeSheetsService.GetActivitiesByDate(activeTimeSheet.id, task.id, date)
+            TimeSheetsService.GetActivitiesByDate(activeTimeSheet.id, task.id, date, this.readOnly)
                 .then(r => {
                     const data = r.data
 
@@ -901,8 +916,11 @@ var user_timesheet_app = new Vue({
         var userId = $('#UserTimeSheets').attr('data-user');
         var timeSheetId = $('#UserTimeSheets').attr('data-timesheet');
         var activeRole = $('#UserTimeSheets').attr('data-active-role');
+        var activeUserId = $('#UserTimeSheets').attr('data-active-user');
+        var isActiveSupervisor = $('#UserTimeSheets').attr('data-active-supervisor') === 'True';
 
 
+        this.readOnly = isActiveSupervisor
 
         //if (userId) {
 
@@ -921,7 +939,7 @@ var user_timesheet_app = new Vue({
         TimeSheetsService.GetUserTimeSheets(userId)
             .then((r) => {
                 //this.readOnly = true
-                this.timesheets = r.data
+                this.timesheets = r.data || []
 
                 if (timeSheetId) {
 
@@ -932,6 +950,13 @@ var user_timesheet_app = new Vue({
                             this.selectedTimeSheetId = timeSheetId
                             this.openTimeSheet(timesheet)
                         }
+                    }
+                }
+                else {
+
+                    if (this.timesheets.length) {
+                        this.selectedTimeSheetId = this.timesheets[0].id
+                        this.openTimeSheet(this.timesheets[0])
                     }
                 }
             })
