@@ -1,8 +1,5 @@
-﻿
-Vue.component('paginate', VuejsPaginate) 
-Vue.component('date-picker', VueBootstrapDatetimePicker);
-new Vue({
-    el: '#app',
+﻿new Vue({
+    el: '#UserLogs',
     data: {
         UsersLogsAreLoading: true,
         fromDate: '', dateOptions,toDate:'',

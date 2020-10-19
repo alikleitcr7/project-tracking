@@ -1,7 +1,4 @@
-﻿Vue.component('paginate', VuejsPaginate)
-Vue.component('date-picker', VueBootstrapDatetimePicker)
-
-const debugUsers = true;
+﻿const debugUsers = true;
 
 const userFields = [
     {

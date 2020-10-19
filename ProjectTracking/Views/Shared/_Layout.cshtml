@@ -72,6 +72,11 @@
         <script src="~/lib/signalr/notificationSignalR.js"></script>
     }
 
+    @* vue components *@
+    <script>
+        Vue.component('paginate', VuejsPaginate)
+        Vue.component('date-picker', VueBootstrapDatetimePicker)
+    </script>
 
     @RenderSection("Scripts", required: false)
 

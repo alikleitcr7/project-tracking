@@ -1,6 +1,4 @@
-﻿Vue.component('paginate', VuejsPaginate)
-
-const debugCategories = true;
+﻿const debugCategories = true;
 
 const categoryFields = [
     {

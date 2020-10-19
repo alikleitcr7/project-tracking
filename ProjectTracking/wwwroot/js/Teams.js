@@ -1,6 +1,4 @@
-﻿Vue.component('paginate', VuejsPaginate)
-
-const debugTeams = true;
+﻿const debugTeams = true;
 
 const teamFields = [
     {

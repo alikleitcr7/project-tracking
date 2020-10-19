@@ -1,5 +1,4 @@
-﻿
-const ipAddressFormObject = () => {
+﻿const ipAddressFormObject = () => {
     return {
         address: '',
         title: ''
@@ -191,7 +190,6 @@ var ipAddressesMethods = {
 
     }
 }
-
 
 // APPLICATION
 

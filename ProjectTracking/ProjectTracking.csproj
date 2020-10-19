@@ -173,6 +173,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\Admin\Forms\LogsForm.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\Admin\Forms\LocationsForm.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Admin\Forms\UsersForm.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
