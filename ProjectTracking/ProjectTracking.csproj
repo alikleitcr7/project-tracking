@@ -188,6 +188,9 @@
     <Content Update="Views\ProjectTasks\Forms\ProjectTasksResult.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Shared\_LogonLayout.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Teams\Modals\SupervisorLogsModal.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
@@ -200,6 +203,11 @@
     <Content Update="Views\Teams\Shared\SupervisorTeams.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\bootbox-5.3.2\" />
+    <Folder Include="wwwroot\lib\vuejs-paginate\" />
   </ItemGroup>
 
 </Project>

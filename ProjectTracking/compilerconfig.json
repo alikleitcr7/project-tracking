@@ -34,5 +34,9 @@
   {
     "outputFile": "wwwroot/css/UserTimeSheets.css",
     "inputFile": "wwwroot/css/UserTimeSheets.less"
+  },
+  {
+    "outputFile": "wwwroot/css/bs4.css",
+    "inputFile": "wwwroot/css/bs4.less"
   }
 ]

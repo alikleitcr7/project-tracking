@@ -55,7 +55,7 @@
 
                 <p v-show="filteredProjectsLoading">Loading...</p>
                 <h4>{{activeDate ? activeDate.format('LL') : ''}} {{activeDateIndexIsCurrentDay !== -1 && activeDateIndexIsCurrentDay === activeDateIdx ? '(Today)' : ''}} <i class="main-color">{{activeTimeSheet && activeTimeSheet.isSigned ? ' | (SIGNED)' :''}}</i> </h4>
-                <button class="btn btn-default btn-sm" v-if="canUnlock" v-on:click="toggleReadOnly"> <i class="glyphicon glyphicon-lock"></i> {{readOnly ? 'Unlock' : 'Lock'}}</button>
+                @*<button class="btn btn-default btn-sm" v-if="canUnlock" v-on:click="toggleReadOnly"> <i class="glyphicon glyphicon-lock"></i> {{readOnly ? 'Unlock' : 'Lock'}}</button>*@
 
                 <div class="tasks-filter-container">
                     <span :class="taskStatusClass(status)"
@@ -120,9 +120,9 @@
 
             <div class="task-activities" v-if="selectedTask">
 
-                <div class="task-activities-actions" v-if="activeDateIndexIsToday">
+                <h5 v-if="selectedTask">{{selectedTask.title}} Activities</h5>
 
-                    <h5 v-if="selectedTask">{{selectedTask.title}} Activities</h5>
+                <div class="task-activities-actions" v-if="activeDateIndexIsToday">
 
                     <template v-if="!readOnly">
 

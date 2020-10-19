@@ -438,9 +438,11 @@ namespace ProjectTracking.Data.Methods
 
         public ProjectTask GetActivityProjectTask(int id)
         {
-            var activity = db.TimeSheetActivities.First(k => k.ID == id);
+            var activity = db.TimeSheetActivities
+                .Include(k => k.TimeSheetTask)
+                .First(k => k.ID == id);
 
-            return _mapper.Map<ProjectTask>(db.ProjectTasks.Include(k => k.Project).First(k => k.ID == activity.TimeSheetTaskId));
+            return _mapper.Map<ProjectTask>(db.ProjectTasks.Include(k => k.Project).First(k => k.ID == activity.TimeSheetTask.ProjectTaskId));
         }
 
 

@@ -429,10 +429,6 @@ var user_timesheet_app = new Vue({
         },
         openActivityCommitModal: function (activity) {
 
-            if (!activity.toDate && this.readOnly) {
-                return
-            }
-
             //const task = this.activeTask
 
             /** @type {ActivityModalForm} */
@@ -440,6 +436,10 @@ var user_timesheet_app = new Vue({
 
             if (!activity) {
                 console.error('no active activity')
+                return
+            }
+
+            if (!activity.toDate && this.readOnly) {
                 return
             }
 

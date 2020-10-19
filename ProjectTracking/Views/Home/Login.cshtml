@@ -9,8 +9,10 @@
 }
 
 @{
+    Layout = "~/Views/Shared/_LogonLayout.cshtml";
     ViewData["Title"] = "Project Tracking - Login";
 }
+
 
 @model LoginViewModel
 
@@ -33,7 +35,7 @@
                 @Html.Password("Password")
 
                 @*<label>Role</label>
-                @Html.DropDownListFor(m => m.Role, roles.Select(k => new SelectListItem(k.Name, k.Id)).ToList())*@
+                    @Html.DropDownListFor(m => m.Role, roles.Select(k => new SelectListItem(k.Name, k.Id)).ToList())*@
 
                 <div>
                     @Html.CheckBoxFor(m => m.RememberMe)
@@ -62,7 +64,7 @@
 
                 @*<p class="BottomLinks LinksSection">
 
-                </p>*@
+                    </p>*@
 
             </div>
         </div>

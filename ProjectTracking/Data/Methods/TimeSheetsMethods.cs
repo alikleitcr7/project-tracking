@@ -497,5 +497,10 @@ namespace ProjectTracking.Data.Methods
 
             return projects;
         }
+
+        public bool UserHasTimeSheet(string userId)
+        {
+            return db.TimeSheets.Any(k => k.UserId == userId);
+        }
     }
 }

@@ -232,7 +232,6 @@ namespace ProjectTracking.Data.Methods
             _context.SaveChanges();
         }
 
-
         public bool Delete(int id)
         {
             var record = _context.Teams.FirstOrDefault(c => c.ID == id);

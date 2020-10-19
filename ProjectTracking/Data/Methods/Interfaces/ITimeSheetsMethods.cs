@@ -27,5 +27,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         TimeSheet GetById(int id);
         List<Models.Profile.TimeSheetTasksWithActivityCheck> TimeSheetTasksWithActivityCheck(int timeSheetId);
         List<Project> GetTimeSheetProjectsWithTasks(int timeSheetId);
+        bool UserHasTimeSheet(string userId);
     }
 }
