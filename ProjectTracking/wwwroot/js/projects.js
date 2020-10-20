@@ -139,8 +139,48 @@ const projectsMethods = {
         }
 
 
+
         if (!isValid) {
             this.projects_setFormMessage(finalMessage || 'Fill Required Fields to Continue')
+        }
+        else {
+
+            // check dates 
+
+            const { startDate, plannedEnd, actualEnd } = form
+
+            // validate start/planned/actual date
+            // from must be less than to/actual date
+            if (startDate) {
+
+
+                const startDate_moment = moment(startDate)
+
+                const invalidPlanned = plannedEnd && moment(plannedEnd) <= startDate_moment
+                const invalidActual = actualEnd && moment(actualEnd) <= startDate_moment
+
+                if (invalidPlanned && invalidActual) {
+                    finalMessage = 'Planned and Actual date must be greater than Start date'
+                    isValid = false
+                }
+                else if (invalidPlanned) {
+                    finalMessage = 'Planned date must be greater than Start date'
+                    isValid = false
+                }
+                else if (invalidActual) {
+                    finalMessage = 'Actual date must be greater than Start date'
+                    isValid = false
+                }
+            }
+            else if (plannedEnd || actualEnd) {
+
+                finalMessage = 'Cannot add Planned or Actual end without Start date'
+                isValid = false
+            }
+
+            if (!isValid) {
+                this.projects_setFormMessage(finalMessage)
+            }
         }
 
         return isValid;

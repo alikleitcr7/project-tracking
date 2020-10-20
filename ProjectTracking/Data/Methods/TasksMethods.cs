@@ -25,6 +25,28 @@ namespace ProjectTracking.Data.Methods
 
         public ProjectTask Save(TaskSaveModel model)
         {
+            if (string.IsNullOrEmpty(model.title))
+            {
+                throw new Exception("title required");
+            }
+
+            if (model.startDate.HasValue)
+            {
+                if (model.plannedEnd.HasValue && model.plannedEnd.Value <= model.startDate.Value)
+                {
+                    throw new ClientException("Planned Date must be greater than Start Date");
+                }
+
+                if (model.actualEnd.HasValue && model.actualEnd.Value <= model.startDate.Value)
+                {
+                    throw new ClientException("Actual Date must be greater than Start Date");
+                }
+            }
+            else if (model.plannedEnd.HasValue || model.actualEnd.HasValue)
+            {
+                throw new Exception("Cannot insert Planned or Actual end date without a Start date");
+            }
+
             if (model.id.HasValue)
             {
                 // # save task #
@@ -52,7 +74,6 @@ namespace ProjectTracking.Data.Methods
                         DateModified = DateTime.Now
                     });
                 }
-
 
                 // update the task
                 dbTask.Title = model.title;

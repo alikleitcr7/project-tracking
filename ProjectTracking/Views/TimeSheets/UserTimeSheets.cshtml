@@ -201,7 +201,7 @@
 
                         <table class="table table-borderless">
 
-                            <tr v-bind:class="{'readonly-section':activityModal.isLocked}" v-show="activityModal.form.toDate">
+                            <tr v-bind:class="{'readonly-section':activityModal.isLocked}" v-show="activityModal.isUpdate">
                                 <td>
                                     <div class="modal-control">
                                         <label>From Date</label>
@@ -249,7 +249,7 @@
                         {{activityModalSaveButtonLabel}}
                     </button>
                     @*<button v-if="!readOnly && activityModal.form.toDate" type="button" class="s-btn s-btn-primary" v-on:click="commitActivity">{{activityModal.isSaving? 'Saving...': 'Save'}}</button>*@
-                    <a v-if="activityModal.form.toDate" target="_blank" class="s-btn s-btn-outline" v-bind:href="`/timesheets/TimeSheetActivityLog?activityId=${activityModal.form.id}`">Logs</a>
+                    <a v-if="activityModal.isUpdate" target="_blank" class="s-btn s-btn-outline" v-bind:href="`/timesheets/TimeSheetActivityLog?activityId=${activityModal.form.id}`">Logs</a>
                     <button v-if="!readOnly" type="button" class="s-btn s-btn-o-danger" v-on:click="deleteActivity">{{activityModalDeleteButtonLabel}}</button>
                     @*<button v-show="!readOnly && activityModal.form.toDate" type="button" class="s-btn s-btn-o-danger" v-on:click="deleteActivity">{{activityModal.isDeleting ? 'Deleting...' : 'Delete'}}</button>*@
                 </div>

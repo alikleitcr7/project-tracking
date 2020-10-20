@@ -106,6 +106,7 @@ const activityModalObject = () => {
         //data: [],
         form: activityModalForm(),
         backupEdit: activityModalForm(),
+        isUpdate: false,
         isLoading: false,
         isDeleting: false,
         isSaving: false,
@@ -271,36 +272,38 @@ var user_timesheet_app = new Vue({
         activityModalSaveButtonLabel: function () {
             const { id, fromDate, toDate } = this.activityModal.form
             const isLoading = this.activityModal.isLoading
+            const isUpdate = this.activityModal.isUpdate
 
             if (!id) {
                 return ''
             }
 
-            return toDate ? (isLoading ? 'Saving...' : 'Save') : (isLoading ? 'Commit...' : 'Commit')
+            return isUpdate ? (isLoading ? 'Saving...' : 'Save') : (isLoading ? 'Commit...' : 'Commit')
         },
         activityModalDeleteButtonLabel: function () {
 
             const { id, fromDate, toDate } = this.activityModal.form
 
             const isDeleting = this.activityModal.isDeleting
+            const isUpdate = this.activityModal.isUpdate
 
             if (!id) {
                 return ''
             }
 
-            return toDate ? (isDeleting ? 'Deleting...' : 'Delete') : (isDeleting ? 'Dismiss...' : 'Dismiss')
+            return isUpdate ? (isDeleting ? 'Deleting...' : 'Delete') : (isDeleting ? 'Dismiss...' : 'Dismiss')
         },
         activityModalFeedbackLabel: function () {
 
-            const { isSaved, isDeleted, form: { toDate } } = this.activityModal
+            const { isSaved, isDeleted, isUpdate,form: { toDate } } = this.activityModal
 
 
             if (isSaved) {
-                return toDate ? 'Saved!' : 'Done!'
+                return isUpdate ? 'Saved!' : 'Done!'
             }
 
             if (isDeleted) {
-                return toDate ? 'Deleted!' : 'Dismissed!'
+                return isUpdate ? 'Deleted!' : 'Dismissed!'
             }
 
             return null
@@ -398,7 +401,7 @@ var user_timesheet_app = new Vue({
                 return
             }
 
-            if (this.activeTask) {
+            if (this.activeActivity) {
                 alert(`There is already an active activity on task "${task.title}"`)
                 return
             }
@@ -451,6 +454,7 @@ var user_timesheet_app = new Vue({
 
             //activityModal.form.id = activity.id
 
+            activityModal.isUpdate = activity.fromDate && activity.toDate 
             activityModal.isDeleted = false
             activityModal.isSaved = false
             activityModal.isDeleting = false
@@ -492,9 +496,8 @@ var user_timesheet_app = new Vue({
                 message: activityModal.form.message,
             }
 
-            const isUpdate = activityModal.form.toDate != null
+            const isUpdate = activityModal.isUpdate
 
-            activityModal.isLoading = true
 
             if (isUpdate) {
 
@@ -504,6 +507,21 @@ var user_timesheet_app = new Vue({
                     fromDate: activityModal.form.fromDate,
                     toDate: activityModal.form.toDate
                 }
+
+                if (!(model.fromDate && model.toDate)) {
+                    activityModal.message = 'From/To Dates are required'
+                    this.activityModal = activityModal
+
+                    return
+                }
+
+                if (moment(model.toDate) <= moment(model.fromDate)) {
+                    activityModal.message = 'To Date should be greater than From Date'
+                    this.activityModal = activityModal
+
+                    return
+                }
+
             }
             else {
                 model = {
@@ -512,7 +530,11 @@ var user_timesheet_app = new Vue({
                 }
             }
 
+            activityModal.isLoading = true
+
             if (isUpdate) {
+
+
                 TimeSheetActivitiesService.Update(model)
                     .then(r => {
 

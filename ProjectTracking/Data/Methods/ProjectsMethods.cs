@@ -32,6 +32,19 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException("title and category are required");
             }
 
+            if (model.startDate.HasValue)
+            {
+                if (model.plannedEnd.HasValue && model.plannedEnd.Value <= model.startDate.Value)
+                {
+                    throw new ClientException("Planned Date must be greater than Start Date");
+                }
+
+                if (model.actualEnd.HasValue && model.actualEnd.Value <= model.startDate.Value)
+                {
+                    throw new ClientException("Actual Date must be greater than Start Date");
+                }
+            }
+
             if (model.id.HasValue)
             {
                 // check if title already exist under the selected category

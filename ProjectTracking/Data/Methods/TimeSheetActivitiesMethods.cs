@@ -107,12 +107,17 @@ namespace ProjectTracking.Data.Methods
         {
             if (model == null)
             {
-                throw new ArgumentNullException("activity is null");
+                throw new ArgumentNullException("activity is null*");
             }
 
             if (string.IsNullOrEmpty(model.message))
             {
-                throw new ClientException("message is required");
+                throw new ClientException("message is required*");
+            }
+
+            if (model.toDate <= model.fromDate)
+            {
+                throw new ClientException("To Date should be greater than From Date*");
             }
 
             // can be null (case VPN, etc..)
