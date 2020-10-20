@@ -97,6 +97,7 @@ namespace ProjectTracking.DataContract
             }
         }
 
+        //public bool? HasSupervisorLog { get; set; }
         //public int? SupervisingCount { get; set; }
     }
 

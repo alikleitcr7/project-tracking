@@ -12,6 +12,7 @@ using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
 using ProjectTracking.Exceptions;
 using ProjectTracking.Models.TimeSheet;
+using ProjectTracking.Models.Profile;
 
 namespace ProjectTracking.Controllers
 {
@@ -37,14 +38,22 @@ namespace ProjectTracking.Controllers
         [Route("/profile/{userId}")]
         public IActionResult Index(string userId)
         {
-            User user = _userMethods.GetById(userId);
+            DataContract.User user = _userMethods.GetById(userId);
+
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            ProfileViewModel model = new ProfileViewModel()
+            {
+                User = user,
+                HasSupervisorLog = _userMethods.HasSupervisorLog(userId),
+                HasTimeSheets = _userMethods.HasTimeSheets(userId)
+            };
+
+            return View(model);
         }
 
         //[Route("/supervisor/{userId}")]

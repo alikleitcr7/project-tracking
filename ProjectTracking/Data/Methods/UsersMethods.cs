@@ -875,5 +875,15 @@ namespace ProjectTracking.Data.Methods
 
             db.SaveChanges();
         }
+
+        public bool HasSupervisorLog(string userId)
+        {
+            return db.SupervisorLogs.Any(k => k.UserId == userId);
+        }
+
+        public bool HasTimeSheets(string userId)
+        {
+            return db.TimeSheets.Any(k => k.UserId == userId);
+        }
     }
 }

@@ -32,9 +32,11 @@ namespace ProjectTracking.Data.Methods.Interfaces
         #region SupervisingOperations
         bool AddSupervising(string userId, string superVisedId);
         bool AddSupervising(string userId, List<string> superVisedIds);
+        bool HasSupervisorLog(string userId);
         bool RemoveSuperVised(string userId, string superVisedId);
         bool RemoveSuperVised(string userId, List<string> superVisedIds);
         Object GetSupervising(string Id);
+        bool HasTimeSheets(string userId);
         #endregion
 
         #region SupervisorOperations

@@ -1,43 +1,56 @@
-﻿
-<div id="Schedules"  v-cloak class="schedule-container v-container">
+﻿<div id="Schedules" v-cloak class="schedule-container v-container">
 
-    <div class="v-container">
-
-        <button type="button" v-show="!isCurrentUser"
-                class="s-btn s-btn-primary"
-                v-on:click="newTimeSheet()">
-            Add TimeSheet
-        </button>
-
-        <a class="s-btn s-btn-outline" v-bind:href="`/timesheets/explore?uid=${userId}`">Explore
-         <i class="fa fa-angle-right"></i>
-        </a>
-
-        @*<a asp-controller="Projects"
-           asp-action="ProjectsProgress"
-           asp-route-userId="@Model.Id"
-           class="btn Button-Shared mb-4">
-            Projects Progress
-        </a>
+    @* <div class="v-container">
 
 
-        <a class="btn Button-Shared mb-4"
-           target="_blank" v-show="isInAdministration"
-           href="/userinsights?userId=@Model.Id">Active Hours Insights</a>*@
+           <a asp-controller="Projects"
+                   asp-action="ProjectsProgress"
+                   asp-route-userId="@Model.Id"
+                   class="btn Button-Shared mb-4">
+                    Projects Progress
+                </a>
 
-    </div>
+
+                <a class="btn Button-Shared mb-4"
+                   target="_blank" v-show="isInAdministration"
+                   href="/userinsights?userId=@Model.Id">Active Hours Insights</a>
+
+        </div>*@
 
     <p v-if="timeSheetsLoading">Loading...</p>
     <p v-if="!timeSheetsLoading && !timeSheets.length">Nothing here yet! <i class="far fa-smile"></i> </p>
 
     <div v-show="!timeSheetsLoading && timeSheets.length > 0">
 
-        <div class="d-flex mb-2">
-            <select v-model="selectedTimeSheetYear" class="form-control " style="width:200px">
-                <option v-for="timeSheetYear in timeSheetYears" :value="timeSheetYear">{{timeSheetYear}}</option>
-            </select>
-            <button class="mx-5 Button-Shared" v-on:click="filterTimeSheets">Filter</button>
-        </div>
+        <table class="table table-borderless" style="max-width:400px">
+            <tr>
+                <td colspan="2">
+                    <button type="button" v-show="!isCurrentUser"
+                            class="s-btn s-btn-primary"
+                            v-on:click="newTimeSheet()">
+                        Add TimeSheet
+                    </button>
+
+                    <a class="s-btn s-btn-outline" v-bind:href="`/timesheets/explore?uid=${userId}`">
+                        Explore
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+
+                    <select v-model="selectedTimeSheetYear" class="form-control ">
+                        <option v-for="timeSheetYear in timeSheetYears" :value="timeSheetYear">{{timeSheetYear}}</option>
+                    </select>
+                </td>
+                <td>
+                    <button class=" s-btn s-btn-outline" v-on:click="filterTimeSheets">Filter</button>
+
+                </td>
+            </tr>
+        </table>
     </div>
 
     <div v-show="!timeSheetsLoading">
@@ -84,9 +97,9 @@
             <!-- Modal content-->
             <div class="modal-content">
                 @*<div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Add Time Sheet</h4>
-                </div>*@
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add Time Sheet</h4>
+                    </div>*@
 
                 <div class="modal-body">
 

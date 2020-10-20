@@ -1,28 +1,28 @@
 ﻿@using ProjectTracking.DataContract
-@model ProjectTracking.DataContract.User
+@model ProjectTracking.Models.Profile.ProfileViewModel
 
 @{
-    ViewData["Title"] = $"{Model.FullName} Profile";
+    ViewData["Title"] = $"{Model.User.FullName} Profile";
 
     ProjectTracking.Models.Teams.SupervisorTeamsViewModel supervisorModel = new ProjectTracking.Models.Teams.SupervisorTeamsViewModel()
     {
-        SupervisorId = Model.Id,
-        SupervisorName = Model.FullName
+        SupervisorId = Model.User.Id,
+        SupervisorName = Model.User.FullName
     };
 }
 
-<div id="Profile"  class="v-container" data-user="@Model.Id" data-team="@Model.TeamId">
+<div id="Profile" class="v-container" data-user="@Model.User.Id" data-team="@Model.User.TeamId">
 
     @*<h2>@Model.FullName Profile</h2>*@
 
     <div class="top-intro">
         <div class="top-intro-left">
             <div class="profile-circle">
-                @Model.ProfileTwoLetters
+                @Model.User.ProfileTwoLetters
             </div>
             <div class="profile-title">
-                <span>@Model.FullName</span>
-                <span>@Model.Title</span>
+                <span>@Model.User.FullName</span>
+                <span>@Model.User.Title</span>
                 <small data-toggle="modal" data-target="#UserMoreDetails">More Details</small>
             </div>
         </div>
@@ -31,24 +31,40 @@
     <div class="profile-content">
 
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#SupervisorTeamsTab">Supervisor Teams</a></li>
-            <li><a data-toggle="tab" href="#SchedulesTab">Schedules</a></li>
-            <li><a data-toggle="tab" href="#ProgressTab">Progress</a></li>
+            <li><a data-toggle="tab" href="#InsightsTab">Insights</a></li>
+
+            @if (Model.ShowSupervisorTab)
+            {
+                <li><a data-toggle="tab" href="#SupervisorTeamsTab">Supervisor Teams</a></li>
+            }
+
+
+            @if (Model.ShowScheduleTab)
+            {
+                <li><a data-toggle="tab" href="#SchedulesTab">Schedules</a></li>
+            }
         </ul>
 
         <div class="tab-content">
 
-            <div id="SupervisorTeamsTab" class="tab-pane fade in active">
-                <partial name="~/views/teams/shared/SupervisorTeams.cshtml" model="@supervisorModel" />
+            <div id="InsightsTab" class="tab-pane fade in active">
+                <h2>Insights</h2>
             </div>
 
-            <div id="SchedulesTab" class="tab-pane fade ">
-                <partial name="~/views/profile/schedules.cshtml" />
-            </div>
+            @if (Model.ShowSupervisorTab)
+            {
 
-            <div id="ProgressTab" class="tab-pane fade">
-                @*<partial name="~/views/users/schedule.cshtml" />*@
-            </div>
+                <div id="SupervisorTeamsTab" class="tab-pane fade ">
+                    <partial name="~/views/teams/shared/SupervisorTeams.cshtml" model="@supervisorModel" />
+                </div>
+            }
+
+            @if (Model.ShowScheduleTab)
+            {
+                <div id="SchedulesTab" class="tab-pane fade ">
+                    <partial name="~/views/profile/schedules.cshtml" />
+                </div>
+            }
 
         </div>
 
@@ -62,34 +78,34 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title main-color">
                         <i class="far fa-address-card "></i>&nbsp;
-                        @Model.FullName
+                        @Model.User.FullName
                     </h4>
                 </div>
                 <div class="modal-body">
 
                     <table class="table">
 
-                        @if (Model.Team != null)
+                        @if (Model.User.Team != null)
                         {
                             <tr>
                                 <td>Team</td>
-                                <td>@Model.TeamDisplay</td>
+                                <td>@Model.User.TeamDisplay</td>
                             </tr>
                         }
 
                         <tr>
                             <td>Date of Birth</td>
-                            <td>@Model.DateOfBirthDisplay</td>
+                            <td>@Model.User.DateOfBirthDisplay</td>
                         </tr>
 
                         <tr>
                             <td>Email</td>
-                            <td>@Model.Email</td>
+                            <td>@Model.User.Email</td>
                         </tr>
 
                         <tr>
                             <td>Employment Type</td>
-                            <td>@Model.EmploymentTypeDisplay</td>
+                            <td>@Model.User.EmploymentTypeDisplay</td>
                         </tr>
 
                     </table>
@@ -112,8 +128,16 @@
     <script src="~/services/ProjectsService.js" type="text/javascript"></script>
     <script src="~/services/TeamsService.js" type="text/javascript"></script>
 
-    <script src="~/js/SupervisorTeams.js">
-    </script>
-
     <script src="~/js/Profile.js" type="text/javascript"></script>
+
+    @if (Model.ShowSupervisorTab)
+    {
+        <script src="~/js/SupervisorTeams.js">
+        </script>
+    }
+
+    @if (Model.ShowScheduleTab)
+    {
+        <script src="~/js/Schedules.js" type="text/javascript"></script>
+    }
 }
