@@ -11,8 +11,9 @@
                 <input class="form-control" v-model="projectTasks.filterBy.keyword" />
             </td>
             <td>
-                <button class="s-btn s-btn-primary" v-on:click="projectTasks_getAll()">Search
-                <i class="glyphicon glyphicon-search"></i>
+                <button class="s-btn s-btn-primary" v-on:click="projectTasks_getAll()">
+                    Search
+                    <i class="glyphicon glyphicon-search"></i>
                 </button>
 
             </td>
@@ -46,12 +47,14 @@
 
         <thead>
             <tr>
-                <th style="width: 50px">-</th>
+                <th width="30">-</th>
                 <th>Name</th>
                 <th>Start Date</th>
                 <th>Planned End</th>
                 <th>Actual End</th>
                 <th>Status</th>
+                <th>Date</th>
+                <th>Status Changed By</th>
                 <th></th>
             </tr>
         </thead>
@@ -69,33 +72,46 @@
                     <td>
                         {{item.title}}
                     </td>
-                    
+
                     <td>
                         {{item.startDateDisplay}}
                     </td>
-                    
+
                     <td>
                         {{item.plannedEndDisplay}}
                     </td>
-                    
+
                     <td>
                         {{item.actualEndDisplay}}
                     </td>
 
-                    
                     <td>
                         {{item.statusDisplay}}
                     </td>
 
                     <td>
+                        {{item.lastModifiedDate ? item.lastModifiedDateDisplay : item.dateAddedDisplay}}
+                    </td>
+                    
+                    <td>
+                        {{item.statusByUserName}}
+                    </td>
+
+                    <td>
                         @*<a class="s-btn s-btn-sm s-btn-outline" :href="`/projectTasktasks/${item.id}`">
-                            Tasks
-                        </a>*@
+            Tasks
+        </a>*@
 
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
                                 v-on:click="projectTasks_edit(idx)">
                             Edit
                         </button>
+
+                        <button class="s-btn s-btn-sm s-btn-outline" type="button"
+                                v-on:click="projectTasks_viewStatusesModification(item)">
+                            Status History
+                        </button>
+
                         <button class="s-btn s-btn-sm s-btn-danger" type="button"
                                 v-on:click="projectTasks_delete(idx)">
                             Delete

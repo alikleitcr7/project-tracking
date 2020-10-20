@@ -11,7 +11,7 @@ using ProjectTracking.Models.Projects;
 
 namespace ProjectTracking.Controllers
 {
-    [Route("ProjectTasks")]
+    [Route("[controller]/[action]")]
     public class ProjectTasksController : BaseController
     {
         private readonly IProjectsMethods _projectsMethods;
@@ -37,7 +37,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
-        [Route("Save")]
+        //[Route("Save")]
         public IActionResult Save([FromBody]TaskSaveModel model)
         {
             if (!ModelState.IsValid)
@@ -62,7 +62,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
-        [Route("GetById")]
+        //[Route("GetById")]
         public IActionResult GetById(int id)
         {
             try
@@ -80,14 +80,14 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
-        [Route("GetProjectTaskStatuses")]
+        //[Route("GetProjectTaskStatuses")]
         public IActionResult GetProjectTaskStatuses()
         {
             return Ok(Enum.GetNames(typeof(ProjectTaskStatus)).Select((key, value) => new KeyValuePair<int, string>(value, key)).ToList());
         }
 
         [HttpGet]
-        [Route("Search")]
+        //[Route("Search")]
         public IActionResult Search(string keyword, int projectId, int page, int countPerPage)
         {
             try
@@ -132,7 +132,7 @@ namespace ProjectTracking.Controllers
 
 
         [HttpDelete]
-        [Route("Delete")]
+        //[Route("Delete")]
         public IActionResult Delete(int id)
         {
             try
@@ -150,7 +150,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPut]
-        [Route("ChangeStatus")]
+        //[Route("ChangeStatus")]
         public IActionResult ChangeStatus(int taskId, short statusCode)
         {
             try

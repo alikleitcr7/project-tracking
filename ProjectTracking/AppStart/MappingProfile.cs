@@ -61,7 +61,10 @@ namespace ProjectTracking.AppStart
             CreateMap<Broadcast, DataContract.Broadcast>().ForAllMembers(opt => opt.AllowNull());
             CreateMap<DataContract.Broadcast, Broadcast>().ForAllMembers(opt => opt.AllowNull());
 
-            CreateMap<ProjectStatusModification, DataContract.ProjectStatusModification>().ForAllMembers(opt => opt.AllowNull());
+            CreateMap<ProjectStatusModification, DataContract.ProjectStatusModification>()
+                .ForAllMembers(opt => opt.AllowNull());
+
+
             CreateMap<DataContract.ProjectStatusModification, ProjectStatusModification>().ForAllMembers(opt => opt.AllowNull());
 
             CreateMap<ProjectTaskStatusModification, DataContract.ProjectTaskStatusModification>().ForAllMembers(opt => opt.AllowNull());

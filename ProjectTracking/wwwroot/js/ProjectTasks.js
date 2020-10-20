@@ -30,6 +30,14 @@ const Modals_ProjectTasks = {
         Hide: function () {
             $('#ProjectTaskModal').modal('hide');
         }
+    },
+    ProjectTaskStatusModifications: {
+        Show: function () {
+            $('#ProjectTaskStatusModificationsModal').modal('show');
+        },
+        Hide: function () {
+            $('#ProjectTaskStatusModificationsModal').modal('hide');
+        }
     }
 }
 
@@ -86,6 +94,15 @@ const projectTaskObject = () => {
         isProcessing: false,
         message: '',
         form: projectTaskFormObject(),
+        statuses: {
+            data: [],
+            isLoading: false
+        },
+        activeProjectTask: null,
+        statusModifications: {
+            data: [],
+            isLoading: false
+        },
         statuses: {
             data: [],
             isLoading: false
@@ -440,6 +457,41 @@ const projectTasksMethods = {
                 this.projectTasks_setStatusesLoading(false)
             })
 
+    },
+
+
+    projectTasks_setStatusesModificationLoading: function (isLoading) {
+        this.projectTasks.statusModifications.isLoading = isLoading
+    },
+    projectTasks_viewStatusesModification: function (projectTask) {
+
+        this.projectTasks_setStatusesModificationLoading(true)
+
+        this.projectTasks.activeProjectTask = null;
+        this.projectTasks.activeProjectTask = { ...projectTask }
+
+        Modals_ProjectTasks.ProjectTaskStatusModifications.Show();
+        
+        return ProjectTasksService.GetStatusModifications(projectTask.id)
+            .then((r) => {
+
+                /** @type {IClientResponseModel<ISubject>} */
+                const record = r.data
+
+                if (record) {
+                    this.projectTasks.statusModifications.data = [...record]
+                }
+                else {
+                    this.projectTasks_setMessage(BASIC_ERROR_MESSAGE)
+                }
+            })
+            .catch((e) => {
+                console.error('projectTasks getall', e)
+                this.projectTasks_setMessage(getAxiosErrorMessage(e))
+            })
+            .then(() => {
+                this.projectTasks_setStatusesModificationLoading(false)
+            })
     },
 }
 

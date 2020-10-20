@@ -32,7 +32,6 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException("title and category are required");
             }
 
-
             if (model.id.HasValue)
             {
                 // check if title already exist under the selected category
@@ -79,6 +78,7 @@ namespace ProjectTracking.Data.Methods
                 dbProject.StartDate = model.startDate;
                 dbProject.PlannedEnd = model.plannedEnd;
                 dbProject.ActualEnd = model.actualEnd;
+                dbProject.LastModifiedDate = DateTime.Now;
                 dbProject.StatusCode = model.statusCode;
 
                 AddRemoveTeamsProjects(model, dbProject);
@@ -250,7 +250,7 @@ namespace ProjectTracking.Data.Methods
 
             if (categoryId.HasValue)
             {
-                query = query.Where(k =>  k.CategoryId == categoryId.Value);
+                query = query.Where(k => k.CategoryId == categoryId.Value);
             }
 
             query = query.OrderByDescending(k => k.DateAdded);

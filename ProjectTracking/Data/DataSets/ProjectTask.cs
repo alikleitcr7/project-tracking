@@ -25,6 +25,7 @@ namespace ProjectTracking.Data.DataSets
         public DateTime? PlannedEnd { get; set; }
         public DateTime? ActualEnd { get; set; }
 
+        public DateTime? LastModifiedDate { get; set; }
         public string StatusByUserId { get; set; }
 
 

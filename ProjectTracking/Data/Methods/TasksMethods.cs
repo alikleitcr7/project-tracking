@@ -7,6 +7,7 @@ using ProjectTracking.Models.Projects;
 using ProjectTracking.Models.Statistics;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Linq;
 
 namespace ProjectTracking.Data.Methods
@@ -59,12 +60,13 @@ namespace ProjectTracking.Data.Methods
                 dbTask.StartDate = model.startDate;
                 dbTask.PlannedEnd = model.plannedEnd;
                 dbTask.ActualEnd = model.actualEnd;
+                dbTask.LastModifiedDate = DateTime.Now;
                 dbTask.StatusCode = model.statusCode;
                 dbTask.StatusByUserId = model.GetStatusByUserId();
 
                 db.SaveChanges();
 
-                return _mapper.Map<ProjectTask>(dbTask);
+                return GetById(dbTask.ID);
             }
             else
             {
@@ -98,7 +100,7 @@ namespace ProjectTracking.Data.Methods
                 db.SaveChanges();
 
 
-                return _mapper.Map<ProjectTask>(dbTask);
+                return GetById(dbTask.ID);
             }
         }
 
@@ -121,7 +123,14 @@ namespace ProjectTracking.Data.Methods
 
             return dbTask.ProjectTaskStatusModifications
                 .OrderByDescending(k => k.DateModified)
-                .Select(_mapper.Map<ProjectTaskStatusModification>)
+                .Select(k => new ProjectTaskStatusModification()
+                {
+                    DateModified = k.DateModified,
+                    ProjectTaskId = k.ProjectTaskId,
+                    StatusCode = k.StatusCode,
+                    ModifiedByUserId = k.ModifiedByUserId,
+                    ModifiedByUserName = k.ModifiedByUser.FirstName + " " + k.ModifiedByUser.LastName,
+                })
                 .ToList();
         }
 
@@ -153,9 +162,28 @@ namespace ProjectTracking.Data.Methods
             // set new status by user
             dbTask.StatusCode = statusCode;
             dbTask.StatusByUserId = byUserId;
-           
+
             db.SaveChanges();
         }
+
+
+        public static Expression<Func<DataSets.ProjectTask, ProjectTask>> MapProjectTaskWithUser =>
+            k => new ProjectTask()
+            {
+                ID = k.ID,
+                ActualEnd = k.ActualEnd,
+                DateAdded = k.DateAdded,
+                Description = k.Description,
+                PlannedEnd = k.PlannedEnd,
+                ProjectId = k.ProjectId,
+                StartDate = k.StartDate,
+                StatusByUserId = k.StatusByUserId,
+                StatusCode = k.StatusCode,
+                LastModifiedDate = k.LastModifiedDate,
+                StatusByUserName = k.StatusByUser.FirstName + " " + k.StatusByUser.LastName,
+                Title = k.Title,
+            };
+
 
         public List<ProjectTask> Search(string keyword, int projectId, int page, int countPerPage, out int totalCount)
         {
@@ -173,8 +201,7 @@ namespace ProjectTracking.Data.Methods
             return query.OrderByDescending(k => k.ID)
                 .Skip(page * countPerPage)
                 .Take(countPerPage)
-                .ToList()
-                .Select(_mapper.Map<ProjectTask>)
+                .Select(MapProjectTaskWithUser)
                 .ToList();
         }
 
@@ -198,9 +225,9 @@ namespace ProjectTracking.Data.Methods
 
         public ProjectTask GetById(int id)
         {
-            var record = db.ProjectTasks.FirstOrDefault(k => k.ID == id);
-
-            return record != null ? _mapper.Map<ProjectTask>(record) : null;
+            return db.ProjectTasks
+                .Select(MapProjectTaskWithUser)
+                .FirstOrDefault(k => k.ID == id);
         }
     }
 }

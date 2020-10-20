@@ -4,16 +4,19 @@
     ViewData["Title"] = $"{Model.Title} Tasks";
 }
 
-<div id="ProjectTasks" class="v-container" data-project="@Model.ID" v-cloak>
+    <div id="ProjectTasks" class="v-container" data-project="@Model.ID" v-cloak>
 
-    <h2>@ViewData["Title"]</h2>
+        <h2>@ViewData["Title"]</h2>
 
-    <hr />
+        <hr />
 
-    <partial name="~/views/projectTasks/forms/ProjectTasksResult.cshtml" />
-    <partial name="~/views/projectTasks/forms/ProjectTaskform.cshtml" />
+        <partial name="~/views/ProjectTasks/forms/ProjectTasksResult.cshtml" />
 
-</div>
+        <partial name="~/views/ProjectTasks/forms/ProjectTaskform.cshtml" />
+
+        <partial name="~/views/ProjectTasks/forms/TaskStatusModifications.cshtml" />
+
+    </div>
 
 
 @section styles{

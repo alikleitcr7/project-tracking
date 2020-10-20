@@ -29,12 +29,13 @@ namespace ProjectTracking.DataContract
         public DateTime? StartDate { get; set; }
         public DateTime? PlannedEnd { get; set; }
         public DateTime? ActualEnd { get; set; }
+        public DateTime? LastModifiedDate { get; set; }
 
-        public string DisplayDate
+        public string DateAddedDisplay
         {
             get
             {
-                return DateAdded.ToString("dd-MM-yyyy");
+                return DateAdded.ToDisplayDate();
             }
         }
 
@@ -42,7 +43,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return StartDate.HasValue ? StartDate.Value.ToString("dd-MM-yyyy") : "-";
+                return StartDate.ToDisplayDate();
             }
         }
 
@@ -50,7 +51,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return PlannedEnd.HasValue ? PlannedEnd.Value.ToString("dd-MM-yyyy") : "-";
+                return PlannedEnd.ToDisplayDate();
             }
         }
 
@@ -58,15 +59,28 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return ActualEnd.HasValue ? ActualEnd.Value.ToString("dd-MM-yyyy") : "-";
+                return ActualEnd.ToDisplayDate();
             }
         }
+
 
         public string StatusDisplay
         {
             get
             {
                 return ((ProjectTaskStatus)StatusCode).ToString();
+            }
+        }
+
+
+        public string StatusByUserId { get; set; }
+        public string StatusByUserName { get; set; }
+
+        public string LastModifiedDateDisplay
+        {
+            get
+            {
+                return LastModifiedDate.ToDisplayDate();
             }
         }
 
