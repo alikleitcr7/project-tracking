@@ -26,14 +26,24 @@ namespace ProjectTracking.Controllers
             _teamsMethods = teamsMethods;
         }
 
-        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            string userId = GetCurrentUserId();
+
+            ViewData["UserId"] = userId;
 
             return View();
         }
-     
+
+        public IActionResult Form()
+        {
+            string userId = GetCurrentUserId();
+
+            ViewData["UserId"] = userId;
+
+            return View(userId);
+        }
+
 
         [HttpGet]
         public IActionResult GetById(int id, bool includeMembers)
@@ -128,6 +138,24 @@ namespace ProjectTracking.Controllers
             try
             {
                 SupervisorTeamsModel model = _teamsMethods.GetSupervisorTeamsModel(userId);
+
+                return Ok(model);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        public IActionResult GetSupervisingTeamsModel(string userId)
+        {
+            try
+            {
+                List<SupervisingTeamModel> model = _teamsMethods.GetSupervisingTeamsModel(userId);
 
                 return Ok(model);
             }

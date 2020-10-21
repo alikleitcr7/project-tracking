@@ -1,32 +1,65 @@
-﻿
-@{
-    ViewData["Title"] = "Manage Teams";
+﻿@{
+    ViewData["Title"] = "Teams";
+    string userId = ViewData["UserId"].ToString();
 }
 
-<div id="Teams" class="v-container">
+<div id="SupervisingTeams" data-user="@userId" class="v-container" v-cloak>
 
-    <h4> <i class="fa fa-users"></i> @ViewData["Title"] </h4>
+    <h3> <i class="fa fa-users"></i> @ViewData["Title"] </h3>
 
-    <partial name="~/views/teams/form.cshtml" />
+    <h4 v-if="teams.isLoading" class="c-loading-title"></h4>
+
+    <div class="c-box-view">
+        <div v-if="teams.isLoading" class="c-box c-box--loading" v-for="i in [,,,]">
+            <span class="c-box-title"></span>
+        </div>
+    </div>
+
+    <h4 v-if="teams.message">{{teams.message}}</h4>
+
+    <h4 v-if="!teams.isLoading && !teams.data.length">Nothing Here Yet! </h4>
+
+
+    <div class="c-box-view">
+        <a class="c-box" :href="`/teams/${team.id}`" v-for="team in teams.data">
+            <span class="c-box-title">{{team.name}}</span>
+            <p>{{getMembersText(team.membersCount)}}</p>
+            <p>{{getProjectsText(team.projectsCount)}}</p>
+
+            <section>
+                <h5>Tasks Progress</h5>
+                <div class="progress">
+                    <div v-for="performance in getTeamPerformance(team.tasksPerformance)"
+                         class="progress-bar"
+                         :class="`task-status-linear--${performance.code}`"
+                         role="progressbar"
+                         :data-tooltip="performance.name"
+                         :style="{'width':getPercentage(team.tasksPerformance,performance.fromProp)}">
+                    </div>
+                </div>
+            </section>
+
+        </a>
+    </div>
 
 </div>
 
 
 @section styles {
-    <link href="~/css/Dashboard.min.css" rel="stylesheet" />
+<link href="~/css/SupervisingTeams.min.css" rel="stylesheet" />
 }
 
 @section scripts{
 
-    <script src="~/services/TeamsService.js">
-    </script>
+<script src="~/services/TeamsService.js">
+</script>
 
-    <script src="~/services/UsersService.js">
-    </script>
+<script src="~/services/UsersService.js">
+</script>
 
-    <script src="~/js/Teams.js">
-    </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script src="https://unpkg.com/vue-chartjs/dist/vue-chartjs.min.js"></script>
 
-    @*<script src="~/js/UserManagement.js">
-        </script>*@
+<script src="~/js/SupervisingTeams.js">
+</script>
 }

@@ -18,7 +18,7 @@ namespace ProjectTracking.Controllers
 {
 
     [Route("[controller]/[action]")]
-    public class ProfileController : Controller
+    public class ProfileController : BaseController
     {
         private readonly IUserMethods _userMethods;
         //private readonly ITeamsMethods _departments;
@@ -35,11 +35,10 @@ namespace ProjectTracking.Controllers
             _timeSheets = timeSheets;
         }
 
-        [Route("/profile/{userId}")]
+        [Route("/profile/{userId?}")]
         public IActionResult Index(string userId)
         {
-            DataContract.User user = _userMethods.GetById(userId);
-
+            DataContract.User user = _userMethods.GetById(userId ?? GetCurrentUserId());
 
             if (user == null)
             {

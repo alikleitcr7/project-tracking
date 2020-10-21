@@ -2,6 +2,8 @@
 $(document).ready(function () {
     let dataTables_en = $('[data-custom-dt=en]');
 
+    //$('[data-toggle="tooltip"]').tooltip();
+
     let dateTimePicker = $('.datetimepicker');
     let dateTimePicker_time = $('.datetimepicker-time');
 
@@ -36,6 +38,7 @@ $(document).on('click', '.side-bar-arrow', function () {
     }
 
 });
+
 
 //#endregion
 

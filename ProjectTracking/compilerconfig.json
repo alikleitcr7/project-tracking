@@ -38,5 +38,9 @@
   {
     "outputFile": "wwwroot/css/bs4.css",
     "inputFile": "wwwroot/css/bs4.less"
+  },
+  {
+    "outputFile": "wwwroot/css/SupervisingTeams.css",
+    "inputFile": "wwwroot/css/SupervisingTeams.less"
   }
 ]

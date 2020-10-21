@@ -387,7 +387,8 @@ namespace ProjectTracking.Data.Methods
             // supervising
             List<SupervisingTeamModel> supervisingTeamModels = _context.Teams
                 .Where(k => k.SupervisorId == userId)
-                .Select(k=> new SupervisingTeamModel() {
+                .Select(k => new SupervisingTeamModel()
+                {
                     DateAdded = k.DateAdded,
                     ID = k.ID,
                     Name = k.Name,
@@ -448,6 +449,56 @@ namespace ProjectTracking.Data.Methods
                 SupervisingTeams = supervisingTeamModels,
                 SupervisedTeams = supervisedTeamModels
             };
+        }
+
+        public List<SupervisingTeamModel> GetSupervisingTeamsModel(string userId)
+        {
+            // supervising teams
+            var model = _context.Teams
+                .Where(k => k.SupervisorId == userId)
+                .Select(k => new SupervisingTeamModel()
+                {
+                    DateAdded = k.DateAdded,
+                    ID = k.ID,
+                    Name = k.Name,
+                    ProjectsCount = k.TeamsProjects.Count(),
+                    MembersCount = k.Members.Count(),
+                    Members = k.Members.Select(m => new KeyValuePair<string, string>(m.Id, m.FirstName + " " + m.LastName)).ToList(),
+                }).ToList();
+
+
+            // teams stats
+            foreach (SupervisingTeamModel team in model)
+            {
+                IQueryable<DataSets.ProjectTask> q_tasks = _context.ProjectTasks.Where(t => t.Project.TeamsProjects.Any(tp => tp.TeamId == team.ID));
+
+                // tasks performance
+                team.TasksPerformance = new TasksPerformance()
+                {
+                    TotalCount = q_tasks.Count(),
+                    DoneCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Done),
+                    ProgressCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.InProgress),
+                    PendingCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Pending),
+                    FailedOrTerminatedCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
+                };
+
+                // timesheet activities
+                if (team.Members.Count > 0)
+                {
+                    List<string> membersIds = team.Members.Select(k => k.Key).ToList();
+
+                    team.ActivitiesFrequency = _context.TimeSheetActivities
+                        .Where(k => membersIds.Contains(k.TimeSheetTask.TimeSheet.UserId))
+                        .OrderByDescending(k => k.FromDate)
+                        .GroupBy(k => k.FromDate.Date)
+                        .Take(30)
+                        .Select(key => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
+                        .ToList();
+                }
+
+            }
+
+            return model;
         }
 
         //public Team EditDepartment(int id, Team department)

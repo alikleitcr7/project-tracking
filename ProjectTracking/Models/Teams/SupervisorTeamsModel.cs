@@ -31,6 +31,19 @@ namespace ProjectTracking.Models.Teams
     {
         public int ProjectsCount { get; set; }
         public int MembersCount { get; set; }
+        public TasksPerformance TasksPerformance { get; set; }
+
+        public List<KeyValuePair<string, string>> Members { get; set; }
+        public List<KeyValuePair<DateTime, int>> ActivitiesFrequency { get; set; }
+    }
+
+    public class TasksPerformance
+    {
+        public int TotalCount { get; set; }
+        public int DoneCount { get; set; }
+        public int ProgressCount { get; set; }
+        public int PendingCount { get; set; }
+        public int FailedOrTerminatedCount { get; set; }
     }
 
     public class SupervisedTeamModel : SupervisorTeamBaseModel
