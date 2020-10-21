@@ -941,8 +941,9 @@ var user_timesheet_app = new Vue({
         var activeUserId = $('#UserTimeSheets').attr('data-active-user');
         var isActiveSupervisor = $('#UserTimeSheets').attr('data-active-supervisor') === 'True';
 
+        console.log({ userId, activeUserId})
 
-        this.readOnly = isActiveSupervisor
+        this.readOnly = userId !== activeUserId
 
         //if (userId) {
 

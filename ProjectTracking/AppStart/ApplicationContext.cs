@@ -9,6 +9,6 @@ namespace ProjectTracking.AppStart
     public static class ApplicationContext
     {
         public static DateTime? LogsLastUpdatedDate;
-        public static List<UserLog> ActiveLogs;
+        public static List<UserLog> ActiveLogs = new List<UserLog>();
     }
 }

@@ -1,12 +1,10 @@
 ﻿@model ProjectTracking.Models.TimeSheet.TimeSheetExploreModel
 
 @{
-    ViewData["Title"] = "User Time Sheets";
+    ViewData["Title"] = "Schedules";
 
     string timesheetId = Model.TimeSheetId.HasValue ? Model.TimeSheetId.ToString() : "";
-
 }
-
 
 
 <div id="UserTimeSheets"
@@ -15,6 +13,7 @@
      data-active-role="@Model.CurrentUserRole"
      data-active-user="@Model.CurrentUserId"
      data-active-supervisor="@Model.CurrentUserIsSupervisor" class="v-container" v-bind:class="{'is-readonly':readOnly}" v-cloak>
+ 
     <h3 v-show="timesheetsAreLoading">Loading...</h3>
     <h3 v-show="!timesheetsAreLoading && !timesheets.length">Nothing Here Yet! <i class="far fa-smile-beam"></i> </h3>
 

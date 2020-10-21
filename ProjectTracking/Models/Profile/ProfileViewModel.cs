@@ -26,5 +26,7 @@ namespace ProjectTracking.Models.Profile
                 return User.Role == ApplicationUserRole.TeamMember || HasTimeSheets;
             }
         }
+
+        public string CurrentUserId { get; internal set; }
     }
 }

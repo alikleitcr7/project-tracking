@@ -13,7 +13,8 @@ using ProjectTracking.Exceptions;
 
 namespace ProjectTracking.Controllers
 {
-    [Authorize(Policy = ("Administration"))]
+    //[Authorize(Policy = ("Administration"))]
+    [Authorize]
     public class AdminController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -36,7 +37,7 @@ namespace ProjectTracking.Controllers
 
 
         [Route("/manage")]
-        [Authorize]
+        //[Authorize]
         public IActionResult Manage()
         {
             //UserManagerViewModel _userManagerViewModel = new UserManagerViewModel();

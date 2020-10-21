@@ -41,7 +41,7 @@ namespace ProjectTracking.Controllers
 
             ViewData["UserId"] = userId;
 
-            return View(userId);
+            return View();
         }
 
 

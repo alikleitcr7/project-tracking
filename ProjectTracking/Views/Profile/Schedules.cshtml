@@ -17,10 +17,8 @@
 
         </div>*@
 
-    <p v-if="timeSheetsLoading">Loading...</p>
-    <p v-if="!timeSheetsLoading && !timeSheets.length">Nothing here yet! <i class="far fa-smile"></i> </p>
 
-    <div v-show="!timeSheetsLoading && timeSheets.length > 0">
+    <div v-show="!timeSheetsLoading && ( !isCurrentUser || timeSheets.length > 0)">
 
         <table class="table table-borderless" style="max-width:400px">
             <tr>
@@ -31,14 +29,16 @@
                         Add TimeSheet
                     </button>
 
-                    <a class="s-btn s-btn-outline" v-bind:href="`/timesheets/explore?uid=${userId}`">
+                    <a class="s-btn s-btn-outline" 
+                       v-show="timeSheets.length > 0"
+                       v-bind:href="`/timesheets/explore?uid=${userId}`">
                         Explore
                         <i class="fa fa-angle-right"></i>
                     </a>
 
                 </td>
             </tr>
-            <tr>
+            <tr v-show="timeSheets.length > 0">
                 <td>
 
                     <select v-model="selectedTimeSheetYear" class="form-control ">
@@ -52,6 +52,10 @@
             </tr>
         </table>
     </div>
+
+    <p v-if="timeSheetsLoading">Loading...</p>
+    <p v-if="!timeSheetsLoading && !timeSheets.length">Nothing here yet! <i class="far fa-smile"></i> </p>
+
 
     <div v-show="!timeSheetsLoading">
 

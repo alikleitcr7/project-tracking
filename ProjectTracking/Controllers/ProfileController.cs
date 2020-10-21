@@ -38,7 +38,9 @@ namespace ProjectTracking.Controllers
         [Route("/profile/{userId?}")]
         public IActionResult Index(string userId)
         {
-            DataContract.User user = _userMethods.GetById(userId ?? GetCurrentUserId());
+            string currentUserId = GetCurrentUserId();
+
+            DataContract.User user = _userMethods.GetById(userId ?? currentUserId);
 
             if (user == null)
             {
@@ -49,7 +51,8 @@ namespace ProjectTracking.Controllers
             {
                 User = user,
                 HasSupervisorLog = _userMethods.HasSupervisorLog(userId),
-                HasTimeSheets = _userMethods.HasTimeSheets(userId)
+                HasTimeSheets = _userMethods.HasTimeSheets(userId),
+                CurrentUserId = currentUserId
             };
 
             return View(model);

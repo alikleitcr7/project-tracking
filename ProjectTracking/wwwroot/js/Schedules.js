@@ -135,6 +135,9 @@ const userProfileData = {
     user: () => {
         return $('#Profile').attr('data-user')
     },
+    currentUser: () => {
+        return $('#Profile').attr('data-current-user')
+    },
     team: () => {
         return $('#Profile').attr('data-team')
     }
@@ -212,8 +215,8 @@ new Vue({
             const currentUserId = this.currentUserId
             const userId = this.userId
 
-            //console.log({currentUserId,userId})
-            return this.currentUserId && this.userId && this.currentUserId === this.userId
+            console.log({currentUserId,userId})
+            return currentUserId && userId && currentUserId === userId
         }
     },
     watch: {
@@ -709,6 +712,7 @@ new Vue({
     mounted: function () {
 
         this.userId = userProfileData.user();
+        this.currentUserId = userProfileData.currentUser();
         this.teamId = userProfileData.team() ? parseInt(userProfileData.team()) : null;
 
         console.log('uid', this.userId)

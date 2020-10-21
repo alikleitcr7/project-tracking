@@ -492,7 +492,8 @@ namespace ProjectTracking.Data.Methods
                         .OrderByDescending(k => k.FromDate)
                         .GroupBy(k => k.FromDate.Date)
                         .Take(30)
-                        .Select(key => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
+                        .AsEnumerable()
+                        .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
                         .ToList();
                 }
 

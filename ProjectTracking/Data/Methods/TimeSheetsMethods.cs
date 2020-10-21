@@ -273,7 +273,9 @@ namespace ProjectTracking.Data.Methods
             var dbTimeSheetActivities = db.TimeSheetActivities
                 //.Include(k => k.TimeSheetTask)
                 .Include(k => k.IpAddress)
-                .Where(k => k.TimeSheetTask != null && k.TimeSheetTask.ProjectTaskId == taskId
+                .Where(k => k.TimeSheetTask != null &&
+                            k.TimeSheetTask.TimeSheetId == timeSheetId &&
+                            k.TimeSheetTask.ProjectTaskId == taskId
                             && k.FromDate.Month == date.Month
                             && k.FromDate.Day == date.Day
                             && k.FromDate.Year == date.Year
