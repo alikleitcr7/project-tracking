@@ -1,0 +1,44 @@
+﻿@using ProjectTracking.DataContract
+
+@model Team
+
+
+<div id="Team" data-id="@Model.ID" class="v-container" v-cloak>
+
+    @* Info *@
+
+    <section class="team-info">
+
+        <h2>@Model.Name</h2>
+
+        <table class="table">
+            <tr>
+                <td>
+                    Added By @Model.AddedByUser.FullName on @Model.DateAddedDisplay
+                </td>
+                <td>
+                    Assigned By @Model.AssignedByUser.FullName on @Model.DateAssignedDisplay to @Model.Supervisor.FullName
+                </td>
+            </tr>
+        </table>
+
+
+    </section>
+
+
+    @* Tabs (Overview, Members, Broadcasts) *@
+
+
+</div>
+
+
+@section styles{
+    <link href="~/css/Team.min.css" rel="stylesheet" />
+}
+
+@section scripts{
+
+    <script src="~/services/TeamsService.js"></script>
+
+    <script src="~/js/Team.js"></script>
+}

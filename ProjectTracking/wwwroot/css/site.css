@@ -466,6 +466,9 @@ h6 {
 .text-bold {
   font-weight: 600;
 }
+b {
+  font-weight: 600;
+}
 body {
   position: relative;
   /*background-color:#fafafa;*/

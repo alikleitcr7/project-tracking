@@ -58,6 +58,14 @@ const TeamsService = {
 
         return axios.get(url);
     },
+    GetTeamViewModel: function (teamId) {
+
+        const query = serialize({ teamId })
+
+        const url = TEAMS_SERVICE_URI(`GetTeamViewModel?${query}`)
+
+        return axios.get(url);
+    },
     //GetAllExecludingSupervising: function (userId) {
 
     //    const query = serialize({ userId })

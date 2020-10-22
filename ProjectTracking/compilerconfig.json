@@ -42,5 +42,9 @@
   {
     "outputFile": "wwwroot/css/SupervisingTeams.css",
     "inputFile": "wwwroot/css/SupervisingTeams.less"
+  },
+  {
+    "outputFile": "wwwroot/css/Team.css",
+    "inputFile": "wwwroot/css/Team.less"
   }
 ]

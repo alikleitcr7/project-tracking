@@ -459,6 +459,13 @@
   min-height: 1.5em;
   border-radius: 5px;
 }
+.c-box-view .c-box > section {
+  font-size: 0.9em;
+}
+.c-box-view .c-box > section > h5 {
+  font-weight: 600;
+  padding-bottom: 2px;
+}
 .task-status-linear--done {
   background: #00ff6b;
   background: linear-gradient(90deg, #00ff6b 0%, rgba(35, 235, 28, 0.8015406) 100%, #00d4ff 100%);

@@ -362,7 +362,7 @@ namespace ProjectTracking.Data.Methods
             }
 
             Team pendingRecord = _mapper.Map<Team>(dbTeam);
-            pendingRecord.MembersCount = dbTeam.Members.Count;
+            pendingRecord.MembersCount = dbTeam.Members?.Count;
 
             return pendingRecord;
         }
@@ -470,17 +470,8 @@ namespace ProjectTracking.Data.Methods
             // teams stats
             foreach (SupervisingTeamModel team in model)
             {
-                IQueryable<DataSets.ProjectTask> q_tasks = _context.ProjectTasks.Where(t => t.Project.TeamsProjects.Any(tp => tp.TeamId == team.ID));
+                FillTeamTaskPerformance(team);
 
-                // tasks performance
-                team.TasksPerformance = new TasksPerformance()
-                {
-                    TotalCount = q_tasks.Count(),
-                    DoneCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Done),
-                    ProgressCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.InProgress),
-                    PendingCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Pending),
-                    FailedOrTerminatedCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
-                };
 
                 // timesheet activities
                 if (team.Members.Count > 0)
@@ -497,6 +488,80 @@ namespace ProjectTracking.Data.Methods
                         .ToList();
                 }
 
+            }
+
+            return model;
+        }
+
+        private void FillTeamTaskPerformance(SupervisingTeamModel team)
+        {
+            IQueryable<DataSets.ProjectTask> q_tasks = _context.ProjectTasks.Where(t => t.Project.TeamsProjects.Any(tp => tp.TeamId == team.ID));
+
+            // tasks performance
+            team.TasksPerformance = new TasksPerformance()
+            {
+                TotalCount = q_tasks.Count(),
+                DoneCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Done),
+                ProgressCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.InProgress),
+                PendingCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Pending),
+                FailedOrTerminatedCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
+            };
+
+        }
+
+
+        public TeamViewModel GetTeamViewModel(int teamId)
+        {
+            // supervising teams
+            var model = _context.Teams
+                .Select(k => new TeamViewModel()
+                {
+                    DateAdded = k.DateAdded,
+                    ID = k.ID,
+                    Name = k.Name,
+                    ProjectsCount = k.TeamsProjects.Count(),
+                    MembersCount = k.Members.Count(),
+                    Members = k.Members.Select(m => new KeyValuePair<string, string>(m.Id, m.FirstName + " " + m.LastName)).ToList(),
+                })
+                .FirstOrDefault(k => k.ID == teamId);
+
+            if (model == null)
+            {
+                throw new ClientException("Team dont exist");
+            }
+
+            FillTeamTaskPerformance(model);
+
+            // timesheet activities
+            if (model.Members.Count > 0)
+            {
+                List<string> membersIds = model.Members.Select(k => k.Key).ToList();
+
+                var q_tsActivities = _context.TimeSheetActivities
+                    .Where(k => membersIds.Contains(k.TimeSheetTask.TimeSheet.UserId))
+                    .OrderByDescending(k => k.FromDate);
+
+
+                model.ActivitiesFrequency = q_tsActivities
+                    .GroupBy(k => k.FromDate.Date)
+                    .Take(30)
+                    .AsEnumerable()
+                    .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
+                    .ToList();
+
+                // # 
+                model.ActiveActivities = q_tsActivities
+                    .Where(k => !k.ToDate.HasValue)
+                    .Select(_mapper.Map<TimeSheetActivity>)
+                    .ToList();
+
+                // will not include the user's name here since it's already in memebers list
+                model.Workload = q_tsActivities
+                    .Where(k => k.TimeSheetTask.ProjectTask.StatusCode ==  (short)ProjectTaskStatus.Pending)
+                    .GroupBy(k => new { k.TimeSheetTask.TimeSheet.UserId })
+                    .AsEnumerable()
+                    .Select(k => new KeyValuePair<string, int>(k.Key.UserId, k.Count()))
+                    .ToList();
             }
 
             return model;

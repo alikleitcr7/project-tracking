@@ -17,6 +17,7 @@ namespace ProjectTracking.Controllers
     //[ApiController]
     // if u place the policy here, then if you call the other methods 
     // via ajax they will require that policy!!!!!
+    [Route("[controller]/[action]")]
     public class TeamsController : BaseController
     {
         private readonly ITeamsMethods _teamsMethods;
@@ -26,6 +27,7 @@ namespace ProjectTracking.Controllers
             _teamsMethods = teamsMethods;
         }
 
+        [Route("/teams")]
         public IActionResult Index()
         {
             string userId = GetCurrentUserId();
@@ -35,6 +37,7 @@ namespace ProjectTracking.Controllers
             return View();
         }
 
+        [Route("/teams/form")]
         public IActionResult Form()
         {
             string userId = GetCurrentUserId();
@@ -42,6 +45,24 @@ namespace ProjectTracking.Controllers
             ViewData["UserId"] = userId;
 
             return View();
+        }
+
+
+        [Route("/teams/{id:int}")]
+        public IActionResult Details(int id)
+        {
+            Team team = _teamsMethods.GetById(id,false);
+
+            if (team == null)
+            {
+                return NotFound();
+            }
+
+            string userId = GetCurrentUserId();
+
+            ViewData["UserId"] = userId;
+
+            return View(team);
         }
 
 
@@ -156,6 +177,24 @@ namespace ProjectTracking.Controllers
             try
             {
                 List<SupervisingTeamModel> model = _teamsMethods.GetSupervisingTeamsModel(userId);
+
+                return Ok(model);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+        
+        public IActionResult GetTeamViewModel(int teamId)
+        {
+            try
+            {
+                TeamViewModel model = _teamsMethods.GetTeamViewModel(teamId);
 
                 return Ok(model);
             }

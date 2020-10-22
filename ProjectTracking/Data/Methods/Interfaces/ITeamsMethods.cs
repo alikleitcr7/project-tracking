@@ -21,5 +21,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         List<SupervisorLog> GetSupervisorLog(int teamId);
         SupervisorTeamsModel GetSupervisorTeamsModel(string userId);
         List<SupervisingTeamModel> GetSupervisingTeamsModel(string userId);
+        TeamViewModel GetTeamViewModel(int teamId);
     }
 }
