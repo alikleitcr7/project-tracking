@@ -41,7 +41,7 @@ const chartsHelper = {
                     //label: function (tooltipItems, data) {
                     //    var idx = tooltipItems.index;
                     //    console.log({ data })
-                        
+
                     //    //return data.labels[idx] + ' €';
                     //    return tooltipItems.xLabel + ':' + data.datasets[].data[idx];
                     //}
@@ -49,14 +49,6 @@ const chartsHelper = {
             },
         }
     },
-    colors: {
-        background: '#5bcbee',
-        border: '#2286c3',
-        pending: 'orange',
-        done: 'green',
-        progress: 'blue',
-        failed: 'red',
-    }
 }
 
 /**
@@ -67,9 +59,7 @@ function populateWorkload(workload) {
 
     var ctx = document.getElementById('bar_workload').getContext('2d');
 
-    const labels = workload.map(k => k.key.name )
-
-    console.log(labels)
+    const labels = workload.map(k => k.key.name)
 
     var chart = new Chart(ctx, {
         // The type of chart we want to create
@@ -81,20 +71,20 @@ function populateWorkload(workload) {
             datasets: [
                 {
                     label: 'Pending',
-                    backgroundColor: chartsHelper.colors.pending,
-                    borderColor: chartsHelper.colors.pending,
+                    backgroundColor: colors.pending,
+                    borderColor: colors.pending,
                     data: workload.map(k => k.value.pendingCount)
                 },
                 {
                     label: 'Progress',
-                    backgroundColor: chartsHelper.colors.progress,
-                    borderColor: chartsHelper.colors.progress,
+                    backgroundColor: colors.progress,
+                    borderColor: colors.progress,
                     data: workload.map(k => k.value.progressCount)
                 },
                 {
                     label: 'Done',
-                    backgroundColor: chartsHelper.colors.done,
-                    borderColor: chartsHelper.colors.done,
+                    backgroundColor: colors.done,
+                    borderColor: colors.done,
                     data: workload.map(k => k.value.doneCount)
                 },
             ]
@@ -105,11 +95,14 @@ function populateWorkload(workload) {
 
 /**
  * 
- * @param {IActiveActivity} activeActivities
+ * @param {Array<KeyValuePair<Date, number>>} activitiesFrequency
  */
-function populateActivities(activeActivities) {
+function populateActivities(activitiesFrequency) {
 
     var ctx = document.getElementById('line_activities').getContext('2d');
+
+    const labels = activitiesFrequency.map(k => moment(k.key).format('D/MMM'))
+    const data = activitiesFrequency.map((k, idx) => ({ x: idx, y: k.value }))
 
     var chart = new Chart(ctx, {
         // The type of chart we want to create
@@ -117,12 +110,12 @@ function populateActivities(activeActivities) {
 
         // The data for our dataset
         data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels,
             datasets: [{
-                label: 'My First dataset',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: [0, 10, 5, 2, 20, 30, 45]
+                label: 'Activities',
+                backgroundColor: colors.mainLight,
+                borderColor: colors.main,
+                data
             }]
         },
 
@@ -139,21 +132,29 @@ function populateTasks(taskPerformance) {
 
     var ctx = document.getElementById('pie_tasks').getContext('2d');
 
+    const metrics = initTasksPerformanceProgress();
+
+    const labels = metrics.map(k => k.name)
+    const data = metrics.map(k => taskPerformance[k.fromProp])
+    const pieColors = metrics.map(k => colors[k.code])
+
+    console.log({ labels, data, pieColors })
+
+
     var chart = new Chart(ctx, {
         // The type of chart we want to create
-        type: 'line',
+        type: 'pie',
 
         // The data for our dataset
         data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels,
             datasets: [{
-                label: 'My First dataset',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: [0, 10, 5, 2, 20, 30, 45]
+                label: 'Task Performance',
+                backgroundColor: pieColors,
+                //borderColor: colors.main,
+                data
             }]
         },
-
         // Configuration options go here
         options: {}
     });
@@ -204,7 +205,7 @@ new Vue({
                 const team = r
 
                 populateWorkload(team.workload)
-                populateActivities(team.activeActivities)
+                populateActivities(team.activitiesFrequency)
                 populateTasks(team.tasksPerformance)
             })
 

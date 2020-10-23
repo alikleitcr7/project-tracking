@@ -2,7 +2,6 @@
 function renderCharts(teams) {
     //var ctx = document.getElementById('myChart').getContext('2d');
 
-
     var options = {
         legend: {
             display: false
@@ -124,28 +123,7 @@ new Vue({
             message: '',
             isLoading: true
         },
-        tasksPerformanceProgress: [
-            {
-                'fromProp': 'doneCount',
-                'code': 'done',
-                'name': 'Done'
-            },
-            {
-                'fromProp': 'progressCount',
-                'code': 'progress',
-                'name': 'In Progress'
-            },
-            {
-                'fromProp': 'pendingCount',
-                'code': 'pending',
-                'name': 'Pending'
-            },
-            {
-                'fromProp': 'failedOrTerminatedCount',
-                'code': 'failed',
-                'name': 'Failed/Terminated'
-            }
-        ]
+        tasksPerformanceProgress: initTasksPerformanceProgress()
     },
     computed: {
 

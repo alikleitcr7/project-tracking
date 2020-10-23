@@ -10,3 +10,37 @@
         ]
     }
 }
+
+var colors = {
+    mainLight: '#5bcbee',
+    main: '#2286c3',
+    pending: 'orange',
+    done: 'green',
+    progress: 'blue',
+    failed: 'red',
+}
+
+function initTasksPerformanceProgress() {
+    return [
+        {
+            'fromProp': 'doneCount',
+            'code': 'done',
+            'name': 'Done',
+        },
+        {
+            'fromProp': 'progressCount',
+            'code': 'progress',
+            'name': 'In Progress'
+        },
+        {
+            'fromProp': 'pendingCount',
+            'code': 'pending',
+            'name': 'Pending'
+        },
+        {
+            'fromProp': 'failedOrTerminatedCount',
+            'code': 'failed',
+            'name': 'Failed/Terminated'
+        }
+    ]
+}
