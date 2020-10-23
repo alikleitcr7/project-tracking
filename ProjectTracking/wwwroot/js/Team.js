@@ -1,6 +1,4 @@
-﻿
-
-Chart.defaults.global.responsive = true;
+﻿Chart.defaults.global.responsive = true;
 
 const chartsHelper = {
     barOptions: () => {
@@ -46,6 +44,28 @@ const chartsHelper = {
                     //    return tooltipItems.xLabel + ':' + data.datasets[].data[idx];
                     //}
                 }
+            },
+        }
+    },
+    lineOptions: () => {
+        return {
+            legend: {
+                display: false
+            },
+            layout: {
+                padding: {
+                    top: 5,
+                    left: 5,
+                    right: 5
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        stepSize: 1,
+                        beginAtZero: true
+                    },
+                }],
             },
         }
     },
@@ -120,7 +140,7 @@ function populateActivities(activitiesFrequency) {
         },
 
         // Configuration options go here
-        options: {}
+        options: chartsHelper.lineOptions()
     });
 }
 
@@ -160,17 +180,86 @@ function populateTasks(taskPerformance) {
     });
 }
 
+const Modals_Team = {
+    Members: {
+        Show: function () {
+            $('#MembersModal').modal('show');
+        },
+        Hide: function () {
+            $('#MembersModal').modal('hide');
+        }
+    },
+    Broadcasts: {
+        Show: function () {
+            $('#BroadcastsModal').modal('show');
+        },
+        Hide: function () {
+            $('#BroadcastsModal').modal('hide');
+        }
+    },
+    Projects: {
+        Show: function () {
+            $('#ProjectsModal').modal('show');
+        },
+        Hide: function () {
+            $('#ProjectsModal').modal('hide');
+        }
+    }
+}
 
 new Vue({
-
     el: '#Team',
     data: {
+        teamId: null,
         team: null,
         message: '',
+        broadcasts: {
+            data: [],
+            isLoading: false,
+            isLoaded: false
+        },
+        projects: {
+            data: [],
+            isLoading: false,
+            message: null,
+            isLoaded: false
+        },
         isLoading: true
     },
     methods: {
         getMemberNameById: function () {
+
+        },
+        showMembers: function () {
+            Modals_Team.Members.Show()
+        },
+        openProjects: function () {
+
+            Modals_Team.Projects.Show();
+
+            if (this.projects.isLoaded) {
+                return
+            }
+
+            this.projects.isLoading = true
+            this.projects.message = null
+
+            ProjectsService.GetByTeam(this.teamId)
+                .then((r) => {
+                    const record = r.data
+                    this.projects.data = record
+                    this.projects.isLoaded= true
+
+                })
+                .catch((e) => {
+                    const errorMessage = getAxiosErrorMessage(e)
+                    this.projects.message = errorMessage
+
+                })
+                .then(() => {
+                    this.projects.isLoading = false
+
+                })
 
         }
     },
@@ -181,6 +270,7 @@ new Vue({
 
         const teamId = parseInt($('#Team').attr('data-id'))
 
+        this.teamId = parseInt(teamId)
         this.isLoading = true
 
         TeamsService.GetTeamViewModel(teamId)
@@ -210,5 +300,4 @@ new Vue({
             })
 
     }
-
 })

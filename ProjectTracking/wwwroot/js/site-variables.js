@@ -14,10 +14,10 @@
 var colors = {
     mainLight: '#5bcbee',
     main: '#2286c3',
-    pending: 'orange',
-    done: 'green',
-    progress: 'blue',
-    failed: 'red',
+    pending: '#f78438',
+    done: '#3fcc35',
+    progress: '#4b59ff',
+    failed: '#bb0000',
 }
 
 function initTasksPerformanceProgress() {
