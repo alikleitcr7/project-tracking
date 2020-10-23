@@ -28,17 +28,57 @@
 
     @* Tabs (Overview, Members, Broadcasts) *@
 
+    <section>
+        <div class="c-box-view c-box-view--wrap" v-if="team">
+            <div class="c-box">
+                <h5 class="c-box-title">Active Activities</h5>
+                <div class="scrollable-container-200">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>task</th>
+                                <th>started on</th>
+                                <th>by user</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="activity in team.activeActivities">
+                                <td>{{activity.projectTask.title}}</td>
+                                <td>{{activity.fromDateDisplay}}</td>
+                                <td>{{activity.user.fullName}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="c-box">
+                <h5 class="c-box-title">Workload</h5>
+                <canvas id="bar_workload" ></canvas>
+            </div>
+            <div class="c-box">
+                <h5 class="c-box-title">Activities</h5>
+                <canvas id="line_activities"></canvas>
+            </div>
+            <div class="c-box">
+                <h5 class="c-box-title">Task Progress</h5>
+                <canvas id="pie_tasks"></canvas>
+            </div>
+        </div>
+    </section>
+
 
 </div>
 
 
 @section styles{
-    <link href="~/css/Team.min.css" rel="stylesheet" />
+<link href="~/css/Team.min.css" rel="stylesheet" />
 }
 
 @section scripts{
 
-    <script src="~/services/TeamsService.js"></script>
+<script src="~/lib/chartjs-2.7.1/Chart.min.js"></script>
 
-    <script src="~/js/Team.js"></script>
+<script src="~/services/TeamsService.js"></script>
+
+<script src="~/js/Team.js"></script>
 }

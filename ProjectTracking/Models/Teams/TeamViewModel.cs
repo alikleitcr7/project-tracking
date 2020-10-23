@@ -9,7 +9,7 @@ namespace ProjectTracking.Models.Teams
 {
     public class TeamViewModel : SupervisingTeamModel
     {
-        public List<KeyValuePair<string, int>> Workload { get; set; }
+        public List<KeyValuePair<UserKeyValue, TasksWorkload>> Workload { get; set; }
         public List<TimeSheetActivity> ActiveActivities { get; set; }
     }
 

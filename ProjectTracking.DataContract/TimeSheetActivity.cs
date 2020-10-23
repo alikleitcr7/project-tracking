@@ -98,7 +98,10 @@ namespace ProjectTracking.DataContract
 
         public string DeletedAtDisplay => DeletedAt.ToDisplayDate();
 
-        //public virtual TimeSheetTask TimeSheetTask { get; set; }
+        public TimeSheetTask TimeSheetTask { get; set; }
+
+        public ProjectTask ProjectTask { get; set; }
+        public User User { get; set; }
 
         public List<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
     }

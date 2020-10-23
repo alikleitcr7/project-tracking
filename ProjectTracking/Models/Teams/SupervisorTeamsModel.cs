@@ -46,6 +46,13 @@ namespace ProjectTracking.Models.Teams
         public int FailedOrTerminatedCount { get; set; }
     }
 
+    public class TasksWorkload
+    {
+        public int DoneCount { get; set; }
+        public int ProgressCount { get; set; }
+        public int PendingCount { get; set; }
+    }
+
     public class SupervisedTeamModel : SupervisorTeamBaseModel
     {
         public string AssignedByName { get; set; }

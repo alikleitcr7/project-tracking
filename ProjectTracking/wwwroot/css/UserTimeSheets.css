@@ -529,6 +529,9 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  position: relative;
+  border: none;
+  padding: 0.5em 0;
 }
 #UserTimeSheets .user-timesheets-content .task-activities .c-box-view--loading .c-box-title {
   min-height: 0.9em;

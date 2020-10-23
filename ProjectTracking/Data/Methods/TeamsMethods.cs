@@ -479,7 +479,7 @@ namespace ProjectTracking.Data.Methods
                     List<string> membersIds = team.Members.Select(k => k.Key).ToList();
 
                     team.ActivitiesFrequency = _context.TimeSheetActivities
-                        .Where(k => membersIds.Contains(k.TimeSheetTask.TimeSheet.UserId))
+                        .Where(k => !k.DeletedAt.HasValue && membersIds.Contains(k.TimeSheetTask.TimeSheet.UserId))
                         .OrderByDescending(k => k.FromDate)
                         .GroupBy(k => k.FromDate.Date)
                         .Take(30)
@@ -509,6 +509,31 @@ namespace ProjectTracking.Data.Methods
 
         }
 
+        /// <summary>
+        ///// returns number of tasks assigned to a member on a team
+        ///// </summary>
+        //public List<KeyValuePair<Models.Users.UserKeyValue, int>> TeamWorkload(int teamId, short? statusCode)
+        //{
+        //    List<string> membersIds = _context.Users
+        //        .Where(k => k.TeamId == teamId)
+        //        .Select(k => k.Id)
+        //        .ToList();
+
+        //    return _context.TimeSheetTasks
+        //           .Where(k => membersIds.Contains(k.TimeSheet.UserId) && k.ProjectTask.StatusCode == statusCode)
+        //           .GroupBy(k => new { k.TimeSheet.UserId, Name = k.TimeSheet.User.FirstName + " " + k.TimeSheet.User.LastName })
+        //           .AsEnumerable()
+        //           .Select(k => new KeyValuePair<Models.Users.UserKeyValue, int>(new Models.Users.UserKeyValue(k.Key.UserId, k.Key.Name), k.Count()))
+        //           .ToList();
+        //}
+
+        //public List<KeyValuePair<Models.Users.UserKeyValue, int>> ActiveActivities(int teamId, int page, int countPerPage)
+        //{
+        //    return q_tsActivities
+        //            .Where(k => !k.ToDate.HasValue)
+        //            .Select(_mapper.Map<TimeSheetActivity>)
+        //            .ToList();
+        //}
 
         public TeamViewModel GetTeamViewModel(int teamId)
         {
@@ -538,11 +563,10 @@ namespace ProjectTracking.Data.Methods
                 List<string> membersIds = model.Members.Select(k => k.Key).ToList();
 
                 var q_tsActivities = _context.TimeSheetActivities
-                    .Where(k => membersIds.Contains(k.TimeSheetTask.TimeSheet.UserId))
-                    .OrderByDescending(k => k.FromDate);
-
+                    .Where(k => !k.DeletedAt.HasValue && membersIds.Contains(k.TimeSheetTask.TimeSheet.UserId));
 
                 model.ActivitiesFrequency = q_tsActivities
+                    .OrderByDescending(k => k.FromDate)
                     .GroupBy(k => k.FromDate.Date)
                     .Take(30)
                     .AsEnumerable()
@@ -551,21 +575,54 @@ namespace ProjectTracking.Data.Methods
 
                 // # 
                 model.ActiveActivities = q_tsActivities
+                    .OrderByDescending(k => k.FromDate)
                     .Where(k => !k.ToDate.HasValue)
-                    .Select(_mapper.Map<TimeSheetActivity>)
+                    .Select(k => new TimeSheetActivity()
+                    {
+                        ID = k.ID,
+                        FromDate = k.FromDate,
+                        User = new User()
+                        {
+                            Id = k.TimeSheetTask.TimeSheet.User.Id,
+                            FirstName = k.TimeSheetTask.TimeSheet.User.FirstName,
+                            LastName = k.TimeSheetTask.TimeSheet.User.LastName,
+                        },
+                        ProjectTask = new ProjectTask()
+                        {
+                            ID = k.TimeSheetTask.ProjectTask.ID,
+                            Title = k.TimeSheetTask.ProjectTask.Title,
+                        }
+                    })
                     .ToList();
 
-                // will not include the user's name here since it's already in memebers list
-                model.Workload = q_tsActivities
-                    .Where(k => k.TimeSheetTask.ProjectTask.StatusCode ==  (short)ProjectTaskStatus.Pending)
-                    .GroupBy(k => new { k.TimeSheetTask.TimeSheet.UserId })
+                model.Workload = _context.TimeSheetTasks.Where(k => membersIds.Contains(k.TimeSheet.UserId))
+                    .Select(k => new { k.TimeSheet.UserId, Name = k.TimeSheet.User.FirstName + " " + k.TimeSheet.User.LastName, k.ProjectTask.StatusCode, })
+                    //.Where(k => k.TimeSheetTask.ProjectTask.StatusCode == (short)ProjectTaskStatus.Pending)
+                    .GroupBy(k => new { k.UserId, k.Name, })
                     .AsEnumerable()
-                    .Select(k => new KeyValuePair<string, int>(k.Key.UserId, k.Count()))
+                    .Select(k => new KeyValuePair<Models.Users.UserKeyValue, TasksWorkload>(new Models.Users.UserKeyValue(k.Key.UserId, k.Key.Name), new TasksWorkload()
+                    {
+                        DoneCount = k.Count(t => t.StatusCode == (short)ProjectTaskStatus.Done),
+                        PendingCount = k.Count(t => t.StatusCode == (short)ProjectTaskStatus.Pending),
+                        ProgressCount = k.Count(t => t.StatusCode == (short)ProjectTaskStatus.InProgress)
+                    }))
                     .ToList();
+
+                // add the users that are not in workloads that have no timesheets
+                var memebresWithNoTimeSheets = model.Members.Where(k => !model.Workload.Any(w => w.Key.Id == k.Key)).ToList();
+
+                if (memebresWithNoTimeSheets.Count > 0)
+                {
+                    model.Workload.AddRange(memebresWithNoTimeSheets.Select(k => 
+                    new KeyValuePair<Models.Users.UserKeyValue, TasksWorkload>(new Models.Users.UserKeyValue(k.Key, k.Value), new TasksWorkload() { })));
+                }
+
             }
 
             return model;
         }
+
+
 
         //public Team EditDepartment(int id, Team department)
         //{
