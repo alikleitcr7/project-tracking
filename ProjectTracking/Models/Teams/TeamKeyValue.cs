@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProjectTracking.Models.Users
+namespace ProjectTracking.Models.Teams
 {
-    public class UserKeyValue
+    public class TeamKeyValue
     {
-        public UserKeyValue(string id, string name)
+        public TeamKeyValue(int id, string name)
         {
             Id = id;
             Name = name;
         }
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
-
-        public KeyValuePair<int,string> Team { get; set; }
     }
 }

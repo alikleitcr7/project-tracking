@@ -695,16 +695,16 @@ table td {
   padding: 5px 10px 5px 5px;
 }
 .task-filter--pending {
-  color: #f78438 !important;
+  color: rgba(247, 132, 56, 0.95) !important;
 }
 .task-filter--progress {
-  color: #4b59ff !important;
+  color: rgba(75, 89, 255, 0.84) !important;
 }
 .task-filter--done {
-  color: #3fcc35 !important;
+  color: rgba(63, 204, 53, 0.86) !important;
 }
 .task-filter--failed {
-  color: #bb0000 !important;
+  color: rgba(187, 0, 0, 0.7) !important;
 }
 .mark-as-container {
   display: inline-block;

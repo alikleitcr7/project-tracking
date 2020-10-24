@@ -466,6 +466,9 @@ h6 {
 .text-bold {
   font-weight: 600;
 }
+.d-block {
+  display: block;
+}
 b {
   font-weight: 600;
 }

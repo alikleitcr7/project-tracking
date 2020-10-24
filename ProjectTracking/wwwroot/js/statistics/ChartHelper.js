@@ -142,7 +142,7 @@
                     labels,
                     datasets: [{
                         label: 'Activities',
-                        backgroundColor: colors.mainLight,
+                        backgroundColor: colors.mainLightTransparent,
                         borderColor: colors.main,
                         data
                     }]
@@ -163,7 +163,12 @@
 
             const metrics = initTasksPerformanceProgress();
 
-            const labels = metrics.map(k => `${k.code}: ${taskPerformance[k.fromProp]} (${(taskPerformance[k.fromProp] / taskPerformance.totalCount * 100)}%)`)
+            const precisionRound = (number) => {
+                var factor = Math.pow(10, 2);
+                return Math.round(number * factor) / factor;
+            }
+
+            const labels = metrics.map(k => `${k.code}: ${taskPerformance[k.fromProp]} (${(precisionRound(taskPerformance[k.fromProp] / taskPerformance.totalCount * 100))}%)`)
             const data = metrics.map(k => taskPerformance[k.fromProp])
             const pieColors = metrics.map(k => colors[k.code])
 

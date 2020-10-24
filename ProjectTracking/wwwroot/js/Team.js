@@ -114,7 +114,6 @@ new Vue({
                 /** @type {TeamViewModel} */
                 const team = r
 
-
                 chartsHelper.charts.populateWorkload('bar_workload', team.workload)
                 chartsHelper.charts.populateActivities('line_activities', team.activitiesFrequency)
                 chartsHelper.charts.populateTasks('pie_tasks', team.tasksPerformance)

@@ -36,6 +36,14 @@ const ProjectsService = {
 
         return axios.get(url);
     },
+    GetOverview: function (projectId) {
+
+        const query = serialize({ projectId })
+
+        const url = PROJECTS_SERVICE_URI(`GetOverview?${query}`)
+
+        return axios.get(url);
+    },
     Delete: function (id) {
 
         const url = PROJECTS_SERVICE_URI(`Delete?id=${id}`)

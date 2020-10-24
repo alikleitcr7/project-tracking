@@ -1,49 +1,19 @@
-﻿@using ProjectTracking.DataContract
+﻿
+<div id="ProjectOverview" class="v-container" >
 
-@model Team
-
-@{ 
-
-    ViewData["Title"] = $"Team {Model.Name}";
-
-}
-
-<div id="Team" data-id="@Model.ID" class="v-container" v-cloak>
-
-    @* Info *@
-
-    <section class="team-info">
-
-        <h2>@Model.Name</h2>
-
-        <table class="table">
-            <tr>
-                <td>
-                    Added By @Model.AddedByUser.FullName on @Model.DateAddedDisplay
-                </td>
-                <td>
-                    Assigned By @Model.AssignedByUser.FullName on @Model.DateAssignedDisplay to @Model.Supervisor.FullName
-                </td>
-            </tr>
-        </table>
-
-    </section>
-
-
-    <section class="team-buttons">
-        <button class="s-btn s-btn-primary" :disabled="isLoading" @@click="showMembers()"><i class="fa fa-users"></i> Members</button>
-        <button class="s-btn s-btn-primary" @@click="openProjects()"><i class="fa fa-stream"></i> Projects</button>
-        @*<button class="s-btn s-btn-outline" :disabled="isLoading" @@click="()"><i class="fa fa-users"></i> Members</button>*@
+    <section class="project-buttons">
+        <button class="s-btn s-btn-primary" :disabled="overview.isLoading" @@click="showMembers()"><i class="fa fa-users"></i> Members</button>
+        <button class="s-btn s-btn-primary" :disabled="overview.isLoading" @@click="showTeams()"><i class="fa fa-user-friends"></i> Teams</button>
     </section>
 
     @* Tabs (Overview, Members, Broadcasts) *@
 
-    <section class="team-visualization">
-        <div class="c-box-view c-box-view--wrap" v-if="team">
+    <section class="project-visualization">
+        <div class="c-box-view c-box-view--wrap" v-if="overview.data">
             <div class="c-box">
                 <h5 class="c-box-title">Active Activities</h5>
                 <div class="scrollable-container-200">
-                    <table class="table" v-if="team.activeActivities.length">
+                    <table class="table" v-if="overview.data.activeActivities.length">
                         <thead>
                             <tr>
                                 <th>task</th>
@@ -52,7 +22,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="activity in team.activeActivities">
+                            <tr v-for="activity in overview.data.activeActivities">
                                 <td>
                                     <a :href="`/tasks/${activity.projectTask.id}`">
                                         {{activity.projectTask.title}}
@@ -86,27 +56,66 @@
     </section>
 
     <div class="modal" id="MembersModal">
+
         <div class="modal-dialog modal-sm">
-            <div class="modal-content" v-if="team">
+
+            <div class="modal-content" v-if="overview.data">
 
                 <div class="modal-header">
+
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+
                     <h5 class="modal-title">
 
-                        <span v-if="!team.members.length">The team has no members yet</span>
-                        <span v-else><i class="fa fa-users"></i> {{team.members.length}} Member{{team.members.length > 1 ?  's' :''}}</span>
+                        <span v-if="!overview.data.members.length">The project has no members yet</span>
+                        <span v-else><i class="fa fa-users"></i> {{overview.data.members.length}} Member{{overview.data.members.length > 1 ?  's' :''}}</span>
 
                     </h5>
+
                 </div>
 
                 <div class="modal-body">
 
+                    <div class="scrollable-container-400">
+
+                        <a class="clickable-link d-block" :href="`/profile/${member.id}`" v-for="member in overview.data.members">
+                            {{member.name}}
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="TeamsModal">
+
+        <div class="modal-dialog modal-sm">
+
+            <div class="modal-content" v-if="overview.data">
+
+                <div class="modal-header">
+
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                    <h5 class="modal-title">
+
+                        <span v-if="!overview.data.teams.length">The project has no teams yet</span>
+                        <span v-else><i class="fa fa-users"></i> {{overview.data.teams.length}} Team{{overview.data.teams.length > 1 ?  's' :''}}</span>
+
+                    </h5>
+
+                </div>
+
+                <div class="modal-body">
 
                     <div class="scrollable-container-400">
 
-                        <a class="clickable-link" :href="`/profile/${member.key}`" v-for="member in team.members">
-                            {{member.value}}
+                        <a class="clickable-link d-block" :href="`/teams/${team.id}`" v-for="team in overview.data.teams">
+                            {{team.name}}
                         </a>
+
                     </div>
 
                 </div>
@@ -114,51 +123,6 @@
         </div>
     </div>
 
-    <div class="modal" id="ProjectsModal">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">
-
-                        <span v-if="projects.isLoading">Loading...</span>
-                        <span v-if="!projects.isLoading && !projects.data.length">The team has no projects yet</span>
-                        <span v-else><i class="fa fa-stream"></i> {{projects.data.length}} Project{{projects.data.length > 1 ?  's' :''}}</span>
-
-                    </h5>
-                </div>
-                <div class="modal-body">
-
-
-                    <div class="scrollable-container-400">
-
-                        <a class="clickable-link" :href="`/projects/${project.id}`" v-for="project in projects.data">
-                            {{project.title}}
-                        </a>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-    </div>
+    
 
 </div>
-
-
-@section styles{
-<link href="~/css/Team.min.css" rel="stylesheet" />
-}
-
-@section scripts{
-
-<script src="~/lib/chartjs-2.7.1/Chart.min.js"></script>
-
-<script src="~/services/TeamsService.js"></script>
-<script src="~/services/ProjectsService.js"></script>
-
-<script src="~/js/statistics/ChartHelper.js"></script>
-
-<script src="~/js/Team.js"></script>
-}

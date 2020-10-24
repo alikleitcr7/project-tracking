@@ -1,4 +1,5 @@
 ﻿using ProjectTracking.DataContract;
+using ProjectTracking.Models.Projects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,14 +38,6 @@ namespace ProjectTracking.Models.Teams
         public List<KeyValuePair<DateTime, int>> ActivitiesFrequency { get; set; }
     }
 
-    public class TasksPerformance
-    {
-        public int TotalCount { get; set; }
-        public int DoneCount { get; set; }
-        public int ProgressCount { get; set; }
-        public int PendingCount { get; set; }
-        public int FailedOrTerminatedCount { get; set; }
-    }
 
     public class TasksWorkload
     {

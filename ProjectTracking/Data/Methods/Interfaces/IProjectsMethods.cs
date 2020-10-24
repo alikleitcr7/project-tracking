@@ -25,5 +25,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
 
         List<Project> Get(int departmentId, int companyId, int page, int countPerPage, out int totalCount);
         List<ProjectStatusModification> GetStatusModifications(int projectId);
+        Models.Projects.ProjectOverview GetOverview(int projectId);
     }
 }

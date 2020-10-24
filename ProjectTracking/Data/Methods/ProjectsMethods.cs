@@ -5,6 +5,8 @@ using ProjectTracking.DataContract;
 using ProjectTracking.Exceptions;
 using ProjectTracking.Models.Projects;
 using ProjectTracking.Models.Statistics;
+using ProjectTracking.Models.Teams;
+using ProjectTracking.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -246,6 +248,109 @@ namespace ProjectTracking.Data.Methods
             return record != null ? _mapper.Map<Project>(record) : null;
         }
 
+
+        public ProjectOverview GetOverview(int projectId)
+        {
+            if (!db.Projects.Any(k => k.ID == projectId))
+            {
+                throw new ClientException("Team dont exist");
+            }
+
+            // supervising teams
+
+            List<TeamKeyValue> teams = db.TeamsProjects
+                .Where(k => k.ProjectId == projectId)
+                .Select(k => new TeamKeyValue(k.Team.ID, k.Team.Name))
+                .ToList();
+
+            List<int> teamsId = teams.Select(k => k.Id).ToList();
+
+            ProjectOverview overview = new ProjectOverview()
+            {
+                Teams = teams,
+                Members = teams.Count > 0 ? db.Users.Where(k => teamsId.Contains(k.TeamId.Value))
+                .Select(k => new Models.Users.UserKeyValue(k.Id, k.FirstName + " " + k.LastName))
+                .ToList() : new List<Models.Users.UserKeyValue>()
+            };
+
+            IQueryable<DataSets.ProjectTask> q_tasks = db.ProjectTasks
+                .Where(t => t.ProjectId == projectId);
+
+            // tasks performance
+            overview.TasksPerformance = new TasksPerformance()
+            {
+                TotalCount = q_tasks.Count(),
+                DoneCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Done),
+                ProgressCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.InProgress),
+                PendingCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Pending),
+                FailedOrTerminatedCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
+            };
+
+            // timesheet activities
+            if (overview.Members.Count > 0)
+            {
+                //List<string> membersIds = overview.Members.Select(k => k.Id).ToList();
+
+                var q_tsActivities = db.TimeSheetActivities
+                    .Where(k => !k.DeletedAt.HasValue &&
+                    k.TimeSheetTask.ProjectTask.ProjectId == projectId);
+
+                overview.ActivitiesFrequency = q_tsActivities
+                    .OrderByDescending(k => k.FromDate)
+                    .GroupBy(k => k.FromDate.Date)
+                    .Take(30)
+                    .AsEnumerable()
+                    .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
+                    .ToList();
+
+                // # 
+                overview.ActiveActivities = q_tsActivities
+                    .OrderByDescending(k => k.FromDate)
+                    .Where(k => !k.ToDate.HasValue)
+                    .Select(k => new TimeSheetActivity()
+                    {
+                        ID = k.ID,
+                        FromDate = k.FromDate,
+                        User = new User()
+                        {
+                            Id = k.TimeSheetTask.TimeSheet.User.Id,
+                            FirstName = k.TimeSheetTask.TimeSheet.User.FirstName,
+                            LastName = k.TimeSheetTask.TimeSheet.User.LastName,
+                        },
+                        ProjectTask = new ProjectTask()
+                        {
+                            ID = k.TimeSheetTask.ProjectTask.ID,
+                            Title = k.TimeSheetTask.ProjectTask.Title,
+                        }
+                    })
+                    .ToList();
+
+                overview.Workload = db.TimeSheetTasks.Where(k => k.ProjectTask.ProjectId == projectId)
+                    .Select(k => new { k.TimeSheet.UserId, Name = k.TimeSheet.User.FirstName + " " + k.TimeSheet.User.LastName, k.ProjectTask.StatusCode, })
+                    //.Where(k => k.TimeSheetTask.ProjectTask.StatusCode == (short)ProjectTaskStatus.Pending)
+                    .GroupBy(k => new { k.UserId, k.Name, })
+                    .AsEnumerable()
+                    .Select(k => new KeyValuePair<Models.Users.UserKeyValue, TasksWorkload>(new Models.Users.UserKeyValue(k.Key.UserId, k.Key.Name), new TasksWorkload()
+                    {
+                        DoneCount = k.Count(t => t.StatusCode == (short)ProjectTaskStatus.Done),
+                        PendingCount = k.Count(t => t.StatusCode == (short)ProjectTaskStatus.Pending),
+                        ProgressCount = k.Count(t => t.StatusCode == (short)ProjectTaskStatus.InProgress)
+                    }))
+                    .ToList();
+
+                // add the users that are not in workloads that have no timesheets
+                var memebresWithNoTimeSheets = overview.Members.Where(k => !overview.Workload.Any(w => w.Key.Id == k.Id)).ToList();
+
+                if (memebresWithNoTimeSheets.Count > 0)
+                {
+                    overview.Workload.AddRange(memebresWithNoTimeSheets.Select(k =>
+                    new KeyValuePair<Models.Users.UserKeyValue, TasksWorkload>(k, new TasksWorkload() { })));
+                }
+
+            }
+
+            return overview;
+        }
 
         // OTHER
 

@@ -38,6 +38,22 @@ const Modals_ProjectTasks = {
         Hide: function () {
             $('#ProjectTaskStatusModificationsModal').modal('hide');
         }
+    },
+    Members: {
+        Show: function () {
+            $('#MembersModal').modal('show');
+        },
+        Hide: function () {
+            $('#MembersModal').modal('hide');
+        }
+    },
+    Teams: {
+        Show: function () {
+            $('#TeamsModal').modal('show');
+        },
+        Hide: function () {
+            $('#TeamsModal').modal('hide');
+        }
     }
 }
 
@@ -542,9 +558,14 @@ var projectTasks_app = new Vue({
         dateOptions,
         dateTimeOptions,
         projectTasks: projectTaskObject(),
-        projectTaskId: getActiveProjectId(),
+        projectId: getActiveProjectId(),
         errors: '',
         oNull: null,
+        overview: {
+            data: null,
+            isLoading: true,
+            message: null
+        }
     },
     computed: {
         projectTasksTotalPages: function () {
@@ -556,14 +577,45 @@ var projectTasks_app = new Vue({
             console.log({ totalPages })
 
             return totalPages || 0
-        },
+        }
     },
     methods: {
         ...projectTasksMethods,
+        showMembers: function () {
+            Modals_ProjectTasks.Members.Show()
+        },
+        showTeams: function () {
+            Modals_ProjectTasks.Teams.Show()
+        },
     },
     mounted: function () {
+
         this.projectTasks_getAll()
         this.projectTasks_getAllStatuses()
+
+        ProjectsService.GetOverview(this.projectId)
+            .then((r) => {
+                const record = r.data
+                this.overview.data = record
+
+                return record
+            })
+            .catch((e) => {
+                const errorMessage = getAxiosErrorMessage(e)
+                this.overview.message = errorMessage
+
+                return null
+            })
+            .then((r) => {
+                this.overview.isLoading = false
+
+                /** @type {ProjectOverview} */
+                const overview = r
+
+                chartsHelper.charts.populateWorkload('bar_workload', overview.workload)
+                chartsHelper.charts.populateActivities('line_activities', overview.activitiesFrequency)
+                chartsHelper.charts.populateTasks('pie_tasks', overview.tasksPerformance)
+            })
     }
 })
 

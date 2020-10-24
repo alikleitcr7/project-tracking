@@ -82,7 +82,7 @@ declare interface ITaskPerformance {
     failedOrTerminatedCount: number;
 }
 
-declare class TasksWorkload{
+declare class TasksWorkload {
     doneCount: number;
     progressCount: number;
     pendingCount: number;
@@ -108,8 +108,21 @@ declare class TeamViewModel extends SupervisingTeamModel {
     activeActivities: Array<IActiveActivity>;
 }
 
-declare class UserKeyValuePair  {
+declare class ProjectOverview {
+    teams: Array<TeamKeyValuePair>;
+    members: Array<UserKeyValuePair>;
+    tasksPerformance: ITaskPerformance;
+    activitiesFrequency: Array<KeyValuePair<Date, number>>;
+    workload: Array<KeyValuePair<UserKeyValuePair, TasksWorkload>>;
+    activeActivities: Array<IActiveActivity>;
+}
+
+declare class UserKeyValuePair {
     id: string;
+    name: string;
+}
+declare class TeamKeyValuePair {
+    id: int;
     name: string;
 }
 
