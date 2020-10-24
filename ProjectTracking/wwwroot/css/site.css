@@ -463,6 +463,16 @@ h5,
 h6 {
   color: #333;
 }
+.top-intro h1,
+.top-intro h2,
+.top-intro h3,
+.top-intro h4,
+.top-intro h5 {
+  padding: 0px 8px;
+}
+.top-intro table th {
+  background-color: #eeeeee;
+}
 .text-bold {
   font-weight: 600;
 }

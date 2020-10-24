@@ -48,7 +48,7 @@ namespace ProjectTracking.Data.Methods
 
             if (hasActiveActivity)
             {
-                throw new Exception($"there is already an active activity");
+                throw new ClientException($"there is already an active activity");
             }
 
             DataSets.TimeSheetActivity activity = new DataSets.TimeSheetActivity()
@@ -176,20 +176,27 @@ namespace ProjectTracking.Data.Methods
         {
             List<int> timesheetIds = db.TimeSheets.Where(k => k.UserId == userId).Select(k => k.ID).ToList();
 
-            return db.TimeSheetActivities.Any(k => db.TimeSheetTasks.Any(t => t.ID == k.TimeSheetTaskId) && !k.ToDate.HasValue && !k.DeletedAt.HasValue);
+            if (timesheetIds.Count == 0)
+            {
+                return false;
+            }
+
+            return db.TimeSheetActivities.Any(k => timesheetIds.Contains(k.TimeSheetTask.TimeSheetId) && !k.ToDate.HasValue && !k.DeletedAt.HasValue);
         }
 
         public TimeSheetActivity GetUserActiveActivity(string userId)
         {
-            List<int> timesheetIds = db.TimeSheets.Where(k => k.UserId == userId).Select(k => k.ID).ToList();
+            List<int> timesheetIds = db.TimeSheets.Where(k => k.UserId == userId)
+                .Select(k => k.ID).ToList();
 
             if (timesheetIds.Count == 0)
             {
                 return null;
             }
 
-            var dbActiveActivity = db.TimeSheetActivities.Include(k => k.IpAddress).
-                FirstOrDefault(k => db.TimeSheetTasks.Any(t => t.ID == k.TimeSheetTaskId) && !k.ToDate.HasValue && !k.DeletedAt.HasValue);
+            var dbActiveActivity = db.TimeSheetActivities
+                .Include(k => k.IpAddress)
+                .FirstOrDefault(k => timesheetIds.Contains(k.TimeSheetTask.TimeSheetId) && !k.ToDate.HasValue && !k.DeletedAt.HasValue);
 
 
             return dbActiveActivity != null ? _mapper.Map<TimeSheetActivity>(dbActiveActivity) : null;

@@ -1,14 +1,36 @@
 ﻿@using ProjectTracking.DataContract
 @model Project
 @{
-    ViewData["Title"] = $"{Model.Title} Tasks";
+    ViewData["Title"] = $"{Model.Title}";
 }
 
 <div id="ProjectTasks" class="v-container" data-project="@Model.ID" v-cloak>
 
-    <h2>@ViewData["Title"]</h2>
+    <section class="top-intro">
 
-    <hr />
+        <h2>@Model.Title</h2>
+        <h4>@Model.Description</h4>
+
+        <table class="table table-borderless">
+            <tr>
+                <th>Status</th>
+                <th>Category</th>
+                <th>Added on</th>
+                <th>Start Date</th>
+                <th>Planned End Date</th>
+                <th>Actual End Date</th>
+            </tr>
+            <tr>
+                <td>@Model.StatusDisplay</td>
+                <td>@Model.Category.Name</td>
+                <td>@Model.DateAddedDisplay</td>
+                <td>@Model.StartDateDisplay</td>
+                <td>@Model.PlannedEndDisplay</td>
+                <td>@Model.ActualEndDisplay</td>
+            </tr>
+        </table>
+    </section>
+
 
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#OverviewTab"> <i class="far fa-chart-bar"></i> Overview</a></li>

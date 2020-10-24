@@ -243,7 +243,10 @@ namespace ProjectTracking.Data.Methods
 
         public Project GetById(int id)
         {
-            var record = db.Projects.Include(k => k.TeamsProjects).FirstOrDefault(k => k.ID == id);
+            var record = db.Projects
+                .Include(k => k.Category)
+                .Include(k => k.TeamsProjects)
+                .FirstOrDefault(k => k.ID == id);
 
             return record != null ? _mapper.Map<Project>(record) : null;
         }
