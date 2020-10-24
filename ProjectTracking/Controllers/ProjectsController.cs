@@ -14,6 +14,7 @@ using System.Security.Claims;
 namespace ProjectTracking.Controllers
 {
     //[Authorize(Policy = "Administration")]
+    [Route("[controller]/[action]")]
     public class ProjectsController : Controller
     {
         private readonly ITeamsMethods _teams;
@@ -36,6 +37,7 @@ namespace ProjectTracking.Controllers
             _projectsStatistics = projectsStatistics;
         }
 
+        [Route("/projects")]
         //[Authorize(Policy = "Administration")]
         public IActionResult Index()
         {

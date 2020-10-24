@@ -23,7 +23,7 @@ namespace ProjectTracking.Controllers
             _tasksMethods = tasksMethods;
         }
 
-        [Route("/projects/{projectId}/tasks")]
+        [Route("/projects/{projectId}")]
         public IActionResult Index(int projectId)
         {
             Project project = _projectsMethods.GetById(projectId);

@@ -22,8 +22,8 @@
             </tr>
         </table>
 
-
     </section>
+
 
     <section class="team-buttons">
         <button class="s-btn s-btn-primary" :disabled="isLoading" @@click="showMembers()"><i class="fa fa-users"></i> Members</button>
@@ -33,7 +33,7 @@
 
     @* Tabs (Overview, Members, Broadcasts) *@
 
-    <section>
+    <section class="team-visualization">
         <div class="c-box-view c-box-view--wrap" v-if="team">
             <div class="c-box">
                 <h5 class="c-box-title">Active Activities</h5>
@@ -64,15 +64,15 @@
                     </table>
                 </div>
             </div>
-            <div class="c-box">
+            <div class="c-box vis-workload">
                 <h5 class="c-box-title">Workload</h5>
                 <canvas id="bar_workload"></canvas>
             </div>
-            <div class="c-box">
+            <div class="c-box vis-activities">
                 <h5 class="c-box-title">Activities</h5>
                 <canvas id="line_activities"></canvas>
             </div>
-            <div class="c-box">
+            <div class="c-box vis-tasks-progress">
                 <h5 class="c-box-title">Task Progress</h5>
                 <canvas id="pie_tasks"></canvas>
             </div>

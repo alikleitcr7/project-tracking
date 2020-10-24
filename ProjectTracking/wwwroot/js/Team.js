@@ -69,6 +69,21 @@ const chartsHelper = {
             },
         }
     },
+    pieOptions: () => {
+        return {
+
+            responsive: true,
+            scaleBeginAtZero: true,
+
+            layout: {
+                padding: {
+                    top: 5,
+                    left: 5,
+                    right: 5
+                }
+            },
+        }
+    },
 }
 
 /**
@@ -154,7 +169,7 @@ function populateTasks(taskPerformance) {
 
     const metrics = initTasksPerformanceProgress();
 
-    const labels = metrics.map(k => k.name)
+    const labels = metrics.map(k => `${k.code}: ${taskPerformance[k.fromProp]} (${(taskPerformance[k.fromProp] / taskPerformance.totalCount * 100)}%)`)
     const data = metrics.map(k => taskPerformance[k.fromProp])
     const pieColors = metrics.map(k => colors[k.code])
 
@@ -176,7 +191,7 @@ function populateTasks(taskPerformance) {
             }]
         },
         // Configuration options go here
-        options: {}
+        options: chartsHelper.pieOptions()
     });
 }
 
@@ -248,7 +263,7 @@ new Vue({
                 .then((r) => {
                     const record = r.data
                     this.projects.data = record
-                    this.projects.isLoaded= true
+                    this.projects.isLoaded = true
 
                 })
                 .catch((e) => {
