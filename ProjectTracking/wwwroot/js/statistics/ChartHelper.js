@@ -69,7 +69,10 @@
     },
     pieOptions: () => {
         return {
-
+            legend: {
+                //display:false,
+                position:'left'
+            },
             responsive: true,
             scaleBeginAtZero: true,
 

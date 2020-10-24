@@ -14,7 +14,8 @@ namespace ProjectTracking.Models.Users
         }
         public string Id { get; set; }
         public string Name { get; set; }
+        public int? TeamId { get; set; }
 
-        public KeyValuePair<int,string> Team { get; set; }
+        public KeyValuePair<int, string> Team { get; set; }
     }
 }

@@ -1,9 +1,9 @@
 ﻿
-<div id="ProjectOverview" class="v-container" >
+<div id="ProjectOverview" class="v-container">
 
     <section class="project-buttons">
         <button class="s-btn s-btn-primary" :disabled="overview.isLoading" @@click="showMembers()"><i class="fa fa-users"></i> Members</button>
-        <button class="s-btn s-btn-primary" :disabled="overview.isLoading" @@click="showTeams()"><i class="fa fa-user-friends"></i> Teams</button>
+        @*<button class="s-btn s-btn-primary" :disabled="overview.isLoading" @@click="showTeams()"><i class="fa fa-user-friends"></i> Teams</button>*@
     </section>
 
     @* Tabs (Overview, Members, Broadcasts) *@
@@ -55,7 +55,7 @@
         </div>
     </section>
 
-    <div class="modal" id="MembersModal">
+    @*<div class="modal" id="MembersModal">
 
         <div class="modal-dialog modal-sm">
 
@@ -87,9 +87,9 @@
                 </div>
             </div>
         </div>
-    </div>
-    
-    <div class="modal" id="TeamsModal">
+    </div>*@
+
+    <div class="modal" id="MembersModal">
 
         <div class="modal-dialog modal-sm">
 
@@ -102,7 +102,7 @@
                     <h5 class="modal-title">
 
                         <span v-if="!overview.data.teams.length">The project has no teams yet</span>
-                        <span v-else><i class="fa fa-users"></i> {{overview.data.teams.length}} Team{{overview.data.teams.length > 1 ?  's' :''}}</span>
+                        <span v-else><i class="fa fa-users"></i> {{overview.data.teams.length}} Team{{overview.data.teams.length > 1 ?  's' :''}}, {{overview.data.members.length}} Member{{overview.data.members.length > 1 ?  's' :''}} </span>
 
                     </h5>
 
@@ -112,9 +112,29 @@
 
                     <div class="scrollable-container-400">
 
-                        <a class="clickable-link d-block" :href="`/teams/${team.id}`" v-for="team in overview.data.teams">
+                        <div class="c-list-view">
+
+                            <div class="c-list-item" v-for="team in teamsUsers">
+
+                                <h5 class="c-list-item-title">
+                                    <a :href="`/teams/${team.id}`">
+                                        {{team.name}}
+                                    </a>
+                                </h5>
+
+                                <div class="c-list-view">
+                                    <a class="c-list-item" :href="`/profile/${user.id}`" v-for="user in team.users">
+                                        {{user.name}}
+                                    </a>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        @*<a class="clickable-link d-block" :href="`/teams/${team.id}`" v-for="team in overview.data.teams">
                             {{team.name}}
-                        </a>
+                        </a>*@
 
                     </div>
 
@@ -123,6 +143,6 @@
         </div>
     </div>
 
-    
+
 
 </div>

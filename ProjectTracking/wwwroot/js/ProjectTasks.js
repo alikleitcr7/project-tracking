@@ -577,6 +577,16 @@ var projectTasks_app = new Vue({
             console.log({ totalPages })
 
             return totalPages || 0
+        },
+        teamsUsers: function () {
+            const data = this.overview.data
+
+            if (!data) {
+                return []
+            }
+
+
+            return data.teams.map(k => ({ ...k, users: data.members.filter(u => u.teamId === k.id) }))
         }
     },
     methods: {
@@ -584,9 +594,9 @@ var projectTasks_app = new Vue({
         showMembers: function () {
             Modals_ProjectTasks.Members.Show()
         },
-        showTeams: function () {
-            Modals_ProjectTasks.Teams.Show()
-        },
+        //showTeams: function () {
+        //    Modals_ProjectTasks.Teams.Show()
+        //},
     },
     mounted: function () {
 

@@ -269,7 +269,10 @@ namespace ProjectTracking.Data.Methods
             {
                 Teams = teams,
                 Members = teams.Count > 0 ? db.Users.Where(k => teamsId.Contains(k.TeamId.Value))
-                .Select(k => new Models.Users.UserKeyValue(k.Id, k.FirstName + " " + k.LastName))
+                .Select(k => new Models.Users.UserKeyValue(k.Id, k.FirstName + " " + k.LastName)
+                {
+                    TeamId = k.TeamId
+                })
                 .ToList() : new List<Models.Users.UserKeyValue>()
             };
 
