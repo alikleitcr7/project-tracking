@@ -4,19 +4,46 @@
     ViewData["Title"] = $"{Model.Title} Tasks";
 }
 
-    <div id="ProjectTasks" class="v-container" data-project="@Model.ID" v-cloak>
+<div id="ProjectTasks" class="v-container" data-project="@Model.ID" v-cloak>
 
-        <h2>@ViewData["Title"]</h2>
+    <h2>@ViewData["Title"]</h2>
 
-        <hr />
+    <hr />
 
-        <partial name="~/views/ProjectTasks/forms/ProjectTasksResult.cshtml" />
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#OverviewTab"> <i class="far fa-chart-bar"></i> Overview</a></li>
+        <li><a data-toggle="tab" href="#TasksTab"><i class="fa fa-tasks"></i> Tasks</a></li>
+        <li><a data-toggle="tab" href="#GanttTab"> <i class="fa fa-stream"></i> Gantt</a></li>
+    </ul>
 
-        <partial name="~/views/ProjectTasks/forms/ProjectTaskform.cshtml" />
+    <div class="tab-content">
 
-        <partial name="~/views/ProjectTasks/forms/TaskStatusModifications.cshtml" />
+        <div id="OverviewTab" class="tab-pane fade in active">
+            <h3>OverviewTab</h3>
+
+
+        </div>
+
+        <div id="TasksTab" class="tab-pane fade">
+
+            <div class="v-container">
+                <partial name="~/views/ProjectTasks/forms/ProjectTasksResult.cshtml" />
+
+                <partial name="~/views/ProjectTasks/forms/ProjectTaskform.cshtml" />
+
+                <partial name="~/views/ProjectTasks/forms/TaskStatusModifications.cshtml" />
+            </div>
+
+        </div>
+
+        <div id="GanttTab" class="tab-pane fade">
+            <h3>GanttTab 2</h3>
+        </div>
 
     </div>
+
+
+</div>
 
 
 @section styles{
@@ -31,6 +58,6 @@
 
     @* Services *@
     <script src="~/services/ProjectTasksService.js"></script>
-    
+
     <script src="~/js/projectTasks.js"></script>
 }

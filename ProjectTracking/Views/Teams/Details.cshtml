@@ -2,6 +2,11 @@
 
 @model Team
 
+@{ 
+
+    ViewData["Title"] = $"Team {Model.Name}";
+
+}
 
 <div id="Team" data-id="@Model.ID" class="v-container" v-cloak>
 
@@ -152,6 +157,8 @@
 
 <script src="~/services/TeamsService.js"></script>
 <script src="~/services/ProjectsService.js"></script>
+
+<script src="~/js/statistics/ChartHelper.js"></script>
 
 <script src="~/js/Team.js"></script>
 }
