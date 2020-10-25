@@ -47,14 +47,14 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return FromDate.ToString("dd-MM-yyyy HH:mm:ss");
+                return FromDate.ToDisplayDateTime();
             }
         }
         public string DisplayToDate
         {
             get
             {
-                return !ToDate.HasValue ? "-" : ToDate.Value.ToString("dd-MM-yyyy HH:mm:ss");
+                return ToDate.ToDisplayDateTime();
             }
         }
     }

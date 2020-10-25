@@ -14,7 +14,6 @@ var projectComponent = Vue.extend({
                               <span class="right-side small-date">{{project.displayDate}}</span>
                           </p>
          
-                          <small>{{project.description}}</small>
                       </div>
          
                       <div class="item-child-items">
@@ -75,7 +74,9 @@ function filterProjects(val, filteredProjects) {
 
         let project = filteredProjects[i];
 
-        let showProject = project.title.toLowerCase().indexOf(val) > -1 || (project.description ? project.description.toLowerCase().indexOf(val) > -1 : false);
+
+        // || (project.description ? project.description.toLowerCase().indexOf(val) > -1 : false)
+        let showProject = project.title.toLowerCase().indexOf(val) > -1 ;
 
         // show project if some tasks met the search criteria
         project.isHidden = !project.tasks.some(k => k.title.toLowerCase().indexOf(val) > -1);

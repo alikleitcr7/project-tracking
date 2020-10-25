@@ -133,9 +133,9 @@ declare class UserLog {
 declare class UserInsights {
     activitiesFrequency: Array<KeyValuePair<Date, number>>;
     activitiesMinuts: Array<KeyValuePair<Date, number>>;
-    activeActivity: Array<TimeSheetActivity>;
+    latestActivities: Array<TimeSheetActivity>;
     tasksPerformance: ITaskPerformance;
-    //latestUserLog: UserLog;
+    latestUserLog: Array<UserLog>;
 }
 
 declare class UserKeyValuePair {

@@ -41,7 +41,7 @@ const UsersService = {
 
         return axios.get(url);
     },
-    GetEmploymentTypes : function () {
+    GetEmploymentTypes: function () {
 
         const url = USERS_SERVICE_URI(`GetEmploymentTypes`)
 
@@ -60,6 +60,14 @@ const UsersService = {
         const query = serialize({ userId })
 
         const url = USERS_SERVICE_URI(`GetLatestUserLog?${query}`)
+
+        return axios.get(url);
+    },
+    GetLatestUserLogs: function (userId, take) {
+
+        const query = serialize({ userId, take })
+
+        const url = USERS_SERVICE_URI(`GetLatestUserLogs?${query}`)
 
         return axios.get(url);
     },

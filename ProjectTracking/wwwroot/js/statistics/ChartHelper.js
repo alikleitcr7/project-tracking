@@ -60,7 +60,8 @@
             scales: {
                 yAxes: [{
                     ticks: {
-                        stepSize: 1,
+                        precision: 0,
+                        //stepSize: stepOne ? 1 : undefined,
                         beginAtZero: true
                     },
                 }],
@@ -71,7 +72,7 @@
         return {
             legend: {
                 //display:false,
-                position:'left'
+                position: 'left'
             },
             responsive: true,
             scaleBeginAtZero: true,
@@ -152,6 +153,30 @@
                 },
 
                 // Configuration options go here
+                options: chartsHelper.lineOptions()
+            });
+        },
+        /**
+         * @param {Array<KeyValuePair<Date, number>>} activitiesMinutes
+         */
+        populateActivitiesMinuts: function (id, activitiesMinuts) {
+
+            var ctx = document.getElementById(id).getContext('2d');
+
+            const labels = activitiesMinuts.map(k => moment(k.key).format('D/MMM'))
+            const data = activitiesMinuts.map((k, idx) => ({ x: idx, y: k.value }))
+
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Minutes',
+                        backgroundColor: colors.mainLightTransparent,
+                        borderColor: colors.main,
+                        data
+                    }]
+                },
                 options: chartsHelper.lineOptions()
             });
         },

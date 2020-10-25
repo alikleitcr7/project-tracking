@@ -4,9 +4,9 @@
     <section class="project-visualization">
         <div class="c-box-view c-box-view--wrap" v-if="insights">
             <div class="c-box">
-                <h5 class="c-box-title">Active Activities</h5>
+                <h5 class="c-box-title">Latest Activities</h5>
                 <div class="scrollable-container-200">
-                    <table class="table" v-if="insights.activeActivities.length">
+                    <table class="table" v-if="insights.latestActivities.length">
                         <thead>
                             <tr>
                                 <th>task</th>
@@ -16,7 +16,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="activity in insights.activeActivities">
+                            <tr v-for="activity in insights.latestActivities">
                                 <td>
                                     <a :href="`/tasks/${activity.projectTask.id}`">
                                         {{activity.projectTask.title}}
@@ -32,14 +32,37 @@
                 </div>
             </div>
 
+            <div class="c-box">
+                <h5 class="c-box-title">Latest Logs</h5>
+                <div class="scrollable-container-200">
+                    <table class="table" v-if="insights.latestLogs.length">
+                        <thead>
+                            <tr>
+                                <th>from</th>
+                                <th>to</th>
+                                <th>status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="log in insights.latestLogs">
+                                <td>{{log.displayFromDate}}</td>
+                                <td>{{log.displayToDate}}</td>
+                                <td>{{log.logStatusDisplay}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h5 v-else>Nothing Here</h5>
+                </div>
+            </div>
+
             <div class="c-box vis-workload">
-                <h5 class="c-box-title">Workload</h5>
-                <canvas id="bar_workload"></canvas>
+                <h5 class="c-box-title">Activities (Minutes)</h5>
+                <canvas id="line_activities_minutes"></canvas>
             </div>
 
             <div class="c-box vis-activities">
-                <h5 class="c-box-title">Activities</h5>
-                <canvas id="line_activities"></canvas>
+                <h5 class="c-box-title">Activities (Frequency)</h5>
+                <canvas id="line_activities_frequency"></canvas>
             </div>
 
             <div class="c-box vis-tasks-progress">

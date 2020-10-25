@@ -60,6 +60,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         UserRoleLog GetUserRole(string userId);
         Models.Users.UserInsights GetUserInsights(string userId);
         UserLog GetLatestUserLog(string userId);
+        List<UserLog> GetLatestUserLogs(string userId, int take);
         #endregion
     }
 }

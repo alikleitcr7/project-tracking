@@ -27,7 +27,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return DateAdded.ToString();
+                return DateAdded.ToDisplayDateTime();
             }
         }
 
@@ -35,7 +35,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return FromDate.ToString();
+                return FromDate.ToDisplayDateTime();
             }
         }
 
@@ -43,7 +43,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return ToDate.HasValue ? ToDate.Value.ToString() : null;
+                return ToDate.ToDisplayDateTime();
             }
         }
 

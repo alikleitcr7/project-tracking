@@ -991,7 +991,7 @@ namespace ProjectTracking.Data.Methods
                 .ToList();
 
             //ActiveActivities
-            overview.ActiveActivities = q_tsActivities
+            overview.LatestActivities = q_tsActivities
                 .OrderByDescending(k => k.ID)
                 .Take(10)
                 .Select(k => new TimeSheetActivity()
@@ -1026,6 +1026,8 @@ namespace ProjectTracking.Data.Methods
                 FailedOrTerminatedCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
             };
 
+            overview.LatestLogs = GetLatestUserLogs(userId, 10);
+
             return overview;
         }
 
@@ -1036,6 +1038,16 @@ namespace ProjectTracking.Data.Methods
                 .OrderByDescending(k => k.ID)
                 .Select(_mapper.Map<UserLog>)
                 .FirstOrDefault();
+        }
+
+        public List<UserLog> GetLatestUserLogs(string userId, int take)
+        {
+            return db.UserLogging
+                .Where(k => k.UserId == userId)
+                .OrderByDescending(k => k.ID)
+                .Take(take)
+                .Select(_mapper.Map<UserLog>)
+                .ToList();
         }
     }
 }

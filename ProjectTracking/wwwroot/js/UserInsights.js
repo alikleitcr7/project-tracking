@@ -39,7 +39,8 @@
                 const insights = r
 
                 //chartsHelper.charts.populateWorkload('bar_workload', insights.workload)
-                chartsHelper.charts.populateActivities('line_activities', insights.activitiesFrequency)
+                chartsHelper.charts.populateActivitiesMinuts('line_activities_minutes', insights.activitiesMinuts)
+                chartsHelper.charts.populateActivities('line_activities_frequency', insights.activitiesFrequency)
                 chartsHelper.charts.populateTasks('pie_tasks', insights.tasksPerformance)
             })
     }
