@@ -85,6 +85,14 @@ const Modals_Users = {
             $('#UserRolesModal').modal('hide');
         }
     },
+    UserRoleLogs: {
+        Show: function () {
+            $('#UserRoleLogsModal').modal('show');
+        },
+        Hide: function () {
+            $('#UserRoleLogsModal').modal('hide');
+        }
+    },
 }
 
 const userFormObject = (obj) => {
@@ -667,11 +675,12 @@ const supervisorsMethods = {
 }
 
 
-const userRoleFormObject = (userId = null, roleCode = null) => {
+const userRoleFormObject = (userRole) => {
 
-    let record = {
-        userId,
-        roleCode
+    let record = userRole || {}
+
+    if (userRole && currentUser.id() === record.assignedByUser.id) {
+        record.assignedByUser.fullName = 'You'
     }
 
     return {
@@ -687,6 +696,11 @@ const userRoleObject = () => {
     return {
         data: [],
         form: userRoleFormObject(),
+        logs: {
+            data: [],
+            isLoading: false,
+            message: null
+        },
         isLoading: false,
         isProcessing: false,
         message: '',
@@ -704,7 +718,24 @@ const userRolesMethods = {
     userRoles_setFormSaving: function (isSaving) {
         this.userRoles.form.isSaving = isSaving
     },
-    userRoles_edit: function (userId) {
+    userRoles_edit: function (user) {
+
+        //const {
+        //    id,
+        //    roleCode,
+        //    roleAssignedDateDisplay,
+        //    roleAssignedByUserName,
+        //} = user
+
+
+        //const userRole = {
+        //    userId:id,
+        //    roleCode,
+        //    roleAssignedDateDisplay,
+        //    roleAssignedByUserName,
+        //}
+
+        //this.userRoles.form = userRoleFormObject(userRole);
 
         // OPEN MODAL
         Modals_Users.UserRole.Show();
@@ -715,20 +746,14 @@ const userRolesMethods = {
         this.userRoles_setFormMessage('Loading...');
 
         // GET REQUEST
-        UsersService.GetUserRole(userId)
+        UsersService.GetUserRole(user.id)
             .then(r => {
 
                 const record = r.data
 
-                //if (!record) {
-                //    this.userRoles_setFormMessage(BASIC_ERROR_MESSAGE);
-                //    return
-                //}
+                this.userRoles.form = userRoleFormObject(record);
 
                 this.userRoles_setFormMessage('');
-
-                this.userRoles.form = userRoleFormObject(userId, record);
-
             })
             .catch(e => {
 
@@ -740,6 +765,31 @@ const userRolesMethods = {
                 this.userRoles_setFormLoading(false)
             })
     },
+    userRoles_explore: function (userId) {
+
+        // OPEN MODAL
+        Modals_Users.UserRoleLogs.Show();
+
+        this.userRoles.logs.isLoading = true
+        //this.userRoles.logs.message = 'Loading...';
+        this.userRoles.logs.message = null
+
+        // GET REQUEST
+        UsersService.GetUserRoleLogs(userId)
+            .then(r => {
+
+                const record = r.data
+
+                this.userRoles.logs.data = record || []
+            })
+            .catch(e => {
+                const errorMessage = getAxiosErrorMessage(e)
+                this.userRoles.logs.message = errorMessage
+            })
+            .then(() => {
+                this.userRoles.logs.isLoading = false
+            })
+    },
     userRoles_save: function () {
 
         this.userRoles_setFormMessage('');
@@ -749,6 +799,7 @@ const userRolesMethods = {
         // START UPDATE/CREATE REQUEST
         this.userRoles_setFormSaving(true)
 
+        console.log({ pendingRecord })
         const { userId, roleCode } = pendingRecord
 
         // UPDATE
@@ -758,6 +809,9 @@ const userRolesMethods = {
                 const record = r.data
 
                 if (record) {
+
+                    this.userRoles.form.record.dateAssignedDisplay = record
+                    this.userRoles.form.record.assignedByUser.fullName = 'You'
 
                     this.userRoles_setFormMessage('Saved!')
 

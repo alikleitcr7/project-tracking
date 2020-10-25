@@ -22,6 +22,9 @@ namespace ProjectTracking
 
         public DateTime DateOfBirth { get; set; }
 
+        public string RoleAssignedByUserId { get; set; }
+        public DateTime RoleAssignedDate { get; set; }
+
         public int? TeamId { get; set; }
         public float? MonthlySalary { get; set; }
         public float? HourlyRate { get; set; }
@@ -32,6 +35,7 @@ namespace ProjectTracking
 
         public Team Team { get; set; }
 
+        public ApplicationUser RoleAssignedByUser { get; set; }
         public List<SupervisorLog> Supervising { get; set; }
         public List<SupervisorLog> AssignedSupervisors { get; set; }
         public List<Broadcast> Broadcasts { get; set; }
@@ -44,6 +48,8 @@ namespace ProjectTracking
         public List<Team> AssignedSupervisorForTeams { get; set; }
         public List<Project> AddedByUserProject { get; set; }
         public List<ProjectTask> ProjectTaskStatusByUser { get; set; }
+        public List<UserRoleLog> UserRoleLogs { get; set; }
+        public List<UserRoleLog> AssignedUserRoleLogs { get; set; }
         public List<ProjectTaskStatusModification> ProjectTaskStatusModificationByUser { get; set; }
         //public ApplicationIdentityRole Role { get; set; }
 

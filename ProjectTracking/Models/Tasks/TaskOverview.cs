@@ -1,5 +1,4 @@
 ﻿using ProjectTracking.DataContract;
-using ProjectTracking.Models.Tasks;
 using ProjectTracking.Models.Teams;
 using ProjectTracking.Models.Users;
 using System;
@@ -8,9 +7,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProjectTracking.Models.Projects
+namespace ProjectTracking.Models.Tasks
 {
-    public class ProjectOverview
+    public class TaskOverview
     {
         public TasksPerformance TasksPerformance { get; set; }
 

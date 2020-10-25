@@ -543,6 +543,9 @@ body:not(.is-logon).sidebar-collapsed .side-bar .side-bar-item .name {
 .cursor-pointer {
   cursor: pointer;
 }
+.dropdown li a {
+  cursor: pointer;
+}
 /*.dropdown-menu {
     > li > a {
         color: @main-dark;

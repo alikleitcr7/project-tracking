@@ -614,4 +614,13 @@ const GetRoles = () => {
 //#endregion 
 
 
+const currentUser = {
+    id: () => {
+        return $('body').attr('data-user')
+    },
+    role: () => {
+        return $('body').attr('data-role')
+    }
+}
+
 

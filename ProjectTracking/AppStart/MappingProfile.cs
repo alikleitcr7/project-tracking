@@ -21,6 +21,9 @@ namespace ProjectTracking.AppStart
             CreateMap<Project, DataContract.Project>().ForAllMembers(k => k.AllowNull());
             CreateMap<DataContract.Project, Project>().ForAllMembers(k => k.AllowNull());
 
+            CreateMap<UserRoleLog, DataContract.UserRoleLog>().ForAllMembers(k => k.AllowNull());
+            CreateMap<DataContract.UserRoleLog, UserRoleLog>().ForAllMembers(k => k.AllowNull());
+
             CreateMap<ApplicationUser, DataContract.User>().ForAllMembers(k => k.AllowNull());
             CreateMap<DataContract.User, ApplicationUser>().ForAllMembers(k => k.AllowNull());
 

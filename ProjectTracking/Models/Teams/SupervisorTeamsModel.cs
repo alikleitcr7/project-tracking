@@ -1,5 +1,6 @@
 ﻿using ProjectTracking.DataContract;
 using ProjectTracking.Models.Projects;
+using ProjectTracking.Models.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ProjectTracking.Models.Projects
+namespace ProjectTracking.Models.Tasks
 {
 
 

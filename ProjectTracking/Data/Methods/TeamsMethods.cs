@@ -5,6 +5,7 @@ using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
 using ProjectTracking.Exceptions;
 using ProjectTracking.Models.Projects;
+using ProjectTracking.Models.Tasks;
 using ProjectTracking.Models.Teams;
 using System;
 using System.Collections.Generic;

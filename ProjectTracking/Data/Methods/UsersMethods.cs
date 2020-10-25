@@ -19,8 +19,6 @@ using System.Threading.Tasks;
 
 namespace ProjectTracking.Data.Methods
 {
-
-
     public class UsersMethods : IUserMethods
     {
         private ApplicationDbContext db;
@@ -111,6 +109,9 @@ namespace ProjectTracking.Data.Methods
                 EmploymentTypeCode = k.EmploymentTypeCode,
                 MonthlySalary = k.MonthlySalary,
                 HourlyRate = k.HourlyRate,
+                RoleAssignedDate = k.RoleAssignedDate,
+                RoleAssignedByUserId = k.RoleAssignedByUserId,
+                //RoleAssignedByUserName = k.RoleAssignedByUser.FirstName + " " + k.RoleAssignedByUser.LastName,
                 RoleCode = k.RoleCode
             });
 
@@ -862,7 +863,7 @@ namespace ProjectTracking.Data.Methods
             throw new NotImplementedException();
         }
 
-        public void SetRole(string userId, short roleCode)
+        public DateTime SetRole(string byUserId, string userId, short roleCode)
         {
             var dbUser = db.Users.FirstOrDefault(k => k.Id == userId);
 
@@ -871,9 +872,29 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException("user dont exist");
             }
 
+            // same role
+            if (dbUser.RoleCode == roleCode)
+            {
+                return dbUser.RoleAssignedDate;
+            }
+
+            // log
+            db.UserRoleLogs.Add(new DataSets.UserRoleLog()
+            {
+                AssignedByUserId = dbUser.RoleAssignedByUserId,
+                DateAssigned = dbUser.RoleAssignedDate,
+                UserId = dbUser.Id,
+                RoleCode = dbUser.RoleCode
+            });
+
+
+            dbUser.RoleAssignedDate = DateTime.Now;
+            dbUser.RoleAssignedByUserId = byUserId;
             dbUser.RoleCode = roleCode;
 
             db.SaveChanges();
+
+            return dbUser.RoleAssignedDate;
         }
 
         public bool HasSupervisorLog(string userId)
@@ -884,6 +905,57 @@ namespace ProjectTracking.Data.Methods
         public bool HasTimeSheets(string userId)
         {
             return db.TimeSheets.Any(k => k.UserId == userId);
+        }
+
+        public List<UserRoleLog> GetUserRoleLogs(string userId)
+        {
+            var logs = db.UserRoleLogs
+              .AsNoTracking()
+              .Include(k => k.User)
+              .Include(k => k.AssignedByUser)
+              .Where(k => k.UserId == userId)
+              .Select(k => new UserRoleLog()
+              {
+                  RoleCode = k.RoleCode,
+                  UserId = k.UserId,
+                  AssignedByUserId = k.AssignedByUserId,
+                  DateAssigned = k.DateAssigned,
+                  User = new User()
+                  {
+                      Id = k.User.Id,
+                      FirstName = k.User.FirstName,
+                      LastName = k.User.LastName,
+                  },
+                  AssignedByUser = new User()
+                  {
+                      Id = k.AssignedByUser.Id,
+                      FirstName = k.AssignedByUser.FirstName,
+                      LastName = k.AssignedByUser.LastName,
+                  }
+              });
+
+            return logs.ToList();
+        }
+
+        public UserRoleLog GetUserRole(string userId)
+        {
+            return db.Users
+              .AsNoTracking()
+              .Include(k => k.RoleAssignedByUser)
+              .Where(k => k.Id == userId)
+              .Select(k => new UserRoleLog()
+              {
+                  RoleCode = k.RoleCode,
+                  UserId = k.Id,
+                  AssignedByUserId = k.RoleAssignedByUserId,
+                  DateAssigned = k.RoleAssignedDate,
+                  AssignedByUser = new User()
+                  {
+                      Id = k.RoleAssignedByUser.Id,
+                      FirstName = k.RoleAssignedByUser.FirstName,
+                      LastName = k.RoleAssignedByUser.LastName,
+                  }
+              }).FirstOrDefault();
         }
     }
 }

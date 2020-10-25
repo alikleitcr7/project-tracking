@@ -11,6 +11,7 @@ namespace ProjectTracking.Data
 {
     public class ApplicationDbContext : IdentityUserContext<ApplicationUser, string>
     {
+        public DbSet<UserRoleLog> UserRoleLogs { get; set; }
         public DbSet<SupervisorLog> SupervisorLogs { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<TeamsProjects> TeamsProjects { get; set; }
@@ -208,6 +209,25 @@ namespace ProjectTracking.Data
                    .HasForeignKey(k => k.StatusByUserId)
                    .OnDelete(DeleteBehavior.Restrict);
 
+            #region UserRoleLogs
+
+            builder.Entity<UserRoleLog>()
+                   .HasKey(k => new { k.UserId, k.DateAssigned });
+            
+            builder.Entity<UserRoleLog>()
+                   .HasOne(k => k.User)
+                   .WithMany(k=>k.UserRoleLogs)
+                   .HasForeignKey(k=>k.UserId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<UserRoleLog>()
+                   .HasOne(k => k.AssignedByUser)
+                   .WithMany(k=>k.AssignedUserRoleLogs)
+                   .HasForeignKey(k=>k.AssignedByUserId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            #endregion
+
 
             #region Supervisor
 
@@ -396,7 +416,9 @@ namespace ProjectTracking.Data
                 PasswordHash = hasher.HashPassword(null, "123123"),
                 SecurityStamp = string.Empty,
                 Title = "Admin",
-                RoleCode = (short)ApplicationUserRole.Admin
+                DateOfBirth = new DateTime(1996, 5, 21),
+                RoleCode = (short)ApplicationUserRole.Admin,
+                RoleAssignedDate = DateTime.Now
             });
 
             builder.Entity<ApplicationUser>().HasData(new ApplicationUser
@@ -412,7 +434,9 @@ namespace ProjectTracking.Data
                 PasswordHash = hasher.HashPassword(null, "123123"),
                 SecurityStamp = string.Empty,
                 Title = "Developer",
-                RoleCode = (short)ApplicationUserRole.Supervisor
+                DateOfBirth = new DateTime(1996,5,21),
+                RoleCode = (short)ApplicationUserRole.Supervisor,
+                RoleAssignedDate = DateTime.Now
             });
 
 
@@ -424,13 +448,13 @@ namespace ProjectTracking.Data
             string USER_ROBIN_ID = _config.GetValue<string>("Tokens:SysUsers:Robin");
 
 
-            SeedUser(builder, hasher, USER_MARK_ID, "mark", "mark@project-tracking.com", "Mark", "Goldman", "123123", "Head IT", ApplicationUserRole.Supervisor);
-            SeedUser(builder, hasher, USER_ASHTON_ID, "ashton", "ashton@project-tracking.com", "Ashton", "Kutcher", "123123", "Sr. Designer", ApplicationUserRole.Supervisor);
+            SeedUser(builder, hasher, ADMIN_ID, USER_MARK_ID, "mark", "mark@project-tracking.com", "Mark", "Goldman", "123123", "Head IT", ApplicationUserRole.Supervisor, new DateTime(1996,1,1));
+            SeedUser(builder, hasher, ADMIN_ID, USER_ASHTON_ID, "ashton", "ashton@project-tracking.com", "Ashton", "Kutcher", "123123", "Sr. Designer", ApplicationUserRole.Supervisor, new DateTime(1996, 1, 2));
 
-            SeedUser(builder, hasher, USER_TED_ID, "ted", "ted@project-tracking.com", "Ted", "Mosby", "123123", "Software Engineer", ApplicationUserRole.TeamMember);
-            SeedUser(builder, hasher, USER_MARSHAL_ID, "marshall", "marshall@project-tracking.com", "Marshall", "Eriksen", "123123", "Jr. Developer", ApplicationUserRole.TeamMember);
-            SeedUser(builder, hasher, USER_LILLY_ID, "lilly", "lilly@project-tracking.com", "Lilly", "Aldrin", "123123", "Dev Leader", ApplicationUserRole.TeamMember);
-            SeedUser(builder, hasher, USER_ROBIN_ID, "robin", "robin@project-tracking.com", "Robin", "Scherbatsky", "123123", "Graphic Designer", ApplicationUserRole.TeamMember);
+            SeedUser(builder, hasher, ADMIN_ID, USER_TED_ID, "ted", "ted@project-tracking.com", "Ted", "Mosby", "123123", "Software Engineer", ApplicationUserRole.TeamMember, new DateTime(1996, 1, 3));
+            SeedUser(builder, hasher, ADMIN_ID, USER_MARSHAL_ID, "marshall", "marshall@project-tracking.com", "Marshall", "Eriksen", "123123", "Jr. Developer", ApplicationUserRole.TeamMember, new DateTime(1996, 1, 4));
+            SeedUser(builder, hasher, ADMIN_ID, USER_LILLY_ID, "lilly", "lilly@project-tracking.com", "Lilly", "Aldrin", "123123", "Dev Leader", ApplicationUserRole.TeamMember, new DateTime(1996, 1, 1));
+            SeedUser(builder, hasher, ADMIN_ID, USER_ROBIN_ID, "robin", "robin@project-tracking.com", "Robin", "Scherbatsky", "123123", "Graphic Designer", ApplicationUserRole.TeamMember, new DateTime(1996, 1, 5));
 
             //builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
             //{
@@ -451,6 +475,7 @@ namespace ProjectTracking.Data
         public void SeedUser(
             ModelBuilder builder,
             PasswordHasher<ApplicationUser> hasher,
+            string byUserId,
             string id,
             string username,
             string email,
@@ -458,7 +483,8 @@ namespace ProjectTracking.Data
             string ln,
             string password,
             string title,
-            ApplicationUserRole role
+            ApplicationUserRole role,
+            DateTime dob
             )
         {
 
@@ -474,8 +500,11 @@ namespace ProjectTracking.Data
                 EmailConfirmed = true,
                 PasswordHash = hasher.HashPassword(null, password),
                 SecurityStamp = string.Empty,
+                RoleAssignedByUserId = byUserId,
+                RoleAssignedDate = DateTime.Now,
                 Title = title,
-                RoleCode = (short)role
+                RoleCode = (short)role,
+                DateOfBirth = dob
             });
 
         }

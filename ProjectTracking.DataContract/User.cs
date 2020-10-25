@@ -24,6 +24,10 @@ namespace ProjectTracking.DataContract
         public ApplicationUserRole Role => (ApplicationUserRole)RoleCode;
         public string RoleDisplay => Role.ToString();
 
+        public string RoleAssignedByUserId { get; set; }
+        public string RoleAssignedByUserName { get; set; }
+        public DateTime? RoleAssignedDate { get; set; }
+
         public string FullName
         {
             get
@@ -44,7 +48,14 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return DateOfBirth.ToString("dd/MM/yyyy");
+                return DateOfBirth.ToDisplayDate();
+            }
+        }
+        public string RoleAssignedDateDisplay
+        {
+            get
+            {
+                return RoleAssignedDate.ToDisplayDate();
             }
         }
         //public Category Company { get; set; }

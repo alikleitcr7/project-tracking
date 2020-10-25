@@ -1,0 +1,46 @@
+﻿<div class="modal" id="UserRoleLogsModal">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">User Role History</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="v-container scrollable-container-400">
+
+                    <p v-if="userRoles.logs.message">{{userRoles.logs.message}}</p>
+                    <p v-show="!userRoles.logs.isLoading && !userRoles.logs.data.length">There are no logs recorded</p>
+
+                    <table class="table table-borderless" v-show="userRoles.logs.data.length">
+
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Role</th>
+                                <th>Assigned By</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <tr v-for="(log, idx) in userRoles.logs.data">
+                                <td>{{log.dateAssignedDisplay}}</td>
+                                <td>{{log.roleDisplay}}</td>
+                                <td>{{log.assignedByUser.fullName}}</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                    <p class="skeleton-loading-item" v-show="userRoles.logs.isLoading" v-for="k in [,,]"></p>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

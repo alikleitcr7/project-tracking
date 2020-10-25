@@ -33,6 +33,14 @@ const UsersService = {
 
         return axios.get(url);
     },
+    GetUserRoleLogs: function (userId) {
+
+        const query = serialize({ userId })
+
+        const url = USERS_SERVICE_URI(`GetUserRoleLogs?${query}`)
+
+        return axios.get(url);
+    },
     GetEmploymentTypes : function () {
 
         const url = USERS_SERVICE_URI(`GetEmploymentTypes`)
