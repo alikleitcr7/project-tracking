@@ -58,6 +58,8 @@ namespace ProjectTracking.Data.Methods.Interfaces
         bool IsSupervisorOf(string supervisorId, string userId);
         List<UserRoleLog> GetUserRoleLogs(string userId);
         UserRoleLog GetUserRole(string userId);
+        Models.Users.UserInsights GetUserInsights(string userId);
+        UserLog GetLatestUserLog(string userId);
         #endregion
     }
 }

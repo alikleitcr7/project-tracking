@@ -295,7 +295,7 @@ var user_timesheet_app = new Vue({
         },
         activityModalFeedbackLabel: function () {
 
-            const { isSaved, isDeleted, isUpdate,form: { toDate } } = this.activityModal
+            const { isSaved, isDeleted, isUpdate, form: { toDate } } = this.activityModal
 
 
             if (isSaved) {
@@ -454,7 +454,7 @@ var user_timesheet_app = new Vue({
 
             //activityModal.form.id = activity.id
 
-            activityModal.isUpdate = activity.fromDate && activity.toDate 
+            activityModal.isUpdate = activity.fromDate && activity.toDate
             activityModal.isDeleted = false
             activityModal.isSaved = false
             activityModal.isDeleting = false
@@ -828,6 +828,7 @@ var user_timesheet_app = new Vue({
 
             this.taskActivities = taskActivities
 
+            console.log({ task })
             this.selectedTask = { ...task }
 
             TimeSheetsService.GetActivitiesByDate(activeTimeSheet.id, task.id, date, this.readOnly)
@@ -883,14 +884,20 @@ var user_timesheet_app = new Vue({
                         const taskId = selectedTask.id
                         const projectId = selectedTask.projectId
 
+                        let activeTimeSheet = { ...this.activeTimeSheet }
+                        let projects = [...activeTimeSheet.projects]
 
-                        // update task in projects list
-                        this.activeTimeSheet.projects = this.activeTimeSheet.projects
+                        activeTimeSheet.projects = projects
                             .map(k => k.id !== projectId ? k : ({
                                 ...k,
                                 tasks: k.tasks.map(t => t.id !== taskId ? t : ({ ...t, statusCode: status.key }))
                             }))
 
+                        // update task in projects list
+                        this.activeTimeSheet = activeTimeSheet
+
+
+                        console.log('projects', this.activeTimeSheet.projects)
 
                         // update selected task
                         selectedTask.statusCode = status.key
@@ -918,9 +925,8 @@ var user_timesheet_app = new Vue({
                 return null
             }
 
-
             const statusCode = task.statusCode
-
+            console.log({ statusCode })
             const filterStatus = this.tasksFilter.statuses.find(k => k.key === statusCode)
 
             if (!filterStatus) {
@@ -941,7 +947,7 @@ var user_timesheet_app = new Vue({
         var activeUserId = $('#UserTimeSheets').attr('data-active-user');
         var isActiveSupervisor = $('#UserTimeSheets').attr('data-active-supervisor') === 'True';
 
-        console.log({ userId, activeUserId})
+        console.log({ userId, activeUserId })
 
         this.readOnly = userId !== activeUserId
 

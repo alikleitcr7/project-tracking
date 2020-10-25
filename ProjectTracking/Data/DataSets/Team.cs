@@ -31,6 +31,7 @@ namespace ProjectTracking.Data.DataSets
         public ApplicationUser AssignedByUser { get; set; }
 
         public List<SupervisorLog> SupervisorLogs { get; set; }
+        //public List<TimeSheetActivity> TimeSheetActivities { get; set; }
         public List<ApplicationUser> Members { get; set; }
         public List<TeamsProjects> TeamsProjects { get; set; }
     }

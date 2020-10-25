@@ -117,6 +117,27 @@ declare class ProjectOverview {
     activeActivities: Array<IActiveActivity>;
 }
 
+declare class UserLog {
+    id: number;
+    userId: string;
+    fromDate: Date;
+    toDate: Date?;
+    logStatusCode: number;
+    logStatus: string;
+    logStatusDisplay: string;
+    IpAddressDisplay: string;
+    displayFromDate: string;
+    displayToDate: string;
+}
+
+declare class UserInsights {
+    activitiesFrequency: Array<KeyValuePair<Date, number>>;
+    activitiesMinuts: Array<KeyValuePair<Date, number>>;
+    activeActivity: Array<TimeSheetActivity>;
+    tasksPerformance: ITaskPerformance;
+    //latestUserLog: UserLog;
+}
+
 declare class UserKeyValuePair {
     id: string;
     name: string;

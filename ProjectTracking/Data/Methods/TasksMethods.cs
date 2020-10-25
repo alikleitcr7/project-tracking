@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Linq;
+using ProjectTracking.Models.Tasks;
+using ProjectTracking.Models.Users;
 
 namespace ProjectTracking.Data.Methods
 {
@@ -187,7 +189,6 @@ namespace ProjectTracking.Data.Methods
             db.SaveChanges();
         }
 
-
         public static Expression<Func<DataSets.ProjectTask, ProjectTask>> MapProjectTaskWithUser =>
             k => new ProjectTask()
             {
@@ -204,7 +205,6 @@ namespace ProjectTracking.Data.Methods
                 StatusByUserName = k.StatusByUser.FirstName + " " + k.StatusByUser.LastName,
                 Title = k.Title,
             };
-
 
         public List<ProjectTask> Search(string keyword, int projectId, int page, int countPerPage, out int totalCount)
         {
@@ -249,6 +249,110 @@ namespace ProjectTracking.Data.Methods
             return db.ProjectTasks
                 .Select(MapProjectTaskWithUser)
                 .FirstOrDefault(k => k.ID == id);
+        }
+
+        public TaskOverview GetOverview(int taskId)
+        {
+            if (!db.ProjectTasks.Any(k => k.ID == taskId))
+            {
+                throw new ClientException("Team dont exist");
+            }
+
+            //// supervising teams
+
+            //List<TeamKeyValue> teams = db.TeamsProjects
+            //    .Where(k => k.ProjectId == taskId)
+            //    .Select(k => new TeamKeyValue(k.Team.ID, k.Team.Name))
+            //    .ToList();
+
+            //List<int> teamsId = teams.Select(k => k.Id).ToList();
+
+            var q_tsActivities = db.TimeSheetActivities
+                   .Where(k => !k.DeletedAt.HasValue &&
+                   k.TimeSheetTask.ProjectTask.ID == taskId);
+
+            TaskOverview overview = new TaskOverview();
+
+            //IQueryable<DataSets.ProjectTask> q_tasks = db.ProjectTasks
+            //    .Where(t => t.ProjectId == taskId);
+
+            // timesheet activities
+            //overview.Members.Count > 0
+
+            //if (true)
+            //{
+            //List<string> membersIds = overview.Members.Select(k => k.Id).ToList();
+
+            // ActivitiesFrequency
+            overview.ActivitiesFrequency = q_tsActivities
+                .OrderByDescending(k => k.FromDate)
+                .GroupBy(k => k.FromDate.Date)
+                .Take(30)
+                .AsEnumerable()
+                .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
+                .ToList();
+
+            // ActivitiesMinuts
+            overview.ActivitiesMinuts = q_tsActivities
+                .Where(k => k.ToDate.HasValue)
+                .OrderByDescending(k => k.FromDate)
+                .GroupBy(k => k.FromDate.Date)
+                .Take(30)
+                .AsEnumerable()
+                .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Sum(a => (a.ToDate.Value - a.FromDate).Minutes)))
+                .ToList();
+
+            // UserActivitiesFrequency
+            overview.UserActivitiesFrequency = q_tsActivities
+                .Select(k => new { k.FromDate, k.TimeSheetTask.TimeSheet.UserId, Name = k.TimeSheetTask.TimeSheet.User.FirstName + " " + k.TimeSheetTask.TimeSheet.User.LastName })
+                .OrderByDescending(k => k.FromDate)
+                .GroupBy(k => k.UserId)
+                .AsEnumerable()
+                .Select((key) => new KeyValuePair<UserKeyValue, int>(new UserKeyValue(key.Key, key.First().Name), key.Count()))
+                .ToList();
+
+            // UserActivitiesMinuts
+            overview.UserActivitiesMinuts = q_tsActivities
+                .Select(k => new { k.FromDate, k.ToDate, k.TimeSheetTask.TimeSheet.UserId, Name = k.TimeSheetTask.TimeSheet.User.FirstName + " " + k.TimeSheetTask.TimeSheet.User.LastName })
+                .OrderByDescending(k => k.FromDate)
+                .GroupBy(k => k.UserId)
+                .AsEnumerable()
+                .Select((key) => new KeyValuePair<UserKeyValue, int>(new UserKeyValue(key.Key, key.First().Name), key.Sum(a => (a.ToDate.Value - a.FromDate).Minutes)))
+                .ToList();
+
+            //ActiveActivities
+            overview.ActiveActivities = q_tsActivities
+                .OrderByDescending(k => k.FromDate)
+                .Where(k => !k.ToDate.HasValue)
+                .Select(k => new TimeSheetActivity()
+                {
+                    ID = k.ID,
+                    FromDate = k.FromDate,
+                    User = new User()
+                    {
+                        Id = k.TimeSheetTask.TimeSheet.User.Id,
+                        FirstName = k.TimeSheetTask.TimeSheet.User.FirstName,
+                        LastName = k.TimeSheetTask.TimeSheet.User.LastName,
+                    },
+                    ProjectTask = new ProjectTask()
+                    {
+                        ID = k.TimeSheetTask.ProjectTask.ID,
+                        Title = k.TimeSheetTask.ProjectTask.Title,
+                    }
+                })
+                .ToList();
+
+            //// add the users that are not in workloads that have no timesheets
+            //var memebresWithNoTimeSheets = overview.Members.Where(k => !overview.Workload.Any(w => w.Key.Id == k.Id)).ToList();
+
+            //if (memebresWithNoTimeSheets.Count > 0)
+            //{
+            //    overview.Workload.AddRange(memebresWithNoTimeSheets.Select(k =>
+            //    new KeyValuePair<Models.Users.UserKeyValue, TasksWorkload>(k, new TasksWorkload() { })));
+            //}
+            //}
+
+            return overview;
         }
     }
 }

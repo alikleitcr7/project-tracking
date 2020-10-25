@@ -28,6 +28,14 @@ const ProjectTasksService = {
 
         return axios.get(url);
     },
+    GetOverview: function (taskId) {
+
+        const query = serialize({ taskId })
+
+        const url = PROJECT_TASKS_SERVICE_URI(`GetOverview?${query}`)
+
+        return axios.get(url);
+    },
     Delete: function (id) {
 
         const url = PROJECT_TASKS_SERVICE_URI(`Delete?id=${id}`)

@@ -284,5 +284,39 @@ namespace ProjectTracking.Controllers
         {
             return Ok(Enum.GetNames(typeof(EmploymentType)).Select((key, value) => new KeyValuePair<int, string>(value, key)).ToList());
         }
+
+        [HttpGet]
+        public IActionResult GetUserInsights(string userId)
+        {
+            try
+            {
+                return Ok(_userMethods.GetUserInsights(userId));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetLatestUserLog(string userId)
+        {
+            try
+            {
+                return Ok(_userMethods.GetLatestUserLog(userId));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
     }
 }

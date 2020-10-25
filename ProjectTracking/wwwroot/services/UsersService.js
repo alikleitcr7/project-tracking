@@ -47,6 +47,22 @@ const UsersService = {
 
         return axios.get(url);
     },
+    GetUserInsights: function (userId) {
+
+        const query = serialize({ userId })
+
+        const url = USERS_SERVICE_URI(`GetUserInsights?${query}`)
+
+        return axios.get(url);
+    },
+    GetLatestUserLog: function (userId) {
+
+        const query = serialize({ userId })
+
+        const url = USERS_SERVICE_URI(`GetLatestUserLog?${query}`)
+
+        return axios.get(url);
+    },
     AddRemoveTeamsFromSupervisor: function (model) {
 
         const url = USERS_SERVICE_URI(`AddRemoveTeamsFromSupervisor`)

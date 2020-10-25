@@ -35,6 +35,16 @@ namespace ProjectTracking.Data.DataSets
         public DateTime? DeletedAt { get; set; }
         public virtual TimeSheetTask TimeSheetTask { get; set; }
 
+        //public virtual string UserId { get; set; }
+        //public virtual int ProjectTaskId { get; set; }
+        //public virtual int ProjectId { get; set; }
+        //public virtual int TeamId { get; set; }
+
+        //public virtual ApplicationUser User { get; set; }
+        //public virtual ProjectTask ProjectTask { get; set; }
+        //public virtual Project Project { get; set; }
+        //public virtual Team Team { get; set; }
+
         public virtual ICollection<TimeSheetActivityLog> TimeSheetActivityLogs { get; set; }
     }
 

@@ -16,6 +16,7 @@ using ProjectTracking.Exceptions;
 using System.ComponentModel.DataAnnotations;
 using ProjectTracking.Utils;
 using System.Threading.Tasks;
+using ProjectTracking.Models.Tasks;
 
 namespace ProjectTracking.Data.Methods
 {
@@ -956,6 +957,85 @@ namespace ProjectTracking.Data.Methods
                       LastName = k.RoleAssignedByUser.LastName,
                   }
               }).FirstOrDefault();
+        }
+
+        public UserInsights GetUserInsights(string userId)
+        {
+            if (!db.Users.Any(k => k.Id == userId))
+            {
+                throw new ClientException("user dont exist");
+            }
+
+            var q_tsActivities = db.TimeSheetActivities
+                   .Where(k => !k.DeletedAt.HasValue &&
+                   k.TimeSheetTask.TimeSheet.UserId == userId);
+
+            UserInsights overview = new UserInsights();
+            // ActivitiesFrequency
+            overview.ActivitiesFrequency = q_tsActivities
+                .OrderByDescending(k => k.FromDate)
+                .GroupBy(k => k.FromDate.Date)
+                .Take(30)
+                .AsEnumerable()
+                .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
+                .ToList();
+
+            // ActivitiesMinuts
+            overview.ActivitiesMinuts = q_tsActivities
+                .Where(k => k.ToDate.HasValue)
+                .OrderByDescending(k => k.FromDate)
+                .GroupBy(k => k.FromDate.Date)
+                .Take(30)
+                .AsEnumerable()
+                .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Sum(a => (a.ToDate.Value - a.FromDate).Minutes)))
+                .ToList();
+
+            //ActiveActivities
+            overview.ActiveActivities = q_tsActivities
+                .OrderByDescending(k => k.ID)
+                .Take(10)
+                .Select(k => new TimeSheetActivity()
+                {
+                    ID = k.ID,
+                    FromDate = k.FromDate,
+                    ToDate = k.ToDate,
+                    User = new User()
+                    {
+                        Id = k.TimeSheetTask.TimeSheet.User.Id,
+                        FirstName = k.TimeSheetTask.TimeSheet.User.FirstName,
+                        LastName = k.TimeSheetTask.TimeSheet.User.LastName,
+                    },
+                    ProjectTask = new ProjectTask()
+                    {
+                        ID = k.TimeSheetTask.ProjectTask.ID,
+                        Title = k.TimeSheetTask.ProjectTask.Title,
+                        StatusCode = k.TimeSheetTask.ProjectTask.StatusCode
+                    }
+                })
+                .ToList();
+
+            IQueryable<DataSets.ProjectTask> q_tasks = db.ProjectTasks
+                .Where(k => k.TimeSheetTasks.Any(t => t.TimeSheet.UserId == userId));
+
+            overview.TasksPerformance = new TasksPerformance()
+            {
+                TotalCount = q_tasks.Count(),
+                DoneCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Done),
+                ProgressCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.InProgress),
+                PendingCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Pending),
+                FailedOrTerminatedCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
+            };
+
+            return overview;
+        }
+
+        public UserLog GetLatestUserLog(string userId)
+        {
+            return db.UserLogging
+                .Where(k => k.UserId == userId)
+                .OrderByDescending(k => k.ID)
+                .Select(_mapper.Map<UserLog>)
+                .FirstOrDefault();
         }
     }
 }

@@ -48,7 +48,9 @@
         <div class="tab-content">
 
             <div id="InsightsTab" class="tab-pane fade in active">
-                <h2>Insights</h2>
+
+                <partial name="~/Views/Profile/Insights.cshtml" model="@Model.User.Id" />
+
             </div>
 
             @if (Model.ShowSupervisorTab)
@@ -123,12 +125,22 @@
 
 @section Scripts {
 
+    @* services *@
+    <script src="~/services/UsersService.js" type="text/javascript"></script>
     <script src="~/services/ProfileService.js" type="text/javascript"></script>
     <script src="~/services/TimeSheetsService.js" type="text/javascript"></script>
     <script src="~/services/ProjectsService.js" type="text/javascript"></script>
     <script src="~/services/TeamsService.js" type="text/javascript"></script>
 
+    @* visualization *@
+    <script src="~/lib/chartjs-2.7.1/Chart.min.js"></script>
+    <script src="~/js/statistics/ChartHelper.js"></script>
+
+
+    @* sctips *@
     <script src="~/js/Profile.js" type="text/javascript"></script>
+
+    <script src="~/js/UserInsights.js"></script>
 
     @if (Model.ShowSupervisorTab)
     {

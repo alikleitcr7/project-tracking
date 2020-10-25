@@ -1,0 +1,52 @@
+﻿@model string
+<div id="UserInsights" class="v-container" v-cloak data-user="@Model">
+
+    <section class="project-visualization">
+        <div class="c-box-view c-box-view--wrap" v-if="insights">
+            <div class="c-box">
+                <h5 class="c-box-title">Active Activities</h5>
+                <div class="scrollable-container-200">
+                    <table class="table" v-if="insights.activeActivities.length">
+                        <thead>
+                            <tr>
+                                <th>task</th>
+                                <th>from</th>
+                                <th>to</th>
+                                <th>status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="activity in insights.activeActivities">
+                                <td>
+                                    <a :href="`/tasks/${activity.projectTask.id}`">
+                                        {{activity.projectTask.title}}
+                                    </a>
+                                </td>
+                                <td>{{activity.fromDateDisplay}}</td>
+                                <td>{{activity.toDate ? activity.toDateDisplay : 'Active'}}</td>
+                                <td>{{activity.projectTask.statusDisplay}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h5 v-else>Nothing Here</h5>
+                </div>
+            </div>
+
+            <div class="c-box vis-workload">
+                <h5 class="c-box-title">Workload</h5>
+                <canvas id="bar_workload"></canvas>
+            </div>
+
+            <div class="c-box vis-activities">
+                <h5 class="c-box-title">Activities</h5>
+                <canvas id="line_activities"></canvas>
+            </div>
+
+            <div class="c-box vis-tasks-progress">
+                <h5 class="c-box-title">Task Progress</h5>
+                <canvas id="pie_tasks"></canvas>
+            </div>
+        </div>
+    </section>
+
+</div>

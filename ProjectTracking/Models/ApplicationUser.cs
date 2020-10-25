@@ -35,6 +35,7 @@ namespace ProjectTracking
 
         public Team Team { get; set; }
 
+        //public List<TimeSheetActivity> TimeSheetActivities { get; set; }
         public ApplicationUser RoleAssignedByUser { get; set; }
         public List<SupervisorLog> Supervising { get; set; }
         public List<SupervisorLog> AssignedSupervisors { get; set; }
