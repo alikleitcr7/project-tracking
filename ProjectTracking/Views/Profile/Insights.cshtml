@@ -5,8 +5,8 @@
         <div class="c-box-view c-box-view--wrap" v-if="insights">
             <div class="c-box">
                 <h5 class="c-box-title">Latest Activities</h5>
-                <div class="scrollable-container-200">
-                    <table class="table" v-if="insights.latestActivities.length">
+                <div class="table-fixed-header-container">
+                    <table class="table table-sm " v-if="insights.latestActivities.length">
                         <thead>
                             <tr>
                                 <th>task</th>
@@ -34,8 +34,8 @@
 
             <div class="c-box">
                 <h5 class="c-box-title">Latest Logs</h5>
-                <div class="scrollable-container-200">
-                    <table class="table" v-if="insights.latestLogs.length">
+                <div class="table-fixed-header-container">
+                    <table class="table table-sm"   v-if="insights.latestLogs.length">
                         <thead>
                             <tr>
                                 <th>from</th>

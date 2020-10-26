@@ -1,0 +1,60 @@
+﻿@using ProjectTracking.DataContract
+@model ProjectTask
+@{
+    ViewData["Title"] = $"Task - {Model.Title}";
+}
+
+<div id="ProjectTask" class="v-container" data-task="@Model.ID" v-cloak>
+
+    <section class="top-intro">
+
+        <h2>@Model.Title</h2>
+        <h4>@Model.Description</h4>
+
+        <table class="table table-borderless">
+            <tr>
+                <th>Status</th>
+                <th>Project</th>
+                <th>Added on</th>
+                <th>Start Date</th>
+                <th>Planned End Date</th>
+                <th>Actual End Date</th>
+            </tr>
+            <tr>
+                <td>@Model.StatusDisplay</td>
+                <td><a href="/projects/@Model.ProjectId"></a> @Model.ProjectTitle</td>
+                <td>@Model.DateAddedDisplay</td>
+                <td>@Model.StartDateDisplay</td>
+                <td>@Model.PlannedEndDisplay</td>
+                <td>@Model.ActualEndDisplay</td>
+            </tr>
+        </table>
+    </section>
+
+    <section>
+        <partial name="~/views/ProjectTasks/Overview/TaskOverview.cshtml" />
+    </section>
+
+</div>
+
+
+@section styles{
+    @*<link href="~/css/Dashboard.min.css" rel="stylesheet" />*@
+    <link href="~/css/ProjectTask.min.css" rel="stylesheet" />
+}
+
+@section scripts{
+
+    @* Plugins *@
+    @*<script src="https://unpkg.com/vuejs-paginate@latest"></script>*@
+    @*<script src="~/lib/vuejs-paginate-2.1.0/vuejs-paginate.js"></script>*@
+
+    @* Services *@
+    @*<script src="~/services/ProjectsService.js"></script>*@
+    <script src="~/services/ProjectTasksService.js"></script>
+
+    <script src="~/lib/chartjs-2.7.1/Chart.min.js"></script>
+    <script src="~/js/statistics/ChartHelper.js"></script>
+
+    <script src="~/js/ProjectTaskDetails.js"></script>
+}

@@ -9,6 +9,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         void ChangeStatus(int taskId, short statusCode,string byUserId);
         bool Delete(int id);
         ProjectTask GetById(int id);
+        ProjectTask GetByIdWithProjectTitle(int id);
         Models.Tasks.TaskOverview GetOverview(int taskId);
         List<ProjectTaskStatusModification> GetStatusModifications(int taskId);
         ProjectTask Save(TaskSaveModel model);

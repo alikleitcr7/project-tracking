@@ -383,13 +383,21 @@ table {
     overflow-y: scroll;
 }
 
-.table-small-display {
+.table-sm{
+
+    td,th{
+        font-size:.9em;
+    }
+}
+
+.table-fixed-header-container {
     table-layout: fixed;
 
     tbody {
         display: block;
-        height: 250px;
+        max-height: 200px;
         overflow: auto;
+        margin-top: 1px;
     }
 
     thead,

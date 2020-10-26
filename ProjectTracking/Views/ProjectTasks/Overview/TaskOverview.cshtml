@@ -1,0 +1,61 @@
+﻿
+<div id="ProjectOverview" class="v-container">
+
+    @* Tabs (Overview, Members, Broadcasts) *@
+
+    <section class="project-visualization">
+        <div class="c-box-view c-box-view--wrap" v-if="overview.data">
+
+            <div class="c-box">
+                <h5 class="c-box-title">Active Activities</h5>
+                <div class="scrollable-container-200">
+                    <table class="table" v-if="overview.data.activeActivities.length">
+                        <thead>
+                            <tr>
+                                <th>task</th>
+                                <th>started on</th>
+                                <th>by user</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="activity in overview.data.activeActivities">
+                                <td>
+                                    <a :href="`/tasks/${activity.projectTask.id}`">
+                                        {{activity.projectTask.title}}
+                                    </a>
+                                </td>
+                                <td>{{activity.fromDateDisplay}}</td>
+                                <td>
+                                    <a :href="`/profile/${activity.user.id}`">
+                                        {{activity.user.fullName}}
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h5 v-else>Nothing Here</h5>
+                </div>
+            </div>
+
+            <div class="c-box vis-workload">
+                <h5 class="c-box-title">ActivitiesMinutes</h5>
+                <canvas id="bar_activitiesMinutes"></canvas>
+            </div>
+            <div class="c-box vis-activities">
+                <h5 class="c-box-title">ActivitiesFrequency</h5>
+                <canvas id="line_activitiesFrequency"></canvas>
+            </div>
+
+            <div class="c-box vis-workload">
+                <h5 class="c-box-title">UserActivitiesMinutes</h5>
+                <canvas id="bar_userActivitiesMinutes"></canvas>
+            </div>
+            <div class="c-box vis-activities">
+                <h5 class="c-box-title">UserActivitiesFrequency</h5>
+                <canvas id="line_userActivitiesFrequency"></canvas>
+            </div>
+
+        </div>
+    </section>
+
+</div>

@@ -982,12 +982,12 @@ namespace ProjectTracking.Data.Methods
 
             // ActivitiesMinuts
             overview.ActivitiesMinuts = q_tsActivities
-                .Where(k => k.ToDate.HasValue)
+                //.Where(k => k.ToDate.HasValue)
                 .OrderByDescending(k => k.FromDate)
                 .GroupBy(k => k.FromDate.Date)
                 .Take(30)
                 .AsEnumerable()
-                .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Sum(a => (a.ToDate.Value - a.FromDate).Minutes)))
+                .Select((key) => new KeyValuePair<DateTime, int>(key.Key, (int)Math.Floor(key.Sum(a => ((a.ToDate ?? DateTime.Now) - a.FromDate).TotalMinutes))))
                 .ToList();
 
             //ActiveActivities

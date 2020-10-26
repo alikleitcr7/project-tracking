@@ -768,29 +768,34 @@ table td {
   max-height: 440px !important;
   overflow-y: scroll;
 }
-.table-small-display {
+.table-sm td,
+.table-sm th {
+  font-size: 0.9em;
+}
+.table-fixed-header-container {
   table-layout: fixed;
 }
-.table-small-display tbody {
+.table-fixed-header-container tbody {
   display: block;
-  height: 250px;
+  max-height: 200px;
   overflow: auto;
+  margin-top: 1px;
 }
-.table-small-display thead,
-.table-small-display tbody tr {
+.table-fixed-header-container thead,
+.table-fixed-header-container tbody tr {
   display: table;
   width: 100%;
   table-layout: fixed;
   /* even columns width , fix width of table too*/
 }
-.table-small-display thead {
+.table-fixed-header-container thead {
   width: calc(100% - 1em);
   /* scrollbar is average 1em/16px width, remove it from thead width */
 }
-.table-small-display thead th {
+.table-fixed-header-container thead th {
   border-bottom: 2px solid #2286c3 !important;
 }
-.table-small-display table {
+.table-fixed-header-container table {
   width: 400px;
 }
 .display-message {

@@ -451,6 +451,7 @@ var user_timesheet_app = new Vue({
 
             // set form
             activityModal.form = activityModalForm(activity)
+            console.log({ activityModal })
 
             //activityModal.form.id = activity.id
 

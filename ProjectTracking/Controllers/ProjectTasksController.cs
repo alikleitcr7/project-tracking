@@ -36,6 +36,19 @@ namespace ProjectTracking.Controllers
             return View(project);
         }
 
+        [Route("/tasks/{taskId}")]
+        public IActionResult Details(int taskId)
+        {
+            ProjectTask task = _tasksMethods.GetByIdWithProjectTitle(taskId);
+
+            if (task == null)
+            {
+                return NotFound();
+            }
+
+            return View(task);
+        }
+
         [HttpPost]
         //[Route("Save")]
         public IActionResult Save([FromBody]TaskSaveModel model)

@@ -130,7 +130,7 @@
         /**
          * @param {Array<KeyValuePair<Date, number>>} activitiesFrequency
          */
-        populateActivities: function (id, activitiesFrequency) {
+        populateActivities: function (id, activitiesFrequency, type = 'line') {
 
             var ctx = document.getElementById(id).getContext('2d');
 
@@ -139,7 +139,7 @@
 
             return new Chart(ctx, {
                 // The type of chart we want to create
-                type: 'line',
+                type,
 
                 // The data for our dataset
                 data: {
@@ -168,6 +168,30 @@
 
             return new Chart(ctx, {
                 type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Minutes',
+                        backgroundColor: colors.mainLightTransparent,
+                        borderColor: colors.main,
+                        data
+                    }]
+                },
+                options: chartsHelper.lineOptions()
+            });
+        },
+        /**
+         * @param {Array<KeyValuePair<UserKeyValuePair, number>>} activitiesMinutes
+         */
+        populateUserActivities: function (id, activitiesMinuts, type = 'line') {
+
+            var ctx = document.getElementById(id).getContext('2d');
+
+            const labels = activitiesMinuts.map(k => k.key.name)
+            const data = activitiesMinuts.map((k, idx) => ({ x: idx, y: k.value }))
+
+            return new Chart(ctx, {
+                type,
                 data: {
                     labels,
                     datasets: [{

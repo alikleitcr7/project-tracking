@@ -75,6 +75,7 @@ namespace ProjectTracking.DataContract
 
         public string StatusByUserId { get; set; }
         public string StatusByUserName { get; set; }
+        public string ProjectTitle { get; set; }
 
         public string LastModifiedDateDisplay
         {

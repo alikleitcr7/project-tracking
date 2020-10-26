@@ -12,10 +12,9 @@ namespace ProjectTracking.Models.Tasks
     public class TaskOverview
     {
         public List<KeyValuePair<DateTime, int>> ActivitiesFrequency { get; set; }
-        public List<KeyValuePair<DateTime, int>> ActivitiesMinuts { get; set; }
+        public List<KeyValuePair<DateTime, int>> ActivitiesMinutes { get; set; }
         public List<KeyValuePair<UserKeyValue, int>> UserActivitiesFrequency { get; set; }
-        public List<KeyValuePair<UserKeyValue, int>> UserActivitiesMinuts { get; set; }
-        public List<TimeSheetActivity> ActiveActivities { get; set; }
+        public List<KeyValuePair<UserKeyValue, int>> UserActivitiesMinutes { get; set; }
+        public List<TimeSheetActivity>  ActiveActivities { get; set; }
     }
-
 }

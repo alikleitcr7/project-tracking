@@ -206,6 +206,24 @@ namespace ProjectTracking.Data.Methods
                 Title = k.Title,
             };
 
+        public static Expression<Func<DataSets.ProjectTask, ProjectTask>> MapProjectTaskWithUserAndProjectTitle =>
+            k => new ProjectTask()
+            {
+                ID = k.ID,
+                ActualEnd = k.ActualEnd,
+                DateAdded = k.DateAdded,
+                Description = k.Description,
+                PlannedEnd = k.PlannedEnd,
+                ProjectId = k.ProjectId,
+                StartDate = k.StartDate,
+                StatusByUserId = k.StatusByUserId,
+                StatusCode = k.StatusCode,
+                LastModifiedDate = k.LastModifiedDate,
+                StatusByUserName = k.StatusByUser.FirstName + " " + k.StatusByUser.LastName,
+                ProjectTitle = k.Project.Title,
+                Title = k.Title,
+            };
+
         public List<ProjectTask> Search(string keyword, int projectId, int page, int countPerPage, out int totalCount)
         {
             IQueryable<DataSets.ProjectTask> query = db.ProjectTasks;
@@ -251,6 +269,13 @@ namespace ProjectTracking.Data.Methods
                 .FirstOrDefault(k => k.ID == id);
         }
 
+        public ProjectTask GetByIdWithProjectTitle(int id)
+        {
+            return db.ProjectTasks
+                .Select(MapProjectTaskWithUserAndProjectTitle)
+                .FirstOrDefault(k => k.ID == id);
+        }
+
         public TaskOverview GetOverview(int taskId)
         {
             if (!db.ProjectTasks.Any(k => k.ID == taskId))
@@ -293,13 +318,13 @@ namespace ProjectTracking.Data.Methods
                 .ToList();
 
             // ActivitiesMinuts
-            overview.ActivitiesMinuts = q_tsActivities
+            overview.ActivitiesMinutes = q_tsActivities
                 .Where(k => k.ToDate.HasValue)
                 .OrderByDescending(k => k.FromDate)
                 .GroupBy(k => k.FromDate.Date)
                 .Take(30)
                 .AsEnumerable()
-                .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Sum(a => (a.ToDate.Value - a.FromDate).Minutes)))
+                .Select((key) => new KeyValuePair<DateTime, int>(key.Key, (int)Math.Floor(key.Sum(a => (a.ToDate.Value - a.FromDate).TotalMinutes))))
                 .ToList();
 
             // UserActivitiesFrequency
@@ -312,12 +337,13 @@ namespace ProjectTracking.Data.Methods
                 .ToList();
 
             // UserActivitiesMinuts
-            overview.UserActivitiesMinuts = q_tsActivities
+            overview.UserActivitiesMinutes = q_tsActivities
+                //.Where(k => k.ToDate.HasValue)
                 .Select(k => new { k.FromDate, k.ToDate, k.TimeSheetTask.TimeSheet.UserId, Name = k.TimeSheetTask.TimeSheet.User.FirstName + " " + k.TimeSheetTask.TimeSheet.User.LastName })
                 .OrderByDescending(k => k.FromDate)
                 .GroupBy(k => k.UserId)
                 .AsEnumerable()
-                .Select((key) => new KeyValuePair<UserKeyValue, int>(new UserKeyValue(key.Key, key.First().Name), key.Sum(a => (a.ToDate.Value - a.FromDate).Minutes)))
+                .Select((key) => new KeyValuePair<UserKeyValue, int>(new UserKeyValue(key.Key, key.First().Name), (int)Math.Floor(key.Sum(a => ((a.ToDate ?? DateTime.Now) - a.FromDate).TotalMinutes))))
                 .ToList();
 
             //ActiveActivities
