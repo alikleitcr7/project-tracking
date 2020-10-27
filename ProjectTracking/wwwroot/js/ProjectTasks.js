@@ -631,58 +631,177 @@ var projectTasks_app = new Vue({
 
                     this.ganntChart.isLoaded = r !== null
 
-                    google.charts.load('current', { 'packages': ['gantt'] });
-                    google.charts.setOnLoadCallback(drawChart);
+                    const chartId = 'gantt-chart'
 
-                    function daysToMilliseconds(days) {
-                        return days * 24 * 60 * 60 * 1000;
-                    }
+                    var chart = JSC.chart(chartId, {
+                        debug: false,
+                        type: 'horizontal column',
+                        zAxisScaleType: 'stacked',
+                        yAxis_scale_type: 'time',
+                        xAxis_visible: false,
+                        //title_label_text: 'Project Alpha ',
+                        legend_visible: false,
+                        defaultPoint: {
+                            label_text: '%name',
+                            tooltip: '<b>%name</b> <br/>%low - %high<br/>{days(%high-%low)} days'
+                        },
+                        series: [
+                            {
+                                name: 'one',
+                                points: [
+                                    {
+                                        name: 'Preparations',
+                                        color: colors.progress,
+                                        y: ['1/1/2017', '3/15/2017']
+                                    },
+                                    {
+                                        name: 'Execution',
+                                        color: colors.done,
+                                        y: ['3/15/2017', '4/20/2017']
+                                    },
+                                    { name: 'Cleanup', y: ['4/10/2017', '5/12/2017'] },
+                                    {
+                                        name: 'Presentation',
+                                        y: ['6/1/2017', '7/15/2017']
+                                    },
+                                    {
+                                        name: 'Presentation 2',
+                                        y: ['6/15/2017', '7/18/2017']
+                                    },
+                                    {
+                                        name: 'Presentation 3',
+                                        y: ['7/18/2017', '7/25/2017']
+                                    },
+                                    {
+                                        name: 'Presentation 4',
+                                        y: ['7/27/2017', '8/15/2017']
+                                    }
+                                ]
+                            }
+                        ]
+                    });
 
-                    function drawChart() {
+                    //  var tasks = [
+                    //      {
+                    //          id: 'Task 1',
+                    //          name: 'Redesign website',
+                    //          start: '2016-12-28',
+                    //          end: '2016-12-31',
+                    //          //progress: 20,
+                    //          //dependencies: 'Task 2, Task 3',
+                    //          custom_class: 'bar-milestone' // optional
+                    //      },
+                    //      {
+                    //          id: 'Task 2',
+                    //          name: 'Dev website',
+                    //          start: '2016-12-31',
+                    //          end: '2017-02-01',
+                    //          //progress: 20,
+                    //          //dependencies: 'Task 2, Task 3',
+                    //          custom_class: 'bar-milestone' // optional
+                    //      },
+                    //]
+                    //  var gantt = new Gantt("#gantt-chart", tasks, {
+                    //      header_height: 50,
+                    //      column_width: 30,
+                    //      step: 24,
+                    //      view_modes: ['Quarter Day', 'Half Day', 'Day', 'Week', 'Month'],
+                    //      bar_height: 20,
+                    //      bar_corner_radius: 3,
+                    //      arrow_curve: 5,
+                    //      padding: 18,
+                    //      view_mode: 'Day',
+                    //      date_format: 'YYYY-MM-DD',
+                    //      custom_popup_html: null
+                    //  });
 
-                        var data = new google.visualization.DataTable();
 
-                        data.addColumn('string', 'Task ID');
-                        data.addColumn('string', 'Task Name');
-                        data.addColumn('date', 'Start Date');
-                        data.addColumn('date', 'End Date');
-                        data.addColumn('number', 'Duration');
-                        data.addColumn('number', 'Percent Complete');
-                        data.addColumn('string', 'Dependencies');
+                    //google.charts.load('current', { 'packages': ['gantt'] });
+                    //google.charts.setOnLoadCallback(drawChart);
 
-                        data.addRows([
-                            ['Research', 'Find sources',
-                                new Date(2015, 0, 1), new Date(2015, 0, 5), null, 100, null],
-                            ['Write', 'Write paper',
-                                null, new Date(2015, 0, 9), daysToMilliseconds(3), 25, 'Research,Outline'],
-                            ['Cite', 'Create bibliography',
-                                null, new Date(2015, 0, 7), daysToMilliseconds(1), 20, 'Research'],
-                            ['Complete', 'Hand in paper',
-                                null, new Date(2015, 0, 10), daysToMilliseconds(1), 0, 'Cite,Write'],
-                            ['Outline', 'Outline paper',
-                                null, new Date(2015, 0, 6), daysToMilliseconds(1), 100, 'Research']
-                        ]);
+                    //function daysToMilliseconds(days) {
+                    //    return days * 24 * 60 * 60 * 1000;
+                    //}
 
-                        var options = {
-                            height: 275
-                        };
+                    //function drawChart() {
+                    //    var data = new google.visualization.DataTable();
+                    //    data.addColumn('string', 'Task ID');
+                    //    data.addColumn('string', 'Task Name');
+                    //    data.addColumn('string', 'Resource');
+                    //    data.addColumn('date', 'Start Date');
+                    //    data.addColumn('date', 'End Date');
+                    //    data.addColumn('number', 'Duration');
+                    //    data.addColumn('number', 'Percent Complete');
+                    //    data.addColumn('string', 'Dependencies');
 
-                        var ganntChart = new google.visualization.Gantt(document.getElementById('gantt-chart'));
+                    //    data.addRows([
+                    //        ['2014Spring', 'Spring 2014', 'spring',
+                    //            new Date(2014, 2, 22), new Date(2014, 5, 20), null, 100, null],
+                    //        ['2014Summer', 'Summer 2014', 'summer',
+                    //            new Date(2014, 5, 21), new Date(2014, 8, 20), null, 100, null],
+                    //        ['2014Autumn', 'Autumn 2014', 'autumn',
+                    //            new Date(2014, 8, 21), new Date(2014, 11, 20), null, 100, null],
+                    //        ['2014Winter', 'Winter 2014', 'winter',
+                    //            new Date(2014, 11, 21), new Date(2015, 2, 21), null, 100, null],
+                    //        ['2015Spring', 'Spring 2015', 'spring',
+                    //            new Date(2015, 2, 22), new Date(2015, 5, 20), null, 100, null],
+                    //        ['2015Summer', 'Summer 2015', 'summer',
+                    //            new Date(2015, 5, 21), new Date(2015, 8, 20), null, 100, null],
+                    //        ['2015Autumn', 'Autumn 2015', 'autumn',
+                    //            new Date(2015, 8, 21), new Date(2015, 11, 20), null, 100, null],
+                    //        ['2015Winter', 'Winter 2015', 'winter',
+                    //            new Date(2015, 11, 21), new Date(2016, 2, 21), null, 100, null],
+                    //        ['Football', 'Football Season', 'sports',
+                    //            new Date(2014, 8, 4), new Date(2015, 1, 1), null, 100, null],
+                    //        ['Baseball', 'Baseball Season', 'sports',
+                    //            new Date(2015, 2, 31), new Date(2015, 9, 20), null, 100, null],
+                    //        ['Basketball', 'Basketball Season', 'sports',
+                    //            new Date(2014, 9, 28), new Date(2015, 5, 20), null, 100, null],
+                    //        ['Hockey', 'Hockey Season', 'sports',
+                    //            new Date(2014, 9, 8), new Date(2015, 5, 21), null, 100, null]
+                    //    ]);
 
-                        ganntChart.draw(data, options);
+                    //    const trackHeight = 30
+                    //    var paddingHeight = 50;
+                    //    var rowHeight = data.getNumberOfRows() * trackHeight;
+                    //    var chartHeight = rowHeight + paddingHeight;
 
-                        function resizeCharts() {
-                            ganntChart.draw(data, options);
-                        }
 
-                        if (window.addEventListener) {
-                            window.addEventListener("resize", resizeCharts);
-                        } else if (window.attachEvent) {
-                            window.attachEvent("onresize", resizeCharts);
-                        } else {
-                            window.onresize = resizeCharts;
-                        }
-                    }
+                    //    var options = {
+                    //        height: chartHeight,
+                    //        //width: 2000,
+                    //        gantt: {
+                    //            trackHeight: trackHeight,
+                    //            barHeight: 20,
+                    //            innerGridDarkTrack: {
+                    //                fill: colors.progress,
+                    //            },
+                    //            palette: [
+                    //                {
+                    //                    "color": colors.main,
+                    //                    "dark": colors.main,
+                    //                    "light": colors.mainLight
+                    //                }
+                    //            ]
+                    //        }
+                    //    };
+
+                    //    var ganntChart = new google.visualization.Gantt(document.getElementById('gantt-chart'));
+
+                    //    ganntChart.draw(data, options);
+
+                    //    function resizeCharts() {
+                    //        ganntChart.draw(data, options);
+                    //    }
+
+                    //    if (window.addEventListener) {
+                    //        window.addEventListener("resize", resizeCharts);
+                    //    } else if (window.attachEvent) {
+                    //        window.attachEvent("onresize", resizeCharts);
+                    //    } else {
+                    //        window.onresize = resizeCharts;
+                    //    }
+                    //}
 
                     this.ganntChart.isLoading = false
                 })
