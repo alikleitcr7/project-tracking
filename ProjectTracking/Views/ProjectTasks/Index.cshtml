@@ -1,7 +1,7 @@
 ﻿@using ProjectTracking.DataContract
 @model Project
 @{
-    ViewData["Title"] = $"{Model.Title}";
+    ViewData["Title"] = $"Project - {Model.Title}";
 }
 
 <div id="ProjectTasks" class="v-container" data-project="@Model.ID" v-cloak>
@@ -14,6 +14,7 @@
         <table class="table table-borderless">
             <tr>
                 <th>Status</th>
+                <th>Modified On</th>
                 <th>Category</th>
                 <th>Added on</th>
                 <th>Start Date</th>
@@ -22,6 +23,7 @@
             </tr>
             <tr>
                 <td>@Model.StatusDisplay</td>
+                <td>@Model.LastModifiedDateDisplay</td>
                 <td>@Model.Category.Name</td>
                 <td>@Model.DateAddedDisplay</td>
                 <td>@Model.StartDateDisplay</td>

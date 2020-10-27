@@ -18,10 +18,20 @@ namespace ProjectTracking.AppStart
         {
             var principal = await base.CreateAsync(user);
 
+            var claimsIdentity = ((ClaimsIdentity)principal.Identity);
 
-            ((ClaimsIdentity)principal.Identity).AddClaims(new[] {
-                new Claim(ClaimTypes.Role,   ((ApplicationUserRole)user.RoleCode).ToString() )
+            claimsIdentity.AddClaims(new[] {
+                new Claim(ClaimTypes.Role,   ((ApplicationUserRole)user.RoleCode).ToString() ),
             });
+
+            if (user.TeamId.HasValue)
+            {
+                claimsIdentity.AddClaims(new[] {
+                    new Claim("Team",(user.TeamId.Value.ToString()))
+                });
+            }
+
+
 
             return principal;
         }

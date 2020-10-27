@@ -243,6 +243,17 @@ namespace ProjectTracking.Data.Methods
                 .Select(MapProjectTaskWithUser)
                 .ToList();
         }
+        
+        public List<ProjectTask> GetByProject(int projectId)
+        {
+            IQueryable<DataSets.ProjectTask> query = db.ProjectTasks;
+
+            query = query.Where(k => k.ProjectId == projectId).Include(k => k.StatusByUser);
+
+            return query.OrderByDescending(k => k.ID)
+                .Select(MapProjectTaskWithUser)
+                .ToList();
+        }
 
         public bool Delete(int id)
         {

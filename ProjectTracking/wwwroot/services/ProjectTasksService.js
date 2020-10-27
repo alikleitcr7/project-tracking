@@ -20,6 +20,14 @@ const ProjectTasksService = {
 
         return axios.get(url);
     },
+    GetByProject: function ( projectId) {
+
+        const query = serialize({ projectId })
+
+        const url = PROJECT_TASKS_SERVICE_URI(`GetByProject?${query}`)
+
+        return axios.get(url);
+    },
     GetStatusModifications: function (taskId) {
 
         const query = serialize({ taskId })

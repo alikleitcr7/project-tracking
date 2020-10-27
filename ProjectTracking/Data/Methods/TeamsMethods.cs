@@ -456,24 +456,28 @@ namespace ProjectTracking.Data.Methods
         public List<SupervisingTeamModel> GetSupervisingTeamsModel(string userId)
         {
             // supervising teams
-            var model = _context.Teams
-                .Where(k => k.SupervisorId == userId)
-                .Select(k => new SupervisingTeamModel()
-                {
-                    DateAdded = k.DateAdded,
-                    ID = k.ID,
-                    Name = k.Name,
-                    ProjectsCount = k.TeamsProjects.Count(),
-                    MembersCount = k.Members.Count(),
-                    Members = k.Members.Select(m => new KeyValuePair<string, string>(m.Id, m.FirstName + " " + m.LastName)).ToList(),
-                }).ToList();
+            IQueryable<DataSets.Team> query = _context.Teams;
+
+            if (userId != null)
+            {
+                query = query.Where(k => k.SupervisorId == userId);
+            }
+
+            var model = query.Select(k => new SupervisingTeamModel()
+            {
+                DateAdded = k.DateAdded,
+                ID = k.ID,
+                Name = k.Name,
+                ProjectsCount = k.TeamsProjects.Count(),
+                MembersCount = k.Members.Count(),
+                Members = k.Members.Select(m => new KeyValuePair<string, string>(m.Id, m.FirstName + " " + m.LastName)).ToList(),
+            }).ToList();
 
 
             // teams stats
             foreach (SupervisingTeamModel team in model)
             {
                 FillTeamTaskPerformance(team);
-
 
                 // timesheet activities
                 if (team.Members.Count > 0)
@@ -489,7 +493,6 @@ namespace ProjectTracking.Data.Methods
                         .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
                         .ToList();
                 }
-
             }
 
             return model;
@@ -615,7 +618,7 @@ namespace ProjectTracking.Data.Methods
 
                 if (memebresWithNoTimeSheets.Count > 0)
                 {
-                    model.Workload.AddRange(memebresWithNoTimeSheets.Select(k => 
+                    model.Workload.AddRange(memebresWithNoTimeSheets.Select(k =>
                     new KeyValuePair<Models.Users.UserKeyValue, TasksWorkload>(new Models.Users.UserKeyValue(k.Key, k.Value), new TasksWorkload() { })));
                 }
 

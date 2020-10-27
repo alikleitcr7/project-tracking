@@ -174,8 +174,7 @@ new Vue({
         const userId = $('#SupervisingTeams').attr('data-user')
         this.userId = userId;
 
-
-        TeamsService.GetSupervisingTeamsModel(userId)
+        TeamsService.GetCurrentUserTeamsViewModel(userId)
             .then(r => {
                 this.teams.data = r.data
 

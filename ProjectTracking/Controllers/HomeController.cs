@@ -107,6 +107,11 @@ namespace ProjectTracking.Controllers
 
                     UserLog log = _userLogsMethods.AddStartLog(id, ip, UserLogStatus.Login);
 
+                    if (ApplicationContext.ActiveLogs == null)
+                    {
+                        ApplicationContext.ActiveLogs = new List<UserLog>();
+                    }
+
                     if (!ApplicationContext.ActiveLogs.Any(k => k.UserId == id))
                     {
                         ApplicationContext.ActiveLogs.Add(log);

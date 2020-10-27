@@ -2,7 +2,7 @@
 @model ProjectTracking.Models.Profile.ProfileViewModel
 
 @{
-    ViewData["Title"] = $"{Model.User.FullName} Profile";
+    ViewData["Title"] = $"Profile - {Model.User.FullName}";
 
     ProjectTracking.Models.Teams.SupervisorTeamsViewModel supervisorModel = new ProjectTracking.Models.Teams.SupervisorTeamsViewModel()
     {

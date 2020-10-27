@@ -26,6 +26,8 @@ namespace ProjectTracking.DataContract
         public DateTime? PlannedEnd { get; set; }
         public DateTime? ActualEnd { get; set; }
         public DateTime? LastModifiedDate { get; set; }
+        public string AddedByUserId { get; set; }
+        public string AddedByUserName { get; set; }
 
         public string DateAddedDisplay
         {

@@ -20,6 +20,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         System.Threading.Tasks.Task<Team> Save(Models.Teams.TeamSaveModel model);
         List<SupervisorLog> GetSupervisorLog(int teamId);
         SupervisorTeamsModel GetSupervisorTeamsModel(string userId);
+        /// <param name="userId">User ID - optional</param>
         List<SupervisingTeamModel> GetSupervisingTeamsModel(string userId);
         TeamViewModel GetTeamViewModel(int teamId);
     }

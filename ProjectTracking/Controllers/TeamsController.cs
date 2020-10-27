@@ -51,7 +51,7 @@ namespace ProjectTracking.Controllers
         [Route("/teams/{id:int}")]
         public IActionResult Details(int id)
         {
-            Team team = _teamsMethods.GetById(id,false);
+            Team team = _teamsMethods.GetById(id, false);
 
             if (team == null)
             {
@@ -189,7 +189,38 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
-        
+
+        public IActionResult GetCurrentUserTeamsViewModel()
+        {
+            try
+            {
+                string userId = GetCurrentUserId();
+                ApplicationUserRole role = GetCurrentUserRole();
+
+                if (role == ApplicationUserRole.Admin)
+                {
+                    // this will 
+                    userId = null;
+                }
+                else if (role != ApplicationUserRole.Supervisor)
+                {
+                    return BadRequest();
+                }
+
+                List<SupervisingTeamModel> model = _teamsMethods.GetSupervisingTeamsModel(userId);
+
+                return Ok(model);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
         public IActionResult GetTeamViewModel(int teamId)
         {
             try

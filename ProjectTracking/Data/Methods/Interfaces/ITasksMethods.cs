@@ -10,6 +10,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         bool Delete(int id);
         ProjectTask GetById(int id);
         ProjectTask GetByIdWithProjectTitle(int id);
+        List<ProjectTask> GetByProject(int projectId);
         Models.Tasks.TaskOverview GetOverview(int taskId);
         List<ProjectTaskStatusModification> GetStatusModifications(int taskId);
         ProjectTask Save(TaskSaveModel model);

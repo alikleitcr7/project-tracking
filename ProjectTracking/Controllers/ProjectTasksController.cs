@@ -123,6 +123,25 @@ namespace ProjectTracking.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult GetByProject(int projectId)
+        {
+            try
+            {
+                var record = _tasksMethods.GetByProject(projectId);
+
+                return Ok(record);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
 
         [HttpGet]
         public IActionResult GetStatusModifications(int taskId)
@@ -142,7 +161,7 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
-        
+
 
         [HttpGet]
         public IActionResult GetOverview(int taskId)
