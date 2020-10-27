@@ -32,14 +32,12 @@
             </tr>
         </table>
     </section>
-
-
+    <h5 class="text-danger" v-if="errors">{{errors}}</h5>
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#OverviewTab"> <i class="far fa-chart-bar"></i> Overview</a></li>
         <li><a data-toggle="tab" href="#TasksTab"><i class="fa fa-tasks"></i> Tasks</a></li>
-        <li><a data-toggle="tab" href="#GanttTab"> <i class="fa fa-stream"></i> Gantt</a></li>
+        <li onclick="handleGanntTabClick()"><a data-toggle="tab" href="#GanttTab"> <i class="fa fa-stream"></i> Gantt</a></li>
     </ul>
-
     <div class="tab-content">
 
         <div id="OverviewTab" class="tab-pane fade in active">
@@ -51,17 +49,19 @@
         <div id="TasksTab" class="tab-pane fade">
 
             <div class="v-container">
+
                 <partial name="~/views/ProjectTasks/forms/ProjectTasksResult.cshtml" />
 
                 <partial name="~/views/ProjectTasks/forms/ProjectTaskform.cshtml" />
 
                 <partial name="~/views/ProjectTasks/forms/TaskStatusModifications.cshtml" />
+
             </div>
 
         </div>
 
         <div id="GanttTab" class="tab-pane fade">
-            <h3>GanttTab 2</h3>
+            <partial name="~/views/ProjectTasks/Charts/GanttChart.cshtml" />
         </div>
 
     </div>
@@ -85,7 +85,7 @@
     <script src="~/services/ProjectsService.js"></script>
     <script src="~/services/ProjectTasksService.js"></script>
 
-
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script src="~/lib/chartjs-2.7.1/Chart.min.js"></script>
     <script src="~/js/statistics/ChartHelper.js"></script>
 

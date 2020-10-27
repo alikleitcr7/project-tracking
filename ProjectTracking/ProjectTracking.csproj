@@ -194,6 +194,9 @@
     <Content Update="Views\Projects\Index2 - Copy.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\ProjectTasks\Charts\GanttChart.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\ProjectTasks\Forms\TaskStatusModifications.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
