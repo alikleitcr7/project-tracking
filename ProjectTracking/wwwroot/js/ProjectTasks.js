@@ -233,17 +233,17 @@ const projectTasksMethods = {
 
         Modals_ProjectTasks.ProjectTask.Show()
     },
-    projectTasks_edit: function (idx) {
+    projectTasks_edit: function (id) {
 
         // INDEX VALIDATION if (idx < 0 || idx>
 
-        if (idx > this.projectTasks.data.length - 1) {
-            console.warn(`INVALID INDEX ${idx}, TOTAL RECORDS ARE ${this.projectTasks.data.length}`)
-            return
-        }
+        //if (idx > this.projectTasks.data.length - 1) {
+        //    console.warn(`INVALID INDEX ${idx}, TOTAL RECORDS ARE ${this.projectTasks.data.length}`)
+        //    return
+        //}
 
         // GET RECORD
-        const record = this.projectTasks.data[idx]
+        const record = this.projectTasks.data.find(k => k.id === id)
 
         // OPEN MODAL
         Modals_ProjectTasks.ProjectTask.Show();
@@ -326,8 +326,17 @@ const projectTasksMethods = {
 
                             if (idx !== -1) {
 
-                                data[idx] = { ...record }
+                                data[idx] = record
                                 this.projectTasks.data = data;
+
+                                // update gantt if loaded
+                                if (this.ganttChart.isLoaded) {
+
+                                    this.ganttChart.data = this.ganttChart.data.map(k => k.id === record.id ? record : k)
+
+                                    this.drawGantt(this.ganttChart.data)
+                                }
+
                             }
                             else {
                                 location.reload()
@@ -361,14 +370,23 @@ const projectTasksMethods = {
                         console.log('add response', r)
                     }
 
-
                     if (record) {
 
                         let data = [...this.projectTasks.data]
+
                         data.unshift(record)
 
                         this.projectTasks.data = data
                         this.projectTasks.form = projectTaskFormObject();
+
+                        // append to gantt if loaded
+
+                        if (this.ganttChart.isLoaded) {
+
+                            this.ganttChart.data = [...this.ganttChart.data, record]
+
+                            this.drawGantt(this.ganttChart.data)
+                        }
 
                         this.projectTasks_setFormMessage('Added!')
                     }
@@ -574,7 +592,8 @@ var projectTasks_app = new Vue({
         },
         ganttChart: {
             isLoaded: false,
-            isLoading: false
+            isLoading: false,
+            data: []
         }
     },
     computed: {
@@ -606,18 +625,22 @@ var projectTasks_app = new Vue({
         },
         populateGannt: function () {
 
-            this.errors = null
 
-            //if (this.ganttChart.isLoaded) {
-            //    return
-            //}
+            if (this.ganttChart.isLoaded) {
+                return
+            }
+
+            this.errors = null
 
             this.ganttChart.isLoaded = false
             this.ganttChart.isLoading = true
+            //this.ganttChart.data = []
 
             ProjectTasksService.GetByProject(this.projectId)
                 .then((r) => {
                     const record = r.data
+
+                    this.ganttChart.data = record
 
                     return record
                 })
@@ -631,57 +654,7 @@ var projectTasks_app = new Vue({
 
                     this.ganttChart.isLoaded = r !== null
 
-                    /** @type {Array<IProjectTask>} */
-
-                    const tasks = r
-                    const statuses = PROJECT_TASK_STATUS._toList()
-                    console.log({ statuses })
-
-                    const chartDateFormat = 'M/D/YYYY HH:mm'
-                    const formatTaskDate = (taskDate) => {
-                        return moment(taskDate).format(chartDateFormat)
-                    }
-
-                    const ganttTasksPoints = tasks
-                        .filter(k => k.startDate && k.plannedEnd)
-                        .map(k => ({
-                            color: colors[statuses.find(s=> s.key === k.statusCode).code],
-                            name: k.title,
-                            y: [formatTaskDate(k.startDate), formatTaskDate(k.plannedEnd)]
-                        }));
-
-                    const chartId = 'gantt-chart'
-
-                    var chart = JSC.chart(chartId, {
-                        debug: false,
-                        type: 'horizontal column',
-                        zAxisScaleType: 'stacked',
-                        yAxis_scale_type: 'time',
-                        xAxis_visible: false,
-                        yAxis: {
-                            markers: [
-                                {
-                                    value: moment().format(chartDateFormat),
-                                    color:colors.mainDark,
-                                    label_text: 'Now'
-                                }
-                            ]
-                        },
-                        //title_label_text: 'Project Alpha ',
-                        legend_visible: false,
-                        legend_defaultEntry_value: "{hours(%yRangeSums*1):number d2}hr",
-                        defaultPoint: {
-                            label_text: '%name',
-                            tooltip: '<b>%name</b> <br/>%low - %high<br/>{days(%high-%low)}days'
-                        },
-                        series: [
-                            {
-                                name: 'one',
-                                points: ganttTasksPoints
-                            }
-                        ]
-                    });
-
+                    this.drawGantt(r)
                     //  var tasks = [
                     //      {
                     //          id: 'Task 1',
@@ -806,6 +779,67 @@ var projectTasks_app = new Vue({
 
                     this.ganttChart.isLoading = false
                 })
+        },
+        /**
+         * @param {Array<IProjectTask>} tasks
+         */
+        drawGantt: function (tasks) {
+            //const tasks = r
+            const statuses = PROJECT_TASK_STATUS._toList()
+
+            const chartDateFormat = 'M/D/YYYY HH:mm'
+            const formatTaskDate = (taskDate) => {
+                return moment(taskDate).format(chartDateFormat)
+            }
+
+            const ganttTasksPoints = tasks
+                .filter(k => k.startDate && k.plannedEnd)
+                .map(k => ({
+                    color: colors[statuses.find(s => s.key === k.statusCode).code],
+                    name: k.title,
+                    id: k.id,
+                    y: [formatTaskDate(k.startDate), formatTaskDate(k.plannedEnd)]
+                }));
+
+            const chartId = 'gantt-chart'
+
+
+            const app = this
+
+            var chart = JSC.chart(chartId, {
+                debug: false,
+                type: 'horizontal column',
+                zAxisScaleType: 'stacked',
+                yAxis_scale_type: 'time',
+                xAxis_visible: false,
+                yAxis: {
+                    markers: [
+                        {
+                            value: moment().format(chartDateFormat),
+                            color: colors.mainDark,
+                            label_text: 'Now'
+                        }
+                    ]
+                },
+                defaultPoint_events_click: function () {
+                    app.projectTasks_edit(this.id)
+                },
+                //title_label_text: 'Project Alpha ',
+                legend_visible: false,
+                legend_defaultEntry_value: "{hours(%yRangeSums*1):number d2}hr",
+                defaultPoint: {
+                    label_text: '%name',
+                    tooltip: '<b>%name</b> <br/>%low - %high<br/>{days(%high-%low)}days'
+                },
+                series: [
+                    {
+                        name: 'one',
+                        points: ganttTasksPoints
+                    }
+                ]
+            });
+
+            console.log({ chart })
         }
         //showTeams: function () {
         //    Modals_ProjectTasks.Teams.Show()

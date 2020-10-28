@@ -92,18 +92,18 @@
                     <td>
                         {{item.lastModifiedDate ? item.lastModifiedDateDisplay : item.dateAddedDisplay}}
                     </td>
-                    
+
                     <td>
                         {{item.statusByUserName}}
                     </td>
 
                     <td>
                         @*<a class="s-btn s-btn-sm s-btn-outline" :href="`/projectTasktasks/${item.id}`">
-            Tasks
-        </a>*@
+                                Tasks
+                            </a>*@
 
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
-                                v-on:click="projectTasks_edit(idx)">
+                                v-on:click="projectTasks_edit(item.id)">
                             Edit
                         </button>
 
