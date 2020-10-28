@@ -572,7 +572,7 @@ var projectTasks_app = new Vue({
             isLoading: true,
             message: null
         },
-        ganntChart: {
+        ganttChart: {
             isLoaded: false,
             isLoading: false
         }
@@ -608,12 +608,12 @@ var projectTasks_app = new Vue({
 
             this.errors = null
 
-            if (this.ganntChart.isLoaded) {
-                return
-            }
+            //if (this.ganttChart.isLoaded) {
+            //    return
+            //}
 
-            this.ganntChart.isLoaded = false
-            this.ganntChart.isLoading = true
+            this.ganttChart.isLoaded = false
+            this.ganttChart.isLoading = true
 
             ProjectTasksService.GetByProject(this.projectId)
                 .then((r) => {
@@ -629,7 +629,26 @@ var projectTasks_app = new Vue({
                 })
                 .then((r) => {
 
-                    this.ganntChart.isLoaded = r !== null
+                    this.ganttChart.isLoaded = r !== null
+
+                    /** @type {Array<IProjectTask>} */
+
+                    const tasks = r
+                    const statuses = PROJECT_TASK_STATUS._toList()
+                    console.log({ statuses })
+
+                    const chartDateFormat = 'M/D/YYYY HH:mm'
+                    const formatTaskDate = (taskDate) => {
+                        return moment(taskDate).format(chartDateFormat)
+                    }
+
+                    const ganttTasksPoints = tasks
+                        .filter(k => k.startDate && k.plannedEnd)
+                        .map(k => ({
+                            color: colors[statuses.find(s=> s.key === k.statusCode).code],
+                            name: k.title,
+                            y: [formatTaskDate(k.startDate), formatTaskDate(k.plannedEnd)]
+                        }));
 
                     const chartId = 'gantt-chart'
 
@@ -639,44 +658,26 @@ var projectTasks_app = new Vue({
                         zAxisScaleType: 'stacked',
                         yAxis_scale_type: 'time',
                         xAxis_visible: false,
+                        yAxis: {
+                            markers: [
+                                {
+                                    value: moment().format(chartDateFormat),
+                                    color:colors.mainDark,
+                                    label_text: 'Now'
+                                }
+                            ]
+                        },
                         //title_label_text: 'Project Alpha ',
                         legend_visible: false,
+                        legend_defaultEntry_value: "{hours(%yRangeSums*1):number d2}hr",
                         defaultPoint: {
                             label_text: '%name',
-                            tooltip: '<b>%name</b> <br/>%low - %high<br/>{days(%high-%low)} days'
+                            tooltip: '<b>%name</b> <br/>%low - %high<br/>{days(%high-%low)}days'
                         },
                         series: [
                             {
                                 name: 'one',
-                                points: [
-                                    {
-                                        name: 'Preparations',
-                                        color: colors.progress,
-                                        y: ['1/1/2017', '3/15/2017']
-                                    },
-                                    {
-                                        name: 'Execution',
-                                        color: colors.done,
-                                        y: ['3/15/2017', '4/20/2017']
-                                    },
-                                    { name: 'Cleanup', y: ['4/10/2017', '5/12/2017'] },
-                                    {
-                                        name: 'Presentation',
-                                        y: ['6/1/2017', '7/15/2017']
-                                    },
-                                    {
-                                        name: 'Presentation 2',
-                                        y: ['6/15/2017', '7/18/2017']
-                                    },
-                                    {
-                                        name: 'Presentation 3',
-                                        y: ['7/18/2017', '7/25/2017']
-                                    },
-                                    {
-                                        name: 'Presentation 4',
-                                        y: ['7/27/2017', '8/15/2017']
-                                    }
-                                ]
+                                points: ganttTasksPoints
                             }
                         ]
                     });
@@ -786,12 +787,12 @@ var projectTasks_app = new Vue({
                     //        }
                     //    };
 
-                    //    var ganntChart = new google.visualization.Gantt(document.getElementById('gantt-chart'));
+                    //    var ganttChart = new google.visualization.Gantt(document.getElementById('gantt-chart'));
 
-                    //    ganntChart.draw(data, options);
+                    //    ganttChart.draw(data, options);
 
                     //    function resizeCharts() {
-                    //        ganntChart.draw(data, options);
+                    //        ganttChart.draw(data, options);
                     //    }
 
                     //    if (window.addEventListener) {
@@ -803,7 +804,7 @@ var projectTasks_app = new Vue({
                     //    }
                     //}
 
-                    this.ganntChart.isLoading = false
+                    this.ganttChart.isLoading = false
                 })
         }
         //showTeams: function () {
