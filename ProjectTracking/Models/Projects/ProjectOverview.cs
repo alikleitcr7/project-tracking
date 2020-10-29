@@ -21,5 +21,5 @@ namespace ProjectTracking.Models.Projects
         public List<KeyValuePair<UserKeyValue, TasksWorkload>> Workload { get; set; }
         public List<TimeSheetActivity> ActiveActivities { get; set; }
     }
-
+ 
 }

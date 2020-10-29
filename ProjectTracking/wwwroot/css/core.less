@@ -18,12 +18,11 @@
     .c-list-item {
         display: block;
         padding: .2em 0;
-
         /*padding:5px;*/
         .c-list-item-title {
             font-weight: 600;
             padding: .3em 0;
-            margin:0;
+            margin: 0;
             border-bottom: 2px solid @gray-light;
         }
 
@@ -63,6 +62,10 @@
         background-color: @gray-xlight;
         position: relative;
 
+        &--light {
+            background-color: #fff;
+            border: 1px solid @gray-light;
+        }
 
         .c-box-title {
             display: block;
@@ -105,6 +108,55 @@
     }
 }
 
+
+.c-card-view {
+    padding: 1em;
+
+    .c-card {
+        min-height: 2em;
+        min-width: 200px;
+        color: @dark-gray;
+        border-radius: 5px;
+        padding: .5em 1em;
+        border: 1px solid @gray-light;
+        background-color: @gray-xlight;
+        position: relative;
+        .box-shadow-sm();
+        .fast-transition();
+        margin-bottom: 1em;
+
+        .c-card-title {
+            display: block;
+            margin: 0;
+            padding: 0;
+            /*font-weight: 500;*/
+            color: @dark-gray;
+        }
+
+        p {
+            word-break: break-word;
+            max-width: 350px;
+        }
+
+
+        &--loading {
+            .skeleton();
+
+            .c-card-title {
+                background-color: rgba(255, 255, 255, 0.50);
+                min-height: 1.5em;
+                border-radius: 5px;
+            }
+        }
+    }
+}
+
+
+.c-box {
+    .c-card-view {
+        padding-left: 0;
+    }
+}
 
 .task-status-linear {
     &--done {

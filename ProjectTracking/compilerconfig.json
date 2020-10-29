@@ -50,5 +50,9 @@
   {
     "outputFile": "wwwroot/css/ProjectTask.css",
     "inputFile": "wwwroot/css/ProjectTask.less"
+  },
+  {
+    "outputFile": "wwwroot/css/Home.css",
+    "inputFile": "wwwroot/css/Home.less"
   }
 ]

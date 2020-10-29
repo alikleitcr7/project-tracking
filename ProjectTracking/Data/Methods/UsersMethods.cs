@@ -17,6 +17,8 @@ using System.ComponentModel.DataAnnotations;
 using ProjectTracking.Utils;
 using System.Threading.Tasks;
 using ProjectTracking.Models.Tasks;
+using ProjectTracking.Models.Dashboard;
+using ProjectTracking.Models.Teams;
 
 namespace ProjectTracking.Data.Methods
 {
@@ -959,6 +961,158 @@ namespace ProjectTracking.Data.Methods
               }).FirstOrDefault();
         }
 
+        public TeamMemberOverview GetTeamMemberOverview(string userId)
+        {
+            if (!db.Users.Any(k => k.Id == userId))
+            {
+                throw new ClientException("user dont exist");
+            }
+
+            var q_tsActivities = GetUserActivitiesQuery(userId);
+
+            TeamMemberOverview overview = new TeamMemberOverview();
+
+            overview.ActivitiesFrequency = GetUserActivitiesFrequency(q_tsActivities);
+            overview.ActivitiesMinuts = GetUserActivitiesMinutes(q_tsActivities);
+            overview.LatestActivities = GetUserLatestActivities(q_tsActivities);
+
+            List<short> assignedTasksViewStatuses = new List<short>()
+            {
+                (short)ProjectTaskStatus.Pending,
+                (short)ProjectTaskStatus.InProgress,
+            };
+
+            overview.AssignedTasks = db.ProjectTasks.Where(k =>
+                        k.TimeSheetTasks.Any(t => t.TimeSheet.UserId == userId) &&
+                        assignedTasksViewStatuses.Contains(k.StatusCode))
+                .Select(TasksMethods.MapProjectTaskBasics)
+                .ToList();
+
+            return overview;
+        }
+
+        public SupervisorOverview GetSupervisorOverview(string userId)
+        {
+            if (!db.Users.Any(k => k.Id == userId))
+            {
+                throw new ClientException("user dont exist");
+            }
+
+            SupervisorOverview overview = new SupervisorOverview();
+
+            List<int> supervisingTeamsIds = db.Teams.Where(k => k.SupervisorId == userId)
+                .Select(k => k.ID)
+                .ToList();
+
+            if (supervisingTeamsIds.Count == 0)
+            {
+                throw new Exception("user is not a supervisor");
+            }
+
+            // supervising users
+            List<UserKeyValue> supervisingUsers = db.Users.Where(k => supervisingTeamsIds.Contains(k.TeamId.Value))
+                    .Select(k => new UserKeyValue(k.Id, k.FirstName + " " + k.LastName))
+                    .ToList();
+
+            // s.users ids
+            List<string> supervisingUsersIds = supervisingUsers.Select(k => k.Id).ToList();
+
+            // s.users activities query
+            var q_tsActivities = GetUserActivitiesQuery(supervisingUsersIds);
+
+            // latest activities
+            overview.LatestActivities = GetUserLatestActivities(q_tsActivities);
+
+            DateTime today = DateTime.Now.Date;
+
+            // today's logs
+            overview.UserLogsToday = GetUsersLogsByDate(supervisingUsersIds, today);
+
+            // target from/to days
+            int fromDateTargetDays = 30;
+            DateTime fromDateTarget = today.AddDays(-fromDateTargetDays);
+
+            // fill dates
+            List<DateTime> dates = Enumerable.Range(1, fromDateTargetDays)
+                      .Select(x => fromDateTarget.AddDays(x))
+                      .ToList();
+
+            // group activities under supervising users (last n days)
+
+            // members activities
+            var enum_membersActivities = q_tsActivities
+                .Select(k => new { k.FromDate, k.ToDate, k.TimeSheetTask.TimeSheet.UserId, UserName = k.TimeSheetTask.TimeSheet.User.FirstName + " " + k.TimeSheetTask.TimeSheet.User.LastName })
+                .Where(k => k.FromDate.Date >= fromDateTarget.Date)
+                .GroupBy(k => k.UserId)
+                .AsEnumerable();
+
+            // frequencies foreach date in dates
+            overview.MembersActivitiesFrequency = enum_membersActivities
+                .Select(key => new MemberActivitiesFrequency()
+                {
+                    User = new UserKeyValue(key.Key, key.First().UserName),
+                    Activities = dates.Select(date => new KeyValuePair<DateTime, int>(date,
+                            key.Where(a => a.FromDate.Date == date).Count()))
+                        .ToList()
+                })
+                .ToList();
+
+            // minutes foreach date in dates
+            overview.MembersActivitiesMinutes = enum_membersActivities
+                .Select(key => new MemberActivitiesFrequency()
+                {
+                    User = new UserKeyValue(key.Key, key.First().UserName),
+                    Activities = dates.Select(date => new KeyValuePair<DateTime, int>(date,
+                            key.Where(a => a.FromDate.Date == date)
+                               .Sum(x => (int)Math.Floor(((x.ToDate ?? DateTime.Now) - x.FromDate).TotalMinutes))))
+                               .ToList()
+                })
+                .ToList();
+
+
+            // group activities under supervising teams
+            var enum_teamsActivities = q_tsActivities
+                .Select(k => new { k.FromDate, k.ToDate, k.TimeSheetTask.TimeSheet.User.Team.Name, TeamId = k.TimeSheetTask.TimeSheet.User.TeamId.Value })
+                .Where(k => k.FromDate.Date >= fromDateTarget.Date)
+                .GroupBy(k => k.TeamId)
+                .AsEnumerable();
+
+            // frequencies foreach date in dates
+            overview.TeamsActivitiesFrequency = enum_teamsActivities
+                .Select(key => new TeamActivitiesFrequency()
+                {
+                    Team = new TeamKeyValue(key.Key, key.First().Name),
+                    Activities = dates.Select(date => new KeyValuePair<DateTime, int>(date,
+                            key.Where(a => a.FromDate.Date == date).Count()))
+                        .ToList()
+                })
+                .ToList();
+
+            // minutes foreach date in dates
+            overview.TeamsActivitiesMinutes = enum_teamsActivities
+                .Select(key => new TeamActivitiesFrequency()
+                {
+                    Team = new TeamKeyValue(key.Key, key.First().Name),
+                    Activities = dates.Select(date => new KeyValuePair<DateTime, int>(date,
+                            key.Where(a => a.FromDate.Date == date)
+                               .Sum(x => (int)Math.Floor(((x.ToDate ?? DateTime.Now) - x.FromDate).TotalMinutes))))
+                               .ToList()
+                })
+                .ToList();
+
+
+            return overview;
+        }
+
+        private List<UserLog> GetUsersLogsByDate(List<string> supervisingUsersIds, DateTime today)
+        {
+            return db.UserLogging
+                            .Where(k => supervisingUsersIds.Contains(k.UserId) && k.FromDate.Date == today)
+                            .OrderByDescending(k => k.ID)
+                            .Select(_mapper.Map<UserLog>)
+                            .ToList();
+        }
+
         public UserInsights GetUserInsights(string userId)
         {
             if (!db.Users.Any(k => k.Id == userId))
@@ -966,34 +1120,79 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException("user dont exist");
             }
 
-            var q_tsActivities = db.TimeSheetActivities
-                   .Where(k => !k.DeletedAt.HasValue &&
-                   k.TimeSheetTask.TimeSheet.UserId == userId);
+            var q_tsActivities = GetUserActivitiesQuery(userId);
 
             UserInsights overview = new UserInsights();
-            // ActivitiesFrequency
-            overview.ActivitiesFrequency = q_tsActivities
+
+            overview.ActivitiesFrequency = GetUserActivitiesFrequency(q_tsActivities);
+
+            overview.ActivitiesMinuts = GetUserActivitiesMinutes(q_tsActivities);
+            overview.LatestActivities = GetUserLatestActivities(q_tsActivities);
+
+            IQueryable<DataSets.ProjectTask> q_tasks = GetUserTasksQuery(userId);
+            overview.TasksPerformance = GetUserTasksPerformance(q_tasks);
+
+            overview.LatestLogs = GetLatestUserLogs(userId, 10);
+
+            return overview;
+        }
+
+        private TasksPerformance GetUserTasksPerformance(IQueryable<DataSets.ProjectTask> q_tasks)
+        {
+            return new TasksPerformance()
+            {
+                TotalCount = q_tasks.Count(),
+                DoneCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Done),
+                ProgressCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.InProgress),
+                PendingCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Pending),
+                FailedOrTerminatedCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
+            };
+        }
+
+        private IQueryable<DataSets.ProjectTask> GetUserTasksQuery(string userId)
+        {
+            return db.ProjectTasks
+                            .Where(k => k.TimeSheetTasks.Any(t => t.TimeSheet.UserId == userId));
+        }
+
+        private IQueryable<DataSets.TimeSheetActivity> GetUserActivitiesQuery(string userId)
+        {
+            return db.TimeSheetActivities.Where(k => !k.DeletedAt.HasValue && k.TimeSheetTask.TimeSheet.UserId == userId);
+        }
+
+        private IQueryable<DataSets.TimeSheetActivity> GetUserActivitiesQuery(List<string> userIds)
+        {
+            return db.TimeSheetActivities.Where(k => !k.DeletedAt.HasValue && userIds.Contains(k.TimeSheetTask.TimeSheet.UserId));
+        }
+
+        private List<KeyValuePair<DateTime, int>> GetUserActivitiesFrequency(IQueryable<DataSets.TimeSheetActivity> q_tsActivities)
+        {
+            return q_tsActivities
                 .OrderByDescending(k => k.FromDate)
                 .GroupBy(k => k.FromDate.Date)
                 .Take(30)
                 .AsEnumerable()
                 .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
                 .ToList();
+        }
 
-            // ActivitiesMinuts
-            overview.ActivitiesMinuts = q_tsActivities
-                //.Where(k => k.ToDate.HasValue)
+
+        private List<KeyValuePair<DateTime, int>> GetUserActivitiesMinutes(IQueryable<DataSets.TimeSheetActivity> q_tsActivities)
+        {
+            return q_tsActivities
                 .OrderByDescending(k => k.FromDate)
                 .GroupBy(k => k.FromDate.Date)
                 .Take(30)
                 .AsEnumerable()
                 .Select((key) => new KeyValuePair<DateTime, int>(key.Key, (int)Math.Floor(key.Sum(a => ((a.ToDate ?? DateTime.Now) - a.FromDate).TotalMinutes))))
                 .ToList();
+        }
 
-            //ActiveActivities
-            overview.LatestActivities = q_tsActivities
+        private List<TimeSheetActivity> GetUserLatestActivities(IQueryable<DataSets.TimeSheetActivity> q_tsActivities, int take = 10)
+        {
+            return q_tsActivities
                 .OrderByDescending(k => k.ID)
-                .Take(10)
+                .Take(take)
                 .Select(k => new TimeSheetActivity()
                 {
                     ID = k.ID,
@@ -1009,26 +1208,11 @@ namespace ProjectTracking.Data.Methods
                     {
                         ID = k.TimeSheetTask.ProjectTask.ID,
                         Title = k.TimeSheetTask.ProjectTask.Title,
-                        StatusCode = k.TimeSheetTask.ProjectTask.StatusCode
+                        StatusCode = k.TimeSheetTask.ProjectTask.StatusCode,
+                        TimeSheetId = k.TimeSheetTask.TimeSheetId,
                     }
                 })
                 .ToList();
-
-            IQueryable<DataSets.ProjectTask> q_tasks = db.ProjectTasks
-                .Where(k => k.TimeSheetTasks.Any(t => t.TimeSheet.UserId == userId));
-
-            overview.TasksPerformance = new TasksPerformance()
-            {
-                TotalCount = q_tasks.Count(),
-                DoneCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Done),
-                ProgressCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.InProgress),
-                PendingCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Pending),
-                FailedOrTerminatedCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
-            };
-
-            overview.LatestLogs = GetLatestUserLogs(userId, 10);
-
-            return overview;
         }
 
         public UserLog GetLatestUserLog(string userId)
@@ -1049,5 +1233,6 @@ namespace ProjectTracking.Data.Methods
                 .Select(_mapper.Map<UserLog>)
                 .ToList();
         }
+
     }
 }

@@ -91,6 +91,7 @@ namespace ProjectTracking.DataContract
 
 
         /// VIEW EXTENSIONS
+        public int? TimeSheetId { get; set; }
         public int? TimeSheetTaskId { get; set; }
         public int? NumberOfActivities { get; set; }
     }

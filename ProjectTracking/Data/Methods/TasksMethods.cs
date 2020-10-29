@@ -206,6 +206,21 @@ namespace ProjectTracking.Data.Methods
                 Title = k.Title,
             };
 
+        public static Expression<Func<DataSets.ProjectTask, ProjectTask>> MapProjectTaskBasics =>
+            k => new ProjectTask()
+            {
+                ID = k.ID,
+                ActualEnd = k.ActualEnd,
+                DateAdded = k.DateAdded,
+                PlannedEnd = k.PlannedEnd,
+                ProjectId = k.ProjectId,
+                StartDate = k.StartDate,
+                StatusByUserId = k.StatusByUserId,
+                StatusCode = k.StatusCode,
+                LastModifiedDate = k.LastModifiedDate,
+                Title = k.Title,
+            };
+
         public static Expression<Func<DataSets.ProjectTask, ProjectTask>> MapProjectTaskWithUserAndProjectTitle =>
             k => new ProjectTask()
             {
@@ -243,7 +258,7 @@ namespace ProjectTracking.Data.Methods
                 .Select(MapProjectTaskWithUser)
                 .ToList();
         }
-        
+
         public List<ProjectTask> GetByProject(int projectId)
         {
             IQueryable<DataSets.ProjectTask> query = db.ProjectTasks;

@@ -56,7 +56,7 @@ namespace ProjectTracking.Controllers
                 return Redirect("/login");
             }
 
-            return Redirect("/dashboard");
+            return View();
         }
 
         [Route("/login")]
