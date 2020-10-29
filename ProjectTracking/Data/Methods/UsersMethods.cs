@@ -1104,10 +1104,104 @@ namespace ProjectTracking.Data.Methods
             return overview;
         }
 
-        private List<UserLog> GetUsersLogsByDate(List<string> supervisingUsersIds, DateTime today)
+        public AdminOverview GetAdminOverview(string userId)
+        {
+            if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.Admin))
+            {
+                throw new ClientException("user dont exist or not an admin");
+            }
+
+            AdminOverview overview = new AdminOverview();
+
+            // logged in user
+            overview.LoggedInUsers = db.UserLogging.Where(k =>
+                    k.LogStatusCode == (short)UserLogStatus.Login && !k.ToDate.HasValue)
+                    .GroupBy(k => k.User.RoleCode)
+                    .Select(k => new KeyValuePair<string, int>(((ApplicationUserRole)k.Key).ToString(), k.Count()))
+                    .ToList();
+
+            DateTime today = DateTime.Now.Date;
+
+            overview.UserLogsToday = GetUsersLogsByDate(today);
+
+            List<int> supervisingTeamsIds = db.Teams.Where(k => k.SupervisorId == userId)
+                .Select(k => k.ID)
+                .ToList();
+
+            if (supervisingTeamsIds.Count == 0)
+            {
+                throw new Exception("user is not an admin");
+            }
+
+
+            // s.users activities query
+            var q_tsActivities = GetUserActivitiesQuery();
+
+
+            // target from/to days
+            int fromDateTargetDays = 30;
+            DateTime fromDateTarget = today.AddDays(-fromDateTargetDays);
+
+            // fill dates
+            List<DateTime> dates = Enumerable.Range(1, fromDateTargetDays)
+                      .Select(x => fromDateTarget.AddDays(x))
+                      .ToList();
+
+
+            // group activities under supervising teams
+            var enum_teamsActivities = q_tsActivities
+                .Select(k => new { k.FromDate, k.ToDate, k.TimeSheetTask.TimeSheet.User.Team.Name, TeamId = k.TimeSheetTask.TimeSheet.User.TeamId.Value })
+                .Where(k => k.FromDate.Date >= fromDateTarget.Date)
+                .GroupBy(k => k.TeamId)
+                .AsEnumerable();
+
+            // frequencies foreach date in dates
+            overview.TeamsActivitiesFrequency = enum_teamsActivities
+                .Select(key => new TeamActivitiesFrequency()
+                {
+                    Team = new TeamKeyValue(key.Key, key.First().Name),
+                    Activities = dates.Select(date => new KeyValuePair<DateTime, int>(date,
+                            key.Where(a => a.FromDate.Date == date).Count()))
+                        .ToList()
+                })
+                .ToList();
+
+            // minutes foreach date in dates
+            overview.TeamsActivitiesMinutes = enum_teamsActivities
+                .Select(key => new TeamActivitiesFrequency()
+                {
+                    Team = new TeamKeyValue(key.Key, key.First().Name),
+                    Activities = dates.Select(date => new KeyValuePair<DateTime, int>(date,
+                            key.Where(a => a.FromDate.Date == date)
+                               .Sum(x => (int)Math.Floor(((x.ToDate ?? DateTime.Now) - x.FromDate).TotalMinutes))))
+                               .ToList()
+                })
+                .ToList();
+
+            //List<short> projectsTargetStatuses = new List<short>()
+            //{
+            //    (short)ProjectStatus.Done,
+            //}
+
+            // status in ()
+            //overview.Projects =db.Projects.Where()
+
+            return overview;
+        }
+
+        private List<UserLog> GetUsersLogsByDate(List<string> supervisingUsersIds, DateTime date)
         {
             return db.UserLogging
-                            .Where(k => supervisingUsersIds.Contains(k.UserId) && k.FromDate.Date == today)
+                            .Where(k => supervisingUsersIds.Contains(k.UserId) && k.FromDate.Date == date)
+                            .OrderByDescending(k => k.ID)
+                            .Select(_mapper.Map<UserLog>)
+                            .ToList();
+        }
+
+        private List<UserLog> GetUsersLogsByDate(DateTime date)
+        {
+            return db.UserLogging
+                            .Where(k => k.FromDate.Date == date)
                             .OrderByDescending(k => k.ID)
                             .Select(_mapper.Map<UserLog>)
                             .ToList();
@@ -1158,6 +1252,10 @@ namespace ProjectTracking.Data.Methods
         private IQueryable<DataSets.TimeSheetActivity> GetUserActivitiesQuery(string userId)
         {
             return db.TimeSheetActivities.Where(k => !k.DeletedAt.HasValue && k.TimeSheetTask.TimeSheet.UserId == userId);
+        }
+        private IQueryable<DataSets.TimeSheetActivity> GetUserActivitiesQuery()
+        {
+            return db.TimeSheetActivities.Where(k => !k.DeletedAt.HasValue);
         }
 
         private IQueryable<DataSets.TimeSheetActivity> GetUserActivitiesQuery(List<string> userIds)

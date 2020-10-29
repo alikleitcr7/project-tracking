@@ -11,13 +11,13 @@ namespace ProjectTracking.Models.Dashboard
 {
     public class AdminOverview
     {
-        public List<KeyValuePair<ApplicationUserRole, int>> LoggedInUsers { get; set; }
+        public List<KeyValuePair<string, int>> LoggedInUsers { get; set; }
         public List<ProjectDashboardView> Projects { get; set; }
 
-        public List<UserLog> LatestLogsToday { get; internal set; }
+        public List<UserLog> UserLogsToday { get;  set; }
 
         public List<TeamActivitiesFrequency> TeamsActivitiesFrequency { get; set; }
-        public List<TeamActivitiesFrequency> TeamsActivitiesMinuts { get; set; }
+        public List<TeamActivitiesFrequency> TeamsActivitiesMinutes { get; set; }
     }
 
     public class ProjectDashboardView
