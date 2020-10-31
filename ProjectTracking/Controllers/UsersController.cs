@@ -302,22 +302,56 @@ namespace ProjectTracking.Controllers
             }
         }
 
-        [HttpGet]
-        public IActionResult GetSupervisorOverview(string userId)
-        {
-            try
-            {
-                return Ok(_userMethods.GetSupervisorOverview(userId));
-            }
-            catch (ClientException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = ex.Message });
-            }
-        }
+        //[HttpGet]
+        //public IActionResult GetSupervisorOverview(string userId)
+        //{
+        //    try
+        //    {
+        //        return Ok(_userMethods.GetSupervisorOverview(userId));
+        //    }
+        //    catch (ClientException ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = ex.Message });
+        //    }
+        //}
+
+        //[HttpGet]
+        //public IActionResult GetTeamMemberOverview(string userId)
+        //{
+        //    try
+        //    {
+        //        return Ok(_userMethods.GetTeamMemberOverview(userId));
+        //    }
+        //    catch (ClientException ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = ex.Message });
+        //    }
+        //}
+
+        //[HttpGet]
+        //public IActionResult GetAdminOverview(string userId)
+        //{
+        //    try
+        //    {
+        //        return Ok(_userMethods.GetAdminOverview(userId));
+        //    }
+        //    catch (ClientException ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = ex.Message });
+        //    }
+        //}
 
         [HttpGet]
         public IActionResult GetLatestUserLog(string userId)

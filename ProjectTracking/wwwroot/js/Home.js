@@ -32,25 +32,15 @@ new Vue({
         this.role = role;
         this.userId = currentUser.id()
 
+        HomeService.GetOverview()
+            .then((r) => {
+                const record = r.data
+            })
+            .catch((e) => {
+                const errorMessage = getAxiosErrorMessage(e)
+            })
+            .then(() => {
 
-        console.log({ role })
-        switch (role) {
-            case APP_USER_ROLES.admin.value:
-                break;
-            case APP_USER_ROLES.supervisor.value:
-                UsersService.GetSupervisorOverview(this.userId)
-                    .then((r) => {
-                        const record = r.data
-                    })
-                    .catch((e) => {
-                        const errorMessage = getAxiosErrorMessage(e)
-                    })
-                    .then(() => {
-
-                    })
-                break;
-            case APP_USER_ROLES.teamMember.value:
-                break;
-        }
+            })
     }
 })

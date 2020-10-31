@@ -55,14 +55,30 @@ const UsersService = {
 
         return axios.get(url);
     },
-    GetSupervisorOverview: function (userId) {
+    //GetSupervisorOverview: function (userId) {
 
-        const query = serialize({ userId })
+    //    const query = serialize({ userId })
 
-        const url = USERS_SERVICE_URI(`GetSupervisorOverview?${query}`)
+    //    const url = USERS_SERVICE_URI(`GetSupervisorOverview?${query}`)
 
-        return axios.get(url);
-    },
+    //    return axios.get(url);
+    //},
+    //GetTeamMemberOverview: function (userId) {
+
+    //    const query = serialize({ userId })
+
+    //    const url = USERS_SERVICE_URI(`GetTeamMemberOverview?${query}`)
+
+    //    return axios.get(url);
+    //},
+    //GetAdminOverview: function (userId) {
+
+    //    const query = serialize({ userId })
+
+    //    const url = USERS_SERVICE_URI(`GetAdminOverview?${query}`)
+
+    //    return axios.get(url);
+    //},
     GetLatestUserLog: function (userId) {
 
         const query = serialize({ userId })

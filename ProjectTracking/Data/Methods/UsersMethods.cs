@@ -1117,22 +1117,13 @@ namespace ProjectTracking.Data.Methods
             overview.LoggedInUsers = db.UserLogging.Where(k =>
                     k.LogStatusCode == (short)UserLogStatus.Login && !k.ToDate.HasValue)
                     .GroupBy(k => k.User.RoleCode)
+                    .AsEnumerable()
                     .Select(k => new KeyValuePair<string, int>(((ApplicationUserRole)k.Key).ToString(), k.Count()))
                     .ToList();
 
             DateTime today = DateTime.Now.Date;
 
             overview.UserLogsToday = GetUsersLogsByDate(today);
-
-            List<int> supervisingTeamsIds = db.Teams.Where(k => k.SupervisorId == userId)
-                .Select(k => k.ID)
-                .ToList();
-
-            if (supervisingTeamsIds.Count == 0)
-            {
-                throw new Exception("user is not an admin");
-            }
-
 
             // s.users activities query
             var q_tsActivities = GetUserActivitiesQuery();
@@ -1184,7 +1175,23 @@ namespace ProjectTracking.Data.Methods
             //}
 
             // status in ()
-            //overview.Projects =db.Projects.Where()
+            overview.Projects = db.Projects.OrderByDescending(k => k.ID)
+                                           .Take(10)
+                                           .Select(k => new ProjectDashboardView()
+                                           {
+                                               ID = k.ID,
+                                               StatusCode = k.StatusCode,
+                                               Title = k.Title,
+                                               TasksPerformance = new TasksPerformance()
+                                               {
+                                                   TotalCount = k.Tasks.Count(),
+                                                   DoneCount = k.Tasks.Count(t => t.StatusCode == (short)ProjectTaskStatus.Done),
+                                                   ProgressCount = k.Tasks.Count(t => t.StatusCode == (short)ProjectTaskStatus.InProgress),
+                                                   PendingCount = k.Tasks.Count(t => t.StatusCode == (short)ProjectTaskStatus.Pending),
+                                                   FailedOrTerminatedCount = k.Tasks.Count(t => t.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
+                                               }
+                                           })
+                                           .ToList();
 
             return overview;
         }

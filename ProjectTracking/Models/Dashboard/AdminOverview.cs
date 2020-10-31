@@ -26,6 +26,6 @@ namespace ProjectTracking.Models.Dashboard
         public string Title { get; set; }
         public short StatusCode { get; set; }
         public string StatusCodeDisplay => ((ProjectStatus)StatusCode).ToString();
-        public int NumberOfTasks { get; set; }
+        public TasksPerformance TasksPerformance { get; set; }
     }
 }

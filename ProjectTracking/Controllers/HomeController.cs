@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectTracking.AppStart;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
+using ProjectTracking.Exceptions;
 using ProjectTracking.Models;
 using ProjectTracking.Models.Admin;
 using System;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace ProjectTracking.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -105,14 +106,20 @@ namespace ProjectTracking.Controllers
 
                     ApplicationContext.LogsLastUpdatedDate = DateTime.Now;
 
-                    UserLog log = _userLogsMethods.AddStartLog(id, ip, UserLogStatus.Login);
+                    UserLog log = _userLogsMethods.GetActiveUserLog(id);
 
-                    if (ApplicationContext.ActiveLogs == null)
+                    if (log == null || log.ToDate.HasValue)
                     {
-                        ApplicationContext.ActiveLogs = new List<UserLog>();
+                        log = _userLogsMethods.AddStartLog(id, ip, UserLogStatus.Login);
                     }
 
-                    if (!ApplicationContext.ActiveLogs.Any(k => k.UserId == id))
+                    if (ApplicationContext.ActiveLogs == null || !ApplicationContext.LogsLastUpdatedDate.HasValue)
+                    {
+                        ApplicationContext.ActiveLogs = _users.GetActiveLogs() ?? new List<UserLog>();
+                        ApplicationContext.LogsLastUpdatedDate = DateTime.Now;
+                    }
+
+                    if (log != null && !ApplicationContext.ActiveLogs.Any(k => k.UserId == id))
                     {
                         ApplicationContext.ActiveLogs.Add(log);
                     }
@@ -199,9 +206,44 @@ namespace ProjectTracking.Controllers
 
             // end db log session 
 
-            _users.EndLog(id,UserLogStatus.Logout);
+            _users.EndLog(id, UserLogStatus.Logout);
 
             return Redirect("/login");
+        }
+
+        [HttpGet]
+        public IActionResult GetOverview()
+        {
+            try
+            {
+                string userId = GetCurrentUserId();
+                ApplicationUserRole role = GetCurrentUserRole();
+
+                object overview = null;
+
+                switch (role)
+                {
+                    case ApplicationUserRole.TeamMember:
+                        overview = _users.GetTeamMemberOverview(userId);
+                        break;
+                    case ApplicationUserRole.Supervisor:
+                        overview = _users.GetSupervisorOverview(userId);
+                        break;
+                    case ApplicationUserRole.Admin:
+                        overview = _users.GetAdminOverview(userId);
+                        break;
+                }
+
+                return Ok(overview);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         public IActionResult Contact()

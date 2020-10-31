@@ -52,5 +52,13 @@ namespace ProjectTracking.Data.Methods
 
             return _mapper.Map<UserLog>(dbLog);
         }
+
+        public UserLog GetActiveUserLog(string userId)
+        {
+            var dbLog = db.UserLogging
+                .FirstOrDefault(k => k.UserId == userId && !k.ToDate.HasValue);
+
+            return dbLog == null ? null : _mapper.Map<UserLog>(dbLog);
+        }
     }
 }

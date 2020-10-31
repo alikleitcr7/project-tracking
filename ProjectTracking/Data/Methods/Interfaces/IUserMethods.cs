@@ -62,6 +62,8 @@ namespace ProjectTracking.Data.Methods.Interfaces
         UserLog GetLatestUserLog(string userId);
         List<UserLog> GetLatestUserLogs(string userId, int take);
         Models.Dashboard.SupervisorOverview GetSupervisorOverview(string userId);
+        Models.Dashboard.AdminOverview GetAdminOverview(string userId);
+        Models.Dashboard.TeamMemberOverview GetTeamMemberOverview(string userId);
         #endregion
     }
 }

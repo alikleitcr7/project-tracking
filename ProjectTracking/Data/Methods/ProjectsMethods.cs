@@ -283,15 +283,7 @@ namespace ProjectTracking.Data.Methods
             IQueryable<DataSets.ProjectTask> q_tasks = db.ProjectTasks
                 .Where(t => t.ProjectId == projectId);
 
-            // tasks performance
-            overview.TasksPerformance = new TasksPerformance()
-            {
-                TotalCount = q_tasks.Count(),
-                DoneCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Done),
-                ProgressCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.InProgress),
-                PendingCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Pending),
-                FailedOrTerminatedCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
-            };
+            overview.TasksPerformance = GetTasksPerformance(q_tasks);
 
             // timesheet activities
             if (overview.Members.Count > 0)
@@ -357,6 +349,18 @@ namespace ProjectTracking.Data.Methods
             }
 
             return overview;
+        }
+
+        private TasksPerformance GetTasksPerformance(IQueryable<DataSets.ProjectTask> q_tasks)
+        {
+            return new TasksPerformance()
+            {
+                TotalCount = q_tasks.Count(),
+                DoneCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Done),
+                ProgressCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.InProgress),
+                PendingCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Pending),
+                FailedOrTerminatedCount = q_tasks.Count(k => k.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
+            };
         }
 
         // OTHER
