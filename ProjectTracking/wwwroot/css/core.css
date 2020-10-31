@@ -465,6 +465,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  background-color: #eeeeee;
   right: 0;
   border-bottom: 2px solid #d1d1d1;
 }
@@ -506,7 +507,9 @@
 }
 .c-card-view .c-card {
   min-height: 2em;
-  min-width: 200px;
+  /*min-width: 200px;*/
+  width: 100%;
+  display: block;
   color: #333;
   border-radius: 5px;
   padding: 0.5em 1em;
@@ -521,6 +524,18 @@
   -webkit-transition: 100ms;
   transition: 100ms;
   margin-bottom: 1em;
+}
+.c-card-view .c-card--pending {
+  border-left: 6px solid rgba(247, 132, 56, 0.95);
+}
+.c-card-view .c-card--progress {
+  border-left: 6px solid rgba(75, 89, 255, 0.84);
+}
+.c-card-view .c-card--failed {
+  border-left: 6px solid rgba(187, 0, 0, 0.7);
+}
+.c-card-view .c-card--done {
+  border-left: 6px solid rgba(63, 204, 53, 0.86);
 }
 .c-card-view .c-card .c-card-title {
   display: block;

@@ -446,10 +446,44 @@ a:active {
   display: block;
   width: 100%;
 }
+@font-face {
+  font-family: 'opensans-bold';
+  src: url('../fonts/open-sans/opensans-bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'opensans-italic';
+  src: url('../fonts/open-sans/opensans-italic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'opensans-light';
+  src: url('../fonts/open-sans/opensans-light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'opensans-regular';
+  src: url('../fonts/open-sans/opensans-regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'montserrat-black';
+  src: url('../fonts/montserrat/montserrat-black.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'montserrat-regular';
+  src: url('../fonts/montserrat/montserrat-regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'montserrat-light';
+  src: url('../fonts/montserrat/montserrat-light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'montserrat-medium';
+  src: url('../fonts/montserrat/montserrat-medium.ttf') format('truetype');
+}
 html,
 body,
-a {
-  font-family: 'Arial';
+a,
+label,
+ul {
+  font-family: opensans-regular;
 }
 select:-moz-focusring {
   color: transparent;
@@ -462,6 +496,7 @@ h4,
 h5,
 h6 {
   color: #333;
+  font-family: montserrat-regular;
 }
 .top-intro h1,
 .top-intro h2,

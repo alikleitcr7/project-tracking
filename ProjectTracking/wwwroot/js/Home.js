@@ -28,37 +28,55 @@ new Vue({
     methods: {
         populateDashboard: function (data) {
 
+            console.log({role})
             switch (role) {
                 case APP_USER_ROLES.admin.value:
-
-
+                    this.populateAdminVisuals(data)
                     break;
                 case APP_USER_ROLES.supervisor.value:
+                    this.populateSupervisorVisuals(data)
                     break;
                 case APP_USER_ROLES.teamMember.value:
+                    this.populateTeamMemberVisuals(data)
                     break;
             }
         },
         /**
          * 
-         * @param {AdminOverview} overview
+         * @param {AdminOverview} data
          */
-        populateAdminOverview: function (overview) {
+        populateAdminVisuals: function (data) {
 
         },
         /**
          * 
-         * @param {SupervisorOverview} overview
+         * @param {SupervisorOverview} data
          */
-        populateSupervisorOverview: function (overview) {
+        populateSupervisorVisuals: function (data) {
 
         },
         /**
          * 
-         * @param {TeamMemberOverview} overview
+         * @param {TeamMemberOverview} data
          */
-        populateTeamMemberOverview: function (overview) {
+        populateTeamMemberVisuals: function (data) {
 
+            console.log({ data })
+
+            chartsHelper.charts.populateActivitiesMinuts('line_activities_minutes', data.activitiesMinuts)
+            chartsHelper.charts.populateActivities('line_activities_frequency', data.activitiesFrequency)
+        },
+        getCardClassByTask: function (task) {
+            const taskStatus = PROJECT_TASK_STATUS._toList().find(k => k.key === task.statusCode)
+
+            if (!taskStatus) {
+                console.error('task status not found in PROJECT_TASK_STATUS', task)
+                return {}
+            }
+
+            const code = taskStatus.code
+
+            return 'c-card--' + code
         }
     },
     computed: {

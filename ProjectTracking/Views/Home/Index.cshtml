@@ -1,6 +1,8 @@
 ﻿
 @{
     string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+    string role_value = User.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
+    ApplicationUserRole role = (ApplicationUserRole)Enum.Parse(typeof(ApplicationUserRole), role_value, true);
 }
 
 <div id="Dashboard" class="v-container" data-user="@userId">
@@ -9,19 +11,25 @@
 
     <section class="c-box-view c-box-view--wrap">
 
-        <div class="c-box c-box--loading" v-for="i in loadingBoxes"></div>
+        <div v-show="overview.isLoading" class="c-box c-box--loading" v-for="i in loadingBoxes"></div>
 
         @* # common # *@
+
         <partial name="~/Views/Home/Overview/Notifications.cshtml" />
 
-        @* # member #*@
-        <partial name="~/Views/Home/Overview/MemberOverview.cshtml" />
+        @switch (role)
+        {
+            case ApplicationUserRole.TeamMember:
+                <partial name="~/Views/Home/Overview/MemberOverview.cshtml" />
+                break;
+            case ApplicationUserRole.Supervisor:
+                <partial name="~/Views/Home/Overview/SupervisorOverview.cshtml" />
+                break;
+            case ApplicationUserRole.Admin:
+                <partial name="~/Views/Home/Overview/AdminOverview.cshtml" />
+                break;
+        }
 
-        @* # supervisor #*@
-        <partial name="~/Views/Home/Overview/SupervisorOverview.cshtml" />
-
-        @* #admin *@
-        <partial name="~/Views/Home/Overview/AdminOverview.cshtml" />
 
 
     </section>
@@ -35,6 +43,10 @@
 @section scripts{
     <script src="~/services/HomeService.js"></script>
     <script src="~/services/UsersService.js"></script>
+
+    @* visualization *@
+    <script src="~/lib/chartjs-2.7.1/Chart.min.js"></script>
+    <script src="~/js/statistics/ChartHelper.js"></script>
 
     <script src="~/js/Home.js"></script>
 }

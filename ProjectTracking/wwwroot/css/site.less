@@ -1,11 +1,50 @@
 ﻿@import 'variables.less';
 @import 'sidebar.less';
 
+@font-face {
+    font-family: 'opensans-bold';
+    src: url('../fonts/open-sans/opensans-bold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'opensans-italic';
+    src: url('../fonts/open-sans/opensans-italic.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'opensans-light';
+    src: url('../fonts/open-sans/opensans-light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'opensans-regular';
+    src: url('../fonts/open-sans/opensans-regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'montserrat-black';
+    src: url('../fonts/montserrat/montserrat-black.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'montserrat-regular';
+    src: url('../fonts/montserrat/montserrat-regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'montserrat-light';
+    src: url('../fonts/montserrat/montserrat-light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'montserrat-medium';
+    src: url('../fonts/montserrat/montserrat-medium.ttf') format('truetype');
+}
+
 html,
 body,
-a {
-    font-family: 'Arial';
+a ,label,ul{
+    font-family: opensans-regular;
 }
+
 
 select:-moz-focusring {
     color: transparent;
@@ -14,6 +53,8 @@ select:-moz-focusring {
 
 h1, h2, h3, h4, h5, h6 {
     color: @dark-gray;
+    font-family:montserrat-regular;
+    
 }
 
 .top-intro {

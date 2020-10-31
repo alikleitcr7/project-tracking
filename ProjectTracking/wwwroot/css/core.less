@@ -77,6 +77,7 @@
             position: absolute;
             top: 0;
             left: 0;
+            background-color: @gray-xlight;
             right: 0;
             border-bottom: 2px solid @gray-light;
         }
@@ -114,7 +115,9 @@
 
     .c-card {
         min-height: 2em;
-        min-width: 200px;
+        /*min-width: 200px;*/
+        width: 100%;
+        display: block;
         color: @dark-gray;
         border-radius: 5px;
         padding: .5em 1em;
@@ -124,6 +127,22 @@
         .box-shadow-sm();
         .fast-transition();
         margin-bottom: 1em;
+
+        &--pending {
+            border-left: 6px solid @task-pending-color;
+        }
+
+        &--progress {
+            border-left: 6px solid @task-progress-color;
+        }
+
+        &--failed {
+            border-left: 6px solid @task-failed-color;
+        }
+
+        &--done {
+            border-left: 6px solid @task-done-color;
+        }
 
         .c-card-title {
             display: block;

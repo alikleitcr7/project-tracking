@@ -4,12 +4,13 @@
     admin: { key: 2, value: 'Admin' },
     _toList: function () {
         return [
-            { ...this.teamMember },
-            { ...this.supervisor },
-            { ...this.admin },
+            this.teamMember,
+            this.supervisor,
+            this.admin
         ]
     }
 }
+
 //Pending, InProgress, Done, Failed, Terminated
 const PROJECT_TASK_STATUS = {
     pending: { key: 0, value: 'Pending', code: 'pending' },
@@ -19,11 +20,11 @@ const PROJECT_TASK_STATUS = {
     terminated: { key: 4, value: 'Terminated', code: 'failed' },
     _toList: function () {
         return [
-            { ...this.pending },
-            { ...this.inProgress },
-            { ...this.done },
-            { ...this.failed },
-            { ...this.terminated },
+            this.pending,
+            this.inProgress,
+            this.done,
+            this.failed,
+            this.terminated,
         ]
     }
 }
@@ -38,7 +39,6 @@ var colors = {
     progress: 'rgba(75, 89, 255, 0.84)',
     failed: 'rgba(187, 0, 0, 0.70)',
 }
-
 
 function initTasksPerformanceProgress() {
     return [
