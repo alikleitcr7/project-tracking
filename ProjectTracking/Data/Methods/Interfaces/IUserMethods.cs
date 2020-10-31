@@ -8,7 +8,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
     public interface IUserMethods
     {
         List<DataContract.UserLog> GetUsersLogs(List<string> userIds, int page, int countPerPage, DateTime? fromDate, DateTime? toDate, out int totalCount);
-        void EndLog(string userId, UserLogStatus status);
+        void EndActiveLog(string userId, UserLogStatus status);
 
 
         List<ApplicationIdentityRole> GetAllRoles();

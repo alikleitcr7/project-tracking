@@ -142,10 +142,67 @@ declare class UserKeyValuePair {
     id: string;
     name: string;
 }
+
 declare class TeamKeyValuePair {
     id: int;
     name: string;
 }
+
+
+declare class TeamActivitiesFrequency {
+    activities: Array<KeyValuePair<Date, number>>;
+    team: TeamKeyValuePair
+
+}
+
+declare class MemberActivitiesFrequency {
+    activities: Array<KeyValuePair<Date, number>>;
+    user: UserKeyValuePair
+}
+
+declare class ProjectDashboardView {
+    id: number;
+    title: string;
+    statusCode: number;
+    statusCodeDisplay: string;
+    tasksPerformance: ITaskPerformance;
+}
+
+/////////// overviews ////////////
+
+declare class AdminOverview {
+    loggedInUsers: Array<KeyValuePair<string, number>>;
+    projects: Array<ProjectDashboardView>;
+    userLogsToday: Array<UserLog>;
+    teamsActivitiesFrequency: Array<TeamActivitiesFrequency>;
+    teamsActivitiesMinutes: Array<TeamActivitiesFrequency>;
+}
+
+
+declare class SupervisorOverview {
+
+    latestActivities: Array<TimeSheetActivity>;
+    userLogsToday: Array<UserLog>;
+
+    membersActivitiesFrequency: Array<MemberActivitiesFrequency>;
+    membersActivitiesMinutes: Array<MemberActivitiesFrequency>;
+
+    teamsActivitiesFrequency: Array<TeamActivitiesFrequency>;
+    teamsActivitiesMinutes: Array<TeamActivitiesFrequency>;
+}
+
+
+declare class TeamMemberOverview {
+
+    activitiesFrequency: Array<KeyValuePair<Date, number>>;
+    activitiesMinuts: Array<KeyValuePair<Date, number>>;
+    latestActivities: Array<TimeSheetActivity>;
+    assignedTasks: Array<IProjectTask>;
+}
+
+
+/////////// activity ////////////
+
 
 declare interface IActiveActivity {
     id: number;
@@ -156,6 +213,7 @@ declare interface IActiveActivity {
 }
 
 
+//////// other ///////////
 declare interface IClientResponseModel<T> {
     record: T;
     status: string;

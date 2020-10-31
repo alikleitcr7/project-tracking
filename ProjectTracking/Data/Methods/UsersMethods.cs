@@ -647,9 +647,9 @@ namespace ProjectTracking.Data.Methods
 
         }
 
-        public void EndLog(string userId, UserLogStatus status)
+        public void EndActiveLog(string userId, UserLogStatus status)
         {
-            var log = db.UserLogging.OrderByDescending(k => k.FromDate).FirstOrDefault(k => k.UserId == userId);
+            var log = db.UserLogging.FirstOrDefault(k => k.UserId == userId && !k.ToDate.HasValue);
 
             if (log != null)
             {

@@ -206,7 +206,7 @@ namespace ProjectTracking.Controllers
 
             // end db log session 
 
-            _users.EndLog(id, UserLogStatus.Logout);
+            _users.EndActiveLog(id, UserLogStatus.Logout);
 
             return Redirect("/login");
         }
