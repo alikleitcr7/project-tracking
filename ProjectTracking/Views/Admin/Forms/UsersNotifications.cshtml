@@ -52,6 +52,9 @@
 
                 <tr v-for="(item ,idx) in usersNotifications.data">
                     <td>
+                        {{item.id}}
+                    </td>
+                    <td>
                         {{item.message}}
                     </td>
 
@@ -60,11 +63,11 @@
                     </td>
 
                     <td>
-                        {{item.toUser.fullName}}
+                        {{item.toUserDisplay}}
                     </td>
 
                     <td>
-                        {{item.typeDisplay}}
+                        {{item.notificationTypeDisplay}}
                     </td>
 
                 </tr>
@@ -142,7 +145,7 @@
                         <button v-bind:disabled="usersNotifications.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="usersNotifications_save">
                             {{usersNotifications.form.isSaving ? 'Sending...' : 'Send'}} <i class="fa fa-paper-plane"></i>
                         </button>
-                        <button type="button" class="s-btn s-btn-outline" data-dismiss="modal">Close <i class="fa fa-close"></i></button>
+                        <button type="button" class="s-btn s-btn-outline" data-dismiss="modal">Close </button>
                     </div>
                 </div>
 

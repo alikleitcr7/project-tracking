@@ -166,16 +166,18 @@ const usersNotificationsMethods = {
 
                 if (record) {
 
-                    // feedback
-                    this.usersNotifications_setFormMessage(isNew ? 'Added!' : 'Updated!')
-
                     // update data array
-                    let data = [...this.usersNotifications.data]
+                    let data = [...record, ...this.usersNotifications.data]
 
-                    data.unshift(record)
+                    //data.unshift(record)
 
                     this.usersNotifications.data = data
                     this.usersNotifications.form = usersNotificationFormObject();
+
+
+                    // feedback
+                    this.usersNotifications_setFormMessage('Sent!')
+
                 }
                 else {
                     this.usersNotifications_setFormMessage(BASIC_ERROR_MESSAGE)
@@ -204,14 +206,14 @@ const usersNotificationsMethods = {
             .then((r) => {
 
 
-                const { record, totalCount } = r.data
+                const { records, totalCount } = r.data
 
                 if (debugUsersNotifications) {
                     console.log('getall usersNotification response', r)
                 }
 
-                if (record) {
-                    this.usersNotifications.data = [...record]
+                if (records) {
+                    this.usersNotifications.data = [...records]
                     this.usersNotifications.dataPaging.totalCount = totalCount
                 }
                 else {
