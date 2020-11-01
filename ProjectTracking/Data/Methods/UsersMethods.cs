@@ -1121,6 +1121,21 @@ namespace ProjectTracking.Data.Methods
                     .Select(k => new KeyValuePair<string, int>(((ApplicationUserRole)k.Key).ToString(), k.Count()))
                     .ToList();
 
+            var appRoles = Enum.GetValues(typeof(ApplicationUserRole)).Cast<ApplicationUserRole>();
+
+            foreach (ApplicationUserRole role in appRoles)
+            {
+                string roleKey = role.ToString();
+
+                if (!overview.LoggedInUsers.Any(k => k.Key == roleKey))
+                {
+                    overview.LoggedInUsers.Add(new KeyValuePair<string, int>(roleKey, 0));
+                }
+            }
+            
+            // projects performance
+
+
             DateTime today = DateTime.Now.Date;
 
             overview.UserLogsToday = GetUsersLogsByDate(today);
@@ -1188,10 +1203,20 @@ namespace ProjectTracking.Data.Methods
                                                    DoneCount = k.Tasks.Count(t => t.StatusCode == (short)ProjectTaskStatus.Done),
                                                    ProgressCount = k.Tasks.Count(t => t.StatusCode == (short)ProjectTaskStatus.InProgress),
                                                    PendingCount = k.Tasks.Count(t => t.StatusCode == (short)ProjectTaskStatus.Pending),
-                                                   FailedOrTerminatedCount = k.Tasks.Count(t => t.StatusCode == (short)ProjectTaskStatus.Failed || k.StatusCode == (short)ProjectTaskStatus.Terminated),
+                                                   FailedOrTerminatedCount = k.Tasks.Count(t => t.StatusCode == (short)ProjectTaskStatus.Failed || t.StatusCode == (short)ProjectTaskStatus.Terminated),
                                                }
                                            })
                                            .ToList();
+
+
+            overview.ProjectsPerformance = new Models.Projects.ProjectsPerformance()
+            {
+                TotalCount = db.Projects.Count(),
+                DoneCount = db.Projects.Count(t => t.StatusCode == (short)ProjectTaskStatus.Done),
+                ProgressCount = db.Projects.Count(t => t.StatusCode == (short)ProjectTaskStatus.InProgress),
+                ProposedCount = db.Projects.Count(t => t.StatusCode == (short)ProjectTaskStatus.Pending),
+                FailedOrTerminatedCount = db.Projects.Count(t => t.StatusCode == (short)ProjectTaskStatus.Failed || t.StatusCode == (short)ProjectTaskStatus.Terminated),
+            };
 
             return overview;
         }

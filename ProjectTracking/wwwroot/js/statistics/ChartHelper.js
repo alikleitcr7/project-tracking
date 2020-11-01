@@ -299,6 +299,48 @@ const chartsHelper = {
             });
         },
 
+
+        /**
+         * 
+         * @param {IProjectsPerformance} projectsPerformance
+         */
+        populateProjects: function (id, projectsPerformance) {
+
+            var ctx = document.getElementById(id).getContext('2d');
+
+            const metrics = initProjectsPerformanceProgress();
+
+            const precisionRound = (number) => {
+                var factor = Math.pow(10, 2);
+                return Math.round(number * factor) / factor;
+            }
+
+            const labels = metrics.map(k => `${k.code}: ${projectsPerformance[k.fromProp]} (${(precisionRound(projectsPerformance[k.fromProp] / projectsPerformance.totalCount * 100))}%)`)
+            const data = metrics.map(k => projectsPerformance[k.fromProp])
+            const pieColors = metrics.map(k => colors[k.code])
+
+            console.log({ labels, data, pieColors })
+
+
+            return new Chart(ctx, {
+                // The type of chart we want to create
+                type: 'pie',
+
+                // The data for our dataset
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Task Performance',
+                        backgroundColor: pieColors,
+                        //borderColor: colors.main,
+                        data
+                    }]
+                },
+                // Configuration options go here
+                options: chartsHelper.pieOptions()
+            });
+        },
+
         /**
          * @param {Array<MemberActivitiesFrequency>} activitiesFrequency
          */

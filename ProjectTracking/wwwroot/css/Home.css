@@ -388,11 +388,38 @@
 #Dashboard .c-box {
   width: 45%;
 }
+#Dashboard .loggedin-users .total-loggedin {
+  text-align: center;
+  /*font-size:2em;*/
+}
+#Dashboard .loggedin-users > .c-box-view {
+  /*flex-wrap:wrap;*/
+}
+#Dashboard .loggedin-users > .c-box-view .c-box {
+  min-width: unset;
+  /*width: 28%;*/
+  /*box-shadow:none;*/
+  /*border:1px solid @gray;*/
+  /*border-radius:0;*/
+  flex: 1;
+}
+#Dashboard .loggedin-users > .c-box-view .c-box .c-box-title {
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+  font-family: 'opensans-light';
+}
+#Dashboard .loggedin-users > .c-box-view .c-box > p {
+  text-align: center;
+  font-size: 4em;
+  font-family: 'opensans-light';
+  font-weight: lighter;
+}
 @media (max-width: 992px) {
   #Dashboard .c-box {
     width: 100%;
   }
   #Dashboard .table-fixed-header-container table {
-    width: 100%!important;
+    width: 100% !important;
   }
 }

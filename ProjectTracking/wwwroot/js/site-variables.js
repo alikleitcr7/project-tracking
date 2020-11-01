@@ -29,6 +29,24 @@ const PROJECT_TASK_STATUS = {
     }
 }
 
+//Pending, InProgress, Done, Failed, Terminated
+const PROJECT_STATUS = {
+    proposed: { key: 0, value: 'Proposed', code: 'pending' },
+    inProgress: { key: 1, value: 'In Progress', code: 'progress' },
+    done: { key: 2, value: 'Done', code: 'done' },
+    failed: { key: 3, value: 'Failed', code: 'failed' },
+    terminated: { key: 4, value: 'Terminated', code: 'failed' },
+    _toList: function () {
+        return [
+            this.proposed,
+            this.inProgress,
+            this.done,
+            this.failed,
+            this.terminated,
+        ]
+    }
+}
+
 var colors = {
     mainLight: '#5bcbee',
     mainLightTransparent: 'rgba(91, 203, 238, 0.66)',
@@ -56,6 +74,31 @@ function initTasksPerformanceProgress() {
             'fromProp': 'pendingCount',
             'code': 'pending',
             'name': 'Pending'
+        },
+        {
+            'fromProp': 'failedOrTerminatedCount',
+            'code': 'failed',
+            'name': 'Failed/Terminated'
+        }
+    ]
+}
+
+function initProjectsPerformanceProgress() {
+    return [
+        {
+            'fromProp': 'doneCount',
+            'code': 'done',
+            'name': 'Done',
+        },
+        {
+            'fromProp': 'progressCount',
+            'code': 'progress',
+            'name': 'In Progress'
+        },
+        {
+            'fromProp': 'proposedCount',
+            'code': 'pending',
+            'name': 'Proposed'
         },
         {
             'fromProp': 'failedOrTerminatedCount',

@@ -2,3 +2,73 @@
 @* O projects *@
 @* O today's user logs *@
 @* O teams activities *@
+
+<template v-if="overview.data">
+
+    <div class="c-box loggedin-users">
+        <h5 class="c-box-title">LoggedIn Users</h5>
+        <h2 class="total-loggedin">{{loggedUsersTitle(overview.data.loggedInUsers)}}</h2>
+        <div class="c-box-view">
+            <div class="c-box" v-for="log in overview.data.loggedInUsers">
+                <h5 class="c-box-title">{{log.key}}</h5>
+                <p>{{log.value}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="c-box c-box--light assigned-tasks">
+        <h5 class="c-box-title">Projects</h5>
+        <div class="c-card-view scrollable-container-300">
+            <a class="c-card"
+               v-for="project in overview.data.projects"
+               :href="`/projects/${project.id}`"
+               :class="getCardClassByProject(project)">
+                <h5 class="c-card-title">{{project.title}}</h5>
+                <small>{{project.statusDisplay}}</small>
+            </a>
+        </div>
+    </div>
+
+
+    <div class="c-box latest-logs">
+        <h5 class="c-box-title">Today's Logs</h5>
+        <div class="table-fixed-header-container">
+            <table class="table table-sm" v-if="overview.data.userLogsToday.length">
+                <thead>
+                    <tr>
+                        <th>from</th>
+                        <th>to</th>
+                        <th>status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="log in overview.data.userLogsToday">
+                        <td>{{log.displayFromDate}}</td>
+                        <td>{{log.displayToDate}}</td>
+                        <td>{{log.logStatusDisplay}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h5 v-else>Nothing Here</h5>
+        </div>
+    </div>
+
+</template>
+
+
+<div class="c-box vis-activities-minutes">
+    <h5 class="c-box-title">Teams Activities (Minutes)</h5>
+    <canvas id="teams_line_activities_minutes"></canvas>
+</div>
+
+<div class="c-box vis-activities-frequency">
+    <h5 class="c-box-title">Teams Activities (Frequency)</h5>
+    <canvas id="teams_line_activities_frequency"></canvas>
+</div>
+
+<div class="c-box vis-projects-progress">
+    <h5 class="c-box-title">Projects</h5>
+    <canvas id="pie_projects"></canvas>
+</div>
+
+

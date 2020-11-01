@@ -82,6 +82,14 @@ declare interface ITaskPerformance {
     failedOrTerminatedCount: number;
 }
 
+declare interface IProjectsPerformance {
+    proposedCount: number;
+    totalCount: number;
+    doneCount: number;
+    progressCount: number;
+    failedOrTerminatedCount: number;
+}
+
 declare class TasksWorkload {
     doneCount: number;
     progressCount: number;

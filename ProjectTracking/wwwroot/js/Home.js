@@ -28,7 +28,7 @@ new Vue({
     methods: {
         populateDashboard: function (data) {
 
-            console.log({role})
+            console.log({ role })
             switch (role) {
                 case APP_USER_ROLES.admin.value:
                     this.populateAdminVisuals(data)
@@ -46,6 +46,10 @@ new Vue({
          * @param {AdminOverview} data
          */
         populateAdminVisuals: function (data) {
+            chartsHelper.charts.populateTeamActivitiesFrequency('teams_line_activities_minutes', data.teamsActivitiesMinutes)
+            chartsHelper.charts.populateTeamActivitiesFrequency('teams_line_activities_frequency', data.teamsActivitiesFrequency)
+
+            chartsHelper.charts.populateProjects('pie_projects', data.projectsPerformance)
 
         },
         /**
@@ -80,13 +84,37 @@ new Vue({
             const code = taskStatus.code
 
             return 'c-card--' + code
+        },
+        getCardClassByProject: function (project) {
+            const projectStatus = PROJECT_STATUS._toList().find(k => k.key === project.statusCode)
+
+            if (!projectStatus) {
+                console.error('task status not found in PROJECT_STATUS', projectStatus)
+                return {}
+            }
+
+            const code = projectStatus.code
+
+            return 'c-card--' + code
+        },
+        loggedUsersTitle: function (loggedInUsers) {
+
+            if (!loggedInUsers) {
+                return ''
+            }
+
+            const count = loggedInUsers.reduce((a, c) => a + c.value, 0)
+
+
+            return `Total of ${count} User${(count > 1 ? 's' : '')}`
         }
     },
     computed: {
         loadingBoxes: function () {
 
             return new Array(this.loadingBoxesCount)
-        }
+        },
+
     },
     mounted: function () {
 
