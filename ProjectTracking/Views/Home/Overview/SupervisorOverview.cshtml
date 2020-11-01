@@ -2,3 +2,84 @@
 @* O members (logs) *@
 @* O members activities *@
 @* O teams (supervising) activities *@
+
+
+<template v-if="overview.data">
+
+    <div class="c-box latest-logs">
+        <h5 class="c-box-title">Today's Logs</h5>
+        <div class="table-fixed-header-container">
+            <table class="table table-sm" v-if="overview.data.userLogsToday.length">
+                <thead>
+                    <tr>
+                        <th>from</th>
+                        <th>to</th>
+                        <th>status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="log in overview.data.userLogsToday">
+                        <td>{{log.displayFromDate}}</td>
+                        <td>{{log.displayToDate}}</td>
+                        <td>{{log.logStatusDisplay}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h5 v-else>Nothing Here</h5>
+        </div>
+    </div>
+
+    <div class="c-box latest-activities">
+        <h5 class="c-box-title">Activities</h5>
+        <div class="table-fixed-header-container">
+            <table class="table table-sm " v-if="overview.data.latestActivities.length">
+                <thead>
+                    <tr>
+                        <th>task</th>
+                        <th>from</th>
+                        <th>to</th>
+                        <th>status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="activity in overview.data.latestActivities">
+                        <td>
+                            <a :href="`/tasks/${activity.projectTask.id}`">
+                                {{activity.projectTask.title}}
+                            </a>
+                        </td>
+                        <td>{{activity.fromDateDisplay}}</td>
+                        <td>{{activity.toDate ? activity.toDateDisplay : 'Active'}}</td>
+                        <td>{{activity.projectTask.statusDisplay}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h5 v-else>Nothing Here</h5>
+        </div>
+    </div>
+
+</template>
+
+
+<div class="c-box vis-activities-minutes">
+    <h5 class="c-box-title">Members Activities (Minutes)</h5>
+    <canvas id="members_line_activities_minutes"></canvas>
+</div>
+
+<div class="c-box vis-activities-frequency">
+    <h5 class="c-box-title">Members Activities (Frequency)</h5>
+    <canvas id="members_line_activities_frequency"></canvas>
+</div>
+
+
+<div class="c-box vis-activities-minutes">
+    <h5 class="c-box-title">Teams Activities (Minutes)</h5>
+    <canvas id="teams_line_activities_minutes"></canvas>
+</div>
+
+<div class="c-box vis-activities-frequency">
+    <h5 class="c-box-title">Teams Activities (Frequency)</h5>
+    <canvas id="teams_line_activities_frequency"></canvas>
+</div>
+
+

@@ -1,8 +1,29 @@
 ﻿@import 'variables.less';
 
-#Dashboard{
-    .c-box--loading{
-        min-height:200px;
-        min-width:30%;
+#Dashboard {
+    min-width:400px;
+    overflow:auto;
+
+    .c-box--loading {
+        min-height: 200px;
+        min-width: 30%;
     }
+
+    .c-box{
+        width:45%;
+    }
+}
+
+@media  (max-width: 992px) {
+    #Dashboard {
+
+        .c-box {
+            width: 100%;
+        }
+
+        .table-fixed-header-container table{
+            width:100%!important;
+        }
+    }
+
 }

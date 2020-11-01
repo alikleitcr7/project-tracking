@@ -54,14 +54,17 @@ new Vue({
          */
         populateSupervisorVisuals: function (data) {
 
+            chartsHelper.charts.populateMemberActivitiesFrequency('members_line_activities_minutes', data.membersActivitiesMinutes)
+            chartsHelper.charts.populateMemberActivitiesFrequency('members_line_activities_frequency', data.membersActivitiesFrequency)
+
+            chartsHelper.charts.populateTeamActivitiesFrequency('teams_line_activities_minutes', data.teamsActivitiesMinutes)
+            chartsHelper.charts.populateTeamActivitiesFrequency('teams_line_activities_frequency', data.teamsActivitiesFrequency)
         },
         /**
          * 
          * @param {TeamMemberOverview} data
          */
         populateTeamMemberVisuals: function (data) {
-
-            console.log({ data })
 
             chartsHelper.charts.populateActivitiesMinuts('line_activities_minutes', data.activitiesMinuts)
             chartsHelper.charts.populateActivities('line_activities_frequency', data.activitiesFrequency)

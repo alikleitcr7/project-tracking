@@ -1,4 +1,8 @@
-﻿const chartsHelper = {
+﻿//Chart.Legend.prototype.afterFit = function () {
+//    this.height = this.height + 50;
+//};
+
+const chartsHelper = {
     barOptions: () => {
         return {
             legend: {
@@ -45,14 +49,38 @@
             },
         }
     },
-    lineOptions: () => {
+    lineOptions: (displayLegend = false) => {
         return {
             legend: {
-                display: false
+                display: displayLegend
             },
             layout: {
                 padding: {
-                    top: 5,
+                    top: 15,
+                    left: 5,
+                    right: 5
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        precision: 0,
+                        //stepSize: stepOne ? 1 : undefined,
+                        beginAtZero: true
+                    },
+                }],
+            },
+        }
+    },
+    lineOptionsMultiDataSet: () => {
+        return {
+            legend: {
+                display: true,
+                position: 'bottom'
+            },
+            layout: {
+                padding: {
+                    top: 15,
                     left: 5,
                     right: 5
                 }
@@ -85,6 +113,32 @@
                 }
             },
         }
+    },
+    dynamicColors: () => {
+
+        var r = Math.floor(Math.random() * 255);
+        var g = Math.floor(Math.random() * 255);
+        var b = Math.floor(Math.random() * 255);
+
+        return "rgb(" + r + "," + g + "," + b + ")";
+    },
+    pallete: () => {
+        return [
+            '#003049',
+            '#d62828',
+            '#f77f00',
+            '#fcbf49',
+            '#219ebc',
+            '#7400b8',
+            '#80ffdb',
+            '#cdb4db',
+            '#355070',
+            '#212529',
+            '#80b918',
+            '#5a189a',
+            '#e5383b',
+            '#00bbf9',
+        ]
     },
     charts: {
         /**
@@ -204,7 +258,6 @@
                 options: chartsHelper.lineOptions()
             });
         },
-
         /**
          * 
          * @param {ITaskPerformance} taskPerformance
@@ -244,7 +297,95 @@
                 // Configuration options go here
                 options: chartsHelper.pieOptions()
             });
-        }
+        },
+
+        /**
+         * @param {Array<MemberActivitiesFrequency>} activitiesFrequency
+         */
+        populateMemberActivitiesFrequency: function (id, activitiesFrequency) {
+
+            var ctx = document.getElementById(id).getContext('2d');
+
+            const hasData = activitiesFrequency.length > 0
+
+            const labels = hasData ? activitiesFrequency[0].activities.map(k => moment(k.key).format('D/MMM')) : []
+
+            // colors
+            const pallete = chartsHelper.pallete();
+            const palletLength = pallete.length;
+            let nextColor = 0
+
+            const getNextColor = (idx) => {
+
+                if (idx >= palletLength) {
+                    nextColor = 0
+                }
+
+                return pallete[nextColor++]
+            }
+
+
+            // datasets
+
+            const datasets = hasData ? activitiesFrequency.map((k, idxDs) => ({
+                label: k.user.name,
+                borderColor: getNextColor(),
+                data: k.activities.map((a, idx) => ({ x: idx, y: a.value }))
+            })) : []
+
+
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets
+                },
+                options: chartsHelper.lineOptionsMultiDataSet()
+            });
+        },
+        /**
+         * @param {Array<TeamActivitiesFrequency>} activitiesFrequency
+         */
+        populateTeamActivitiesFrequency: function (id, activitiesFrequency) {
+
+            var ctx = document.getElementById(id).getContext('2d');
+
+            const hasData = activitiesFrequency.length > 0
+
+            // labels
+            const labels = hasData ? activitiesFrequency[0].activities.map(k => moment(k.key).format('D/MMM')) : []
+
+            // colors
+            const pallete = chartsHelper.pallete();
+            const palletLength = pallete.length;
+            let nextColor = 0
+
+            const getNextColor = (idx) => {
+
+                if (idx >= palletLength) {
+                    nextColor = 0
+                }
+
+                return pallete[nextColor++]
+            }
+
+            // datasets
+            const datasets = hasData ? activitiesFrequency.map(k => ({
+                label: k.team.name,
+                borderColor: getNextColor(),
+                data: k.activities.map((k, idx) => ({ x: idx, y: k.value }))
+            })) : []
+
+            return new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets
+                },
+                options: chartsHelper.lineOptionsMultiDataSet()
+            });
+        },
+
     }
 }
 
