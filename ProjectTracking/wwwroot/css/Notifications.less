@@ -4,6 +4,7 @@
     /*display: block;*/
     #Pagination {
         margin: 0;
+        border-top:none;
 
         .container {
             width: auto;
@@ -18,12 +19,12 @@
     }
 }
 
-.send-notification-container{
-    display:flex;
+.send-notification-container {
+    display: flex;
 
-    >div{
-        flex:1;
-        padding:10px;
+    > div {
+        flex: 1;
+        padding: 10px;
     }
 }
 
@@ -42,19 +43,21 @@
         /*float: left;
             clear: left;*/
         /*min-width: 300px;*/
-        transition: all 500ms ease-in;
-        background-color: @main-xxlight;
-        border: 3px solid rgba(255, 255, 255, 0.00);
+        transition: all 200ms ease-in;
+        background-color:@gray-xlight;
+        border-left: 4px solid rgba(255, 255, 255, 0.00);
 
 
         &.notification-default {
-            border-left:3px solid #515151;
-        }       
+            border-color: @main-color;
+        }
+
         &.notification-information {
-            border-left:3px solid #665aff;
-        }       
+            border-color: @gray;
+        }
+
         &.notification-important {
-            border-left:3px solid #630000;
+            border-color: @color-danger;
         }
 
         &.isNew {
@@ -85,8 +88,8 @@
 
 
 .scrollable-container {
-    max-height:300px;
-    overflow:auto;
+    max-height: 300px;
+    overflow: auto;
 }
 
 @-webkit-keyframes notification_blink {
@@ -95,7 +98,7 @@
     }
 
     to {
-        border-color: @main-dark;
+        border-color: @main-color;
     }
 }
 
@@ -105,6 +108,6 @@
     }
 
     to {
-        border-color: @main-dark;
+        border-color: @main-color;
     }
 }
