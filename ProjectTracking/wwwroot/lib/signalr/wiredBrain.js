@@ -9,6 +9,7 @@ connection = new signalR.HubConnectionBuilder()
 
 connection.on('ReceiveMessage', (message) => {
 
+    console.log({ message })
 
     //bootbox.alert(message, function () {
     //    //console.log("Alert Callback");

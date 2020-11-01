@@ -1,5 +1,4 @@
-﻿
-Vue.component('paginate', VuejsPaginate)
+﻿Vue.component('paginate', VuejsPaginate)
 
 var notification_app = new Vue({
     el: '#NotificationModal',
@@ -21,7 +20,7 @@ var notification_app = new Vue({
             handler: function (newVal, oldVal) {
 
                 sidebar_app.notificationsCount = newVal.totalCount
-                 
+
                 this.dataPaging.totalPages = Math.ceil(newVal.totalCount / newVal.length);
 
             },
@@ -33,16 +32,15 @@ var notification_app = new Vue({
 
 
             this.isLoading = true;
-            // 0 for current user
-            NotificationService.GetToUser(0, page, this.dataPaging.length)
-                .then((r) => {
-                    //console.log('get to user',r.data)
 
+            NotificationService.GetToCurrentUser(page, this.dataPaging.length)
+                .then((r) => {
 
                     this.notifications = r.data.records ? r.data.records : []
-                    this.dataPaging.totalCount = r.data.totalCount
-                    sidebar_app.notificationsCount = this.dataPaging.totalCount
 
+                    this.dataPaging.totalCount = r.data.totalCount
+
+                    sidebar_app.notificationsCount = this.dataPaging.totalCount
                 })
                 .catch((e) => {
                     console.error({ e })

@@ -47,6 +47,20 @@ const PROJECT_STATUS = {
     }
 }
 
+//Default, Information, Important
+const NOTIFICATION_TYPE = {
+    default: { key: 0, value: 'Default', code: 'default' },
+    information: { key: 1, value: 'Information', code: 'info' },
+    important: { key: 2, value: 'Important', code: 'important' },
+    _toList: function () {
+        return [
+            this.default,
+            this.information,
+            this.important,
+        ]
+    }
+}
+
 var colors = {
     mainLight: '#5bcbee',
     mainLightTransparent: 'rgba(91, 203, 238, 0.66)',

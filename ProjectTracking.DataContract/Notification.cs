@@ -36,7 +36,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return DateSent.ToString("yyyy-MM-dd HH:mm:ss");
+                return DateSent.ToDisplayDateTime();
 
             }
         }

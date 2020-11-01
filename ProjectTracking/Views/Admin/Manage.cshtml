@@ -5,6 +5,7 @@
         <li><a data-toggle="tab" href="#CategoriesTab"> <i class="fa fa-th-large"></i> Categories </a></li>
         <li><a data-toggle="tab" href="#LocationTab"><i class="fa fa-network-wired"></i> Locations</a></li>
         <li><a data-toggle="tab" href="#UserLogsTab"><i class="fa fa-history"></i> Logs</a></li>
+        <li><a data-toggle="tab" href="#UsersNotificationsTab"><i class="fa fa-comment-dots"></i> Notifications</a></li>
     </ul>
 
     <div class="tab-content">
@@ -23,6 +24,10 @@
 
         <div id="UserLogsTab" class="tab-pane ">
             <partial name="~/views/admin/forms/logsform.cshtml" />
+        </div>
+
+        <div id="UsersNotificationsTab" class="tab-pane ">
+            <partial name="~/views/admin/forms/UsersNotifications.cshtml" />
         </div>
 
     </div>
@@ -44,7 +49,7 @@
     <script src="~/services/IpAddressesService.js"></script>
     <script src="~/services/UsersLogsService.js"></script>
 
-
+    <script src="~/js/UsersNotifications.js"></script>
     <script src="~/js/UsersLogs.js"></script>
     <script src="~/js/Categories.js"></script>
     @*<script src="~/js/Teams.js"></script>*@

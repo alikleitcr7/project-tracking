@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
+using ProjectTracking.Exceptions;
 using ProjectTracking.Hubs;
 
 namespace ProjectTracking.Controllers
 {
-    public class NotificationsController : Controller
+    public class NotificationsController : BaseController
     {
         private readonly INotificationMethods _notificationMethods;
         //private readonly IHubContext<NotificationsHub> _notificationsHub;
@@ -61,9 +62,59 @@ namespace ProjectTracking.Controllers
             };
         }
 
+        public IActionResult GetToCurrentUser(int page, int countPerPage)
+        {
+            try
+            {
+                string userId = GetCurrentUserId();
+
+                List<UserNotification> records = _notificationMethods.GetToUser(userId, page, countPerPage, out int totalCount);
+
+                return Ok(new
+                {
+                    records,
+                    totalCount
+                });
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
+        }
+
+        public IActionResult GetFromCurrentUser(int page, int countPerPage)
+        {
+            try
+            {
+                string userId = GetCurrentUserId();
+
+                List<UserNotification> records = _notificationMethods.GetFromUser(userId, page, countPerPage, out int totalCount);
+
+                return Ok(new
+                {
+                    records,
+                    totalCount
+                });
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
+        }
+
         public class SendBroadCastObject
         {
-            public List<string> selectedEmployees { get; set; }
+            public List<string> selectedUserIds { get; set; }
             public string message { get; set; }
             public NotificationType type { get; set; }
         }
@@ -82,9 +133,9 @@ namespace ProjectTracking.Controllers
 
             string fromUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            foreach (string id in model.selectedEmployees)
+            foreach (string id in model.selectedUserIds)
             {
-                UserNotification notification = await _notificationMethods.Send(fromUser, id, model.message, model.type,true);
+                UserNotification notification = await _notificationMethods.Send(fromUser, id, model.message, model.type, true);
                 sent.Add(notification);
             }
 

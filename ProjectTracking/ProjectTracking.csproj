@@ -180,6 +180,9 @@
     <Content Update="Views\Admin\Forms\LocationsForm.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Admin\Forms\UsersNotifications.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Admin\Modals\UserRoleLogsModal.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

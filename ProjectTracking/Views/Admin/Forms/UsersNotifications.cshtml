@@ -1,0 +1,153 @@
+﻿<div id="UsersNotifications" class="UsersNotifications v-container" v-cloak=v-cloak>
+
+    <div class="buttons mb-2">
+        <button type="button" v-on:click="usersNotifications_openModal" class="s-btn s-btn-primary">Compose &nbsp;<i class="fa fa-plus"></i></button>
+    </div>
+
+    <h4 v-show="!usersNotifications.isLoading && !usersNotifications.data.length ">
+        <br />
+        Nothing here yet
+    </h4>
+
+    @*<div class="input-group " style="max-width:300px">
+
+        <input type="text" class="form-control" placeholder="Search" v-model="usersNotifications.filterBy.keyword">
+
+        <div class="input-group-btn">
+            <button class="btn btn-default" type="submit" v-on:click="usersNotifications_getAll(0)">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+
+    </div>*@
+
+    <section id="Pagination" class="c-pagination" v-show="usersNotificationsTotalPages > 1">
+        <div class="">
+            <paginate v-bind:page-count="usersNotificationsTotalPages"
+                      v-bind:container-class="usersNotifications.dataPaging.pagination"
+                      v-bind:prev-text="usersNotifications.dataPaging.prev"
+                      v-bind:next-text="usersNotifications.dataPaging.next" v-bind:click-handler="usersNotifications_pageClick">
+            </paginate>
+        </div>
+    </section>
+
+    <p class="c-display-message">{{usersNotifications.isLoading ? 'Loading...':'&nbsp;'}}</p>
+
+    <div v-show="usersNotifications.data.length" class="UsersNotifications c-table-data-container "
+         v-bind:class="{'lock-controls': usersNotifications.isProcessing }">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th style="width: 50px">-</th>
+                    <th>Message</th>
+                    <th>Date Sent</th>
+                    <th>To User</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr v-for="(item ,idx) in usersNotifications.data">
+                    <td>
+                        {{item.message}}
+                    </td>
+
+                    <td>
+                        {{item.dateSentDisplay}}
+                    </td>
+
+                    <td>
+                        {{item.toUser.fullName}}
+                    </td>
+
+                    <td>
+                        {{item.typeDisplay}}
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal" id="UsersNotificationModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-body">
+
+                    <div class="input-group-container">
+                        <div class="input-group-item">
+                            <label>Message</label>
+                            <textarea class="form-control" placeholder="Type a message here..." v-model="usersNotifications.form.record.message" maxlength="255"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="input-group-container">
+
+                        <div class="input-group-item">
+                            <label>Type</label>
+                            <div>
+                                <label v-for="type in notificationTypes.data" style="padding-right:1em">
+                                    <input type="radio" :value="type.key" v-model="usersNotifications.form.record.type" />
+                                    {{type.value}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#MembersTab"><span v-bind:class="{'text-danger':!usersNotifications.form.record.selectedUserIds.length  }"> Members</span></a></li>
+                        <li><a data-toggle="tab" href="#SupervisorTab"><span v-bind:class="{'text-danger':!usersNotifications.form.record.selectedUserIds.length  }">Supervisors</span> </a></li>
+                    </ul>
+
+                    <div class="tab-content">
+
+                        <div id="MembersTab" class="tab-pane fade in active">
+                            <div class="checklist-container scrollable-container-300">
+
+                                <p class="skeleton-loading-item" v-show="teamMembers.isLoading" v-for="k in [,,,]"></p>
+
+                                <p v-show="!teamMembers.isLoading && !teamMembers.data.length">There are currently no team members registered!</p>
+                                <p v-for="(user, idx) in teamMembers.data">
+                                    <input type="checkbox" :value="user.key" v-model="usersNotifications.form.record.selectedUserIds" />
+                                    {{user.value}}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div id="SupervisorTab" class="tab-pane fade">
+                            <div class="checklist-container scrollable-container-300">
+
+                                <p class="skeleton-loading-item" v-show="supervisors.isLoading" v-for="k in [,,,]"></p>
+
+                                <p v-show="!supervisors.isLoading && !supervisors.data.length">There are currently no team supervisors registered!</p>
+                                <p v-for="(user, idx) in supervisors.data">
+                                    <input type="checkbox" :value="user.key" v-model="usersNotifications.form.record.selectedUserIds" />
+                                    {{user.value}}
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer modal-footer-centered">
+                    <p class="f-display-message">{{ usersNotifications.form.message}}</p>
+                    <div class="modal-buttons-container">
+                        <button v-bind:disabled="usersNotifications.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="usersNotifications_save">
+                            {{usersNotifications.form.isSaving ? 'Sending...' : 'Send'}} <i class="fa fa-paper-plane"></i>
+                        </button>
+                        <button type="button" class="s-btn s-btn-outline" data-dismiss="modal">Close <i class="fa fa-close"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>

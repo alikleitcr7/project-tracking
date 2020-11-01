@@ -56,6 +56,32 @@ namespace ProjectTracking.Controllers
             };
         }
 
+
+        //public IActionResult GetToCurrentUser(int page, int countPerPage)
+        //{
+        //    try
+        //    {
+        //        string userId = GetCurrentUserId();
+
+        //        List<Broadcast> records = _broadcastsMethods.GetToUser(userId, page, countPerPage, out int totalCount);
+
+        //        return Ok(new
+        //        {
+        //            records,
+        //            totalCount
+        //        });
+        //    }
+        //    catch (ClientException ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = ex.Message });
+        //    }
+
+        //}
+
         public async Task<List<Broadcast>> Send([FromBody]SendBroadcastObject model)
         {
             List<Broadcast> sent = new List<Broadcast>();
