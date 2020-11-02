@@ -1,0 +1,90 @@
+﻿@model int
+
+<div class="modal" id="TeamNotificationModal" data-id="@Model">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Broadcasts</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="broadcast-form">
+
+                    <div class="input-group-container">
+                        <div class="input-group-item">
+                            <label>Message</label>
+                            <textarea class="form-control" placeholder="Type a message here..." v-model="teamNotifications.form.record.message" maxlength="255"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="input-group-container type-send-container">
+
+                        <div class="input-group-item types-container">
+                            <label>Type</label>
+                            <div>
+                                <label v-for="type in notificationTypes.data" style="padding-right:1em">
+                                    <input type="radio" :value="type.key" v-model="teamNotifications.form.record.type" />
+                                    {{type.value}}
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="input-group-item send-button-container">
+                            <button v-bind:disabled="teamNotifications.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="teamNotifications_save">
+                                {{teamNotifications.form.isSaving ? 'Sending...' : 'Send'}} <i class="fa fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <h5 v-if="teamNotifications.form.message">{{teamNotifications.form.message}}</h5>
+                </div>
+                <div class="broadcasts">
+
+                    <h4 v-show="!teamNotifications.isLoading && !teamNotifications.data.length ">
+                        <br />
+                        Nothing here yet
+                    </h4>
+
+                    <section id="Pagination" class="c-pagination" v-show="teamNotificationsTotalPages > 1">
+                        <div class="">
+                            <paginate v-bind:page-count="teamNotificationsTotalPages"
+                                      v-bind:container-class="teamNotifications.dataPaging.pagination"
+                                      v-bind:prev-text="teamNotifications.dataPaging.prev"
+                                      v-bind:next-text="teamNotifications.dataPaging.next"
+                                      v-bind:click-handler="teamNotifications_pageClick">
+                            </paginate>
+                        </div>
+                    </section>
+
+                    <p class="c-display-message" v-if="teamNotifications.isLoading">Loading...</p>
+
+                    <div class="notification-container scrollable-container-300" v-show="teamNotifications.data.length">
+                        <div class="notification" v-for="(item,idx) in teamNotifications.data"
+                             v-bind:class="getNotificationClasses(item)">
+                            <div class="notification__user"> {{item.fromUserDisplay}}</div>
+                            <div class="notification__message" v-html="item.message"></div>
+                            <div class="notification__date">{{item.dateSentDisplay}}</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            @*<div class="modal-footer modal-footer-centered">
+                <p class="f-display-message">
+                    {{teamUsers.form.message}}
+                </p>
+                <div class="modal-buttons-container">
+                    <button v-bind:disabled="teamUsers.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="teamUsers_save">
+                        Save {{teamUsers.form.isSaving ? '...':''}}
+                    </button>
+                    <button type="button" class="s-btn s-btn-outline" data-dismiss="modal">Close</button>
+                </div>
+            </div>*@
+
+        </div>
+    </div>
+</div>

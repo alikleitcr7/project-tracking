@@ -2,7 +2,7 @@
 
 @model Team
 
-@{ 
+@{
 
     ViewData["Title"] = $"Team - {Model.Name}";
 
@@ -33,6 +33,7 @@
     <section class="team-buttons">
         <button class="s-btn s-btn-primary" :disabled="isLoading" @@click="showMembers()"><i class="fa fa-users"></i> Members</button>
         <button class="s-btn s-btn-primary" @@click="openProjects()"><i class="fa fa-stream"></i> Projects</button>
+        <button class="s-btn s-btn-primary" @@click="openBroadcasts()"><i class="fa fa-mail-bulk"></i> Broadcast</button>
         @*<button class="s-btn s-btn-outline" :disabled="isLoading" @@click="()"><i class="fa fa-users"></i> Members</button>*@
     </section>
 
@@ -146,19 +147,24 @@
 
 </div>
 
+<partial name="~/Views/Teams/Modals/BroadcastsModal.cshtml" model="@Model.ID" />
 
 @section styles{
-<link href="~/css/Team.min.css" rel="stylesheet" />
+    <link href="~/css/Team.min.css" rel="stylesheet" />
 }
 
 @section scripts{
 
-<script src="~/lib/chartjs-2.7.1/Chart.min.js"></script>
+    <script src="~/lib/chartjs-2.7.1/Chart.min.js"></script>
 
-<script src="~/services/TeamsService.js"></script>
-<script src="~/services/ProjectsService.js"></script>
+    <script src="~/services/TeamsService.js"></script>
+    <script src="~/services/ProjectsService.js"></script>
 
-<script src="~/js/statistics/ChartHelper.js"></script>
+    <script src="~/js/statistics/ChartHelper.js"></script>
 
-<script src="~/js/Team.js"></script>
+
+
+    <script src="~/js/TeamBroadcasts.js"></script>
+    <script src="~/js/Team.js"></script>
+
 }

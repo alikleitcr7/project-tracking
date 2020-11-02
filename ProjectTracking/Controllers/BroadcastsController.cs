@@ -7,20 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
+using ProjectTracking.Exceptions;
 using ProjectTracking.Hubs;
 
 namespace ProjectTracking.Controllers
 {
-    public class BroadcastsController : BaseSupervisorController
+    public class BroadcastsController : BaseController
     {
         private readonly IBroadcastsMethods _broadcastsMethods;
-        //private readonly IHubContext<BroadcastsHub> _notificationsHub;
+        private readonly IHubContext<BroadcastsHub> _notificationsHub;
 
-        public BroadcastsController(IBroadcastsMethods notificationMethods, IUserMethods userMethods)
-            : base(userMethods)
+        public BroadcastsController(IBroadcastsMethods broadcastsMethods, IHubContext<BroadcastsHub> notificationsHub)
+            //: base(userMethods)
         {
-            _broadcastsMethods = notificationMethods;
-            //_notificationsHub = notificationsHub;
+            _broadcastsMethods = broadcastsMethods;
+            _notificationsHub = notificationsHub;
         }
 
 
@@ -29,42 +30,59 @@ namespace ProjectTracking.Controllers
             return View();
         }
 
-        public object GetFromUser(string fromUserId, int page, int countPerPage)
+        public IActionResult GetFromCurrentUser(int page, int countPerPage)
         {
-            if (fromUserId == "0")
+            try
             {
-                fromUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                string fromUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                List<Broadcast> records = _broadcastsMethods.GetFromUser(fromUserId, page, countPerPage, out int totalCount);
+
+                return Ok(new
+                {
+                    records,
+                    totalCount
+                });
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
             }
 
-            List<Broadcast> records = _broadcastsMethods.GetFromUser(fromUserId, page, countPerPage, out int totalCount);
-
-            return new
-            {
-                records,
-                totalCount
-            };
         }
 
-        public object GetToTeam(int toTeam, int page, int countPerPage)
+        public IActionResult GetToTeam(int toTeamId, int page, int countPerPage)
         {
-            List<Broadcast> records = _broadcastsMethods.GetToTeam(toTeam, page, countPerPage, out int totalCount);
-
-            return new
+            try
             {
-                records,
-                totalCount
-            };
-        }
+                List<Broadcast> records = _broadcastsMethods.GetToTeam(toTeamId, page, countPerPage, out int totalCount);
 
+                return Ok(new
+                {
+                    records,
+                    totalCount
+                });
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
 
         //public IActionResult GetToCurrentUser(int page, int countPerPage)
         //{
         //    try
         //    {
         //        string userId = GetCurrentUserId();
-
         //        List<Broadcast> records = _broadcastsMethods.GetToUser(userId, page, countPerPage, out int totalCount);
-
         //        return Ok(new
         //        {
         //            records,
@@ -79,27 +97,49 @@ namespace ProjectTracking.Controllers
         //    {
         //        return StatusCode(500, new { message = ex.Message });
         //    }
-
         //}
 
-        public async Task<List<Broadcast>> Send([FromBody]SendBroadcastObject model)
+            // try moving to notifications controller...
+            // and also the send to sendbroadcast method
+            // for furthur notice
+
+        public async Task<IActionResult> Send([FromBody]SendBroadcastObject model)
         {
-            List<Broadcast> sent = new List<Broadcast>();
+            try
+            {
+                List<Broadcast> sent = new List<Broadcast>();
 
-            string fromUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                string fromUser = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            Broadcast notification = await _broadcastsMethods.Send(fromUser, model.toTeamId, model.message, model.notificationType, true);
-            sent.Add(notification);
+                Broadcast notification = await _broadcastsMethods.Send(fromUser, model.toTeamId, model.message, model.type, true);
 
-            return sent;
+                sent.Add(notification);
+
+                //await _notificationsHub.Clients.User("a18be9c0-aa65-4af8-bd17-00bd9344e579").SendAsync("ReceiveBroadcast", notification);
+                //await _notificationsHub.Clients.All.SendAsync("ReceiveBroadcast", notification);
+                //await _notificationsHub.Clients..All.SendAsync("ReceiveNotification", notification );
+
+                return Ok(sent);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
         }
+
+
 
         public class SendBroadcastObject
         {
-            public string fromUserId { get; set; }
+            //public string fromUserId { get; set; }
             public int toTeamId { get; set; }
             public string message { get; set; }
-            public NotificationType notificationType { get; set; }
+            public NotificationType type { get; set; }
         }
     }
 }

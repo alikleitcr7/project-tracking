@@ -11,22 +11,16 @@ using System.Threading.Tasks;
 
 namespace ProjectTracking.Hubs
 {
-
-    public class NotificationsHub : Hub
+    public class BroadcastsHub : Hub, IBroadcastsHub
     {
         //private IHttpContextAccessor _httpContextAccessor;
         //private IHttpContextAccessor _context;
 
         //IHttpContextAccessor httpContextAccessor, IHttpContextAccessor context
-        public NotificationsHub()
+        public BroadcastsHub()
         {
             //_httpContextAccessor = httpContextAccessor;
             //_context = context;
-        }
-
-        public async Task SendNotification(string userId, string message)
-        {
-            await Clients.User(userId).SendAsync("ReceiveNotification", "You have a new message: " + message);
         }
 
         public override async Task OnConnectedAsync()

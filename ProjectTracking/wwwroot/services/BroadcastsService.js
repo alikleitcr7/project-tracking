@@ -1,13 +1,13 @@
 ﻿const BROADCASTS_SERVICE_URI = (method) => `/Broadcasts/${method}`;
 
 const BroadcastService = {
-    GetFromUser: function (fromUserId, page, countPerPage) {
+    GetFromCurrentUser: function (page, countPerPage) {
 
-        let query = serialize({ fromUserId, page, countPerPage });
+        let query = serialize({  page, countPerPage });
 
         console.log({ query })
 
-        let url = BROADCASTS_SERVICE_URI(`GetFromUser?${query}`)
+        let url = BROADCASTS_SERVICE_URI(`GetFromCurrentUser?${query}`)
 
         return axios.get(url);
     },
@@ -21,9 +21,9 @@ const BroadcastService = {
 
         return axios.get(url);
     },
-    Send: function (fromUserId, toTeamId, message, notificationType) {
+    Send: function (toTeamId, message, type) {
 
-        let data = { fromUserId, toTeamId, message, notificationType };
+        let data = { toTeamId, message, type };
 
         let url = BROADCASTS_SERVICE_URI(`Send`)
 

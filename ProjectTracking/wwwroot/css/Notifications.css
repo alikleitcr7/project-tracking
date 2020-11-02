@@ -445,9 +445,26 @@
   font-size: 0.8em;
   color: #333;
 }
+.type-send-container .types-container {
+  width: 80%;
+  flex: unset;
+}
+.type-send-container .send-button-container {
+  width: 20%;
+  flex: unset;
+  text-align: right;
+  align-self: flex-end;
+}
 .scrollable-container {
   max-height: 300px;
   overflow: auto;
+}
+#TeamNotificationModal .modal-title {
+  /*font-size:.9em;*/
+}
+#TeamNotificationModal .scrollable-container-200 {
+  /*min-width: 500px;
+        overflow-x: auto;*/
 }
 @-webkit-keyframes notification_blink {
   from {
@@ -463,5 +480,15 @@
   }
   to {
     border-color: #2286c3;
+  }
+}
+@media (max-width: 992px) {
+  .type-send-container .types-container {
+    width: 100%;
+  }
+  .type-send-container .send-button-container {
+    width: 100%;
+    text-align: center;
+    align-self: center;
   }
 }

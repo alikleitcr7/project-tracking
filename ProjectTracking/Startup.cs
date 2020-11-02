@@ -129,7 +129,8 @@ namespace ProjectTracking
 
             services.AddSingleton<Utils.IValidationExtensions, Utils.ValidationExtensions>();
 
-            services.AddTransient<INotificationMethods, Data.Methods.NotificationMethods>();
+            services.AddSingleton<IBroadcastsMethods, Data.Methods.BroadcastsMethods>();
+            services.AddSingleton<INotificationMethods, Data.Methods.NotificationMethods>();
             services.AddScoped<ITimeSheetsMethods, Data.Methods.TimeSheetsMethods>();
             services.AddTransient<ICategoriesMethods, Data.Methods.CategoriesMethods>();
             services.AddTransient<ITeamsMethods, Data.Methods.TeamsMethods>();
@@ -252,6 +253,7 @@ namespace ProjectTracking
             {
                 routes.MapHub<ObserverHub>("/observer");
                 routes.MapHub<NotificationsHub>("/notificationshub");
+                routes.MapHub<BroadcastsHub>("/broadcastshub");
             });
 
             app.UseMvc(routes =>

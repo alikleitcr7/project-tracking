@@ -237,6 +237,9 @@
     <Content Update="Views\Teams\Modals\SupervisorLogsModal.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\Teams\Modals\BroadcastsModal.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Teams\Modals\TeamUsersModal.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

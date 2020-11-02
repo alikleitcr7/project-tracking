@@ -19,9 +19,9 @@ namespace ProjectTracking.Data.Methods
     {
         private ApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IHubContext<NotificationsHub> _notificationsHub;
+        private readonly IHubContext<BroadcastsHub> _notificationsHub;
 
-        public BroadcastsMethods(IMapper mapper, IHubContext<NotificationsHub> notificationsHub, IConfiguration config)
+        public BroadcastsMethods(IMapper mapper, IHubContext<BroadcastsHub> notificationsHub, IConfiguration config)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             optionsBuilder.UseSqlServer(Setting.ConnectionString);
@@ -42,7 +42,7 @@ namespace ProjectTracking.Data.Methods
         {
             // get users under the team that user is supervising...
             // this will validate the supervisor constraint
-            List<string> userIds = _context.Users.Where(k => _context.SupervisorLogs.Any(s => s.UserId == fromUserId && s.TeamId == toTeamId))
+            List<string> userIds = _context.Users.Where(k => k.TeamId == toTeamId)
                            .Select(k => k.Id).ToList();
 
             if (userIds.Count == 0)

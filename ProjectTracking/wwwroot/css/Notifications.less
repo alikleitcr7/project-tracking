@@ -4,7 +4,7 @@
     /*display: block;*/
     #Pagination {
         margin: 0;
-        border-top:none;
+        border-top: none;
 
         .container {
             width: auto;
@@ -44,7 +44,7 @@
             clear: left;*/
         /*min-width: 300px;*/
         transition: all 200ms ease-in;
-        background-color:@gray-xlight;
+        background-color: @gray-xlight;
         border-left: 4px solid rgba(255, 255, 255, 0.00);
 
 
@@ -87,9 +87,34 @@
 }
 
 
+.type-send-container {
+    .types-container {
+        width: 80%;
+        flex: unset;
+    }
+
+    .send-button-container {
+        width: 20%;
+        flex: unset;
+        text-align: right;
+        align-self: flex-end;
+    }
+}
+
 .scrollable-container {
     max-height: 300px;
     overflow: auto;
+}
+
+#TeamNotificationModal {
+    .modal-title {
+        /*font-size:.9em;*/
+    }
+
+    .scrollable-container-200 {
+        /*min-width: 500px;
+        overflow-x: auto;*/
+    }
 }
 
 @-webkit-keyframes notification_blink {
@@ -109,5 +134,21 @@
 
     to {
         border-color: @main-color;
+    }
+}
+
+@media (max-width: 992px) {
+
+
+    .type-send-container {
+        .types-container {
+            width: 100%;
+        }
+
+        .send-button-container {
+            width: 100%;
+            text-align: center;
+            align-self: center;
+        }
     }
 }

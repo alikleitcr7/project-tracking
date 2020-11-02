@@ -81,6 +81,13 @@ new Vue({
 
                 })
 
+        },
+        openBroadcasts: function () {
+            if (!teamNotifications_app) {
+                console.error('team notification app undefined')
+                return
+            }
+            teamNotifications_app.teamNotifications_openModal()
         }
     },
     computed: {
