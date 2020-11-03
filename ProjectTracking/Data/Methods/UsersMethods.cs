@@ -987,9 +987,9 @@ namespace ProjectTracking.Data.Methods
 
         public TeamMemberOverview GetTeamMemberOverview(string userId)
         {
-            if (!db.Users.Any(k => k.Id == userId))
+            if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.Supervisor))
             {
-                throw new ClientException("user dont exist");
+                throw new ClientException("DONT_EXIST_OR_NOT_CLAIMED_ROLE");
             }
 
             var q_tsActivities = GetUserActivitiesQuery(userId);
@@ -1019,7 +1019,7 @@ namespace ProjectTracking.Data.Methods
         {
             if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.Supervisor))
             {
-                throw new ClientException("DONT_EXIST_OR_NOT_SUPERVISOR");
+                throw new ClientException("DONT_EXIST_OR_NOT_CLAIMED_ROLE");
             }
 
             SupervisorOverview overview = new SupervisorOverview();
@@ -1130,9 +1130,9 @@ namespace ProjectTracking.Data.Methods
 
         public AdminOverview GetAdminOverview(string userId)
         {
-            if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.Admin))
+            if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.Supervisor))
             {
-                throw new ClientException("user dont exist or not an admin");
+                throw new ClientException("DONT_EXIST_OR_NOT_CLAIMED_ROLE");
             }
 
             AdminOverview overview = new AdminOverview();

@@ -140,21 +140,19 @@ new Vue({
                 }
 
                 this.overview.data = record
+
                 this.populateDashboard(record)
             })
             .catch((e) => {
                 const errorMessage = getAxiosErrorMessage(e)
 
-
-
-                if (errorMessage === 'DONT_EXIST_OR_NOT_SUPERVISOR') {
+                if (errorMessage === 'DONT_EXIST_OR_NOT_CLAIMED_ROLE') {
                     this.overview.message = "Your role might have changed!"
                     this.overview.showLogout = true
 
                 }
                 else if (errorMessage === 'NO_SUPERVISING_TEAMS') {
                     this.overview.message = 'No supervising team assigned yet!'
-
                 }
                 else {
                     this.overview.message = errorMessage

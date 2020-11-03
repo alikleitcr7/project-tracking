@@ -503,18 +503,22 @@
 }
 @-webkit-keyframes notification_blink {
   from {
-    border-color: #6bcfee;
+    /*border-color: @main-xlight;*/
+    background-color: #eeeeee;
   }
   to {
-    border-color: #2286c3;
+    /*border-color: @main-color;*/
+    background-color: #ffd1b0;
   }
 }
 @keyframes notification_blink {
   from {
-    border-color: #6bcfee;
+    /*border-color: @main-xlight;*/
+    background-color: #eeeeee;
   }
   to {
-    border-color: #2286c3;
+    /*border-color: @main-color;*/
+    background-color: #ffd1b0;
   }
 }
 @media (max-width: 992px) {

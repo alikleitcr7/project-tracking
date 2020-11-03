@@ -41,13 +41,14 @@ connection.on('ReceiveNotification', (message) => {
 
             message.isNew = true
 
-            const isToTeam = message.toTeamId !== null
+            const isToTeam = message.toTeamId ? true : false
+
 
             if (isToTeam) {
 
                 let broadcasts = { ...notification_app.broadcasts }
 
-                console.log({ broadcasts})
+                //console.log({ broadcasts})
 
                 let data = [message,...broadcasts.data]
                 broadcasts.data = data;
@@ -64,7 +65,7 @@ connection.on('ReceiveNotification', (message) => {
 
                 broadcasts.dataPaging = dataPaging
 
-                console.log({ broadcasts })
+                //console.log({ broadcasts })
 
                 notification_app.broadcasts = broadcasts
             }
@@ -72,13 +73,17 @@ connection.on('ReceiveNotification', (message) => {
 
                 let notifications = [...notification_app.notifications]
 
-                message.isNew = true
+                //console.log('not1',{ notifications })
+
+                //message.isNew = true
                 notifications.unshift(message)
 
                 if (notifications.length > notification_app.dataPaging.length) {
 
                     notifications.pop()
                 }
+
+                //console.log('not2', { notifications })
 
                 notification_app.notifications = notifications
                 //sidebar_app.hasNewNotification = true
