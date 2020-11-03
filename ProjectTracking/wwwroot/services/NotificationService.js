@@ -53,4 +53,12 @@ const NotificationService = {
 
         return axios.post(url, data);
     },
+    SendToTeam: function (toTeamId, message, type) {
+
+        let data = { toTeamId, message, type };
+
+        let url = NOTIFICATIONS_SERVICE_URI(`SendToTeam`)
+
+        return axios.post(url, data);
+    },
 }

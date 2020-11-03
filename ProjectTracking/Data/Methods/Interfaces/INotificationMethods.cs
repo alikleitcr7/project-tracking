@@ -9,5 +9,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         List<UserNotification> GetFromUser(string fromUserId, int page, int countPerPage, out int totalCount);
         List<UserNotification> GetToUser(string toUserId, int page, int countPerPage, out int totalCount);
         Task<UserNotification> Send(string fromUserId, string toUserId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false);
+        Task<Broadcast> SendToTeam(string fromUserId, int toTeamId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false);
     }
 }

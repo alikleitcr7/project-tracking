@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using ProjectTracking.AppStart;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
+using ProjectTracking.Exceptions;
 using ProjectTracking.Hubs;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,53 @@ namespace ProjectTracking.Data.Methods
                 .Include(k => k.FromUser)
                 .Include(k => k.ToUser);
         }
+        private IQueryable<DataSets.Broadcast> BroadcastPopulate()
+        {
+            return _context.Broadcasts
+                .Include(k => k.FromUser);
+                //.Include(k => k.ToTeam);
+        }
+
+
+        public async Task<Broadcast> SendToTeam(string fromUserId, int toTeamId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false)
+        {
+            // get users under the team that user is supervising...
+            // this will validate the supervisor constraint
+            List<string> userIds = _context.Users.Where(k => k.TeamId == toTeamId)
+                           .Select(k => k.Id).ToList();
+
+            if (userIds.Count == 0)
+            {
+                throw new ClientException("there are no users under the team");
+            }
+
+            DataSets.Broadcast broadcast = new DataSets.Broadcast()
+            {
+                FromUserId = fromUserId,
+                ToTeamId = toTeamId,
+                Message = message,
+                NotificationTypeCode = (short)notificationType,
+                DateSent = DateTime.Now
+            };
+
+            _context.Broadcasts.Add(broadcast);
+            _context.SaveChanges();
+
+            Broadcast sent = GetBroadcast(broadcast.ID);
+
+            if (sendLiveNotification && sent != null)
+            {
+                foreach (var user in userIds)
+                {
+                    await _notificationsHub.Clients.User(user).SendAsync("ReceiveNotification", sent);
+
+                }
+                //await _notificationsHub.Clients.Users(userIds).SendAsync("ReceiveNotification", sent);
+            }
+
+            return sent;
+        }
+
 
         public async Task<UserNotification> Send(string fromUserId, string toUserId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false)
         {
@@ -69,6 +117,18 @@ namespace ProjectTracking.Data.Methods
             if (dbNotification != null)
             {
                 return _mapper.Map<UserNotification>(dbNotification);
+            }
+
+            return null;
+        }
+
+        public Broadcast GetBroadcast(int id)
+        {
+            var dbBroadcast = BroadcastPopulate().FirstOrDefault(k => k.ID == id);
+
+            if (dbBroadcast != null)
+            {
+                return _mapper.Map<Broadcast>(dbBroadcast);
             }
 
             return null;

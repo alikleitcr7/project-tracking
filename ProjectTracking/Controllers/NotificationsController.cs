@@ -172,6 +172,23 @@ namespace ProjectTracking.Controllers
             return notification;
         }
 
+        public async Task<Broadcast> SendToTeam([FromBody]SendBroadcastObject model)
+        {
+            string userId = GetCurrentUserId();
+
+            Broadcast notification = await _notificationMethods.SendToTeam(userId, model.toTeamId, model.message, model.type, true);
+
+            return notification;
+        }
+
+
+        public class SendBroadcastObject
+        {
+            //public string fromUserId { get; set; }
+            public int toTeamId { get; set; }
+            public string message { get; set; }
+            public NotificationType type { get; set; }
+        }
 
     }
 }

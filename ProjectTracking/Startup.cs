@@ -253,7 +253,7 @@ namespace ProjectTracking
             {
                 routes.MapHub<ObserverHub>("/observer");
                 routes.MapHub<NotificationsHub>("/notificationshub");
-                routes.MapHub<BroadcastsHub>("/broadcastshub");
+                //routes.MapHub<BroadcastsHub>("/broadcastshub");
             });
 
             app.UseMvc(routes =>

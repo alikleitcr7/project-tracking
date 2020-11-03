@@ -151,9 +151,9 @@ const teamNotificationsMethods = {
         const { toTeamId, message, type } = pendingRecord
 
 
-        console.log({ toTeamId, message, type})
+        console.log({ toTeamId, message, type })
 
-        BroadcastService.Send(toTeamId, message, type)
+        NotificationService.SendToTeam(toTeamId, message, type)
             .then((r) => {
 
                 const record = r.data
@@ -165,7 +165,9 @@ const teamNotificationsMethods = {
                 if (record) {
 
                     // update data array
-                    let data = [...record, ...this.teamNotifications.data]
+
+
+                    let data = [record, ...this.teamNotifications.data]
 
                     //data.unshift(record)
 
