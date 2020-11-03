@@ -207,7 +207,7 @@ class CoreValidator {
 
         console.log({ value, min, max, isRequired })
 
-        if (isNaN(value) || (value == null && isRequired )) {
+        if (isNaN(value) || (value == null && isRequired)) {
             return false
         }
 
@@ -620,6 +620,12 @@ const currentUser = {
     },
     role: () => {
         return $('body').attr('data-role')
+    },
+    team: () => {
+
+        const teamId = $('body').attr('data-team')
+
+        return teamId ? parseInt(teamId) : null
     }
 }
 

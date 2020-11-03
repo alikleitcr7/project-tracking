@@ -17,5 +17,7 @@ namespace ProjectTracking.Models.Users
         public int? TeamId { get; set; }
 
         public KeyValuePair<int, string> Team { get; set; }
+        public short? RoleCode { get; set; }
+        public string RoleDisplay => RoleCode.HasValue ? ((ApplicationUserRole)RoleCode.Value).ToString() : null;
     }
 }

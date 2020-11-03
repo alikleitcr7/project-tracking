@@ -1,9 +1,14 @@
-﻿@{
+﻿@inject ProjectTracking.Data.Methods.Interfaces.IUserMethods userMethods
+
+@{
 
     bool isAuthenticated = User.Identity.IsAuthenticated;
     string userId = isAuthenticated ? User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value : null;
     string roleCode = isAuthenticated ? User.FindFirst(System.Security.Claims.ClaimTypes.Role).Value : null;
+
+    string teamId = isAuthenticated ? userMethods.GetUserKeyValue(userId).TeamId.ToString() : "";
 }
+
 
 <!DOCTYPE html>
 <html>
@@ -29,7 +34,7 @@
 
 </head>
 
-<body class=" @( isAuthenticated? "":"is-logon" )" data-user="@userId" data-role="@roleCode">
+<body class=" @( isAuthenticated? "":"is-logon" )" data-user="@userId" data-role="@roleCode" data-team="@teamId">
 
     @if (isAuthenticated)
     {

@@ -37,24 +37,58 @@ connection.on('ReceiveNotification', (message) => {
 
             notify('New Notification from ' + message.fromUserDisplay)
 
-            let notifications = [...notification_app.notifications]
-
-            message.isNew = true
-            notifications.unshift(message)
-
-            if (notifications.length > notification_app.dataPaging.length) {
-
-                notifications.pop()
-            }
-
-            notification_app.notifications = notifications
             sidebar_app.hasNewNotification = true
 
-            let dataPaging = { ...notification_app.dataPaging };
+            message.isNew = true
 
-            dataPaging.totalCount = dataPaging.totalCount + 1
+            const isToTeam = message.toTeamId !== null
 
-            notification_app.dataPaging = dataPaging
+            if (isToTeam) {
+
+                let broadcasts = { ...notification_app.broadcasts }
+
+                console.log({ broadcasts})
+
+                let data = [message,...broadcasts.data]
+                broadcasts.data = data;
+                //data.unshift(message)
+
+                if (data.length > broadcasts.dataPaging.length) {
+
+                    data.pop()
+                }
+
+                let dataPaging = { ...broadcasts.dataPaging };
+
+                dataPaging.totalCount = dataPaging.totalCount + 1
+
+                broadcasts.dataPaging = dataPaging
+
+                console.log({ broadcasts })
+
+                notification_app.broadcasts = broadcasts
+            }
+            else {
+
+                let notifications = [...notification_app.notifications]
+
+                message.isNew = true
+                notifications.unshift(message)
+
+                if (notifications.length > notification_app.dataPaging.length) {
+
+                    notifications.pop()
+                }
+
+                notification_app.notifications = notifications
+                //sidebar_app.hasNewNotification = true
+
+                let dataPaging = { ...notification_app.dataPaging };
+
+                dataPaging.totalCount = dataPaging.totalCount + 1
+
+                notification_app.dataPaging = dataPaging
+            }
 
         }, 100)
     }

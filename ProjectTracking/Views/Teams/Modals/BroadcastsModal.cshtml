@@ -27,9 +27,9 @@
                                 </div>
                             </div>
 
-                            <div class="input-group-container type-send-container">
+                            <div class="input-group-container ">
 
-                                <div class="input-group-item types-container">
+                                <div class="input-group-item ">
                                     <label>Type</label>
                                     <div>
                                         <label v-for="type in notificationTypes.data" style="padding-right:1em">
@@ -39,13 +39,13 @@
                                     </div>
                                 </div>
 
-                                <div class="input-group-item send-button-container">
-                                    <button v-bind:disabled="teamNotifications.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="teamNotifications_save">
-                                        {{teamNotifications.form.isSaving ? 'Sending...' : 'Send'}} <i class="fa fa-paper-plane"></i>
-                                    </button>
-                                </div>
                             </div>
                             <h5 v-if="teamNotifications.form.message">{{teamNotifications.form.message}}</h5>
+                            <div class="text-center ">
+                                <button v-bind:disabled="teamNotifications.form.isSaving" type="button" class="s-btn s-btn-primary" v-on:click="teamNotifications_save">
+                                    {{teamNotifications.form.isSaving ? 'Sending...' : 'Send'}} <i class="fa fa-paper-plane"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div id="BroadcastsTab" class="tab-pane fade">
@@ -87,6 +87,8 @@
                 
 
             </div>
+
+
 
             @*<div class="modal-footer modal-footer-centered">
                 <p class="f-display-message">

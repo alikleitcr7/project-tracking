@@ -190,6 +190,18 @@ namespace ProjectTracking.Data.Methods
                 .ToList();
         }
 
+
+        public UserKeyValue GetUserKeyValue(string userId)
+        {
+            return db.Users
+                .Select(k => new UserKeyValue(k.Id, k.FirstName + " " + k.LastName)
+                {
+                    TeamId = k.TeamId,
+                    RoleCode = k.RoleCode
+                })
+                .FirstOrDefault(k => k.Id == userId);
+        }
+
         public List<string> SupervisingUsers(string supervisorId)
         {
             //List<int> supervisingTeams = db.Supervisers.Where(k => k.UserId == supervisorId)
@@ -1132,7 +1144,7 @@ namespace ProjectTracking.Data.Methods
                     overview.LoggedInUsers.Add(new KeyValuePair<string, int>(roleKey, 0));
                 }
             }
-            
+
             // projects performance
 
 

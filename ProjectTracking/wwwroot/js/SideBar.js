@@ -2,14 +2,14 @@
     el: '#SideBar',
     data: {
         notificationsCount: 0,
-        hasNewNotification: false
+        hasNewNotification: false,
     },
     methods: {
         handleSideBarNotificationClick: function () {
             this.hasNewNotification = false
 
             $('#NotificationModal').modal('show')
-        }
+        },
     },
     mounted: function () {
 

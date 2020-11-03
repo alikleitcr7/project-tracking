@@ -11,31 +11,79 @@
                 </h4>
             </div>
             <div class="modal-body">
+
                 <div>
-                    <section id="Pagination" v-show="dataPaging.totalPages > 1">
-                        <div class="container">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#TeamNotificationsTab">Team</a></li>
+                        <li><a data-toggle="tab" href="#OtherNotificationsTab">Other</a></li>
+                    </ul>
 
-                            <paginate :page-count="dataPaging.totalPages"
-                                      :container-class="dataPaging.pagination"
-                                      :prev-text="dataPaging.prev"
-                                      :next-text="dataPaging.next"
-                                      :click-handler="clickCallback">
-                            </paginate>
+                    <div class="tab-content">
+                        <div id="TeamNotificationsTab" class="tab-pane fade in active">
+                           
+                            <h4 v-show="!broadcasts.isLoading && !broadcasts.data.length ">
+                                <br />
+                                Nothing here yet
+                            </h4>
+
+                            <section id="Pagination" class="c-pagination" v-show="broadcastsTotalPages > 1">
+                                <div class="">
+                                    <paginate v-bind:page-count="broadcastsTotalPages"
+                                              v-bind:container-class="broadcasts.dataPaging.pagination"
+                                              v-bind:prev-text="broadcasts.dataPaging.prev"
+                                              v-bind:next-text="broadcasts.dataPaging.next"
+                                              v-bind:click-handler="broadcasts_pageClick">
+                                    </paginate>
+                                </div>
+                            </section>
+
+                            <p class="c-display-message" v-if="broadcasts.isLoading">Loading...</p>
+
+                            <div class="notification-container scrollable-container-300" v-show="broadcasts.data.length">
+                                <div class="notification" v-for="(item,idx) in broadcasts.data"
+                                     v-on:click="broadcastClick(idx)"
+                                     v-bind:class="getNotificationClasses(item)">
+                                    <div class="notification__user"> {{item.fromUserDisplay}}</div>
+                                    <div class="notification__message" v-html="item.message"></div>
+                                    <div class="notification__date">{{item.dateSentDisplay}}</div>
+                                </div>
+                            </div>
 
                         </div>
-                    </section>
 
-                    <h4 v-show="!isLoading && !notifications.length">No Notifications</h4>
+                        <div id="OtherNotificationsTab" class="tab-pane fade">
+                            
+                            <section id="Pagination" v-show="dataPaging.totalPages > 1">
+                                <div class="container">
 
-                    <div class="notification-container" v-show="notifications.length">
-                        <div class="notification" v-for="(item,idx) in notifications"
-                             v-on:click="notificationClick(idx)"
-                             v-bind:class="getNotificationClasses(item)">
-                            <div class="notification__user"> {{item.fromUserDisplay}}</div>
-                            <div class="notification__message" v-html="item.message"></div>
-                            <div class="notification__date">{{item.dateSentDisplay}}</div>
+                                    <paginate :page-count="dataPaging.totalPages"
+                                              :container-class="dataPaging.pagination"
+                                              :prev-text="dataPaging.prev"
+                                              :next-text="dataPaging.next"
+                                              :click-handler="clickCallback">
+                                    </paginate>
+
+                                </div>
+                            </section>
+
+                            <h4 v-show="!isLoading && !notifications.length">No Notifications</h4>
+
+                            <div class="notification-container" v-show="notifications.length">
+                                <div class="notification" v-for="(item,idx) in notifications"
+                                     v-on:click="notificationClick(idx)"
+                                     v-bind:class="getNotificationClasses(item)">
+                                    <div class="notification__user"> {{item.fromUserDisplay}}</div>
+                                    <div class="notification__message" v-html="item.message"></div>
+                                    <div class="notification__date">{{item.dateSentDisplay}}</div>
+                                </div>
+                            </div>
+
                         </div>
+
                     </div>
+
+
+                  
 
                 </div>
             </div>

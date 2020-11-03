@@ -13,7 +13,21 @@ var notification_app = new Vue({
             pagination: 'custom-pagination',
             prev: 'Prev',
             next: 'Next',
-        }
+        },
+        broadcasts: {
+            data: [],
+            isLoading: false,
+            message: null,
+            dataPaging: {
+                page: 0,
+                totalPages: 0,
+                length: 5,
+                totalCount: 0,
+                pagination: 'custom-pagination',
+                prev: 'Prev',
+                next: 'Next',
+            },
+        },
     },
     watch: {
         dataPaging: {
@@ -26,6 +40,21 @@ var notification_app = new Vue({
             },
             deep: true
         },
+    },
+    computed: {
+        broadcastsTotalPages: function () {
+            const totalCount = this.broadcasts.dataPaging.totalCount
+            const length = this.broadcasts.dataPaging.length
+
+            const totalPages = Math.ceil(totalCount / length);
+
+            console.log({ totalPages })
+
+            return totalPages || 0
+        },
+        //hasNewBroadcast: function () {
+        //    return this.broadcasts.data.findIndex(k => k.isNew) > -1
+        //}
     },
     methods: {
         getNotifications: function (page) {
@@ -68,11 +97,71 @@ var notification_app = new Vue({
             notifications[idx].isNew = false
 
             this.notifications = notifications
-        }
+        },
+
+        broadcastClick: function (idx) {
+            let data = [...this.broadcasts.data]
+
+            data[idx].isNew = false
+
+            this.broadcasts.data = data
+        },
+
+        broadcasts_setLoading: function (isLoading) {
+            this.broadcasts.isLoading = isLoading
+        },
+        broadcasts_setMessage: function (message) {
+            this.broadcasts.message = message
+        },
+        broadcasts_getAll: function (page = 0) {
+
+            this.broadcasts_setLoading(true)
+            this.broadcasts_setMessage('Loading...')
+
+            //const { keyword } = this.broadcasts.filterBy
+            const { length } = this.broadcasts.dataPaging
+
+            return BroadcastService.GetToTeam(this.teamId, page, length)
+                .then((r) => {
+
+
+                    const { records, totalCount } = r.data
+
+                    //if (debugBroadcasts) {
+                    //    console.log('getall broadcast response', r)
+                    //}
+
+                    if (records) {
+                        this.broadcasts.data = [...records]
+                        this.broadcasts.dataPaging.totalCount = totalCount
+                    }
+                    else {
+                        this.broadcasts_setMessage(BASIC_ERROR_MESSAGE)
+                    }
+                })
+                .catch((e) => {
+                    console.error('broadcasts getall', e)
+                    this.broadcasts_setMessage(BASIC_ERROR_MESSAGE)
+                })
+                .then(() => {
+                    this.broadcasts_setLoading(false)
+                })
+
+        },
+        broadcasts_pageClick: function (pageNum) {
+            this.broadcasts_getAll(pageNum - 1)
+        },
     },
     mounted: function () {
 
+        this.teamId = currentUser.team()
+
         this.getNotifications(0);
+
+        if (this.teamId) {
+
+            this.broadcasts_getAll(0);
+        }
 
         //setTimeout(() => {
         //    console.log('sending')

@@ -64,6 +64,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         Models.Dashboard.SupervisorOverview GetSupervisorOverview(string userId);
         Models.Dashboard.AdminOverview GetAdminOverview(string userId);
         Models.Dashboard.TeamMemberOverview GetTeamMemberOverview(string userId);
+        Models.Users.UserKeyValue GetUserKeyValue(string userId);
         #endregion
     }
 }
