@@ -7,7 +7,6 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">
                     Notifications
-                    <small v-show="isLoading"> (Loading...)</small>
                 </h4>
             </div>
             <div class="modal-body">
@@ -18,7 +17,7 @@
                     </ul>
 
                     <div class="tab-content">
-                        <div id="TeamNotificationsTab" class="tab-pane fade " :class="{'in active':selectedIdx === 0}" >
+                        <div id="TeamNotificationsTab" class="tab-pane fade " :class="{'in active':selectedIdx === 0}">
 
                             <h4 v-show="!broadcasts.isLoading && !broadcasts.data.length ">
                                 <br />
@@ -36,7 +35,13 @@
                                 </div>
                             </section>
 
-                            <p class="c-display-message" v-if="broadcasts.isLoading">Loading...</p>
+                            <div  v-if="broadcasts.isLoading" class="notification-container">
+                                <div class="notification notification--loading" v-for="i in [,,,]">
+                                    <div class="notification__user"></div>
+                                    <div class="notification__message"></div>
+                                    <div class="notification__date"></div>
+                                </div>
+                            </div>
 
                             <div class="notification-container scrollable-container-300" v-show="broadcasts.data.length">
                                 <div class="notification" v-for="(item,idx) in broadcasts.data"
@@ -69,6 +74,15 @@
                                 <br />
                                 Nothing here yet
                             </h4>
+
+
+                            <div v-if="isLoading" class="notification-container" >
+                                <div class="notification notification--loading" v-for="i in [,,,]">
+                                    <div class="notification__user"></div>
+                                    <div class="notification__message"></div>
+                                    <div class="notification__date"></div>
+                                </div>
+                            </div>
 
                             <div class="notification-container" v-show="notifications.length">
                                 <div class="notification" v-for="(item,idx) in notifications"

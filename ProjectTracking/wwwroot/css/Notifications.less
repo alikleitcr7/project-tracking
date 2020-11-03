@@ -36,7 +36,7 @@
     .notification {
         display: block;
         width: auto;
-        margin: 10px 0;
+        margin-bottom: 1.5em;
         border-radius: 0 15px 15px 15px;
         padding: 10px;
         width: 100%;
@@ -46,7 +46,34 @@
         transition: all 200ms ease-in;
         background-color: @gray-xlight;
         border-left: 4px solid rgba(255, 255, 255, 0.00);
+        .box-shadow-sm();
 
+        &--loading {
+            min-height: 5em;
+            .skeleton();
+
+            > div {
+                border-radius: 10px;
+            }
+
+            .notification {
+
+
+                &__user {
+                    background-color: rgba(255, 255, 255, 0.26);
+                    min-height: 1.5em;
+                    display: block;
+                    max-width: 100px;
+                }
+
+                &__message {
+                    background-color: rgba(255, 255, 255, 0.26);
+                    min-height: 2em;
+                    display: block;
+                    margin-top: 1em;
+                }
+            }
+        }
 
         &.notification-default {
             border-color: @main-color;

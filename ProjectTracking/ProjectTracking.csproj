@@ -201,9 +201,6 @@
     <Content Update="Views\Home\Overview\MemberOverview.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Home\Overview\Notifications.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
     <Content Update="Views\Profile\Insights.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

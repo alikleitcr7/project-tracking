@@ -163,6 +163,9 @@ var notification_app = new Vue({
         if (this.teamId) {
             this.tabs = ['Team', 'Other']
         }
+        else {
+            this.selectedIdx = 1
+        }
 
         this.getNotifications(0);
 
