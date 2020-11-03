@@ -7,13 +7,13 @@
     string team_claim = User.FindFirst("Team")?.Value;
 
     int? teamId = team_claim == null ? (int?)null : int.Parse(team_claim);
-
 }
+
 
 <div class="side-bar " id="SideBar" v-cloak>
 
     <a class="title">
-        @User.Identity.Name
+        @(ViewData["FullName"] ?? User.Identity.Name)
     </a>
 
     <a class="side-bar-item" href="/" side-bar-tooltip="Dashboard">

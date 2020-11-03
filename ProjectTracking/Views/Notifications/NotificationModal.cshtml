@@ -13,14 +13,13 @@
             <div class="modal-body">
 
                 <div>
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#TeamNotificationsTab">Team</a></li>
-                        <li><a data-toggle="tab" href="#OtherNotificationsTab">Other</a></li>
+                    <ul class="nav nav-tabs" v-if="tabs && tabs.length">
+                        <li v-for="(tab,idx) in tabs" :class="{'active':selectedIdx===idx}" @@click="changeTabIndex(idx)"><a>{{tab}}</a></li>
                     </ul>
 
                     <div class="tab-content">
-                        <div id="TeamNotificationsTab" class="tab-pane fade in active">
-                           
+                        <div id="TeamNotificationsTab" class="tab-pane fade " :class="{'in active':selectedIdx === 0}" >
+
                             <h4 v-show="!broadcasts.isLoading && !broadcasts.data.length ">
                                 <br />
                                 Nothing here yet
@@ -51,8 +50,8 @@
 
                         </div>
 
-                        <div id="OtherNotificationsTab" class="tab-pane fade">
-                            
+                        <div id="OtherNotificationsTab" class="tab-pane fade" :class="{'in active':selectedIdx === 1}">
+
                             <section id="Pagination" v-show="dataPaging.totalPages > 1">
                                 <div class="container">
 
@@ -66,7 +65,10 @@
                                 </div>
                             </section>
 
-                            <h4 v-show="!isLoading && !notifications.length">No Notifications</h4>
+                            <h4 v-show="!isLoading && !notifications.length">
+                                <br />
+                                Nothing here yet
+                            </h4>
 
                             <div class="notification-container" v-show="notifications.length">
                                 <div class="notification" v-for="(item,idx) in notifications"
@@ -83,12 +85,12 @@
                     </div>
 
 
-                  
+
 
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="s-btn s-btn-outline" data-dismiss="modal">Close</button>
             </div>
         </div>
 

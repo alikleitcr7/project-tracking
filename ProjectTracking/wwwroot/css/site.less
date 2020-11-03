@@ -5,10 +5,12 @@
     font-family: 'opensans-bold';
     src: url('../fonts/open-sans/opensans-bold.ttf') format('truetype');
 }
+
 @font-face {
     font-family: 'opensans-italic';
     src: url('../fonts/open-sans/opensans-italic.ttf') format('truetype');
 }
+
 @font-face {
     font-family: 'opensans-light';
     src: url('../fonts/open-sans/opensans-light.ttf') format('truetype');
@@ -41,10 +43,13 @@
 
 html,
 body,
-a ,label,ul{
+a, label, ul {
     font-family: opensans-regular;
 }
 
+.nav-tabs > li > a {
+cursor:pointer;
+}
 
 select:-moz-focusring {
     color: transparent;
@@ -53,8 +58,7 @@ select:-moz-focusring {
 
 h1, h2, h3, h4, h5, h6 {
     color: @dark-gray;
-    font-family:montserrat-regular;
-    
+    font-family: montserrat-regular;
 }
 
 .top-intro {
@@ -62,9 +66,9 @@ h1, h2, h3, h4, h5, h6 {
         padding: 0px 8px;
     }
 
-    table{
-        th{
-            background-color:@gray-xlight;
+    table {
+        th {
+            background-color: @gray-xlight;
         }
     }
 }
@@ -174,9 +178,9 @@ body {
     cursor: pointer;
 }
 
-.dropdown{
-    li a{
-        cursor:pointer;
+.dropdown {
+    li a {
+        cursor: pointer;
     }
 }
 /*.dropdown-menu {
@@ -424,10 +428,10 @@ table {
     overflow-y: scroll;
 }
 
-.table-sm{
+.table-sm {
 
-    td,th{
-        font-size:.9em;
+    td, th {
+        font-size: .9em;
     }
 }
 

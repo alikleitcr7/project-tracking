@@ -28,6 +28,8 @@ var notification_app = new Vue({
                 next: 'Next',
             },
         },
+        selectedIdx: 0,
+        tabs: null
     },
     watch: {
         dataPaging: {
@@ -98,7 +100,9 @@ var notification_app = new Vue({
 
             this.notifications = notifications
         },
-
+        changeTabIndex: function (idx) {
+            this.selectedIdx = idx
+        },
         broadcastClick: function (idx) {
             let data = [...this.broadcasts.data]
 
@@ -155,6 +159,10 @@ var notification_app = new Vue({
     mounted: function () {
 
         this.teamId = currentUser.team()
+
+        if (this.teamId) {
+            this.tabs = ['Team', 'Other']
+        }
 
         this.getNotifications(0);
 

@@ -485,6 +485,9 @@ label,
 ul {
   font-family: opensans-regular;
 }
+.nav-tabs > li > a {
+  cursor: pointer;
+}
 select:-moz-focusring {
   color: transparent;
   text-shadow: 0 0 0 #000;

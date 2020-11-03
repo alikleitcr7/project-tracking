@@ -622,10 +622,16 @@ const currentUser = {
         return $('body').attr('data-role')
     },
     team: () => {
-
         const teamId = $('body').attr('data-team')
 
         return teamId ? parseInt(teamId) : null
+    },
+    userName: () => {
+        return $('body').attr('data-userName')
+    },
+    fullName: () => {
+
+        return $('body').attr('data-fullName')
     }
 }
 
