@@ -6,6 +6,7 @@
 <template v-if="overview.data">
     <div class="c-box c-box--light assigned-tasks">
         <h5 class="c-box-title">Tasks</h5>
+        <h5 v-if="!overview.data.assignedTasks.length">Nothing Here</h5>
         <div class="c-card-view scrollable-container-300">
             <a class="c-card" 
                v-for="task in overview.data.assignedTasks" 

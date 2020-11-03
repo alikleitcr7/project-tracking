@@ -893,6 +893,18 @@ namespace ProjectTracking.Data.Methods
                 return dbUser.RoleAssignedDate;
             }
 
+            // user is in a team
+            if (dbUser.TeamId.HasValue)
+            {
+                throw new ClientException("unable to change role, since user is a part of a team");
+            }
+
+            // check if supervisor
+            if (db.Teams.Any(k => k.SupervisorId == userId))
+            {
+                throw new ClientException("unable to change role, since user is supervising a team");
+            }
+
             // log
             db.UserRoleLogs.Add(new DataSets.UserRoleLog()
             {
@@ -1005,9 +1017,9 @@ namespace ProjectTracking.Data.Methods
 
         public SupervisorOverview GetSupervisorOverview(string userId)
         {
-            if (!db.Users.Any(k => k.Id == userId))
+            if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.Supervisor))
             {
-                throw new ClientException("user dont exist");
+                throw new ClientException("DONT_EXIST_OR_NOT_SUPERVISOR");
             }
 
             SupervisorOverview overview = new SupervisorOverview();
@@ -1018,7 +1030,7 @@ namespace ProjectTracking.Data.Methods
 
             if (supervisingTeamsIds.Count == 0)
             {
-                throw new Exception("user is not a supervisor");
+                throw new ClientException("NO_SUPERVISING_TEAMS");
             }
 
             // supervising users

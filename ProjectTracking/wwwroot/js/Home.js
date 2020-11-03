@@ -58,6 +58,13 @@ new Vue({
          */
         populateSupervisorVisuals: function (data) {
 
+
+
+            $('#members_line_activities_minutes').closest('.c-box').show();
+            $('#members_line_activities_frequency').closest('.c-box').show();
+            $('#teams_line_activities_minutes').closest('.c-box').show();
+            $('#teams_line_activities_frequency').closest('.c-box').show();
+
             chartsHelper.charts.populateMemberActivitiesFrequency('members_line_activities_minutes', data.membersActivitiesMinutes)
             chartsHelper.charts.populateMemberActivitiesFrequency('members_line_activities_frequency', data.membersActivitiesFrequency)
 
@@ -138,7 +145,20 @@ new Vue({
             .catch((e) => {
                 const errorMessage = getAxiosErrorMessage(e)
 
-                this.overview.message = errorMessage
+
+
+                if (errorMessage === 'DONT_EXIST_OR_NOT_SUPERVISOR') {
+                    this.overview.message = "Your role might have changed!"
+                    this.overview.showLogout = true
+
+                }
+                else if (errorMessage === 'NO_SUPERVISING_TEAMS') {
+                    this.overview.message = 'No supervising team assigned yet!'
+
+                }
+                else {
+                    this.overview.message = errorMessage
+                }
             })
             .then(() => {
                 this.overview.isLoading = false

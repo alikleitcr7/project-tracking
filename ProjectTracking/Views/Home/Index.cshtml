@@ -5,13 +5,15 @@
     ApplicationUserRole role = (ApplicationUserRole)Enum.Parse(typeof(ApplicationUserRole), role_value, true);
 }
 
-<div id="Dashboard" class="v-container" data-user="@userId">
+<div id="Dashboard" class="v-container" data-user="@userId" v-cloak>
 
     <h2>Good Day, @User.Identity.Name</h2>
 
     <section class="c-box-view c-box-view--wrap">
 
         <div v-show="overview.isLoading" class="c-box c-box--loading" v-for="i in loadingBoxes"></div>
+
+        <h3 v-if="overview.message">{{overview.message}} <a v-if="overview.showLogout" href="/logout">, Please Login Again!</a> </h3>
 
         @* # common # *@
 
