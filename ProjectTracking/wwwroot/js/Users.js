@@ -930,6 +930,7 @@ var users_app = new Vue({
         this.users_getEmploymentTypes()
         this.userRoles_getAll()
 
+        this.isAdmin = currentUser.role() === APP_USER_ROLES.admin.value
         //this.supervisors_getAll()
     }
 })

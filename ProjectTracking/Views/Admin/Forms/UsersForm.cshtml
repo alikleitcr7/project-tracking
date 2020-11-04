@@ -4,12 +4,16 @@
             <button type="button" v-on:click="users_openModal" class="s-btn s-btn-primary">New User &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
         </div>*@
 
-    <div v-if="users.data.length " class="input-group " style="max-width:300px">
+    <div class="input-group " style="max-width:300px">
 
-        <input type="text" class="form-control" placeholder="Search" v-model="users.filterBy.keyword">
+        <input type="text" 
+                @@keyup.enter="users_getAll(0)"
+               class="form-control" placeholder="Search" v-model="users.filterBy.keyword">
 
         <div class="input-group-btn">
-            <button class="btn btn-default" type="submit" v-on:click="users_getAll(0)">
+            <button class="btn btn-default" type="submit" 
+                   
+                    v-on:click="users_getAll(0)">
                 <i class="glyphicon glyphicon-search"></i>
             </button>
         </div>
@@ -48,10 +52,10 @@
                     <th>Monthly Salary</th>
                     <th>Hourly Rate</th>
                     <th>Employment Type</th>
-                    <th>Role</th>
+                    <th v-if="isAdmin">Role</th>
                     @*<th>Supervising</th>*@
-                    <th></th>
-                    <th></th>
+                    <th ></th>
+                    <th v-if="isAdmin"></th>
                 </tr>
             </thead>
 
@@ -85,7 +89,7 @@
                         {{item.employmentTypeDisplay || '-'}}
                     </td>
 
-                    <td>
+                    <td v-if="isAdmin">
                         {{item.roleDisplay}}
                     </td>
 
@@ -106,7 +110,7 @@
                             <a class="s-btn s-btn-primary" :href="`/profile/${item.id}`">Profile</a>
                         </td>
 
-                        <td>
+                        <td v-if="isAdmin">
 
                             <div class="dropdown">
 
