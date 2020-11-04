@@ -11,10 +11,10 @@
     };
 }
 
-<div id="Profile" class="v-container" 
-     data-current-user="@Model.CurrentUserId" 
-     data-is-supervising-user="@Model.IsSupervisingUser" 
-     data-has-timesheets="@Model.HasTimeSheets" 
+<div id="Profile" class="v-container"
+     data-current-user="@Model.CurrentUserId"
+     data-is-supervising-user="@Model.IsSupervisingUser"
+     data-has-timesheets="@Model.HasTimeSheets"
      data-user="@Model.User.Id" data-team="@Model.User.TeamId">
 
     @*<h2>@Model.FullName Profile</h2>*@
@@ -110,10 +110,13 @@
                             <td>@Model.User.Email</td>
                         </tr>
 
-                        <tr>
-                            <td>Employment Type</td>
-                            <td>@Model.User.EmploymentTypeDisplay</td>
-                        </tr>
+                        @if (Model.User.EmploymentType.HasValue)
+                        {
+                            <tr>
+                                <td>Employment Type</td>
+                                <td>@Model.User.EmploymentTypeDisplay</td>
+                            </tr>
+                        }
 
                     </table>
                 </div>

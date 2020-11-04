@@ -22,7 +22,7 @@ namespace ProjectTracking.DataContract
         public short RoleCode { get; set; }
 
         public ApplicationUserRole Role => (ApplicationUserRole)RoleCode;
-        public string RoleDisplay => Role.ToString();
+        public string RoleDisplay => RolesDisplay[Role];
 
         public string RoleAssignedByUserId { get; set; }
         public string RoleAssignedByUserName { get; set; }
@@ -110,6 +110,13 @@ namespace ProjectTracking.DataContract
 
         //public bool? HasSupervisorLog { get; set; }
         //public int? SupervisingCount { get; set; }
+
+        private static Dictionary<ApplicationUserRole, string> RolesDisplay => new Dictionary<ApplicationUserRole, string>()
+        {
+            {ApplicationUserRole.Admin,"Admin" },
+            {ApplicationUserRole.Supervisor,"Supervisor" },
+            {ApplicationUserRole.TeamMember,"Team Member" },
+        };
     }
 
     public enum EmploymentType

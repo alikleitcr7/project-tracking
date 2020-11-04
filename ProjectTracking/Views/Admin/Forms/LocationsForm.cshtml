@@ -5,11 +5,11 @@
             <tr>
                 <td>
                     <label>Address</label>
-                    <input type="text" class="form-control" v-model="ipAddresses.form.address" />
+                    <input  @@keyup.enter="addIpAddress" type="text" class="form-control" v-model="ipAddresses.form.address" />
                 </td>
                 <td>
                     <label>Title</label>
-                    <input type="text" class="form-control" v-model="ipAddresses.form.title" />
+                    <input  @@keyup.enter="addIpAddress" type="text" class="form-control" v-model="ipAddresses.form.title" />
                 </td>
                 <td>
                     <label>&nbsp;</label>

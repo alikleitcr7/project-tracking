@@ -897,6 +897,7 @@ var users_app = new Vue({
         users: userObject(),
         supervisors: supervisorObject(),
         userRoles: userRoleObject(),
+        isAdmin:false,
         errors: '',
         oNull: null,
     },

@@ -4,6 +4,7 @@ const usersNotificationFields = [
     {
         name: 'message',
         displayName: 'Message',
+        max: 1,
         max: 255,
         type: DATA_TYPES.TEXT,
         required: true,

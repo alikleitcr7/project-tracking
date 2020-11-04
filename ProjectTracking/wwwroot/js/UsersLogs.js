@@ -2,9 +2,9 @@
     el: '#UserLogs',
     data: {
         UsersLogsAreLoading: true,
-        fromDate: '', dateOptions,toDate:'',
+        fromDate: '', dateOptions, toDate: '',
         dateTimeOptions,
-        
+
 
         //array that contains targeted list :
         usersLogs: [],
@@ -28,20 +28,35 @@
             this.fromDate = '', this.toDate = '';
         },
         searchUserLogs: function () {
-            if (this.toDate < this.fromDate) {
-                alert('to date can not be smaller than from date , please try again')
-                return;
+
+            const hasFromDate = this.fromDate ? true : false
+            const hasToDate = this.toDate ? true : false
+
+
+            if (hasFromDate && hasToDate) {
+
+                if (this.toDate < this.fromDate) {
+                    alert('to date can not be smaller than from date , please try again')
+                    return;
+                }
             }
+
+
+            //if (this.toDate < this.fromDate) {
+            //    alert('to date can not be smaller than from date , please try again')
+            //    return;
+            //}
+
             this.GetUsersLogs(0, this.dataPaging.length, this.fromDate, this.toDate);
 
         },
         clickCallback: function (pageNum) {
-            this.GetUsersLogs(pageNum - 1, this.dataPaging.length,this.fromDate, this.toDate)
+            this.GetUsersLogs(pageNum - 1, this.dataPaging.length, this.fromDate, this.toDate)
 
         },
-        GetUsersLogs: function (page, countPerPage,fromDate,toDate) {
+        GetUsersLogs: function (page, countPerPage, fromDate, toDate) {
             this.usersLogs = [];
-            UsersLogs.GetUsersLogs(page, countPerPage,fromDate,toDate).then(response => {
+            UsersLogs.GetUsersLogs(page, countPerPage, fromDate, toDate).then(response => {
                 const { data } = response
                 this.usersLogs = data.records;
                 this.dataPaging.totalCount = data.totalCount
