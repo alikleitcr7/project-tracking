@@ -47,13 +47,14 @@ namespace ProjectTracking.Data.Methods.Interfaces
         List<KeyValuePair<string, string>> GetAllUsersExecludeTeamSupervisors(int teamId);
         User GetById(string id);
         void Delete(string id);
-        List<User> Search(string keyword, int page, int countPerPage, out int totalCount);
+        List<User> Search(string keyword, int page, int countPerPage,string byUserId, out int totalCount);
         User Save(Models.Users.UserSaveModel model);
         void AssignTeamSupervisor(string assignedById, string userId, int teamId);
         bool IsSupervisor(string userId);
         List<string> SupervisingUsers(string supervisorId);
+        //List<User> GetUsersByRole(int roleCode);
         List<User> GetUsersByRole(int roleCode);
-        List<KeyValuePair<string, string>> GetUsersByRoleKeyValue(int roleCode);
+        List<KeyValuePair<string, string>> GetUsersByRoleKeyValue(int roleCode, string byUserId);
         DateTime SetRole(string byUserId, string userId, short roleCode);
         bool IsSupervisorOf(string supervisorId, string userId);
         List<UserRoleLog> GetUserRoleLogs(string userId);

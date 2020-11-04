@@ -4,12 +4,7 @@
             <button type="button" v-on:click="users_openModal" class="s-btn s-btn-primary">New User &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
         </div>*@
 
-    <h4 v-show="!users.isLoading && !users.data.length ">
-        <br />
-        <span class="c-clickable-link" v-on:click="users_openModal">Click Here</span> to add
-    </h4>
-
-    <div class="input-group " style="max-width:300px">
+    <div v-if="users.data.length " class="input-group " style="max-width:300px">
 
         <input type="text" class="form-control" placeholder="Search" v-model="users.filterBy.keyword">
 
@@ -20,6 +15,12 @@
         </div>
 
     </div>
+
+    <h4 v-if="!users.isLoading && !users.data.length ">
+        <br />
+        Nothing here!
+    </h4>
+
 
     <section id="Pagination" class="c-pagination" v-show="usersTotalPages > 1">
         <div class="">
@@ -93,13 +94,13 @@
                     <template v-if="!users_isAdmin(item)">
 
                         @*<td>
-                            <button class="s-btn s-btn-sm s-btn-outline"
-                                    v-on:click="supervisors_edit(item.id)"
-                                    type="button">
-                                <i class="glyphicon glyphicon-user"></i>
-                                Team
-                            </button>
-                        </td>*@
+                                <button class="s-btn s-btn-sm s-btn-outline"
+                                        v-on:click="supervisors_edit(item.id)"
+                                        type="button">
+                                    <i class="glyphicon glyphicon-user"></i>
+                                    Team
+                                </button>
+                            </td>*@
 
                         <td>
                             <a class="s-btn s-btn-primary" :href="`/profile/${item.id}`">Profile</a>
@@ -132,11 +133,11 @@
                                         </a>
                                     </li>
                                     @*<li>
-                                        <a class="dropdown-item-danger" v-on:click="users_delete(idx)">
-                                            <i class="glyphicon glyphicon-trash"></i>
-                                            Delete
-                                        </a>
-                                    </li>*@
+                                            <a class="dropdown-item-danger" v-on:click="users_delete(idx)">
+                                                <i class="glyphicon glyphicon-trash"></i>
+                                                Delete
+                                            </a>
+                                        </li>*@
                                 </ul>
 
                             </div>
@@ -235,7 +236,7 @@
     </div>
 
 
-    <partial name="~/Views/Admin/Modals/UserRoleLogsModal.cshtml"/>
+    <partial name="~/Views/Admin/Modals/UserRoleLogsModal.cshtml" />
 
     <div class="modal" id="SupervisorsModal">
         <div class="modal-dialog modal-lg">

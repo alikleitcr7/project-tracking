@@ -56,7 +56,10 @@ var notification_app = new Vue({
         },
         //hasNewBroadcast: function () {
         //    return this.broadcasts.data.findIndex(k => k.isNew) > -1
-        //}
+        //},
+        //hasNewUserNotification: function () {
+        //    return this.notifications.findIndex(k => k.isNew) > -1
+        //},
     },
     methods: {
         getNotifications: function (page) {
@@ -158,6 +161,17 @@ var notification_app = new Vue({
         broadcasts_pageClick: function (pageNum) {
             this.broadcasts_getAll(pageNum - 1)
         },
+        getModalClasses: function () {
+            const hasNewBroadcasts = this.broadcasts.data.findIndex(k => k.isNew) > -1
+            const hasNewUserNotification = this.notifications.findIndex(k => k.isNew) > -1
+
+            console.log({ hasNewBroadcasts, hasNewUserNotification})
+
+            return {
+                'new-broadcast': hasNewBroadcasts,
+                'new-user-notification': hasNewUserNotification,
+            }
+        }
     },
     mounted: function () {
 

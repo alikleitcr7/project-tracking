@@ -40,7 +40,9 @@ namespace ProjectTracking.Controllers
         {
             string currentUserId = GetCurrentUserId();
 
-            DataContract.User user = _userMethods.GetById(userId ?? currentUserId);
+            userId = userId ?? currentUserId;
+
+            DataContract.User user = _userMethods.GetById(userId);
 
 
             if (user == null)

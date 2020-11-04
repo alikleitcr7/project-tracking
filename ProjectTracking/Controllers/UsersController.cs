@@ -64,7 +64,7 @@ namespace ProjectTracking.Controllers
         {
             try
             {
-                var record = _userMethods.Search(keyword, page, countPerPage, out int totalCount);
+                var record = _userMethods.Search(keyword, page, countPerPage, GetCurrentUserId(), out int totalCount);
 
                 return Ok(new { record, totalCount });
             }
@@ -140,20 +140,18 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUsersByRoleKeyValue(int roleCode, bool execludeCurrentUser = true)
+        public IActionResult GetUsersByRoleKeyValue(int roleCode)
         {
             try
             {
+                var users = _userMethods.GetUsersByRoleKeyValue(roleCode, GetCurrentUserId());
 
-                var users = _userMethods.GetUsersByRoleKeyValue(roleCode);
+                //if (execludeCurrentUser)
+                //{
+                //    string currentUserId = GetCurrentUserId();
 
-
-                if (execludeCurrentUser)
-                {
-                    string currentUserId = GetCurrentUserId();
-
-                    users = users.Where(k => k.Key != currentUserId).ToList();
-                }
+                //    users = users.Where(k => k.Key != currentUserId).ToList();
+                //}
 
                 // has no role
                 return Ok(users);

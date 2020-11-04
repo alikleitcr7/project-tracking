@@ -254,7 +254,7 @@ var usersNotifications_app = new Vue({
             isLoaded: false,
             message: null
         },
-
+        isAdmin: false,
         notificationTypes: {
             data: NOTIFICATION_TYPE._toList(),
             isLoading: false
@@ -278,7 +278,7 @@ var usersNotifications_app = new Vue({
 
             // supervisors
 
-            if (!this.supervisors.isLoaded) {
+            if (this.isAdmin && !this.supervisors.isLoaded) {
 
                 UsersService.GetUsersByRoleKeyValue(APP_USER_ROLES.supervisor.key)
                     .then((r) => {
@@ -328,6 +328,8 @@ var usersNotifications_app = new Vue({
         }
     },
     mounted: function () {
+
+        this.isAdmin = currentUser.role() === APP_USER_ROLES.admin.value
 
         this.usersNotifications_getAll()
     }

@@ -1,6 +1,8 @@
 ﻿
 
-<div id="NotificationModal" class="modal" role="dialog">
+<div id="NotificationModal" class="modal" role="dialog" 
+     :class="getModalClasses()"
+     >
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -13,7 +15,7 @@
 
                 <div>
                     <ul class="nav nav-tabs" v-if="tabs && tabs.length">
-                        <li v-for="(tab,idx) in tabs" :class="{'active':selectedIdx===idx}" @@click="changeTabIndex(idx)"><a>{{tab}}</a></li>
+                        <li v-for="(tab,idx) in tabs" :class="{'active':selectedIdx===idx}" :data-name="tab" @@click="changeTabIndex(idx)"><a>{{tab}}</a></li>
                     </ul>
 
                     <div class="tab-content">

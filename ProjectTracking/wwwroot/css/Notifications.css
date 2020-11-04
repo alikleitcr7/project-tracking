@@ -393,6 +393,30 @@
   height: 350px;
   overflow: auto;
 }
+#NotificationModal.new-broadcast .nav-tabs [data-name=Team]:not(.active) {
+  -webkit-animation-name: notification_blink;
+  -webkit-animation-duration: 1s;
+  animation-name: notification_blink;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  border-radius: 10px 10px 0 0;
+}
+#NotificationModal.new-broadcast .nav-tabs [data-name=Team]:not(.active):hover {
+  animation-name: none;
+  animation-duration: 0s;
+}
+#NotificationModal.new-user-notification .nav-tabs [data-name=Other]:not(.active) {
+  -webkit-animation-name: notification_blink;
+  -webkit-animation-duration: 1s;
+  animation-name: notification_blink;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  border-radius: 10px 10px 0 0;
+}
+#NotificationModal.new-user-notification .nav-tabs [data-name=Other]:not(.active):hover {
+  animation-name: none;
+  animation-duration: 0s;
+}
 .send-notification-container {
   display: flex;
 }

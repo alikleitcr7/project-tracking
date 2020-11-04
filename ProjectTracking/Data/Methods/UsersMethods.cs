@@ -95,8 +95,23 @@ namespace ProjectTracking.Data.Methods
             }
         }
 
-        public List<User> Search(string keyword, int page, int countPerPage, out int totalCount)
+        public List<User> Search(string keyword, int page, int countPerPage, string byUserId, out int totalCount)
         {
+            var dbUser = db.Users.FirstOrDefault(k => k.Id == byUserId);
+
+            if (dbUser == null)
+            {
+                throw new KeyNotFoundException("user not found");
+            }
+
+            ApplicationUserRole role = (ApplicationUserRole)dbUser.RoleCode;
+
+            if (role == ApplicationUserRole.TeamMember)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+
             IQueryable<User> query = db.Users.Select(k => new User()
             {
                 Id = k.Id,
@@ -122,6 +137,13 @@ namespace ProjectTracking.Data.Methods
             if (!string.IsNullOrEmpty(keyword))
             {
                 query = query.Where(k => k.FirstName.Contains(keyword) || k.LastName.Contains(keyword) || k.Email.Contains(keyword));
+            }
+
+            if (role == ApplicationUserRole.Supervisor)
+            {
+                List<string> supervisingIds = SupervisingUsers(byUserId);
+
+                query = query.Where(k => supervisingIds.Contains(k.Id));
             }
 
             totalCount = query.Count();
@@ -183,9 +205,27 @@ namespace ProjectTracking.Data.Methods
                 .Select(_mapper.Map<User>)
                 .ToList();
         }
-        public List<KeyValuePair<string, string>> GetUsersByRoleKeyValue(int roleCode)
+        public List<KeyValuePair<string, string>> GetUsersByRoleKeyValue(int roleCode, string byUserId)
         {
-            return db.Users.Where(k => k.RoleCode == roleCode)
+            var dbUser = db.Users.FirstOrDefault(k => k.Id == byUserId);
+
+            if (dbUser == null || dbUser.RoleCode == (short)ApplicationUserRole.TeamMember)
+            {
+                throw new Exception("user dont exist");
+            }
+
+            var query = db.Users.Where(k => k.RoleCode == roleCode && k.Id != byUserId);
+
+            if (dbUser.RoleCode == (short)ApplicationUserRole.Supervisor)
+            {
+                List<string> supervisingIds = SupervisingUsers(byUserId);
+
+                return query.Where(k => supervisingIds.Contains(k.Id))
+                               .Select(k => new KeyValuePair<string, string>(k.Id, k.FirstName + " " + k.LastName))
+                               .ToList();
+            }
+
+            return query
                 .Select(k => new KeyValuePair<string, string>(k.Id, k.FirstName + " " + k.LastName))
                 .ToList();
         }
@@ -207,8 +247,9 @@ namespace ProjectTracking.Data.Methods
             //List<int> supervisingTeams = db.Supervisers.Where(k => k.UserId == supervisorId)
             //    .Select(k => k.TeamId).ToList();
 
-            return db.Users.Where(k => db.SupervisorLogs.Any(s => s.UserId == supervisorId && s.TeamId == k.TeamId))
-                           .Select(k => k.Id).ToList();
+            return db.Users.Where(k => db.Teams.Any(t => t.SupervisorId == supervisorId && t.ID == k.TeamId.Value))
+                           .Select(k => k.Id)
+                           .ToList();
         }
 
         public bool IsSupervisorOf(string supervisorId, string userId)
