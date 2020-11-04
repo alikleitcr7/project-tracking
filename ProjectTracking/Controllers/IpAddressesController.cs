@@ -24,6 +24,7 @@ namespace ProjectTracking.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult GetUnlistedIps()
         {
             try
@@ -41,14 +42,14 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(string address, string title)
+        public IActionResult Create([FromBody]IpAddressSaveModel model)
         {
             try
             {
                 IpAddress ipAddress = _ipAddresses.Add(new IpAddress()
                 {
-                    Address = address,
-                    Title = title
+                    Address = model.address,
+                    Title = model.title
                 });
 
                 return Ok(ipAddress);
@@ -63,11 +64,12 @@ namespace ProjectTracking.Controllers
             }
         }
 
-        public IActionResult Delete(string ipAddress)
+        [HttpDelete]
+        public IActionResult Delete(string address)
         {
             try
             {
-                _ipAddresses.Delete(ipAddress);
+                _ipAddresses.Delete(address);
 
                 return Ok(true);
             }
@@ -81,14 +83,15 @@ namespace ProjectTracking.Controllers
             }
         }
 
-        public IActionResult Update(string address, string title)
+        [HttpPost]
+        public IActionResult Update([FromBody]IpAddressSaveModel model)
         {
             try
             {
                 IpAddress ipAddress = _ipAddresses.Update(new IpAddress()
                 {
-                    Address = address,
-                    Title = title
+                    Address = model.address,
+                    Title = model.title
                 });
 
                 return Ok(ipAddress);
@@ -103,6 +106,30 @@ namespace ProjectTracking.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult Save([FromBody]IpAddressSaveModel model)
+        {
+            try
+            {
+                IpAddress ipAddress = _ipAddresses.Save(new IpAddress()
+                {
+                    Address = model.address,
+                    Title = model.title
+                });
+
+                return Ok(ipAddress);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
         public IActionResult GetAll()
         {
             try
@@ -121,6 +148,7 @@ namespace ProjectTracking.Controllers
             }
         }
 
+        [HttpGet]
         public IActionResult GetListed()
         {
             try
@@ -137,6 +165,12 @@ namespace ProjectTracking.Controllers
             {
                 return StatusCode(500, new { message = ex.Message });
             }
+        }
+
+        public class IpAddressSaveModel
+        {
+            public string address { get; set; }
+            public string title { get; set; }
         }
     }
 }

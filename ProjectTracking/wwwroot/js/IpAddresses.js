@@ -28,49 +28,76 @@ var ipAddressesMethods = {
     },
     addIpAddress: function () {
 
-        let { address, title } = { ...this.ipAddresses.form };
+        let pendingRecord = { ...this.ipAddresses.form };
 
+        console.log({ pendingRecord })
 
-        if (!title) {
-            alert('Title is Required')
+        if (!pendingRecord.title || !pendingRecord.address) {
+            bootbox.alert('Title and IP Address are required')
             return;
         }
 
-
         this.ipAddresses.isLoading = true;
 
-        IpAddressesService.Update(address,title).done((r) => {
-
-            this.ipAddresses.form = ipAddressFormObject();
-
-            const unlistedIpIdx = this.unlistedIps.findIndex(k => k === address)
-
-            if (unlistedIpIdx > -1) {
-
-                let unlitedIps = [...this.unlistedIps]
-
-                unlitedIps.splice(unlistedIpIdx, 1)
-
-                this.unlistedIps = unlitedIps
-            }
-
-            this.ipAddresses.data = [r, ...this.ipAddresses.data]
-            this.ipAddresses.message = 'Added!';
-
-        }).fail((e) => {
-
-            console.log({ e })
+        IpAddressesService.Save(pendingRecord)
+            .then((r) => {
 
 
-            this.ipAddresses.message = e.responseJSON && e.responseJSON.message ? e.responseJSON.message: BASIC_ERROR_MESSAGE;
+                const record = r.data
+                const address = pendingRecord.address.trim()
+                // reset form
+                this.ipAddresses.form = ipAddressFormObject();
 
-        }).always(() => {
+                // remove from unlisted ips
+                const unlistedIpIdx = this.unlistedIps.findIndex(k => k === address)
 
-            this.ipAddresses.form.address = ''
-            this.ipAddresses.form.title = ''
+                if (unlistedIpIdx > -1) {
 
-            this.ipAddresses.isLoading = false;
-        });
+                    let unlistedIps = [...this.unlistedIps]
+
+                    unlistedIps.splice(unlistedIpIdx, 1)
+
+                    this.unlistedIps = unlistedIps
+                }
+
+                // append to listed ips
+
+                let data = [...this.ipAddresses.data]
+
+                const idx = data.findIndex(k => k.address === address)
+
+                // update existing
+                if (idx > -1) {
+                    data[idx] = record
+                }
+                // append
+                else {
+                    data = [record, ...data]
+                }
+
+                this.ipAddresses.data = data
+
+                this.ipAddresses.message = 'Saved!';
+
+            })
+            .catch((e) => {
+
+                const errorMessage = getAxiosErrorMessage(e)
+
+                this.ipAddresses.message = errorMessage;
+
+                //bootbox.alert(errorMessage)
+
+                //this.ipAddresses.message = e.responseJSON && e.responseJSON.message ? e.responseJSON.message : BASIC_ERROR_MESSAGE;
+
+            })
+            .then(() => {
+
+                //this.ipAddresses.form.address = ''
+                //this.ipAddresses.form.title = ''
+
+                this.ipAddresses.isLoading = false;
+            });
     },
     deleteIpAddress: function (idx) {
 
@@ -78,34 +105,41 @@ var ipAddressesMethods = {
             return;
         }
 
+        //const idx = this.ipAddresses.data.findIndex;
+
         let data = [...this.ipAddresses.data];
 
         let ipAddres = data[idx];
 
-        IpAddressesService.Delete(ipAddres.id).done((r) => {
+        IpAddressesService.Delete(ipAddres.address)
+            .then((r) => {
 
-            if (r) {
-                console.log({ data, idx })
-                data.splice(idx, 1);
+                const record = r.data
 
-                this.getUnlistedIps();
+                if (record) {
 
-                this.ipAddresses.data = data
-                this.ipAddresses.message = 'Deleted!';
+                    data.splice(idx, 1);
 
-            }
-            else {
-                this.ipAddresses.message = BASIC_ERROR_MESSAGE;
-            }
+                    this.getUnlistedIps();
 
-        }).fail((e) => {
+                    this.ipAddresses.data = data
+                    this.ipAddresses.message = 'Deleted!';
+                }
+                else {
+                    this.ipAddresses.message = BASIC_ERROR_MESSAGE;
+                }
 
-            console.error({ e })
-            this.ipAddresses.message = BASIC_ERROR_MESSAGE;
+            })
+            .catch((e) => {
 
-        }).always(() => {
-            this.ipAddresses.isLoading = false
-        });
+                const errorMessage = getAxiosErrorMessage(e)
+                console.error(errorMessage)
+
+                this.ipAddresses.message = errorMessage;
+            })
+            .then(() => {
+                this.ipAddresses.isLoading = false
+            });
     },
     updateIpAddress: function (idx) {
 
@@ -130,27 +164,33 @@ var ipAddressesMethods = {
             return;
         }
 
-        IpAddressesService.Update( address, title)
-            .done((r) => {
+        IpAddressesService.Save({ address, title })
+            .then((r) => {
 
-                if (r) {
+                const record = r.data
+
+                if (record) {
 
                     data[idx].isEdit = false;
-                    this.ipAddresses.message = 'Saved!'
 
+                    this.ipAddresses.message = 'Saved!'
                     this.ipAddresses.data = data;
+
                 }
                 else {
 
                     this.ipAddresses.message = BASIC_ERROR_MESSAGE
                 }
 
-            }).fail((e) => {
+            })
+            .catch((e) => {
+                const errorMessage = getAxiosErrorMessage(e)
+                console.error(errorMessage)
 
-                this.ipAddresses.message = BASIC_ERROR_MESSAGE
+                this.ipAddresses.message = errorMessage
 
-                console.error('save ipAddres', e)
-            }).always(() => {
+            })
+            .then(() => {
 
             });
     },
@@ -187,7 +227,6 @@ var ipAddressesMethods = {
 
         this.ipAddresses.form.address = address;
         this.ipAddresses.form.title = '';
-
     }
 }
 
@@ -199,19 +238,28 @@ new Vue({
         dateOptions,
         dateTimeOptions,
         ipAddresses: ipAddressObject(),
-        unlistedIps: []
+        unlistedIps: [],
+        unlistedIsLoading: true
     },
     methods: {
         ...ipAddressesMethods,
         getUnlistedIps: function () {
+
+            this.unlistedIsLoading = true
+
             IpAddressesService.GetUnlistedIps()
-                .done((r) => {
-                    this.unlistedIps = r
+                .then((r) => {
+
+                    const data = r.data
+
+                    this.unlistedIps = data
                 })
-                .fail((e) => {
-                    console.error({ e })
-                }).always(() => {
-                    this.ipAddresses.isLoading = false
+                .catch((e) => {
+                    const errorMessage = getAxiosErrorMessage(e)
+                    console.error(errorMessage)
+                })
+                .then(() => {
+                    this.unlistedIsLoading = false
                 })
         }
     },
@@ -220,13 +268,16 @@ new Vue({
         this.ipAddresses.isLoading = true
 
         IpAddressesService.GetListed()
-            .done((r) => {
-                console.log({ r })
-                this.ipAddresses.data = r
+            .then((r) => {
+
+                this.ipAddresses.data = r.data
             })
-            .fail((e) => {
-                console.error({ e })
-            }).always(() => {
+            .catch((e) => {
+
+                const errorMessage = getAxiosErrorMessage(e)
+                console.error(errorMessage)
+            })
+            .then(() => {
                 this.ipAddresses.isLoading = false
             })
 

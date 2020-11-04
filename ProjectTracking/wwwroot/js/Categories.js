@@ -314,7 +314,16 @@ const categoriesMethods = {
             })
             .catch((e) => {
 
-                console.error('delete', e)
+                //console.error('delete', e)
+                let errorMessage = getAxiosErrorMessage(e);
+
+                if (errorMessage === 'HAS_PROJECTS') {
+                    errorMessage = 'Category is set to some projects and cannot be deleted'
+                }
+
+                bootbox.alert(errorMessage)
+
+                this.categories_getAll(0)
 
                 this.categories_setMessage(BASIC_ERROR_MESSAGE)
 

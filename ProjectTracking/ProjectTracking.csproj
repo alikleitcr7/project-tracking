@@ -250,6 +250,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\lib\bootbox-5.3.2\" />
+    <Folder Include="wwwroot\lib\bootbox-latest\" />
     <Folder Include="wwwroot\lib\vuejs-paginate\" />
   </ItemGroup>
 

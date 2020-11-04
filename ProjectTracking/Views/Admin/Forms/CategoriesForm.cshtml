@@ -30,6 +30,7 @@
                 <tr>
                     <th style="width: 50px">-</th>
                     <th>Name</th>
+                    <th>Number of Projects</th>
                     <th></th>
                 </tr>
             </thead>
@@ -47,13 +48,17 @@
                         </td>
 
                         <td>
+                            {{item.projectsCount}}
+                        </td>
+
+                        <td>
                             <button class="s-btn s-btn-sm s-btn-outline" type="button"
                                     v-on:click="categories_edit(idx)">
 
                                 <i class="glyphicon glyphicon-edit"></i>
                                 Edit
                             </button>
-                            <button class="s-btn s-btn-sm s-btn-danger" type="button"
+                            <button v-if="!item.projectsCount" class="s-btn s-btn-sm s-btn-danger" type="button"
                                     v-on:click="categories_delete(idx)">
 
                                 <i class="glyphicon glyphicon-trash"></i>

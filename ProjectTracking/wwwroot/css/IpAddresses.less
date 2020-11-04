@@ -1,8 +1,68 @@
-﻿.split-ips {
+﻿@import 'variables.less';
+
+.split-ips {
     display: flex;
 
     > div {
-        flex: 1;
         padding: 10px;
     }
+
+    .listed-ips {
+        flex:1;
+
+        input {
+            max-width: 300px;
+        }
+    }
+
+    .unlisted-ips {
+        width:300px;
+    }
+
+}
+
+#IpAddresses {
+    .display-message {
+        margin-left: 1em !important;
+        display: block;
+    }
+
+    .modal-controls {
+        .table {
+            margin-bottom:10px;
+        }
+    }
+}
+
+@media  (max-width: @screen-sm){
+
+    #IpAddresses {
+        
+
+        .modal-controls {
+            .table td {
+
+                display:block;
+            }
+        }
+    }
+
+    .split-ips {
+        flex-direction:column;
+
+        .listed-ips {
+            flex: 1;
+
+            input {
+                max-width: 300px;
+            }
+        }
+
+        .unlisted-ips {
+            width:100%;
+            flex:1;
+        }
+    }
+
+
 }

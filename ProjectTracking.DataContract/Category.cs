@@ -12,5 +12,7 @@ namespace ProjectTracking.DataContract
 
         //public virtual List<User> Employees { get; set; }
         public virtual List<Project> Projects { get; set; }
+
+        public int ProjectsCount { get; set; }
     }
 }

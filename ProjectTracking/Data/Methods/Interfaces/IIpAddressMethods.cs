@@ -13,5 +13,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         List<IpAddress> GetAll();
         bool AddIfNotExist(string address);
         List<IpAddress> GetListed();
+        IpAddress Save(IpAddress ipAddress);
     }
 }

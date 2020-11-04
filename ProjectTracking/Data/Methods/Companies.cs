@@ -37,8 +37,14 @@ namespace ProjectTracking.Data.Methods
 
         public List<Category> GetAll()
         {
-            var Categories = _context.Categories.ToList().Select(k => _mapper.Map<Data.DataSets.Category, Category>(k)).ToList(); ;
-            return Categories;
+            return _context.Categories
+                .Select(k => new Category()
+                {
+                    ID = k.ID,
+                    Name = k.Name,
+                    ProjectsCount = k.Projects.Count()
+                })
+                .ToList();
         }
         public Category GetById(int id)
         {
@@ -95,9 +101,9 @@ namespace ProjectTracking.Data.Methods
                 throw new KeyNotFoundException();
             }
 
-            if (_context.Projects.Any(k=>k.CategoryId == id))
+            if (_context.Projects.Any(k => k.CategoryId == id))
             {
-                throw new ClientException("category is set to some projects and cannot be deleted");
+                throw new ClientException("HAS_PROJECTS");
             }
 
             _context.Categories.Remove(record);

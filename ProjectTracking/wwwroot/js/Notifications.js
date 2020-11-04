@@ -63,6 +63,7 @@ var notification_app = new Vue({
 
 
             this.isLoading = true;
+            this.notifications = []
 
             NotificationService.GetToCurrentUser(page, this.dataPaging.length)
                 .then((r) => {
@@ -124,6 +125,8 @@ var notification_app = new Vue({
 
             //const { keyword } = this.broadcasts.filterBy
             const { length } = this.broadcasts.dataPaging
+
+            this.broadcasts.data = []
 
             return BroadcastService.GetToTeam(this.teamId, page, length)
                 .then((r) => {

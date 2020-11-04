@@ -58,5 +58,9 @@
   {
     "outputFile": "wwwroot/css/Notifications.css",
     "inputFile": "wwwroot/css/Notifications.less"
+  },
+  {
+    "outputFile": "wwwroot/css/IpAddresses.css",
+    "inputFile": "wwwroot/css/IpAddresses.less"
   }
 ]

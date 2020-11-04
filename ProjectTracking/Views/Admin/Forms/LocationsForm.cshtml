@@ -1,7 +1,7 @@
-﻿<div id="IpAddresses">
+﻿<div id="IpAddresses" v-cloak>
 
     <div class="modal-controls">
-        <table class="table table-borderless" style="max-width:500px">
+        <table class="table table-borderless" style="max-width:600px">
             <tr>
                 <td>
                     <label>Address</label>
@@ -20,24 +20,32 @@
             </tr>
         </table>
 
+        <h5 class="display-message">{{ipAddresses.message || '&nbsp;' }}</h5>
     </div>
 
-    <h4 class="display-message">{{ipAddresses.message}}</h4>
 
     <div class="split-ips">
-        <div>
+        <div class="listed-ips">
             <table class="table table-small-display  ">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Address</th>
                         <th>Title</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
+
+                    <tr v-if="!ipAddresses.isLoading && !ipAddresses.data">
+                        <td colspan="2">Nothing Here</td>
+                    </tr>
+
+                    <tr v-if="ipAddresses.isLoading">
+                        <td colspan="2">Loading...</td>
+                    </tr>
+
+
                     <tr v-for="(item ,idx) in ipAddresses.data">
-                        <td>{{item.id}}</td>
                         <td>
                             {{item.address}}
                         </td>
@@ -55,7 +63,8 @@
                 </tbody>
             </table>
         </div>
-        <div>
+
+        <div class="unlisted-ips">
             <table class="table table-small-display  ">
                 <thead>
                     <tr>
@@ -64,6 +73,15 @@
                     </tr>
                 </thead>
                 <tbody>
+                    
+                    <tr v-if="!unlistedIsLoading && !unlistedIps.length">
+                        <td colspan="2">Nothing Here</td>
+                    </tr>
+
+                    <tr v-if="unlistedIsLoading">
+                        <td colspan="2">Loading...</td>
+                    </tr>
+
                     <tr v-for="(item ,idx) in unlistedIps">
                         <td>
                             {{item}}

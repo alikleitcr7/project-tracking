@@ -2,61 +2,115 @@
 const IP_ADDRESS_SERVICE_URI = (method) => `/IpAddresses/${method}`;
 
 const IpAddressesService = {
-    Create: function (address,title) {
+    Create: function (model) {
 
-        let data = new FormData();
+        const url = IP_ADDRESS_SERVICE_URI(`Create`)
 
-        data.append('address', address);
-        data.append('title', title);
+        return axios.post(url, model);
 
-        let url = IP_ADDRESS_SERVICE_URI('create')
-        let payload = BASIC_AJAX_PAYLOAD(url, 'post', data);
 
-        return $.ajax(payload);
+        //let data = new FormData();
+
+        //data.append('address', address);
+        //data.append('title', title);
+
+        //let url = IP_ADDRESS_SERVICE_URI('create')
+        //let payload = BASIC_AJAX_PAYLOAD(url, 'post', data);
+
+        //return $.ajax(payload);
     },
-    Delete: function (id) {
+    Delete: function (address) {
 
-        let data = new FormData();
-        data.append('id', id);
+        const query = serialize({ address })
 
-        let url = IP_ADDRESS_SERVICE_URI('delete')
-        let payload = BASIC_AJAX_PAYLOAD(url, 'post', data);
+        const url = IP_ADDRESS_SERVICE_URI(`Delete?${query}`)
 
-        return $.ajax(payload);
-    },
-    Update: function ( address, title) {
+        return axios.delete(url);
 
-        let data = new FormData();
-
+        //let data = new FormData();
         //data.append('id', id);
-        data.append('address', address);
-        data.append('title', title);
 
-        let url = IP_ADDRESS_SERVICE_URI('update')
-        let payload = BASIC_AJAX_PAYLOAD(url, 'post', data);
+        //let url = IP_ADDRESS_SERVICE_URI('delete')
+        //let payload = BASIC_AJAX_PAYLOAD(url, 'post', data);
 
-        return $.ajax(payload);
+        //return $.ajax(payload);
+    },
+    Update: function (model) {
+
+
+        const url = IP_ADDRESS_SERVICE_URI(`Update`)
+
+        return axios.post(url, model);
+
+
+        //let data = new FormData();
+
+        ////data.append('id', id);
+        //data.append('address', address);
+        //data.append('title', title);
+
+        //let url = IP_ADDRESS_SERVICE_URI('update')
+        //let payload = BASIC_AJAX_PAYLOAD(url, 'post', data);
+
+        //return $.ajax(payload);
+    },
+    Save: function (model) {
+
+        const url = IP_ADDRESS_SERVICE_URI(`Save`)
+
+        return axios.post(url, model);
+
+        //let data = new FormData();
+
+        ////data.append('id', id);
+        //data.append('address', address);
+        //data.append('title', title);
+
+        //let url = IP_ADDRESS_SERVICE_URI('update')
+        //let payload = BASIC_AJAX_PAYLOAD(url, 'post', data);
+
+        //return $.ajax(payload);
     },
     GetAll: function () {
 
-        let url = IP_ADDRESS_SERVICE_URI('getall')
-        let payload = BASIC_AJAX_PAYLOAD(url, 'get');
+        //const query = serialize({ categoryId, keyword, page, countPerPage })
 
-        return $.ajax(payload);
+        const url = IP_ADDRESS_SERVICE_URI(`GetAll`)
+
+        return axios.get(url);
+
+
+        //let url = IP_ADDRESS_SERVICE_URI('getall')
+        //let payload = BASIC_AJAX_PAYLOAD(url, 'get');
+
+        //return $.ajax(payload);
     },
     GetListed: function () {
 
-        let url = IP_ADDRESS_SERVICE_URI('GetListed')
-        let payload = BASIC_AJAX_PAYLOAD(url, 'get');
+        //const query = serialize({ categoryId, keyword, page, countPerPage })
 
-        return $.ajax(payload);
+        const url = IP_ADDRESS_SERVICE_URI(`GetListed`)
+
+        return axios.get(url);
+
+
+        //let url = IP_ADDRESS_SERVICE_URI('GetListed')
+        //let payload = BASIC_AJAX_PAYLOAD(url, 'get');
+
+        //return $.ajax(payload);
     },
     GetUnlistedIps: function () {
 
-        let url = IP_ADDRESS_SERVICE_URI('GetUnlistedIps')
-        let payload = BASIC_AJAX_PAYLOAD(url, 'get');
+        //const query = serialize({ categoryId, keyword, page, countPerPage })
 
-        return $.ajax(payload);
+        const url = IP_ADDRESS_SERVICE_URI(`GetUnlistedIps`)
+
+        return axios.get(url);
+
+        //let url = IP_ADDRESS_SERVICE_URI('GetUnlistedIps')
+        //let payload = BASIC_AJAX_PAYLOAD(url, 'get');
+
+        //return $.ajax(payload);
     },
 }
 

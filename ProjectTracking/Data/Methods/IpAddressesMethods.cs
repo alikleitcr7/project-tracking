@@ -85,6 +85,30 @@ namespace ProjectTracking.Data.Methods
             return GetById(ipAddress.Address);
         }
 
+        public IpAddress Save(IpAddress ipAddress)
+        {
+            EnsureCleanIpAddress(ipAddress);
+
+            var dbRecord = _context.IpAddresses.FirstOrDefault(k => k.Address == ipAddress.Address);
+
+            if (dbRecord != null)
+            {
+                dbRecord.Title = ipAddress.Title;
+            }
+            else
+            {
+                _context.IpAddresses.Add(new DataSets.IpAddress()
+                {
+                    Address = ipAddress.Address,
+                    Title = ipAddress.Title
+                });
+            }
+
+            _context.SaveChanges();
+
+            return GetById(ipAddress.Address);
+        }
+
         public IpAddress Update(IpAddress ipAddress)
         {
             EnsureCleanIpAddress(ipAddress);
@@ -110,10 +134,15 @@ namespace ProjectTracking.Data.Methods
             {
                 throw new Exception("ip address is null");
             }
+            
 
             if (string.IsNullOrEmpty(ipAddress.Address))
             {
                 throw new Exception("no address provided");
+            }
+            else
+            {
+                ipAddress.Address = ipAddress.Address.Trim();
             }
 
             if (!System.Net.IPAddress.TryParse(ipAddress.Address, out _))
@@ -125,6 +154,10 @@ namespace ProjectTracking.Data.Methods
             if (string.IsNullOrEmpty(ipAddress.Title))
             {
                 ipAddress.Title = null;
+            }
+            else
+            {
+                ipAddress.Title = ipAddress.Title.Trim();
             }
         }
 
