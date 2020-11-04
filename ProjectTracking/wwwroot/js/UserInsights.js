@@ -2,6 +2,7 @@
     el: '#UserInsights',
     data: {
         insights: null,
+        hasTimeSheets: false,
         isLoading: true,
         message: null
     },
@@ -14,6 +15,8 @@
     mounted: function () {
 
         const userId = $('#UserInsights').attr('data-user')
+
+        this.hasTimeSheets = $('#Profile').attr('data-has-timesheets') === 'True'
 
         UsersService.GetUserInsights(userId)
             .then((r) => {
@@ -38,10 +41,26 @@
                 /** @type {UserInsights} */
                 const insights = r
 
+
+                $('#line_active_minutes').closest('.c-box').show();
+
+                chartsHelper.charts.populateActivitiesMinuts('line_active_minutes', insights.activeMinuts)
+
                 //chartsHelper.charts.populateWorkload('bar_workload', insights.workload)
-                chartsHelper.charts.populateActivitiesMinuts('line_activities_minutes', insights.activitiesMinuts)
-                chartsHelper.charts.populateActivities('line_activities_frequency', insights.activitiesFrequency)
-                chartsHelper.charts.populateTasks('pie_tasks', insights.tasksPerformance)
+                if (this.hasTimeSheets) {
+
+
+                    $('#line_activities_minutes').closest('.c-box').show();
+                    $('#line_activities_frequency').closest('.c-box').show();
+                    $('#pie_tasks').closest('.c-box').show();
+
+                    chartsHelper.charts.populateActivitiesMinuts('line_activities_minutes', insights.activitiesMinuts)
+                    chartsHelper.charts.populateActivities('line_activities_frequency', insights.activitiesFrequency)
+                    chartsHelper.charts.populateTasks('pie_tasks', insights.tasksPerformance)
+                }
+                else {
+
+                }
             })
     }
 })

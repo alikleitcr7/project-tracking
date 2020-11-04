@@ -24,9 +24,10 @@
             <tr>
                 <td colspan="2">
                     <button type="button" v-show="!isCurrentUser"
+                            v-if="isSupervisingUser"
                             class="s-btn s-btn-primary"
                             v-on:click="newTimeSheet()">
-                        Add TimeSheet
+                        <i class="fa fa-calendar"></i> Add TimeSheet
                     </button>
 
                     <a class="s-btn s-btn-outline" 
@@ -72,15 +73,21 @@
                 <td>{{timeSheet.toDateDisplay}}</td>
                 <td>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-default" v-on:click="openTimeSheetProjectsModal(timeSheet)">Projects</button>
-                        <button type="button" class="btn btn-sm btn-default" v-on:click="editTimeSheet(timeSheet)">Edit</button>
+                        @* availableProjects,assignedProjects *@
+
+                        <button type="button" 
+                                v-if="teamId && isSupervisingUser"
+                                class="btn btn-sm btn-default" v-on:click="openTimeSheetProjectsModal(timeSheet)">Projects</button>
+                        <button type="button" 
+                           v-if="isSupervisingUser" class="btn btn-sm btn-default" v-on:click="editTimeSheet(timeSheet)">Edit</button>
                         @*<a class="btn btn-sm btn-default" v-bind:href="`/timesheets?id=${timeSheet.id}`">Time Sheet</a>*@
-                        <a class="btn btn-sm btn-default" v-bind:href="`/timesheets/explore?uid=${userId}&tid=${timeSheet.id}`">
-                            Explore
-                            <i class="fa fa-angle-right"></i>
+                        <a class="btn btn-sm btn-default" 
+                           v-bind:href="`/timesheets/explore?uid=${userId}&tid=${timeSheet.id}`">
+                            Explore <i class="fa fa-angle-right"></i>
                         </a>
 
                         <button type="button"
+                                  v-if="isSupervisingUser" 
                                 class="btn btn-sm btn-danger"
                                 v-on:click="deleteTimeSheet(timeSheet,idx)">
                             Delete
@@ -168,7 +175,6 @@
                                     @*<h4>Available Projects</h4>*@
                                     <input type="text" autocomplete="off" class="form-control" placeholder="Search Unassigned Tasks" v-model="availableProjectsSearchKey" />
                                 </div>
-
                                 <projects v-bind:records="timeSheetProjects.availableProjects"></projects>
 
                             </div>

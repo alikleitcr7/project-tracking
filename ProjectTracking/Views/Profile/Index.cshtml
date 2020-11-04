@@ -11,7 +11,11 @@
     };
 }
 
-<div id="Profile" class="v-container" data-current-user="@Model.CurrentUserId" data-user="@Model.User.Id" data-team="@Model.User.TeamId">
+<div id="Profile" class="v-container" 
+     data-current-user="@Model.CurrentUserId" 
+     data-is-supervising-user="@Model.IsSupervisingUser" 
+     data-has-timesheets="@Model.HasTimeSheets" 
+     data-user="@Model.User.Id" data-team="@Model.User.TeamId">
 
     @*<h2>@Model.FullName Profile</h2>*@
 
@@ -21,7 +25,7 @@
                 @Model.User.ProfileTwoLetters
             </div>
             <div class="profile-title">
-                <span>@Model.User.FullName</span>
+                <span>@Model.User.FullName - @Model.User.RoleDisplay</span>
                 <span>@Model.User.Title</span>
                 <small data-toggle="modal" data-target="#UserMoreDetails">More Details</small>
             </div>
@@ -31,17 +35,18 @@
     <div class="profile-content">
 
         <ul class="nav nav-tabs">
-            <li><a data-toggle="tab" href="#InsightsTab">Insights</a></li>
+
+            <li class="active"><a data-toggle="tab" href="#InsightsTab"><i class="fa fa-chart-line"></i> Insights</a></li>
 
             @if (Model.ShowSupervisorTab)
             {
-                <li><a data-toggle="tab" href="#SupervisorTeamsTab">Supervisor Teams</a></li>
+                <li><a data-toggle="tab" href="#SupervisorTeamsTab"> <i class="fa fa-users"></i> Teams</a></li>
             }
 
 
             @if (Model.ShowScheduleTab)
             {
-                <li><a data-toggle="tab" href="#SchedulesTab">Schedules</a></li>
+                <li><a data-toggle="tab" href="#SchedulesTab"> <i class="fa fa-tasks"></i> Schedules</a></li>
             }
         </ul>
 
@@ -49,7 +54,7 @@
 
             <div id="InsightsTab" class="tab-pane fade in active">
 
-                <partial name="~/Views/Profile/Insights.cshtml" model="@Model.User.Id" />
+                <partial name="~/Views/Profile/Insights.cshtml" model="@Model" />
 
             </div>
 

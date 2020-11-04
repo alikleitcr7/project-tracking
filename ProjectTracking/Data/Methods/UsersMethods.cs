@@ -987,7 +987,7 @@ namespace ProjectTracking.Data.Methods
 
         public TeamMemberOverview GetTeamMemberOverview(string userId)
         {
-            if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.Supervisor))
+            if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.TeamMember))
             {
                 throw new ClientException("DONT_EXIST_OR_NOT_CLAIMED_ROLE");
             }
@@ -1130,7 +1130,7 @@ namespace ProjectTracking.Data.Methods
 
         public AdminOverview GetAdminOverview(string userId)
         {
-            if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.Supervisor))
+            if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.Admin))
             {
                 throw new ClientException("DONT_EXIST_OR_NOT_CLAIMED_ROLE");
             }
@@ -1283,6 +1283,21 @@ namespace ProjectTracking.Data.Methods
             overview.TasksPerformance = GetUserTasksPerformance(q_tasks);
 
             overview.LatestLogs = GetLatestUserLogs(userId, 10);
+
+            overview.ActiveMinuts = db.UserLogging
+                .Where(k => k.UserId == userId)
+                .OrderByDescending(k => k.FromDate)
+                .GroupBy(k => k.FromDate.Date)
+                .Take(30)
+                .AsEnumerable()
+                .Select((key) => new KeyValuePair<DateTime, int>(key.Key, (int)Math.Floor(key.Sum(a => ((a.ToDate ?? DateTime.Now) - a.FromDate).TotalMinutes))))
+                .ToList();
+
+            //overview.UserActionLogs = new List<UserActionLog>();
+            // projects added
+            // timesheets added
+            // teams added
+
 
             return overview;
         }

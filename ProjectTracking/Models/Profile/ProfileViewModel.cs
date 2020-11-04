@@ -27,6 +27,7 @@ namespace ProjectTracking.Models.Profile
             }
         }
 
-        public string CurrentUserId { get; internal set; }
+        public string CurrentUserId { get;  set; }
+        public bool IsSupervisingUser { get;  set; }
     }
 }

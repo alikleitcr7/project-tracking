@@ -1,71 +1,85 @@
-﻿@model string
-<div id="UserInsights" class="v-container" v-cloak data-user="@Model">
+﻿@*@model string*@
+
+@model ProjectTracking.Models.Profile.ProfileViewModel
+
+<div id="UserInsights" class="v-container" v-cloak data-user="@Model.User.Id">
 
     <section class="project-visualization">
-        <div class="c-box-view c-box-view--wrap" v-if="insights">
-            <div class="c-box">
-                <h5 class="c-box-title">Latest Activities</h5>
-                <div class="table-fixed-header-container">
-                    <table class="table table-sm " v-if="insights.latestActivities.length">
-                        <thead>
-                            <tr>
-                                <th>task</th>
-                                <th>from</th>
-                                <th>to</th>
-                                <th>status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="activity in insights.latestActivities">
-                                <td>
-                                    <a :href="`/tasks/${activity.projectTask.id}`">
-                                        {{activity.projectTask.title}}
-                                    </a>
-                                </td>
-                                <td>{{activity.fromDateDisplay}}</td>
-                                <td>{{activity.toDate ? activity.toDateDisplay : 'Active'}}</td>
-                                <td>{{activity.projectTask.statusDisplay}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <h5 v-else>Nothing Here</h5>
-                </div>
+        <div class="c-box-view c-box-view--wrap">
+
+            <div class="c-box vis-active-mins">
+                <h5 class="c-box-title">Active Minutes</h5>
+                <canvas id="line_active_minutes"></canvas>
             </div>
 
-            <div class="c-box">
-                <h5 class="c-box-title">Latest Logs</h5>
-                <div class="table-fixed-header-container">
-                    <table class="table table-sm"   v-if="insights.latestLogs.length">
-                        <thead>
-                            <tr>
-                                <th>from</th>
-                                <th>to</th>
-                                <th>status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="log in insights.latestLogs">
-                                <td>{{log.displayFromDate}}</td>
-                                <td>{{log.displayToDate}}</td>
-                                <td>{{log.logStatusDisplay}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <h5 v-else>Nothing Here</h5>
-                </div>
-            </div>
+            <template v-if="insights">
 
-            <div class="c-box vis-workload">
-                <h5 class="c-box-title">Activities (Minutes)</h5>
+                <div class="c-box" v-if="hasTimeSheets">
+                    <h5 class="c-box-title">Latest Activities</h5>
+                    <div class="table-fixed-header-container">
+                        <table class="table table-sm " v-if="insights.latestActivities.length">
+                            <thead>
+                                <tr>
+                                    <th>task</th>
+                                    <th>from</th>
+                                    <th>to</th>
+                                    <th>status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="activity in insights.latestActivities">
+                                    <td>
+                                        <a :href="`/tasks/${activity.projectTask.id}`">
+                                            {{activity.projectTask.title}}
+                                        </a>
+                                    </td>
+                                    <td>{{activity.fromDateDisplay}}</td>
+                                    <td>{{activity.toDate ? activity.toDateDisplay : 'Active'}}</td>
+                                    <td>{{activity.projectTask.statusDisplay}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h5 v-else>Nothing Here</h5>
+                    </div>
+                </div>
+
+                <div class="c-box">
+                    <h5 class="c-box-title">Latest Logs</h5>
+                    <div class="table-fixed-header-container">
+                        <table class="table table-sm" v-if="insights.latestLogs.length">
+                            <thead>
+                                <tr>
+                                    <th>from</th>
+                                    <th>to</th>
+                                    <th>status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="log in insights.latestLogs">
+                                    <td>{{log.displayFromDate}}</td>
+                                    <td>{{log.displayToDate}}</td>
+                                    <td>{{log.logStatusDisplay}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h5 v-else>Nothing Here</h5>
+                    </div>
+                </div>
+
+            </template>
+
+
+            <div class="c-box vis-workload" style="display:none">
+                <h5 class="c-box-title">Tasks Activities (Minutes)</h5>
                 <canvas id="line_activities_minutes"></canvas>
             </div>
 
-            <div class="c-box vis-activities">
-                <h5 class="c-box-title">Activities (Frequency)</h5>
+            <div class="c-box vis-activities" style="display:none">
+                <h5 class="c-box-title">Tasks Activities (Frequency)</h5>
                 <canvas id="line_activities_frequency"></canvas>
             </div>
 
-            <div class="c-box vis-tasks-progress">
+            <div class="c-box vis-tasks-progress" style="display:none">
                 <h5 class="c-box-title">Task Progress</h5>
                 <canvas id="pie_tasks"></canvas>
             </div>

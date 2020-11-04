@@ -140,12 +140,23 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUsersByRoleKeyValue(int roleCode)
+        public IActionResult GetUsersByRoleKeyValue(int roleCode, bool execludeCurrentUser = true)
         {
             try
             {
+
+                var users = _userMethods.GetUsersByRoleKeyValue(roleCode);
+
+
+                if (execludeCurrentUser)
+                {
+                    string currentUserId = GetCurrentUserId();
+
+                    users = users.Where(k => k.Key != currentUserId).ToList();
+                }
+
                 // has no role
-                return Ok(_userMethods.GetUsersByRoleKeyValue(roleCode));
+                return Ok(users);
             }
             catch (ClientException ex)
             {

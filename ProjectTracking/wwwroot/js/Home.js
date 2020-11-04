@@ -59,7 +59,6 @@ new Vue({
         populateSupervisorVisuals: function (data) {
 
 
-
             $('#members_line_activities_minutes').closest('.c-box').show();
             $('#members_line_activities_frequency').closest('.c-box').show();
             $('#teams_line_activities_minutes').closest('.c-box').show();

@@ -42,18 +42,32 @@ namespace ProjectTracking.Controllers
 
             DataContract.User user = _userMethods.GetById(userId ?? currentUserId);
 
+
             if (user == null)
             {
                 return NotFound();
             }
+
+
+            bool isDifferentUser = user.Id != currentUserId;
+
+            DataContract.User currentUser = isDifferentUser ? _userMethods.GetById(currentUserId) : user;
 
             ProfileViewModel model = new ProfileViewModel()
             {
                 User = user,
                 HasSupervisorLog = _userMethods.HasSupervisorLog(userId),
                 HasTimeSheets = _userMethods.HasTimeSheets(userId),
-                CurrentUserId = currentUserId
+                CurrentUserId = currentUserId,
+                IsSupervisingUser = isDifferentUser ? _userMethods.IsSupervisorOf(currentUserId, user.Id) : false
             };
+
+            // user is not the current user 
+            // only admins and supervising users can access other profiles 
+            if (isDifferentUser && !model.IsSupervisingUser && currentUser.Role != ApplicationUserRole.Admin)
+            {
+                return Unauthorized();
+            }
 
             return View(model);
         }

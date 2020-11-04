@@ -415,6 +415,15 @@
 #Profile .profile-content {
   padding: 2em 0;
 }
+#Profile .project-visualization .c-box {
+  width: 45%;
+}
 #Profile #UserMoreDetails .modal-header {
   border-bottom: none;
+}
+@media (max-width: 767px) {
+  .project-visualization .c-box {
+    /*flex: 1;*/
+    width: 100%!important;
+  }
 }

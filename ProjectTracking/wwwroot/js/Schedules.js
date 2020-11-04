@@ -76,7 +76,7 @@ function filterProjects(val, filteredProjects) {
 
 
         // || (project.description ? project.description.toLowerCase().indexOf(val) > -1 : false)
-        let showProject = project.title.toLowerCase().indexOf(val) > -1 ;
+        let showProject = project.title.toLowerCase().indexOf(val) > -1;
 
         // show project if some tasks met the search criteria
         project.isHidden = !project.tasks.some(k => k.title.toLowerCase().indexOf(val) > -1);
@@ -141,6 +141,9 @@ const userProfileData = {
     },
     team: () => {
         return $('#Profile').attr('data-team')
+    },
+    isSupervisingUser: () => {
+        return $('#Profile').attr('data-is-supervising-user') === 'True'
     }
 }
 
@@ -165,6 +168,7 @@ new Vue({
     el: '#Schedules',
     data: {
         isInAdministration: false,
+        isSupervisingUser: false,
         //timeSheetStatuses: [],
 
         timeSheetForm: timeSheetFormObject(),
@@ -216,7 +220,7 @@ new Vue({
             const currentUserId = this.currentUserId
             const userId = this.userId
 
-            console.log({currentUserId,userId})
+            console.log({ currentUserId, userId })
             return currentUserId && userId && currentUserId === userId
         }
     },
@@ -714,6 +718,7 @@ new Vue({
 
         this.userId = userProfileData.user();
         this.currentUserId = userProfileData.currentUser();
+        this.isSupervisingUser = userProfileData.isSupervisingUser();
         this.teamId = userProfileData.team() ? parseInt(userProfileData.team()) : null;
 
         console.log('uid', this.userId)
