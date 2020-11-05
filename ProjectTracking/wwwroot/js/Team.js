@@ -31,6 +31,7 @@ new Vue({
     el: '#Team',
     data: {
         teamId: null,
+        isTeamSupervisor: false,
         team: null,
         message: '',
         broadcasts: {
@@ -44,9 +45,19 @@ new Vue({
             message: null,
             isLoaded: false
         },
-        isLoading: true
+        isLoading: true,
+        tabs: null,
+        selectedTab: 0,
+        errors: '',
+        oNull: null,
+        teamNotifications: teamNotificationObject(),
+        notificationTypes: {
+            data: NOTIFICATION_TYPE._toList(),
+            isLoading: false
+        }
     },
     methods: {
+        ...teamNotificationsMethods,
         getMemberNameById: function () {
 
         },
@@ -83,21 +94,51 @@ new Vue({
 
         },
         openBroadcasts: function () {
-            if (!teamNotifications_app) {
-                console.error('team notification app undefined')
-                return
-            }
-            teamNotifications_app.teamNotifications_openModal()
-        }
+            //if (!teamNotifications_app) {
+            //    console.error('team notification app undefined')
+            //    return
+            //}
+            this.teamNotifications_openModal()
+        },
+        getNotificationClasses: function (notification) {
+
+            let classes = [`notification-${notification.notificationTypeDisplay.toLowerCase()}`]
+
+            return classes
+        },
     },
     computed: {
+        teamNotificationsTotalPages: function () {
+            const totalCount = this.teamNotifications.dataPaging.totalCount
+            const length = this.teamNotifications.dataPaging.length
 
+            const totalPages = Math.ceil(totalCount / length);
+
+            console.log({ totalPages })
+
+            return totalPages || 0
+        },
     },
     mounted: function () {
 
         const teamId = parseInt($('#Team').attr('data-id'))
 
+        const isTeamSupervisor = $('#Team').attr('data-is-team-supervisor') === 'True'
+
+        this.isTeamSupervisor = isTeamSupervisor 
+
+        if (isTeamSupervisor) {
+            this.tabs = [
+                { title: 'Compose', icon: 'fa fa-pen' },
+                { title: 'Sent', icon: 'fa fa-history' },
+            ]
+        }
+        else {
+            this.selectedTab = 1
+        }
+
         this.teamId = parseInt(teamId)
+        this.isTeamSupervisor = isTeamSupervisor
         this.isLoading = true
 
         TeamsService.GetTeamViewModel(teamId)

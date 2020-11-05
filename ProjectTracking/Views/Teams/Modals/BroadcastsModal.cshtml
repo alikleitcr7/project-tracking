@@ -11,13 +11,15 @@
 
             <div class="modal-body">
 
-                <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#BroadcastFormTab"><i class="fa fa-pen"></i> Compose</a></li>
-                    <li><a data-toggle="tab" href="#BroadcastsTab"><i class="fa fa-history"></i> Sent</a></li>
+                <ul class="nav nav-tabs" v-if="isTeamSupervisor">
+                    <li :class="{'active': idx === selectedTab }"
+                        v-for="(tab,idx) in tabs"
+                        @@click="teamNotifications_changeTab(idx)"><a><i :class="tab.icon"></i> {{tab.title}}</a></li>
                 </ul>
 
                 <div class="tab-content">
-                    <div id="BroadcastFormTab" class="tab-pane fade in active">
+
+                    <div id="BroadcastFormTab" class="tab-pane fade " :class="{'in active': selectedTab === 0}">
                         <div class="broadcast-form">
 
                             <div class="input-group-container">
@@ -48,11 +50,12 @@
                             </div>
                         </div>
                     </div>
-                    <div id="BroadcastsTab" class="tab-pane fade">
+
+                    <div id="BroadcastsTab" class="tab-pane fade" :class="{'in active': selectedTab === 1}">
                         <div class="broadcasts">
 
                             <h4 v-show="!teamNotifications.isLoading && !teamNotifications.data.length ">
-                                <br />
+                                <br v-if="tabs && tabs.length" />
                                 Nothing here yet
                             </h4>
 
@@ -82,9 +85,9 @@
                     </div>
                 </div>
 
-                
 
-                
+
+
 
             </div>
 

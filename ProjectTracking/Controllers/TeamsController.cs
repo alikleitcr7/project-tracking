@@ -61,6 +61,7 @@ namespace ProjectTracking.Controllers
             string userId = GetCurrentUserId();
 
             ViewData["UserId"] = userId;
+            ViewData["IsTeamSupervisor"] = team.SupervisorId == userId;
 
             return View(team);
         }

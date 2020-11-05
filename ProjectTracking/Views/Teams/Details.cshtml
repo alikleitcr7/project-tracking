@@ -5,10 +5,11 @@
 @{
 
     ViewData["Title"] = $"Team - {Model.Name}";
+    bool isTeamSupervisor = (bool)ViewData["IsTeamSupervisor"];
 
 }
 
-<div id="Team" data-id="@Model.ID" class="v-container" v-cloak>
+<div id="Team" data-id="@Model.ID" data-is-team-supervisor="@isTeamSupervisor" class="v-container" v-cloak>
 
     @* Info *@
 
@@ -145,9 +146,10 @@
         </div>
     </div>
 
+    <partial name="~/Views/Teams/Modals/BroadcastsModal.cshtml" model="@Model.ID" />
+
 </div>
 
-<partial name="~/Views/Teams/Modals/BroadcastsModal.cshtml" model="@Model.ID" />
 
 @section styles{
     <link href="~/css/Team.min.css" rel="stylesheet" />

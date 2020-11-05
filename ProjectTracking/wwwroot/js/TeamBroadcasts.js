@@ -231,54 +231,57 @@ const teamNotificationsMethods = {
     teamNotifications_pageClick: function (pageNum) {
         this.teamNotifications_getAll(pageNum - 1)
     },
+    teamNotifications_changeTab: function (idx) {
+        this.selectedTab = idx
+    },
 }
 
-var teamNotifications_app = new Vue({
-    el: "#TeamNotificationModal",
-    data: {
-        dateOptions,
-        dateTimeOptions,
-        teamNotifications: teamNotificationObject(),
-        errors: '',
-        oNull: null,
-        teamId: null,
-        notificationTypes: {
-            data: NOTIFICATION_TYPE._toList(),
-            isLoading: false
-        }
-    },
-    computed: {
-        teamNotificationsTotalPages: function () {
-            const totalCount = this.teamNotifications.dataPaging.totalCount
-            const length = this.teamNotifications.dataPaging.length
+//var teamNotifications_app = new Vue({
+//    el: "#TeamNotificationModal",
+//    data: {
+//        dateOptions,
+//        dateTimeOptions,
+//        teamNotifications: teamNotificationObject(),
+//        errors: '',
+//        oNull: null,
+//        teamId: null,
+//        notificationTypes: {
+//            data: NOTIFICATION_TYPE._toList(),
+//            isLoading: false
+//        }
+//    },
+//    computed: {
+//        teamNotificationsTotalPages: function () {
+//            const totalCount = this.teamNotifications.dataPaging.totalCount
+//            const length = this.teamNotifications.dataPaging.length
 
-            const totalPages = Math.ceil(totalCount / length);
+//            const totalPages = Math.ceil(totalCount / length);
 
-            console.log({ totalPages })
+//            console.log({ totalPages })
 
-            return totalPages || 0
-        },
-    },
-    methods: {
-        ...teamNotificationsMethods,
-        getNotificationClasses: function (notification) {
-            //console.log('notification class',{notification})
-            let classes = [`notification-${notification.notificationTypeDisplay.toLowerCase()}`]
+//            return totalPages || 0
+//        },
+//    },
+//    methods: {
+//        ...teamNotificationsMethods,
+//        getNotificationClasses: function (notification) {
+//            //console.log('notification class',{notification})
+//            let classes = [`notification-${notification.notificationTypeDisplay.toLowerCase()}`]
 
-            //if (notification.isNew) {
-            //    classes.push('isNew')
-            //}
+//            //if (notification.isNew) {
+//            //    classes.push('isNew')
+//            //}
 
-            return classes
-        },
-    },
-    mounted: function () {
+//            return classes
+//        },
+//    },
+//    mounted: function () {
 
-        const teamId = parseInt($('#TeamNotificationModal').attr('data-id'))
+//        const teamId = parseInt($('#TeamNotificationModal').attr('data-id'))
 
-        this.teamId = teamId
+//        this.teamId = teamId
 
-        this.teamNotifications_getAll()
-    }
-})
+//        this.teamNotifications_getAll()
+//    }
+//})
 
