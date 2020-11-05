@@ -141,6 +141,10 @@ new Vue({
         this.isTeamSupervisor = isTeamSupervisor
         this.isLoading = true
 
+        // broadcasts
+        this.teamNotifications_getAll()
+
+        // insights
         TeamsService.GetTeamViewModel(teamId)
             .then((r) => {
                 const record = r.data

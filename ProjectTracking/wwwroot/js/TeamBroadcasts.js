@@ -201,6 +201,9 @@ const teamNotificationsMethods = {
         const { keyword } = this.teamNotifications.filterBy
         const { length } = this.teamNotifications.dataPaging
 
+        this.teamNotifications.data = []
+
+
         return BroadcastService.GetToTeam(this.teamId, page, length)
             .then((r) => {
 
@@ -211,7 +214,9 @@ const teamNotificationsMethods = {
                     console.log('getall teamNotification response', r)
                 }
 
+                console.log({ broadcasts:records})
                 if (records) {
+
                     this.teamNotifications.data = [...records]
                     this.teamNotifications.dataPaging.totalCount = totalCount
                 }

@@ -70,7 +70,15 @@
                                 </div>
                             </section>
 
-                            <p class="c-display-message" v-if="teamNotifications.isLoading">Loading...</p>
+                            @*<p class="c-display-message" v-if="teamNotifications.isLoading">Loading...</p>*@
+
+                            <div v-if="teamNotifications.isLoading" class="notification-container">
+                                <div class="notification notification--loading" v-for="i in [,,,]">
+                                    <div class="notification__user"></div>
+                                    <div class="notification__message"></div>
+                                    <div class="notification__date"></div>
+                                </div>
+                            </div>
 
                             <div class="notification-container scrollable-container-300" v-show="teamNotifications.data.length">
                                 <div class="notification" v-for="(item,idx) in teamNotifications.data"
@@ -82,15 +90,12 @@
                             </div>
 
                         </div>
+
                     </div>
+
                 </div>
 
-
-
-
-
             </div>
-
 
 
             @*<div class="modal-footer modal-footer-centered">

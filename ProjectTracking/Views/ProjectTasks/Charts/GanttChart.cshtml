@@ -5,7 +5,7 @@
     </div>
 
     <p class="text-bold">
-        <i class="fa fa-info-circle"></i>{{isProjectSupervisor? 'tasks require start/end date to be displayed on this chart' :'only tasks with start/end date are displayed here'}}
+        <i class="fa fa-info-circle"></i> {{isProjectSupervisor? 'tasks require start/end date to be displayed on this chart' :'only tasks with start/end date are displayed here'}}
     </p>
 
     <h5 v-if="ganttChart.isLoading">Loading...</h5>
