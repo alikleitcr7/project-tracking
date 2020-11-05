@@ -206,6 +206,24 @@ namespace ProjectTracking.Data.Methods
                 Title = k.Title,
             };
 
+        public static Expression<Func<DataSets.ProjectTask, ProjectTask>> MapProjectTaskWithUserAndCheckActivities =>
+            k => new ProjectTask()
+            {
+                ID = k.ID,
+                ActualEnd = k.ActualEnd,
+                DateAdded = k.DateAdded,
+                Description = k.Description,
+                PlannedEnd = k.PlannedEnd,
+                ProjectId = k.ProjectId,
+                StartDate = k.StartDate,
+                StatusByUserId = k.StatusByUserId,
+                StatusCode = k.StatusCode,
+                LastModifiedDate = k.LastModifiedDate,
+                StatusByUserName = k.StatusByUser.FirstName + " " + k.StatusByUser.LastName,
+                Title = k.Title,
+                IsAssignedToTimeSheet = k.TimeSheetTasks.Any()
+            };
+
         public static Expression<Func<DataSets.ProjectTask, ProjectTask>> MapProjectTaskBasics =>
             k => new ProjectTask()
             {
@@ -255,7 +273,7 @@ namespace ProjectTracking.Data.Methods
             return query.OrderByDescending(k => k.ID)
                 .Skip(page * countPerPage)
                 .Take(countPerPage)
-                .Select(MapProjectTaskWithUser)
+                .Select(MapProjectTaskWithUserAndCheckActivities)
                 .ToList();
         }
 
@@ -277,16 +295,21 @@ namespace ProjectTracking.Data.Methods
 
             var dbTask = db.ProjectTasks.Include(k => k.TimeSheetTasks).FirstOrDefault(k => k.ID == id);
 
-            if (dbTask != null)
+            if (dbTask == null)
             {
-                dbTask.TimeSheetTasks.Clear();
-
-                db.ProjectTasks.Remove(dbTask);
-
-                return db.SaveChanges() > 0;
+                throw new ClientException("not found");
             }
 
-            return false;
+            if (dbTask.TimeSheetTasks.Count > 0)
+            {
+                throw new ClientException("IS_ASSIGNED_TO_TIMESHEET");
+            }
+
+            //dbTask.TimeSheetTasks.Clear();
+
+            //db.ProjectTasks.Remove(dbTask);
+
+            return db.SaveChanges() > 0;
         }
 
         public ProjectTask GetById(int id)

@@ -488,6 +488,14 @@ ul {
 .nav-tabs > li > a {
   cursor: pointer;
 }
+.readonly-block-label {
+  display: block;
+  font-weight: normal;
+}
+.readonly-select {
+  font-weight: normal;
+  border: none;
+}
 select:-moz-focusring {
   color: transparent;
   text-shadow: 0 0 0 #000;

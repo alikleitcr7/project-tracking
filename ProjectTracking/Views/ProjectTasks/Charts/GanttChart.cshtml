@@ -1,10 +1,12 @@
 ﻿<div id="GanttChart" class="v-container">
 
-    <div class="buttons v-container" v-if="!ganttChart.isLoading  && ganttChart.isLoaded">
+    <div class="buttons v-container" v-if="isProjectSupervisor && !ganttChart.isLoading  && ganttChart.isLoaded">
         <button type="button" v-on:click="projectTasks_openModal" class="s-btn s-btn-primary">New Task &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
     </div>
 
-    <p class="text-bold"><i class="fa fa-info-circle"></i> tasks require start/end date to be displayed on this chart</p>
+    <p class="text-bold">
+        <i class="fa fa-info-circle"></i>{{isProjectSupervisor? 'tasks require start/end date to be displayed on this chart' :'only tasks with start/end date are displayed here'}}
+    </p>
 
     <h5 v-if="ganttChart.isLoading">Loading...</h5>
 

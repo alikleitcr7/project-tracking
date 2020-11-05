@@ -1,7 +1,7 @@
 ﻿
 <div class="buttons mb-2">
 
-    <div>
+    <div v-if="isProjectSupervisor">
         <button type="button" v-on:click="projectTasks_openModal" class="s-btn s-btn-primary">New Task &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
     </div>
 
@@ -104,7 +104,7 @@
 
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
                                 v-on:click="projectTasks_edit(item.id)">
-                            Edit
+                            {{isProjectSupervisor ? 'Edit' : 'Details'}}
                         </button>
 
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
@@ -113,6 +113,7 @@
                         </button>
 
                         <button class="s-btn s-btn-sm s-btn-danger" type="button"
+                                v-if="isProjectSupervisor && !item.isAssignedToTimeSheet"
                                 v-on:click="projectTasks_delete(idx)">
                             Delete
                         </button>

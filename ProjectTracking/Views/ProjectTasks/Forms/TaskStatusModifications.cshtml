@@ -12,8 +12,8 @@
             <div class="modal-body">
                 <p v-show="projectTasks.statusModifications.isLoading">Loading...</p>
                 <div class="scrollable-container-400">
-                    <p v-if="projectTasks.activeProjectTask">current status - {{projectTasks.activeProjectTask.statusDisplay}}</p>
-                    <p v-for="modification in projectTasks.statusModifications.data">{{modification.dateModifiedDisplay}} - {{modification.statusDisplay}}</p>
+                    <p v-if="projectTasks.activeProjectTask">Current Status - {{projectTasks.activeProjectTask.statusDisplay}} by  <a :href="`/profile/${projectTasks.activeProjectTask.statusByUserId}`"> {{projectTasks.activeProjectTask.statusByUserName}}</a></p>
+                    <p v-for="modification in projectTasks.statusModifications.data">{{modification.dateModifiedDisplay}} - {{modification.statusDisplay}} by <a :href="`/profile/${modification.modifiedByUserId}`"> {{modification.modifiedByUserName}}</a></p>
                 </div>
                 <p v-show="!projectTasks.statusModifications.isLoading &&  !projectTasks.statusModifications.data.length">No status modifications  </p>
 

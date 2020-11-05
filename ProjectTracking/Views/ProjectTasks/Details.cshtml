@@ -2,9 +2,14 @@
 @model ProjectTask
 @{
     ViewData["Title"] = $"Task - {Model.Title}";
+
+    bool isProjectSupervisor = (bool)ViewData["IsProjectSupervisor"];
 }
 
-<div id="ProjectTask" class="v-container" data-task="@Model.ID" v-cloak>
+
+<div id="ProjectTask" class="v-container" data-task="@Model.ID"
+     data-is-project-supervisor="@isProjectSupervisor"
+     v-cloak>
 
     <section class="top-intro">
 

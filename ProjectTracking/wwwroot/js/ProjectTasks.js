@@ -58,6 +58,7 @@ const Modals_ProjectTasks = {
 }
 
 const getActiveProjectId = () => parseInt($('#ProjectTasks').attr('data-project'))
+const isProjectSupervisor = () => $('#ProjectTasks').attr('data-is-project-supervisor') === 'True'
 
 const projectTaskFormObject = (obj) => {
 
@@ -72,6 +73,10 @@ const projectTaskFormObject = (obj) => {
         plannedEnd: obj.plannedEnd,
         actualEnd: obj.actualEnd,
         statusCode: obj.statusCode,
+        startDateDisplay: obj.startDateDisplay,
+        plannedEndDisplay: obj.plannedEndDisplay,
+        actualEndDisplay: obj.actualEndDisplay,
+        statusDisplay: obj.statusDisplay,
     } : {
             title: null,
             projectId,
@@ -80,6 +85,10 @@ const projectTaskFormObject = (obj) => {
             plannedEnd: null,
             actualEnd: null,
             statusCode: 0,
+            startDateDisplay: null,
+            plannedEndDisplay: null,
+            actualEndDisplay: null,
+            statusDisplay: null,
         }
 
     return {
@@ -449,10 +458,20 @@ const projectTasksMethods = {
             })
             .catch((e) => {
 
-                console.error('delete', e)
+                let errorMessage = getAxiosErrorMessage(e);
 
-                this.projectTasks_setMessage(BASIC_ERROR_MESSAGE)
 
+
+                console.error('delete', errorMessage)
+
+                if (errorMessage === 'IS_ASSIGNED_TO_TIMESHEET') {
+
+                    errorMessage = 'Task is assigned to a timesheet and cannot be deleted'
+
+                    this.projectTasks_getAll(0)
+                }
+
+                this.projectTasks_setMessage(errorMessage)
             })
             .then(() => {
 
@@ -585,6 +604,9 @@ var projectTasks_app = new Vue({
         projectId: getActiveProjectId(),
         errors: null,
         oNull: null,
+        isProjectSupervisor: false,
+        isAdmin: false,
+        isMember: false,
         overview: {
             data: null,
             isLoading: true,
@@ -849,6 +871,10 @@ var projectTasks_app = new Vue({
 
         this.projectTasks_getAll()
         this.projectTasks_getAllStatuses()
+
+        this.isProjectSupervisor = isProjectSupervisor()
+        this.isAdmin = currentUser.role() === APP_USER_ROLES.admin.value
+        this.isMember = currentUser.role() === APP_USER_ROLES.teamMember.value
 
         ProjectsService.GetOverview(this.projectId)
             .then((r) => {

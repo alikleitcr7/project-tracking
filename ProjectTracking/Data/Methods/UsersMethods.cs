@@ -267,6 +267,7 @@ namespace ProjectTracking.Data.Methods
             return db.Teams.Any(k => k.ID == teamId.Value && k.SupervisorId == supervisorId);
         }
 
+
         public bool IsSupervisor(string userId)
         {
             return db.Teams.Any(k => k.SupervisorId == userId);

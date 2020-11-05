@@ -33,6 +33,23 @@ namespace ProjectTracking.Controllers
                 return NotFound();
             }
 
+            string currentUserId = GetCurrentUserId();
+
+            ApplicationUserRole currentUserRole = GetCurrentUserRole();
+
+            bool isProjectSupervisor = false;
+
+            if (currentUserRole == ApplicationUserRole.TeamMember && !_projectsMethods.MemberCanAccessProject(currentUserId, project.ID))
+            {
+                return NotFound();
+            }
+            else if (currentUserRole == ApplicationUserRole.Supervisor)
+            {
+                isProjectSupervisor = _projectsMethods.IsSupervisorOfProject(currentUserId, project.ID);
+            }
+
+            ViewData["IsProjectSupervisor"] = isProjectSupervisor;
+
             return View(project);
         }
 
@@ -45,6 +62,23 @@ namespace ProjectTracking.Controllers
             {
                 return NotFound();
             }
+
+            string currentUserId = GetCurrentUserId();
+
+            ApplicationUserRole currentUserRole = GetCurrentUserRole();
+
+            bool isProjectSupervisor = false;
+
+            if (currentUserRole == ApplicationUserRole.TeamMember && !_projectsMethods.MemberCanAccessProject(currentUserId, task.ProjectId))
+            {
+                return NotFound();
+            }
+            else if (currentUserRole == ApplicationUserRole.Supervisor)
+            {
+                isProjectSupervisor = _projectsMethods.IsSupervisorOfProject(currentUserId, task.ProjectId);
+            }
+
+            ViewData["IsProjectSupervisor"] = isProjectSupervisor;
 
             return View(task);
         }

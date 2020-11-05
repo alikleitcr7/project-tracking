@@ -253,6 +253,40 @@ namespace ProjectTracking.Data.Methods
         }
 
 
+        public bool IsSupervisorOfProject(string supervisorId, int projectId)
+        {
+            // get project's team
+            List<int> projectTeamsIds = db.TeamsProjects
+                .Where(k => k.ProjectId == projectId)
+                .Select(k => k.TeamId)
+                .ToList();
+
+            if (projectTeamsIds.Count == 0)
+            {
+                return false;
+            }
+
+            // check if at least one of those teams are supervised by that user
+            return db.Teams.Any(k => projectTeamsIds.Contains(k.ID) && k.SupervisorId == supervisorId);
+        }
+
+        public bool MemberCanAccessProject(string memberId, int projectId)
+        {
+            // get project's team
+            List<int> projectTeamsIds = db.TeamsProjects
+                .Where(k => k.ProjectId == projectId)
+                .Select(k => k.TeamId)
+                .ToList();
+
+            if (projectTeamsIds.Count == 0)
+            {
+                return false;
+            }
+
+            // check if the member is a part of at least one of those teams 
+            return db.Users.Any(k => k.Id == memberId && projectTeamsIds.Contains(k.TeamId.Value));
+        }
+
         public ProjectOverview GetOverview(int projectId)
         {
             if (!db.Projects.Any(k => k.ID == projectId))

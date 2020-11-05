@@ -2,9 +2,14 @@
 @model Project
 @{
     ViewData["Title"] = $"Project - {Model.Title}";
+
+    bool isProjectSupervisor = (bool)ViewData["IsProjectSupervisor"];
 }
 
-<div id="ProjectTasks" class="v-container" data-project="@Model.ID" v-cloak>
+<div id="ProjectTasks" class="v-container"
+     data-project="@Model.ID"
+     data-is-project-supervisor="@isProjectSupervisor"
+     v-cloak>
 
     <section class="top-intro">
 
@@ -31,13 +36,17 @@
                 <td>@Model.ActualEndDisplay</td>
             </tr>
         </table>
+
     </section>
+
     <h5 class="text-danger" v-if="errors">{{errors}}</h5>
+
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#OverviewTab"> <i class="far fa-chart-bar"></i> Overview</a></li>
-        <li><a data-toggle="tab" href="#TasksTab"><i class="fa fa-tasks"></i> Tasks</a></li>
-        <li onclick="handleGanntTabClick()"><a data-toggle="tab" href="#GanttTab"> <i class="fa fa-stream"></i> Gantt</a></li>
+        <li ><a data-toggle="tab" href="#TasksTab"><i class="fa fa-tasks"></i> Tasks</a></li>
+        <li onclick="handleGanntTabClick()"><a data-toggle="tab" href="#GanttTab"> <i class="fa fa-stream"></i> Tasks Stream</a></li>
     </ul>
+
     <div class="tab-content">
 
         <div id="OverviewTab" class="tab-pane fade in active">

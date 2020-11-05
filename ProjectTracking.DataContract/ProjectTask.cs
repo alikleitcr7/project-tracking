@@ -94,6 +94,7 @@ namespace ProjectTracking.DataContract
         public int? TimeSheetId { get; set; }
         public int? TimeSheetTaskId { get; set; }
         public int? NumberOfActivities { get; set; }
+        public bool? IsAssignedToTimeSheet { get; set; }
     }
 
 }
