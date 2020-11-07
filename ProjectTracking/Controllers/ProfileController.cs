@@ -64,12 +64,11 @@ namespace ProjectTracking.Controllers
                 IsSupervisingUser = isDifferentUser ? _userMethods.IsSupervisorOf(currentUserId, user.Id) : false
             };
 
+
             // user is not the current user 
             // only admins and supervising users can access other profiles 
-            if (isDifferentUser && !model.IsSupervisingUser && currentUser.Role != ApplicationUserRole.Admin)
-            {
-                return Unauthorized();
-            }
+            ViewData["SecureMode"] = isDifferentUser && !model.IsSupervisingUser && currentUser.Role != ApplicationUserRole.Admin;
+
 
             return View(model);
         }

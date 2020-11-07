@@ -24,17 +24,25 @@ $(document).ready(function () {
     }
 });
 
-$(document).on('click', '.side-bar-arrow', function () {
 
+$(document).on('click', '.side-bar-arrow', function () {
     var sidebar = $('body');
 
-    const collapsed = 'sidebar-collapsed'
+    const collapsedClass = 'sidebar-collapsed'
+    const collapsed = sidebar.hasClass(collapsedClass)
 
-    if (sidebar.hasClass(collapsed)) {
-        sidebar.removeClass(collapsed)
+    //localStorage.setItem('sidebar-collapsed', !collapsed)
+    const expirationDate = moment().add(10, 'y').format('ddd, DD MMM YYYY HH:mm:ss') + ' GMT'
+
+    //console.log(expirationDate, { collapsed})
+
+    document.cookie = `sidebarCollapsed=${(!collapsed ? 'true' : 'false')}; expires=${expirationDate}`;
+
+    if (collapsed) {
+        sidebar.removeClass(collapsedClass)
     }
     else {
-        sidebar.addClass(collapsed)
+        sidebar.addClass(collapsedClass)
     }
 
 });

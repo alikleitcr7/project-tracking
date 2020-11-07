@@ -23,5 +23,13 @@ namespace ProjectTracking.Controllers
 
             return View(code);
         }
+
+        [Route("/accessdenied")]
+        public IActionResult AccessDenied(string ReturnUrl)
+        {
+            ViewData["ReturnUrl"] = ReturnUrl;
+
+            return View();
+        }
     }
 }

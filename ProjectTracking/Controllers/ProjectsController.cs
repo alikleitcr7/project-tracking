@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using ProjectTracking.DataContract;
 using ProjectTracking.Data.Methods.Interfaces;
-using ProjectTracking.Data.Methods.Interfaces.Statistics;
 using ProjectTracking.Models;
 using System;
 using System.Collections.Generic;
@@ -19,22 +18,19 @@ namespace ProjectTracking.Controllers
     {
         private readonly ITeamsMethods _teams;
         private readonly ICategoriesMethods _categoriesMethods;
-        //private readonly IProjectFilesMethods _file;
-        private readonly IProjectsStatistics _projectsStatistics;
-        private readonly IUserMethods _users;
-
-
-
         private readonly IProjectsMethods _projects;
+        //private readonly IProjectFilesMethods _file;
+        //private readonly IProjectsStatistics _projectsStatistics;
+        //private readonly IUserMethods _users;
+
         public ProjectsController(ITeamsMethods teams,
-            ICategoriesMethods categoriesMethods,
-            IUserMethods users, IProjectsMethods projects, IProjectsStatistics projectsStatistics)
+            ICategoriesMethods categoriesMethods, IProjectsMethods projects)
         {
             _teams = teams;
             _categoriesMethods = categoriesMethods;
             _projects = projects;
-            _users = users;
-            _projectsStatistics = projectsStatistics;
+            //_users = users;
+            //_projectsStatistics = projectsStatistics;
         }
 
         [Route("/projects")]
@@ -44,136 +40,6 @@ namespace ProjectTracking.Controllers
             return View();
         }
 
-        public IActionResult ProjectTrack(int projectId, int? year, int? month, int? day)
-        {
-            ViewData["ProjectId"] = projectId;
-
-            Project project = _projects.GetProjectWithActivities(projectId);
-
-            ViewData["Project"] = project;
-
-            List<TimeSheetActivity> activities = new List<TimeSheetActivity>();
-
-            foreach (ProjectTask projectActivity in project.Tasks)
-            {
-                foreach (TimeSheetTask timeSheetProject in projectActivity.TimeSheetTasks)
-                {
-                    activities.AddRange(timeSheetProject.Activities.ToList());
-                }
-            }
-
-            if (year.HasValue && year.Value != 0)
-            {
-                activities = activities.Where(k => k.FromDate.Year == year).ToList();
-
-                if (month.HasValue && month.Value != 0)
-                {
-                    activities = activities.Where(k => k.FromDate.Month == month).ToList();
-
-                    if (day.HasValue && day.Value != 0)
-                    {
-                        activities = activities.Where(k => k.FromDate.Day == day).ToList();
-                    }
-                }
-            }
-
-
-            ViewData["Activities"] = activities.OrderByDescending(k => k.FromDate).ToList();
-
-            List<KeyValuePair<string, string>> insights = new List<KeyValuePair<string, string>>();
-
-            //List<KeyValuePair<string, string>> measurmentUnitInsights = activities
-            //    .GroupBy(g => new { g.MeasurementUnit.ID })
-            //    .Select(g => new KeyValuePair<string, string>(g.First().MeasurementUnit.Name, g.Where(k => k.Number.HasValue).Sum(k => k.Number).Value.ToString()))
-            //    .ToList();
-
-            //insights.AddRange(measurmentUnitInsights);
-            insights.Add(new KeyValuePair<string, string>("Total Activities", activities.Count.ToString()));
-
-
-            long totalTicks = activities.Where(k => k.ToDate.HasValue).Select(k => (k.ToDate.Value - k.FromDate).Ticks).ToList().Sum();
-            TimeSpan timeSpan = new TimeSpan(totalTicks);
-
-            string totalTimeDisplay = "";
-
-            totalTimeDisplay += $"<p>days: {timeSpan.Days}</p> ";
-            totalTimeDisplay += $"<p>hours: {timeSpan.Hours}h </p>";
-            totalTimeDisplay += $"<p>mins: {timeSpan.Minutes}m </p>";
-
-
-            //totalTimeDisplay = totalSeconds.ToString("0.##");
-
-            insights.Add(new KeyValuePair<string, string>("Total Time", totalTimeDisplay));
-
-            TimeSheetActivity latestActivity = activities.OrderByDescending(k => k.FromDate).FirstOrDefault();
-
-            //string latestActivityDisplay = latestActivity == null ? "-" :
-            //    $"<p>Type: {(latestActivity.TypeOfWork == null ? "-" : latestActivity.TypeOfWork.Name)}</p>" +
-            //    $"<p>M.Unit: {(latestActivity.MeasurementUnit == null ? "-" : latestActivity.MeasurementUnit.Name)}</p>" +
-            //    $"<p>Number: {latestActivity.Number}</p>";
-            string timeSheetUrl = latestActivity == null ? "Latest Activity" : $"<a target=\"_blank\" class=\"Button-Shared\" href=\"/timesheets/TimeSheetActivityLog?activityId={latestActivity.ID}\">Latest Activity</a>";
-
-            //insights.Add(new KeyValuePair<string, string>(timeSheetUrl, latestActivityDisplay));
-
-            ViewData["Insights"] = insights;
-
-            return View();
-        }
-
-        public JsonResult GetCategories()
-        {
-            return Json(_categoriesMethods.GetAll());
-        }
-
-
-        [Authorize(Policy = "Administration")]
-        public IActionResult ProjectsProgress()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        [Route("Projects/ProjectsProgress/{UserId}")]
-        public IActionResult ProjectsProgress(string userId)
-        {
-            ViewData["UserId"] = userId;
-            DataContract.User user = _users.GetEmployee(userId);
-
-            return View(user);
-        }
-
-        public JsonResult GetProjectsProgress(bool byYear, bool byYearAndMonth, string userId = null)
-        {
-            return Json(_projectsStatistics.GetProjectsProgress(byYear, byYearAndMonth, userId));
-        }
-
-        public JsonResult GetMeasurementUnitsTotalProgress(string userId, string year, string month, string day)
-        {
-            return Json(_projectsStatistics.GetMeasurementUnitsTotalProgress(userId, year, month, day));
-        }
-
-        public JsonResult GetProjectProgressYears(string userId)
-        {
-            if (!string.IsNullOrEmpty(userId))
-                return Json(_projectsStatistics.GetProjectProgressYearsByUser(userId));
-            return Json(_projectsStatistics.GetProjectProgressYears());
-
-        }
-
-        public JsonResult GetProjectProgressMonthsByYear(int year, string userId)
-        {
-            if (!string.IsNullOrEmpty(userId))
-                return Json(_projectsStatistics.GetProjectProgressMonthsByYearAndUser(userId, year));
-            return Json(_projectsStatistics.GetProjectProgressMonthsByYear(year));
-        }
-
-        public JsonResult GetProjectProgressDayByMonthAndYear(int year, int month, string userId)
-        {
-            if (!string.IsNullOrEmpty(userId))
-                return Json(_projectsStatistics.GetProjectProgressDaysByMonthAndYearAndUser(userId, year, month));
-            return Json(_projectsStatistics.GetProjectProgressDaysByMonthAndYear(year, month));
-
-        }
 
         #region Methods
 
@@ -182,10 +48,11 @@ namespace ProjectTracking.Controllers
         {
             return _teams.GetAll();
         }
-        //public List<Category> GetCategories()
-        //{
-        //    return _companies.GetAll();
-        //}
+
+        public JsonResult GetCategories()
+        {
+            return Json(_categoriesMethods.GetAll());
+        }
 
         [HttpPost]
         public JsonResult Add([FromBody] AddProjectModel model)
@@ -291,7 +158,6 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
-
 
         [HttpGet]
         public IActionResult GetStatusModifications(int projectId)

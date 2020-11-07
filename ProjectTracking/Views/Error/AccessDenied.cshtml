@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+
+    string returnUrl = ViewData["ReturnUrl"]?.ToString();
+
+    //string returnUrlLabel = returnUrl == null ? "Back to Home" : "Go Back";
+
+    //if (returnUrl == null)
+    //{
+    //    returnUrl = "/";
+    //}
+
+}
+
+<div class="v-container error-container">
+
+
+    <h1 class="h1">
+        You are not authorized to get here!  <i class="far fa-grimace"></i> <br /><br />
+        <a href="/"><i class="fa fa-undo"></i> Back to Home</a>
+    </h1>
+
+
+</div>

@@ -17,6 +17,7 @@ namespace ProjectTracking.Controllers
     //[ApiController]
     // if u place the policy here, then if you call the other methods 
     // via ajax they will require that policy!!!!!
+    [Authorize]
     [Route("[controller]/[action]")]
     public class TeamsController : BaseController
     {
@@ -28,6 +29,7 @@ namespace ProjectTracking.Controllers
         }
 
         [Route("/teams")]
+        [Authorize(AuthPolicies.Managers)]
         public IActionResult Index()
         {
             string userId = GetCurrentUserId();
@@ -38,6 +40,7 @@ namespace ProjectTracking.Controllers
         }
 
         [Route("/teams/form")]
+        [Authorize(AuthPolicies.Admins)]
         public IActionResult Form()
         {
             string userId = GetCurrentUserId();
@@ -154,7 +157,6 @@ namespace ProjectTracking.Controllers
             }
         }
 
-
         public IActionResult GetSupervisorTeamsModel(string userId)
         {
             try
@@ -200,12 +202,12 @@ namespace ProjectTracking.Controllers
 
                 if (role == ApplicationUserRole.Admin)
                 {
-                    // this will 
+                    // this will get all the teams
                     userId = null;
                 }
                 else if (role != ApplicationUserRole.Supervisor)
                 {
-                    return BadRequest();
+                    throw new UnauthorizedAccessException("unauthorized");
                 }
 
                 List<SupervisingTeamModel> model = _teamsMethods.GetSupervisingTeamsModel(userId);

@@ -1,4 +1,5 @@
 ﻿@inject ProjectTracking.Data.Methods.Interfaces.IUserMethods userMethods
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @{
 
@@ -21,6 +22,9 @@
         ViewData["FullName"] = fullName;
 
     }
+
+    bool sidebarCollapsed = (HttpContextAccessor.HttpContext.Request.Cookies["sidebarCollapsed"] ?? "false") == "true";
+
 
 }
 
@@ -49,10 +53,10 @@
 
 </head>
 
-<body class=" @( isAuthenticated? "":"is-logon" )"
+<body class=" @( isAuthenticated? "":"is-logon" ) @(sidebarCollapsed ? "sidebar-collapsed":"")"
       data-userName="@userName"
       data-fullName="@fullName"
-      data-user="@userId" 
+      data-user="@userId"
       data-role="@role"
       data-team="@teamId">
 

@@ -6,30 +6,73 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Methods\Interfaces\Statistics\**" />
+    <Compile Remove="Data\Methods\Statistics\**" />
+    <Compile Remove="Data\Shared\**" />
+    <Compile Remove="Managers\**" />
+    <Compile Remove="Views\Dashboard\**" />
+    <Compile Remove="Views\Employees\**" />
     <Compile Remove="Views\Holidays\**" />
     <Compile Remove="Views\InventoryProjects\**" />
     <Compile Remove="Views\PendingRequests\**" />
     <Compile Remove="Views\Permissions\**" />
+    <Compile Remove="Views\UserInsights\**" />
+    <Compile Remove="Views\UsersLogs\**" />
+    <Content Remove="Data\Methods\Interfaces\Statistics\**" />
+    <Content Remove="Data\Methods\Statistics\**" />
+    <Content Remove="Data\Shared\**" />
+    <Content Remove="Managers\**" />
+    <Content Remove="Views\Dashboard\**" />
+    <Content Remove="Views\Employees\**" />
     <Content Remove="Views\Holidays\**" />
     <Content Remove="Views\InventoryProjects\**" />
     <Content Remove="Views\PendingRequests\**" />
     <Content Remove="Views\Permissions\**" />
+    <Content Remove="Views\UserInsights\**" />
+    <Content Remove="Views\UsersLogs\**" />
+    <EmbeddedResource Remove="Data\Methods\Interfaces\Statistics\**" />
+    <EmbeddedResource Remove="Data\Methods\Statistics\**" />
+    <EmbeddedResource Remove="Data\Shared\**" />
+    <EmbeddedResource Remove="Managers\**" />
+    <EmbeddedResource Remove="Views\Dashboard\**" />
+    <EmbeddedResource Remove="Views\Employees\**" />
     <EmbeddedResource Remove="Views\Holidays\**" />
     <EmbeddedResource Remove="Views\InventoryProjects\**" />
     <EmbeddedResource Remove="Views\PendingRequests\**" />
     <EmbeddedResource Remove="Views\Permissions\**" />
+    <EmbeddedResource Remove="Views\UserInsights\**" />
+    <EmbeddedResource Remove="Views\UsersLogs\**" />
+    <None Remove="Data\Methods\Interfaces\Statistics\**" />
+    <None Remove="Data\Methods\Statistics\**" />
+    <None Remove="Data\Shared\**" />
+    <None Remove="Managers\**" />
+    <None Remove="Views\Dashboard\**" />
+    <None Remove="Views\Employees\**" />
     <None Remove="Views\Holidays\**" />
     <None Remove="Views\InventoryProjects\**" />
     <None Remove="Views\PendingRequests\**" />
     <None Remove="Views\Permissions\**" />
+    <None Remove="Views\UserInsights\**" />
+    <None Remove="Views\UsersLogs\**" />
+    <TypeScriptCompile Remove="Data\Methods\Interfaces\Statistics\**" />
+    <TypeScriptCompile Remove="Data\Methods\Statistics\**" />
+    <TypeScriptCompile Remove="Data\Shared\**" />
+    <TypeScriptCompile Remove="Managers\**" />
+    <TypeScriptCompile Remove="Views\Dashboard\**" />
+    <TypeScriptCompile Remove="Views\Employees\**" />
     <TypeScriptCompile Remove="Views\Holidays\**" />
     <TypeScriptCompile Remove="Views\InventoryProjects\**" />
     <TypeScriptCompile Remove="Views\PendingRequests\**" />
     <TypeScriptCompile Remove="Views\Permissions\**" />
+    <TypeScriptCompile Remove="Views\UserInsights\**" />
+    <TypeScriptCompile Remove="Views\UsersLogs\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\AccountsController.cs" />
     <Compile Remove="Controllers\CountriesController.cs" />
+    <Compile Remove="Controllers\DashboardController.cs" />
+    <Compile Remove="Controllers\EmployeesController.cs" />
     <Compile Remove="Controllers\HolidaysController.cs" />
     <Compile Remove="Controllers\InventoryProjectsController.cs" />
     <Compile Remove="Controllers\InventoryStatusesController.cs" />
@@ -39,6 +82,7 @@
     <Compile Remove="Controllers\PublishingChannelsController.cs" />
     <Compile Remove="Controllers\SubProjectsController.cs" />
     <Compile Remove="Controllers\UpdateFrequenciesController.cs" />
+    <Compile Remove="Controllers\UserInsightsController.cs" />
     <Compile Remove="Data\ApplicationDbInitializer.cs" />
     <Compile Remove="Data\DataSets\Holiday.cs" />
     <Compile Remove="Data\DataSets\InventoryProject.cs" />
@@ -53,6 +97,7 @@
     <Compile Remove="Data\DataSets\TimeSheetStatus.cs" />
     <Compile Remove="Data\DataSets\TypeOfWork.cs" />
     <Compile Remove="Data\Methods\CountriesMethods.cs" />
+    <Compile Remove="Data\Methods\GenericRepository.cs" />
     <Compile Remove="Data\Methods\HolidaysMethods.cs" />
     <Compile Remove="Data\Methods\Interfaces\ICountriesMethods.cs" />
     <Compile Remove="Data\Methods\Interfaces\IHolidaysMethods.cs" />
@@ -91,6 +136,25 @@
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
+    <Content Remove="Views\Admin\AddNewRole.cshtml" />
+    <Content Remove="Views\Admin\AddUser.cshtml" />
+    <Content Remove="Views\Admin\AddUserToRole.cshtml" />
+    <Content Remove="Views\Admin\DeleteUserFromRole.cshtml" />
+    <Content Remove="Views\Admin\EditRole.cshtml" />
+    <Content Remove="Views\Admin\EditUser.cshtml" />
+    <Content Remove="Views\Admin\Index.cshtml" />
+    <Content Remove="Views\Admin\RoleManagement.cshtml" />
+    <Content Remove="Views\Home\About.cshtml" />
+    <Content Remove="Views\Home\Contact.cshtml" />
+    <Content Remove="Views\Home\Content.cshtml" />
+    <Content Remove="Views\Home\Privacy.cshtml" />
+    <Content Remove="Views\Notifications\Index.cshtml" />
+    <Content Remove="Views\Projects\Index2 - Copy.cshtml" />
+    <Content Remove="Views\Projects\ProjectsProgress.cshtml" />
+    <Content Remove="Views\Projects\ProjectTrack.cshtml" />
+    <Content Remove="Views\Shared\DashboardInsight.cshtml" />
+    <Content Remove="Views\Shared\_CookieConsentPartial.cshtml" />
+    <Content Remove="Views\TimeSheets\SubordinatesTimeSheets.cshtml" />
     <Content Remove="wwwroot\services\CountriesService.js" />
     <Content Remove="wwwroot\services\HolidaysService.js" />
     <Content Remove="wwwroot\services\InventoryProjectsService.js" />
@@ -103,6 +167,11 @@
     <Content Remove="wwwroot\services\SubProjectsService.js" />
     <Content Remove="wwwroot\services\TypeOfWorkService.js" />
     <Content Remove="wwwroot\services\UpdateFrequenciesService.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClassDiagram - Copy.cd" />
+    <None Remove="ClassDiagram.cd" />
   </ItemGroup>
 
   <ItemGroup>
@@ -136,12 +205,8 @@
 
   <ItemGroup>
     <None Include="compilerconfig.json" />
-    <None Include="Views\Home\About.cshtml" />
-    <None Include="Views\Home\Contact.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
-    <None Include="Views\Home\Privacy.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
-    <None Include="Views\Shared\_CookieConsentPartial.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
     <None Include="Views\_ViewImports.cshtml" />
@@ -202,9 +267,6 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Profile\Insights.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\Projects\Index2 - Copy.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\ProjectTasks\Charts\GanttChart.cshtml">

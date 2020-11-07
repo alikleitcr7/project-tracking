@@ -4,6 +4,8 @@
 @{
     ViewData["Title"] = $"Profile - {Model.User.FullName}";
 
+    bool secureMode = (bool)ViewData["SecureMode"];
+
     ProjectTracking.Models.Teams.SupervisorTeamsViewModel supervisorModel = new ProjectTracking.Models.Teams.SupervisorTeamsViewModel()
     {
         SupervisorId = Model.User.Id,
@@ -11,7 +13,7 @@
     };
 }
 
-<div id="Profile" class="v-container"
+<div id="Profile" class="v-container @(secureMode? "secure-mode":"")"
      data-current-user="@Model.CurrentUserId"
      data-is-supervising-user="@Model.IsSupervisingUser"
      data-has-timesheets="@Model.HasTimeSheets"
@@ -27,103 +29,126 @@
             <div class="profile-title">
                 <span>@Model.User.FullName - @Model.User.RoleDisplay</span>
                 <span>@Model.User.Title</span>
-                <small data-toggle="modal" data-target="#UserMoreDetails">More Details</small>
+
+                @if (secureMode)
+                {
+                    @if (Model.User.Team != null)
+                    {
+                        <span>
+                            <i class="fa fa-users"></i>
+                            <a href="/teams/@Model.User.TeamId.Value">@Model.User.TeamDisplay</a>
+                        </span>
+                    }
+
+                    <span>
+                        <i class="fa fa-envelope"></i>
+                        <a href="mailto:@Model.User.Email">@Model.User.Email</a>
+                    </span>
+                }
+                else
+                {
+                    <small data-toggle="modal" data-target="#UserMoreDetails">More Details</small>
+                }
             </div>
         </div>
     </div>
 
-    <div class="profile-content">
+    @if (!secureMode)
+    {
+        <div class="profile-content">
 
-        <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs">
 
-            <li class="active"><a data-toggle="tab" href="#InsightsTab"><i class="fa fa-chart-line"></i> Insights</a></li>
+                <li class="active"><a data-toggle="tab" href="#InsightsTab"><i class="fa fa-chart-line"></i> Insights</a></li>
 
-            @if (Model.ShowSupervisorTab)
-            {
-                <li><a data-toggle="tab" href="#SupervisorTeamsTab"> <i class="fa fa-users"></i> Teams</a></li>
-            }
+                @if (Model.ShowSupervisorTab)
+                {
+                    <li><a data-toggle="tab" href="#SupervisorTeamsTab"> <i class="fa fa-users"></i> Teams</a></li>
+                }
 
 
-            @if (Model.ShowScheduleTab)
-            {
-                <li><a data-toggle="tab" href="#SchedulesTab"> <i class="fa fa-tasks"></i> Schedules</a></li>
-            }
-        </ul>
+                @if (Model.ShowScheduleTab)
+                {
+                    <li><a data-toggle="tab" href="#SchedulesTab"> <i class="fa fa-tasks"></i> Schedules</a></li>
+                }
+            </ul>
 
-        <div class="tab-content">
+            <div class="tab-content">
 
-            <div id="InsightsTab" class="tab-pane fade in active">
+                <div id="InsightsTab" class="tab-pane fade in active">
 
-                <partial name="~/Views/Profile/Insights.cshtml" model="@Model" />
+                    <partial name="~/Views/Profile/Insights.cshtml" model="@Model" />
+
+                </div>
+
+                @if (Model.ShowSupervisorTab)
+                {
+
+                    <div id="SupervisorTeamsTab" class="tab-pane fade ">
+                        <partial name="~/views/teams/shared/SupervisorTeams.cshtml" model="@supervisorModel" />
+                    </div>
+                }
+
+                @if (Model.ShowScheduleTab)
+                {
+                    <div id="SchedulesTab" class="tab-pane fade ">
+                        <partial name="~/views/profile/schedules.cshtml" />
+                    </div>
+                }
 
             </div>
 
-            @if (Model.ShowSupervisorTab)
-            {
-
-                <div id="SupervisorTeamsTab" class="tab-pane fade ">
-                    <partial name="~/views/teams/shared/SupervisorTeams.cshtml" model="@supervisorModel" />
-                </div>
-            }
-
-            @if (Model.ShowScheduleTab)
-            {
-                <div id="SchedulesTab" class="tab-pane fade ">
-                    <partial name="~/views/profile/schedules.cshtml" />
-                </div>
-            }
-
         </div>
 
-    </div>
+        <div id="UserMoreDetails" class="modal fade" role="dialog">
+            <div class="modal-dialog">
 
-    <div id="UserMoreDetails" class="modal fade" role="dialog">
-        <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title main-color">
+                            <i class="far fa-address-card "></i>&nbsp;
+                            @Model.User.FullName
+                        </h4>
+                    </div>
+                    <div class="modal-body">
 
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title main-color">
-                        <i class="far fa-address-card "></i>&nbsp;
-                        @Model.User.FullName
-                    </h4>
-                </div>
-                <div class="modal-body">
+                        <table class="table">
 
-                    <table class="table">
+                            @if (Model.User.Team != null)
+                            {
+                                <tr>
+                                    <td>Team</td>
+                                    <td><a href="/teams/@Model.User.TeamId.Value">@Model.User.TeamDisplay</a></td>
+                                </tr>
+                            }
 
-                        @if (Model.User.Team != null)
-                        {
                             <tr>
-                                <td>Team</td>
-                                <td>@Model.User.TeamDisplay</td>
+                                <td>Date of Birth</td>
+                                <td>@Model.User.DateOfBirthDisplay</td>
                             </tr>
-                        }
 
-                        <tr>
-                            <td>Date of Birth</td>
-                            <td>@Model.User.DateOfBirthDisplay</td>
-                        </tr>
-
-                        <tr>
-                            <td>Email</td>
-                            <td>@Model.User.Email</td>
-                        </tr>
-
-                        @if (Model.User.EmploymentType.HasValue)
-                        {
                             <tr>
-                                <td>Employment Type</td>
-                                <td>@Model.User.EmploymentTypeDisplay</td>
+                                <td>Email</td>
+                                <td><a href="mailto:@Model.User.Email">@Model.User.Email</a></td>
                             </tr>
-                        }
 
-                    </table>
+                            @if (Model.User.EmploymentType.HasValue)
+                            {
+                                <tr>
+                                    <td>Employment Type</td>
+                                    <td>@Model.User.EmploymentTypeDisplay</td>
+                                </tr>
+                            }
+
+                        </table>
+                    </div>
                 </div>
-            </div>
 
+            </div>
         </div>
-    </div>
+    }
+
 
 </div>
 

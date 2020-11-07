@@ -10,13 +10,12 @@ using Microsoft.EntityFrameworkCore;
 using ProjectTracking.Data;
 using ProjectTracking.Data.DataAccess;
 using ProjectTracking.Data.Methods.Interfaces;
-using ProjectTracking.Managers;
 using ProjectTracking.Models.Statistics;
 
 namespace ProjectTracking.Controllers
 {
 
-    [Authorize(Policy = SupervisingPolicy.SUPERVISING_OR_ADMIN)]
+    [Authorize(Policy = AuthPolicies.Managers)]
     public class UsersLogsController : BaseSupervisorController
     {
         //private readonly IUserMethods _users;

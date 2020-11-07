@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ProjectTracking.Managers
+namespace ProjectTracking.Services
 {
     public class BackgroundServiceStarter<T> : IHostedService
      where T : IHostedService

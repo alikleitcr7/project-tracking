@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,24 +13,28 @@ using ProjectTracking.Data;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.Services;
 using ProjectTracking.Hubs;
-using System;
 using ProjectTracking.DataContract;
 using System.Collections.Generic;
 using ProjectTracking.Data.Methods;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using ProjectTracking.Data.Methods.Interfaces.Statistics;
 using Microsoft.AspNetCore.HttpOverrides;
 using ProjectTracking.Data.DataAccess;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using ProjectTracking.Managers;
-using ProjectTracking.Utils;
-using Newtonsoft.Json.Serialization;
+//using Microsoft.IdentityModel.Tokens;
+//using System.Text;
+//using Microsoft.AspNetCore.Authentication.JwtBearer;
+//using ProjectTracking.Utils;
+//using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace ProjectTracking
 {
+    public static class AuthPolicies
+    {
+        public const string Managers = "Managers";
+        public const string TeamMembers = "TeamMembers";
+        public const string Admins = "Admins";
+        public const string Supervisors = "Supervisors";
+    }
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -49,7 +54,8 @@ namespace ProjectTracking
 
             //.SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
             services.AddMvc()
-              .AddJsonOptions(options => {
+              .AddJsonOptions(options =>
+              {
                   options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
               });
 
@@ -63,33 +69,60 @@ namespace ProjectTracking
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("AllUsersCanAccess", policy =>
+            //           policy.RequireRole("Manager", "Admin", "ApplicationUser"));
+            //});
+
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("Administration", policy =>
+            //           policy.RequireRole("Manager", "Admin"));
+            //});
+
+
+            // policies
+
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AllUsersCanAccess", policy =>
-                       policy.RequireRole("Manager", "Admin", "ApplicationUser"));
+                options.AddPolicy(AuthPolicies.Managers, policy =>
+                       policy.RequireRole("Admin", "Supervisor"));
             });
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Administration", policy =>
-                       policy.RequireRole("Manager", "Admin"));
-            });
-
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("SupervisingPolicy", policy =>
-                    policy.Requirements.Add(new SupervisingPolicy(false)));
+                options.AddPolicy(AuthPolicies.Admins, policy =>
+                       policy.RequireRole("Admin"));
             });
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("SupervisingOrAdminPolicy", policy =>
-                    policy.Requirements.Add(new SupervisingPolicy(true)));
+                options.AddPolicy(AuthPolicies.TeamMembers, policy =>
+                       policy.RequireRole("TeamMember"));
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AuthPolicies.Supervisors, policy =>
+                       policy.RequireRole("Supervisor"));
             });
 
 
-            services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, SupervisingPolicyHandler>();
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("SupervisingPolicy", policy =>
+            //        policy.Requirements.Add(new SupervisingPolicy(false)));
+            //});
+
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("SupervisingOrAdminPolicy", policy =>
+            //        policy.Requirements.Add(new SupervisingPolicy(true)));
+            //});
+
+
+            //services.AddSingleton<Microsoft.AspNetCore.Authorization.IAuthorizationHandler, SupervisingPolicyHandler>();
 
             Setting.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
 
@@ -100,8 +133,8 @@ namespace ProjectTracking
                         Configuration.GetConnectionString("DefaultConnection"));
                 }, ServiceLifetime.Scoped);
 
-            //options.UseLazyLoadingProxies();
 
+            //options.UseLazyLoadingProxies();
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
@@ -121,9 +154,7 @@ namespace ProjectTracking
             services.AddScoped<IProjectsMethods, Data.Methods.ProjectsMethods>();
             services.AddScoped<ITasksMethods, Data.Methods.TasksMethods>();
             services.AddScoped<IUserLogsMethods, Data.Methods.UserLogsMethods>();
-            services.AddScoped<IProjectsStatistics, Data.Methods.Statistics.ProjectsProgresses>();
             services.AddScoped<ITimeSheetActivityLogsMethods, Data.Methods.TimeSheetActivityLogsMethods>();
-            services.AddScoped<IInsightsMethods, Data.Methods.Statistics.InsightsMethods>();
             services.AddScoped<ITimeSheetActivitiesMethods, Data.Methods.TimeSheetActivitiesMethods>();
             services.AddScoped<IIpAddressMethods, Data.Methods.IpAddressesMethods>();
 
@@ -197,6 +228,7 @@ namespace ProjectTracking
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
+
             });
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
@@ -214,10 +246,12 @@ namespace ProjectTracking
     {
         //configure your other properties
         opt.LoginPath = "/login";
+        opt.AccessDeniedPath = new PathString("/accessdenied");
+        
     });
 
-          
-            
+
+
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
             //    .AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             //.AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

@@ -377,9 +377,18 @@
     transform: translateX(100%);
   }
 }
+#Profile {
+  padding-right: 2em;
+}
 #Profile .top-intro {
   display: flex;
   font-size: 1.2em;
+  padding: 1em;
+  border: 1px solid #d1d1d1;
+  border-radius: 15px;
+  -webkit-box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
+  -moz-box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
+  box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
 }
 #Profile .top-intro .top-intro-left {
   display: flex;
@@ -388,7 +397,7 @@
   width: 2.2em;
   height: 2.2em;
   display: block;
-  background-color: #2286c3;
+  background-color: #1776b0;
   color: #fff;
   border-radius: 50%;
   margin-right: 10px;
@@ -412,6 +421,29 @@
   color: #2286c3;
   cursor: pointer;
 }
+#Profile.secure-mode .top-intro {
+  /*text-align: center;
+            justify-content: center;*/
+}
+#Profile.secure-mode .top-intro .top-intro-left {
+  justify-content: center;
+  align-items: center;
+  /*flex-direction: column;*/
+  /*text-align: center;*/
+}
+#Profile.secure-mode .top-intro .top-intro-left .profile-circle {
+  letter-spacing: -7px;
+  font-size: 4em;
+}
+#Profile.secure-mode .top-intro .top-intro-left .profile-title {
+  /*margin-top: 2em;*/
+  margin-top: 0.5em;
+  margin-left: 0.5em;
+}
+#Profile.secure-mode .top-intro .top-intro-left .profile-title > span {
+  display: block;
+  padding-bottom: 0.5em;
+}
 #Profile .profile-content {
   padding: 2em 0;
 }
@@ -424,6 +456,28 @@
 @media (max-width: 767px) {
   .project-visualization .c-box {
     /*flex: 1;*/
-    width: 100%!important;
+    width: 100% !important;
+  }
+  #Profile.secure-mode .top-intro {
+    text-align: center;
+    justify-content: center;
+  }
+  #Profile.secure-mode .top-intro .top-intro-left {
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+  }
+  #Profile.secure-mode .top-intro .top-intro-left .profile-circle {
+    letter-spacing: -7px;
+    font-size: 4em;
+  }
+  #Profile.secure-mode .top-intro .top-intro-left .profile-title {
+    margin-top: 2em;
+    margin-left: 0;
+  }
+  #Profile.secure-mode .top-intro .top-intro-left .profile-title > span {
+    display: block;
+    padding-bottom: 0.5em;
   }
 }

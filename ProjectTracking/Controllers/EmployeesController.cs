@@ -42,7 +42,7 @@ namespace ProjectTracking.Controllers
             //_roleManager = roleManager;
             _context = context;
         }
-        [Authorize(Policy = "Administration")]
+        //[Authorize(Policy = "Administration")]
 
         public IActionResult Index()
         {
