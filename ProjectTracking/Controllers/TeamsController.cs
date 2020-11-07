@@ -22,10 +22,12 @@ namespace ProjectTracking.Controllers
     public class TeamsController : BaseController
     {
         private readonly ITeamsMethods _teamsMethods;
+        private readonly IUserMethods userMethods;
 
-        public TeamsController(ITeamsMethods teamsMethods)
+        public TeamsController(ITeamsMethods teamsMethods, IUserMethods userMethods)
         {
             _teamsMethods = teamsMethods;
+            this.userMethods = userMethods;
         }
 
         [Route("/teams")]
@@ -54,17 +56,26 @@ namespace ProjectTracking.Controllers
         [Route("/teams/{id:int}")]
         public IActionResult Details(int id)
         {
-            Team team = _teamsMethods.GetById(id, false);
+            Team team = _teamsMethods.GetById(id, true);
+
+            string userId = GetCurrentUserId();
+            Models.Users.UserKeyValue user = userMethods.GetUserKeyValue(userId);
+
+            bool isSupervisor = team.SupervisorId == userId;
+
+            ViewData["UserId"] = userId;
+            ViewData["IsTeamSupervisor"] = isSupervisor;
+
+            bool userIsTeamMember = user.TeamId.HasValue && user.TeamId.Value == id;
+
+            bool secureMode = !userIsTeamMember && !isSupervisor && user.RoleCode != (short)ApplicationUserRole.Admin;
+
+            ViewData["SecureMode"] = secureMode;
 
             if (team == null)
             {
                 return NotFound();
             }
-
-            string userId = GetCurrentUserId();
-
-            ViewData["UserId"] = userId;
-            ViewData["IsTeamSupervisor"] = team.SupervisorId == userId;
 
             return View(team);
         }

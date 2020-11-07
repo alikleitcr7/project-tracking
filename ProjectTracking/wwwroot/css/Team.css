@@ -381,3 +381,31 @@
   display: block;
   margin-bottom: 0.5em;
 }
+#Team {
+  padding: 2em 3em 1em 1em;
+}
+#Team .top-intro {
+  padding: 2em 2em 1em 1em;
+  border: 1px solid #d1d1d1;
+  border-radius: 15px;
+  background-color: #f8f8f8;
+  border-left: 6px solid #1776b0;
+  -webkit-box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
+  -moz-box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
+  box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
+}
+#Team .top-intro h2 {
+  margin: 0 0 0.5em 0;
+  padding: 0;
+}
+#Team .top-intro table {
+  border: none;
+}
+#Team .top-intro table td {
+  padding: 0.5em;
+  vertical-align: top;
+}
+#Team .top-intro a {
+  display: block;
+  margin-bottom: 0.5em;
+}

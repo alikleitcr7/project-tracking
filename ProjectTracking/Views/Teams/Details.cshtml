@@ -6,149 +6,200 @@
 
     ViewData["Title"] = $"Team - {Model.Name}";
     bool isTeamSupervisor = (bool)ViewData["IsTeamSupervisor"];
+    bool secureMode = (bool)ViewData["SecureMode"];
 
 }
 
-<div id="Team" data-id="@Model.ID" data-is-team-supervisor="@isTeamSupervisor" class="v-container" v-cloak>
+@if (secureMode)
+{
+    <div id="Team">
 
-    @* Info *@
+        <div class="top-intro">
+            <h2>@Model.Name</h2>
+            <table class="">
+                <tr>
+                    <td>Supervisor</td>
+                    <td>
+                        <a href="/profile/@Model.SupervisorId">@Model.Supervisor.FullName</a>
+                    </td>
+                </tr>
 
-    <section class="team-info">
+                @if (Model.Members.Count == 0)
+                {
+                    <tr>
+                        <td colspan="2">
+                            No Members
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>
+                            Members
+                        </td>
+                        <td>
+                            @foreach (var user in Model.Members)
+                            {
+                                <a href="/profile/@user.Id">@user.FullName</a>
+                            }
+                        </td>
+                    </tr>
+                }
 
-        <h2>@Model.Name</h2>
-
-        <table class="table">
-            <tr>
-                <td>
-                    Added By @Model.AddedByUser.FullName on @Model.DateAddedDisplay
-                </td>
-                <td>
-                    Assigned By @Model.AssignedByUser.FullName on @Model.DateAssignedDisplay to @Model.Supervisor.FullName
-                </td>
-            </tr>
-        </table>
-
-    </section>
+            </table>
+        </div>
 
 
-    <section class="team-buttons">
-        <button class="s-btn s-btn-primary" :disabled="isLoading" @@click="showMembers()"><i class="fa fa-users"></i> Members</button>
-        <button class="s-btn s-btn-primary" @@click="openProjects()"><i class="fa fa-stream"></i> Projects</button>
-        <button class="s-btn s-btn-primary" @@click="openBroadcasts()"><i class="fa fa-mail-bulk"></i> Broadcast</button>
-        @*<button class="s-btn s-btn-outline" :disabled="isLoading" @@click="()"><i class="fa fa-users"></i> Members</button>*@
-    </section>
+    </div>
+}
+else
+{
 
-    @* Tabs (Overview, Members, Broadcasts) *@
+    <div id="Team" data-id="@Model.ID"
+         data-secure-mode="@secureMode"
+         data-is-team-supervisor="@isTeamSupervisor" class="v-container" v-cloak>
 
-    <section class="team-visualization">
-        <div class="c-box-view c-box-view--wrap" v-if="team">
-            <div class="c-box">
-                <h5 class="c-box-title">Active Activities</h5>
-                <div class="scrollable-container-200">
-                    <table class="table" v-if="team.activeActivities.length">
-                        <thead>
-                            <tr>
-                                <th>task</th>
-                                <th>started on</th>
-                                <th>by user</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="activity in team.activeActivities">
-                                <td>
-                                    <a :href="`/tasks/${activity.projectTask.id}`">
-                                        {{activity.projectTask.title}}
-                                    </a>
-                                </td>
-                                <td>{{activity.fromDateDisplay}}</td>
-                                <td>
-                                    <a :href="`/profile/${activity.user.id}`">
-                                        {{activity.user.fullName}}
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <h5 v-else>Nothing Here</h5>
+        @* Info *@
+
+        <section class="team-info">
+
+            <h2>@Model.Name</h2>
+
+            <table class="table">
+                <tr>
+                    <td>
+                        Added By @Model.AddedByUser.FullName on @Model.DateAddedDisplay
+                    </td>
+                    <td>
+                        Assigned By @Model.AssignedByUser.FullName on @Model.DateAssignedDisplay to @Model.Supervisor.FullName
+                    </td>
+                </tr>
+            </table>
+
+        </section>
+
+
+        <section class="team-buttons">
+            <button class="s-btn s-btn-primary" :disabled="isLoading" @@click="showMembers()"><i class="fa fa-users"></i> Members</button>
+            <button class="s-btn s-btn-primary" @@click="openProjects()"><i class="fa fa-stream"></i> Projects</button>
+
+            <button class="s-btn s-btn-primary" @@click="openBroadcasts()"><i class="fa fa-mail-bulk"></i> Broadcast</button>
+            @*<button class="s-btn s-btn-outline" :disabled="isLoading" @@click="()"><i class="fa fa-users"></i> Members</button>*@
+        </section>
+
+        @* Tabs (Overview, Members, Broadcasts) *@
+
+        <section class="team-visualization">
+            <div class="c-box-view c-box-view--wrap" v-if="team">
+                <div class="c-box">
+                    <h5 class="c-box-title">Active Activities</h5>
+                    <div class="scrollable-container-200">
+                        <table class="table" v-if="team.activeActivities.length">
+                            <thead>
+                                <tr>
+                                    <th>task</th>
+                                    <th>started on</th>
+                                    <th>by user</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="activity in team.activeActivities">
+                                    <td>
+                                        <a :href="`/tasks/${activity.projectTask.id}`">
+                                            {{activity.projectTask.title}}
+                                        </a>
+                                    </td>
+                                    <td>{{activity.fromDateDisplay}}</td>
+                                    <td>
+                                        <a :href="`/profile/${activity.user.id}`">
+                                            {{activity.user.fullName}}
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h5 v-else>Nothing Here</h5>
+                    </div>
+                </div>
+                <div class="c-box vis-workload">
+                    <h5 class="c-box-title">Workload</h5>
+                    <canvas id="bar_workload"></canvas>
+                </div>
+                <div class="c-box vis-activities">
+                    <h5 class="c-box-title">Activities</h5>
+                    <canvas id="line_activities"></canvas>
+                </div>
+                <div class="c-box vis-tasks-progress">
+                    <h5 class="c-box-title">Task Progress</h5>
+                    <canvas id="pie_tasks"></canvas>
                 </div>
             </div>
-            <div class="c-box vis-workload">
-                <h5 class="c-box-title">Workload</h5>
-                <canvas id="bar_workload"></canvas>
-            </div>
-            <div class="c-box vis-activities">
-                <h5 class="c-box-title">Activities</h5>
-                <canvas id="line_activities"></canvas>
-            </div>
-            <div class="c-box vis-tasks-progress">
-                <h5 class="c-box-title">Task Progress</h5>
-                <canvas id="pie_tasks"></canvas>
+        </section>
+
+        <div class="modal" id="MembersModal">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content" v-if="team">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h5 class="modal-title">
+
+                            <span v-if="!team.members.length">The team has no members yet</span>
+                            <span v-else><i class="fa fa-users"></i> {{team.members.length}} Member{{team.members.length > 1 ?  's' :''}}</span>
+
+                        </h5>
+                    </div>
+
+                    <div class="modal-body">
+
+
+                        <div class="scrollable-container-400">
+
+                            <a class="clickable-link" :href="`/profile/${member.key}`" v-for="member in team.members">
+                                {{member.value}}
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
 
-    <div class="modal" id="MembersModal">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content" v-if="team">
+        <div class="modal" id="ProjectsModal">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
 
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h5 class="modal-title">
 
-                        <span v-if="!team.members.length">The team has no members yet</span>
-                        <span v-else><i class="fa fa-users"></i> {{team.members.length}} Member{{team.members.length > 1 ?  's' :''}}</span>
+                            <span v-if="projects.isLoading">Loading...</span>
+                            <span v-if="!projects.isLoading && !projects.data.length">The team has no projects yet</span>
+                            <span v-else><i class="fa fa-stream"></i> {{projects.data.length}} Project{{projects.data.length > 1 ?  's' :''}}</span>
 
-                    </h5>
-                </div>
+                        </h5>
+                    </div>
+                    <div class="modal-body">
 
-                <div class="modal-body">
 
+                        <div class="scrollable-container-400">
 
-                    <div class="scrollable-container-400">
+                            <a class="clickable-link" :href="`/projects/${project.id}`" v-for="project in projects.data">
+                                {{project.title}}
+                            </a>
+                        </div>
 
-                        <a class="clickable-link" :href="`/profile/${member.key}`" v-for="member in team.members">
-                            {{member.value}}
-                        </a>
                     </div>
 
                 </div>
             </div>
         </div>
+
+        <partial name="~/Views/Teams/Modals/BroadcastsModal.cshtml" model="@Model.ID" />
+
     </div>
-
-    <div class="modal" id="ProjectsModal">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h5 class="modal-title">
-
-                        <span v-if="projects.isLoading">Loading...</span>
-                        <span v-if="!projects.isLoading && !projects.data.length">The team has no projects yet</span>
-                        <span v-else><i class="fa fa-stream"></i> {{projects.data.length}} Project{{projects.data.length > 1 ?  's' :''}}</span>
-
-                    </h5>
-                </div>
-                <div class="modal-body">
-
-
-                    <div class="scrollable-container-400">
-
-                        <a class="clickable-link" :href="`/projects/${project.id}`" v-for="project in projects.data">
-                            {{project.title}}
-                        </a>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <partial name="~/Views/Teams/Modals/BroadcastsModal.cshtml" model="@Model.ID" />
-
-</div>
+}
 
 
 @section styles{
@@ -157,16 +208,22 @@
 
 @section scripts{
 
-    <script src="~/lib/chartjs-2.7.1/Chart.min.js"></script>
-
-    <script src="~/services/TeamsService.js"></script>
-    <script src="~/services/ProjectsService.js"></script>
-
-    <script src="~/js/statistics/ChartHelper.js"></script>
+    @if (!secureMode)
+    {
 
 
+        <script src="~/lib/chartjs-2.7.1/Chart.min.js"></script>
 
-    <script src="~/js/TeamBroadcasts.js"></script>
-    <script src="~/js/Team.js"></script>
+        <script src="~/services/TeamsService.js"></script>
+        <script src="~/services/ProjectsService.js"></script>
+
+        <script src="~/js/statistics/ChartHelper.js"></script>
+
+
+
+        <script src="~/js/TeamBroadcasts.js"></script>
+        <script src="~/js/Team.js"></script>
+
+    }
 
 }

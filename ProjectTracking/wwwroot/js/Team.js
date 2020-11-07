@@ -122,10 +122,13 @@ new Vue({
     mounted: function () {
 
         const teamId = parseInt($('#Team').attr('data-id'))
+        const secureMode = $('#Team').attr('data-secure-mode') === 'True'
+
+        this.secureMode = secureMode
 
         const isTeamSupervisor = $('#Team').attr('data-is-team-supervisor') === 'True'
 
-        this.isTeamSupervisor = isTeamSupervisor 
+        this.isTeamSupervisor = isTeamSupervisor
 
         if (isTeamSupervisor) {
             this.tabs = [
@@ -143,6 +146,7 @@ new Vue({
 
         // broadcasts
         this.teamNotifications_getAll()
+
 
         // insights
         TeamsService.GetTeamViewModel(teamId)
@@ -170,6 +174,7 @@ new Vue({
                 chartsHelper.charts.populateActivities('line_activities', team.activitiesFrequency)
                 chartsHelper.charts.populateTasks('pie_tasks', team.tasksPerformance)
             })
+
 
     }
 })

@@ -383,12 +383,14 @@
 #Profile .top-intro {
   display: flex;
   font-size: 1.2em;
-  padding: 1em;
+  padding: 2em 1em;
   border: 1px solid #d1d1d1;
   border-radius: 15px;
   -webkit-box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
   -moz-box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
   box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
+  border-left: 6px solid #1776b0;
+  background-color: #f8f8f8;
 }
 #Profile .top-intro .top-intro-left {
   display: flex;
