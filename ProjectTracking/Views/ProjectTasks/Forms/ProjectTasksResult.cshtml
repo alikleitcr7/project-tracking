@@ -101,22 +101,32 @@
                         @*<a class="s-btn s-btn-sm s-btn-outline" :href="`/projectTasktasks/${item.id}`">
                                 Tasks
                             </a>*@
-
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
                                 v-on:click="projectTasks_edit(item.id)">
-                            {{isProjectSupervisor ? 'Edit' : 'Details'}}
+                            <template v-if="isProjectSupervisor">
+                                <i class="fa fa-edit"></i> Edit
+                            </template>
+                            <template v-else>
+                                Details
+                            </template>
+
                         </button>
 
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
                                 v-on:click="projectTasks_viewStatusesModification(item)">
-                            Status History
+                            <i class="fa fa-history"></i> Status History
                         </button>
 
                         <button class="s-btn s-btn-sm s-btn-danger" type="button"
                                 v-if="isProjectSupervisor && !item.isAssignedToTimeSheet"
                                 v-on:click="projectTasks_delete(idx)">
-                            Delete
+                            <i class="fa fa-trash"></i> Delete
                         </button>
+
+                        <a class="s-btn s-btn-sm s-btn-outline" :href="`/tasks/${item.id}`">
+                            Overview <i class="fa fa-angle-right"></i>
+                        </a>
+
                     </td>
 
                 </tr>

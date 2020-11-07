@@ -107,6 +107,14 @@
             }
         }
     }
+
+
+    &--responsive {
+        flex-wrap:wrap;
+        .c-box {
+            width: 45%;
+        }
+    }
 }
 
 
@@ -235,5 +243,20 @@
         left: 0;
         position: absolute;
         white-space: nowrap;
+    }
+}
+
+
+
+@media (max-width:@screen-sm) {
+
+    .c-box-view {
+
+        &--responsive {
+
+            .c-box {
+                width: 100% !important;
+            }
+        }
     }
 }

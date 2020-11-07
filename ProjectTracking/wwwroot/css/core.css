@@ -502,6 +502,12 @@
   font-weight: 600;
   padding-bottom: 2px;
 }
+.c-box-view--responsive {
+  flex-wrap: wrap;
+}
+.c-box-view--responsive .c-box {
+  width: 45%;
+}
 .c-card-view {
   padding: 1em;
 }
@@ -615,4 +621,9 @@
   left: 0;
   position: absolute;
   white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .c-box-view--responsive .c-box {
+    width: 100% !important;
+  }
 }

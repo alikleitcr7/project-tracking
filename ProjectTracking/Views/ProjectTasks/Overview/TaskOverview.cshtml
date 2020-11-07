@@ -4,7 +4,7 @@
     @* Tabs (Overview, Members, Broadcasts) *@
 
     <section class="project-visualization">
-        <div class="c-box-view c-box-view--wrap" v-if="overview.data">
+        <div class="c-box-view c-box-view--responsive" v-if="overview.data">
 
             <div class="c-box">
                 <h5 class="c-box-title">Active Activities</h5>
@@ -12,18 +12,13 @@
                     <table class="table" v-if="overview.data.activeActivities.length">
                         <thead>
                             <tr>
-                                <th>task</th>
                                 <th>started on</th>
                                 <th>by user</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="activity in overview.data.activeActivities">
-                                <td>
-                                    <a :href="`/tasks/${activity.projectTask.id}`">
-                                        {{activity.projectTask.title}}
-                                    </a>
-                                </td>
+                           
                                 <td>{{activity.fromDateDisplay}}</td>
                                 <td>
                                     <a :href="`/profile/${activity.user.id}`">
