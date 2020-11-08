@@ -91,7 +91,11 @@
                                      v-on:click="notificationClick(idx)"
                                      v-bind:class="getNotificationClasses(item)">
                                     <div class="notification__user"> {{item.fromUserDisplay}}</div>
+                                    
                                     <div class="notification__message" v-html="item.message"></div>
+                                    <a :href="`/timesheets/explore?tid=${item.timeSheetId}`" class="notification__actions" v-if="item.timeSheetId">
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
                                     <div class="notification__date">{{item.dateSentDisplay}}</div>
                                 </div>
                             </div>

@@ -80,6 +80,7 @@
         transition: all 200ms ease-in;
         background-color: @gray-xlight;
         border-left: 4px solid rgba(255, 255, 255, 0.00);
+        position: relative;
         .box-shadow-sm();
 
         &--loading {
@@ -91,7 +92,6 @@
             }
 
             .notification {
-
 
                 &__user {
                     background-color: rgba(255, 255, 255, 0.26);
@@ -138,11 +138,28 @@
         }
 
         &__message {
+            padding-top:.3em;
+            padding-bottom:.3em;
+            padding-right: 2em;
         }
 
         &__date {
             font-size: 0.8em;
             color: @dark-gray;
+        }
+
+        &__actions {
+            position: absolute;
+            bottom: 0em;
+            font-size: 2em;
+            color: @gray;
+            right: .5em;
+            opacity: .7;
+            .fast-transition();
+
+            &:hover {
+                opacity: 1;
+            }
         }
     }
 }

@@ -4,6 +4,7 @@
     {
         public string ToUserId { get; set; }
         public User ToUser { get; set; }
+        public int? TimeSheetId { get; set; }
 
 
         public string ToUserDisplay

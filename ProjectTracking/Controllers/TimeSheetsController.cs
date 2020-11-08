@@ -112,11 +112,13 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save([FromBody] TimeSheetSaveModel model)
+        public async Task<IActionResult> Save([FromBody] TimeSheetSaveModel model)
         {
             try
             {
-                return Ok(_timeSheets.Save(model));
+                model.SetAddedByUser(GetCurrentUserId());
+
+                return Ok(await _timeSheets.Save(model));
             }
             catch (ClientException ex)
             {
@@ -156,11 +158,13 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddProjectToTimeSheet([FromBody]ProjectAssignModel model)
+        public async Task<IActionResult> AddProjectToTimeSheet([FromBody]ProjectAssignModel model)
         {
             try
             {
-                return Ok(_timeSheets.AddTasks(model.timeSheetId, model.projectIds));
+                string byUserId = GetCurrentUserId();
+
+                return Ok(await _timeSheets.AddTasks(byUserId, model.timeSheetId, model.projectIds));
             }
             catch (ClientException ex)
             {
@@ -173,11 +177,13 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
-        public IActionResult RemoveProjectFromTimeSheet([FromBody]ProjectAssignModel model)
+        public async Task<IActionResult> RemoveProjectFromTimeSheet([FromBody]ProjectAssignModel model)
         {
             try
             {
-                return Ok(_timeSheets.RemoveTasks(model.timeSheetId, model.projectIds));
+                string byUserId = GetCurrentUserId();
+
+                return Ok(await _timeSheets.RemoveTasks(byUserId, model.timeSheetId, model.projectIds));
             }
             catch (ClientException ex)
             {

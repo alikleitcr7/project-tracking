@@ -19,8 +19,9 @@ namespace ProjectTracking.Data.Methods
         private ApplicationDbContext db;
         private readonly IMapper _mapper;
         private readonly IUserMethods _users;
+        private readonly INotificationMethods notificationMethods;
 
-        public TimeSheetsMethods(IMapper mapper, IUserMethods users, ApplicationDbContext context)
+        public TimeSheetsMethods(IMapper mapper, IUserMethods users, INotificationMethods notificationMethods, ApplicationDbContext context)
         {
             //var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             //optionsBuilder.UseSqlServer(Setting.ConnectionString);
@@ -28,10 +29,11 @@ namespace ProjectTracking.Data.Methods
             db = context;
             _mapper = mapper;
             _users = users;
+            this.notificationMethods = notificationMethods;
         }
 
 
-        public TimeSheet Save(TimeSheetSaveModel model)
+        public async Task<TimeSheet> Save(TimeSheetSaveModel model)
         {
             IQueryable<DataSets.TimeSheet> conflictQuery = db.TimeSheets.Where(c => c.UserId == model.userId
                                                          && ((model.fromDate >= c.FromDate && model.fromDate <= c.ToDate)
@@ -70,6 +72,9 @@ namespace ProjectTracking.Data.Methods
 
                 db.SaveChanges();
 
+
+                await notificationMethods.Send(model.GetAddedByUser(), model.userId, $"schedule time was modified", NotificationType.Information, true, dbTimeSheet.ID);
+
                 return _mapper.Map<TimeSheet>(dbTimeSheet);
             }
             else
@@ -94,6 +99,8 @@ namespace ProjectTracking.Data.Methods
 
                 // save changes on teamstimeSheets
                 db.SaveChanges();
+
+                await notificationMethods.Send(model.GetAddedByUser(), model.userId, $"New schedule added", NotificationType.Default, true, dbTimeSheet.ID);
 
                 return _mapper.Map<TimeSheet>(dbTimeSheet);
             }
@@ -131,7 +138,7 @@ namespace ProjectTracking.Data.Methods
                     FromDate = fromDate,
                     ToDate = toDate,
                     DateAdded = DateTime.Now,
-                    UserId = userId
+                    UserId = userId,
                 };
 
                 db.TimeSheets.Add(dbTimeSheet);
@@ -358,17 +365,19 @@ namespace ProjectTracking.Data.Methods
                 .ToList();
         }
 
-        public bool AddTasks(int timeSheetId, int projectId)
-        {
-            return AddTasks(timeSheetId, new List<int>() { projectId });
-        }
+        //public async Task<bool> AddTasks(int timeSheetId, int projectId)
+        //{
+        //    return await AddTasks(timeSheetId, new List<int>() { projectId });
+        //}
 
-        public bool AddTasks(int timeSheetId, List<int> tasksIds)
+        public async Task<bool> AddTasks(string byUserId, int timeSheetId, List<int> tasksIds)
         {
-            DataSets.TimeSheet dbTimeSheet = db.TimeSheets.FirstOrDefault(k => k.ID == timeSheetId);
+            var record = db.TimeSheets
+                .Select(k => new { k.ID, k.UserId, k.FromDate, k.ToDate })
+                .FirstOrDefault(k => k.ID == timeSheetId);
 
             // get timesheet
-            if (dbTimeSheet == null)
+            if (record == null)
                 return false;
 
             // get existing projects
@@ -390,26 +399,43 @@ namespace ProjectTracking.Data.Methods
                 });
             }
 
+            if (tasksIds.Count > 0)
+            {
+                string toUserId = record.UserId;
+
+                await notificationMethods.Send(byUserId, toUserId, $"{tasksIds.Count} Task{(tasksIds.Count == 1 ? "" : "s")} has been added to your schedule", NotificationType.Default, true, record.ID);
+            }
+
             return db.SaveChanges() > 0;
         }
 
-        public bool RemoveTasks(int timeSheetId, int projectId)
-        {
-            return RemoveTasks(timeSheetId, new List<int>() { projectId });
-        }
 
-        public bool RemoveTasks(int timeSheetId, List<int> projectIds)
-        {
-            DataSets.TimeSheet dbTimeSheet = db.TimeSheets.FirstOrDefault(k => k.ID == timeSheetId);
+        //public bool RemoveTasks(int timeSheetId, int projectId)
+        //{
+        //    return RemoveTasks(timeSheetId, new List<int>() { projectId });
+        //}
 
-            if (dbTimeSheet == null)
+        public async Task<bool> RemoveTasks(string byUserId, int timeSheetId, List<int> tasksIds)
+        {
+            var record = db.TimeSheets
+              .Select(k => new { k.ID, k.UserId, k.FromDate, k.ToDate })
+              .FirstOrDefault(k => k.ID == timeSheetId);
+
+            if (record == null)
                 return false;
 
             List<DataSets.TimeSheetTask> dbTsProjects = db.TimeSheetTasks.Include(k => k.Activities)
-                .Where(k => projectIds.Contains(k.ProjectTaskId) && k.TimeSheetId == timeSheetId && k.Activities.Count == 0)
+                .Where(k => tasksIds.Contains(k.ProjectTaskId) && k.TimeSheetId == timeSheetId && k.Activities.Count == 0)
                 .ToList();
 
             db.TimeSheetTasks.RemoveRange(dbTsProjects);
+
+            if (tasksIds.Count > 0)
+            {
+                string toUserId = record.UserId;
+
+                await notificationMethods.Send(byUserId, toUserId, $"{tasksIds.Count} Task{(tasksIds.Count == 1 ? "" : "s")} were removed from your schedule", NotificationType.Default, true);
+            }
 
             return db.SaveChanges() > 0;
         }
