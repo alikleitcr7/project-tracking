@@ -53,11 +53,15 @@
             <tr>
                 <th style="width: 50px">-</th>
                 <th>Name</th>
+                <th>Added By</th>
+                <th>Created On</th>
+                <th>Modified On</th>
                 <th>Start Date</th>
                 <th>Planned End</th>
                 <th>Actual End</th>
                 <th>Teams</th>
                 <th>Status</th>
+                <th>By User</th>
                 <th></th>
             </tr>
         </thead>
@@ -74,6 +78,16 @@
 
                     <td>
                         {{item.title}}
+                    </td>
+                    
+                    <td>
+                        {{item.addedByUserName}}
+                    </td>
+                    <td>
+                        {{item.dateAddedDisplay}}
+                    </td>
+                    <td>
+                        {{item.lastModifiedDateDisplay}}
                     </td>
                     
                     <td>
@@ -97,6 +111,11 @@
                     </td>
 
                     <td>
+                        <a :href="`/profile/${item.statusByUserId}`">{{item.statusByUserName}}</a>
+                        
+                    </td>
+
+                    <td>
                         <a class="s-btn s-btn-sm s-btn-outline" :href="`/projects/${item.id}`">
                             Tasks
                         </a>
@@ -110,7 +129,7 @@
                                 v-on:click="projects_edit(idx)">
                             Edit
                         </button>
-                        <button class="s-btn s-btn-sm s-btn-danger" type="button"
+                        <button class="s-btn s-btn-sm s-btn-danger" type="button" v-if="!item.hasTasks"
                                 v-on:click="projects_delete(idx)">
                             Delete
                         </button>

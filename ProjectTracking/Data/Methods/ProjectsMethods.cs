@@ -11,6 +11,8 @@ using ProjectTracking.Models.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace ProjectTracking.Data.Methods
 {
@@ -18,17 +20,19 @@ namespace ProjectTracking.Data.Methods
     {
         private readonly ApplicationDbContext db;
         private readonly IMapper _mapper;
+        private readonly INotificationMethods notificationMethods;
 
-        public ProjectsMethods(IMapper mapper, ApplicationDbContext context)
+        public ProjectsMethods(IMapper mapper, INotificationMethods notificationMethods, ApplicationDbContext context)
         {
             //var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             //optionsBuilder.UseSqlServer(Setting.ConnectionString);
             //db = new ApplicationDbContext(optionsBuilder.Options);
             db = context;
             _mapper = mapper;
+            this.notificationMethods = notificationMethods;
         }
 
-        public Project Save(ProjectSaveModel model, string addedByUserId)
+        public async Task<Project> Save(ProjectSaveModel model)
         {
             if (model.categoryId == 0 || string.IsNullOrEmpty(model.title))
             {
@@ -82,8 +86,11 @@ namespace ProjectTracking.Data.Methods
                     {
                         ProjectId = dbProject.ID,
                         StatusCode = dbProject.StatusCode,
-                        DateModified = DateTime.Now
+                        DateModified = DateTime.Now,
+                        ModifiedByUserId = dbProject.StatusByUserId
                     });
+
+                    await NotifyAdmins(model.GetStatusByUserId(), $"project status was changed", dbProject.ID);
                 }
 
                 // update values
@@ -96,12 +103,13 @@ namespace ProjectTracking.Data.Methods
                 dbProject.ActualEnd = model.actualEnd;
                 dbProject.LastModifiedDate = DateTime.Now;
                 dbProject.StatusCode = model.statusCode;
+                dbProject.StatusByUserId = model.GetStatusByUserId();
 
                 AddRemoveTeamsProjects(model, dbProject);
 
                 db.SaveChanges();
 
-                return _mapper.Map<Project>(dbProject);
+                return GetById(dbProject.ID);
             }
             else
             {
@@ -125,7 +133,8 @@ namespace ProjectTracking.Data.Methods
                     PlannedEnd = model.plannedEnd,
                     ActualEnd = model.actualEnd,
                     StatusCode = model.statusCode,
-                    AddedByUserId = addedByUserId
+                    StatusByUserId = model.GetStatusByUserId(),
+                    AddedByUserId = model.GetStatusByUserId()
                 };
 
                 // add the project
@@ -144,7 +153,23 @@ namespace ProjectTracking.Data.Methods
                 // save changes on teamsprojects
                 db.SaveChanges();
 
-                return _mapper.Map<Project>(dbProject);
+                // notify admin of new project
+
+                await NotifyAdmins(model.GetStatusByUserId(), $"new project was added", dbProject.ID);
+
+
+                return GetById(dbProject.ID);
+            }
+        }
+
+
+        private async Task NotifyAdmins(string byUserId, string message, int projectId, NotificationType notificationType = NotificationType.Information)
+        {
+            List<string> adminIds = db.Users.Where(k => k.Id != byUserId && k.RoleCode == (short)ApplicationUserRole.Admin).Select(k => k.Id).ToList();
+
+            foreach (string toUserId in adminIds)
+            {
+                await notificationMethods.Send(byUserId, toUserId, message, notificationType, true, null, projectId);
             }
         }
 
@@ -186,10 +211,58 @@ namespace ProjectTracking.Data.Methods
             return query.OrderByDescending(k => k.ID)
                 .Skip(page * countPerPage)
                 .Take(countPerPage)
-                .ToList()
-                .Select(_mapper.Map<Project>)
+                .Select(MapProjectWithUserAndCheckTasks)
                 .ToList();
         }
+
+        public static Expression<Func<DataSets.Project, Project>> MapProjectWithUserAndCheckTasks =>
+           k => new Project()
+           {
+               ID = k.ID,
+               ActualEnd = k.ActualEnd,
+               DateAdded = k.DateAdded,
+               Description = k.Description,
+               PlannedEnd = k.PlannedEnd,
+               StartDate = k.StartDate,
+               AddedByUserId = k.AddedByUserId,
+               StatusCode = k.StatusCode,
+               LastModifiedDate = k.LastModifiedDate,
+               AddedByUserName = k.AddedByUser.FirstName + " " + k.AddedByUser.LastName,
+               StatusByUserName = k.StatusByUser.FirstName + " " + k.StatusByUser.LastName,
+               StatusByUserId = k.StatusByUserId,
+               CategoryId = k.CategoryId,
+               Title = k.Title,
+               HasTasks = k.Tasks.Any()
+           };
+
+        public static Expression<Func<DataSets.Project, Project>> MapProjectForGet =>
+           k => new Project()
+           {
+               ID = k.ID,
+               ActualEnd = k.ActualEnd,
+               DateAdded = k.DateAdded,
+               Description = k.Description,
+               PlannedEnd = k.PlannedEnd,
+               StartDate = k.StartDate,
+               AddedByUserId = k.AddedByUserId,
+               StatusCode = k.StatusCode,
+               LastModifiedDate = k.LastModifiedDate,
+               AddedByUserName = k.AddedByUser.FirstName + " " + k.AddedByUser.LastName,
+               StatusByUserName = k.StatusByUser.FirstName + " " + k.StatusByUser.LastName,
+               StatusByUserId = k.StatusByUserId,
+               Title = k.Title,
+               CategoryId = k.CategoryId,
+               Category = new Category()
+               {
+                   ID = k.Category.ID,
+                   Name = k.Category.Name,
+               },
+               TeamsProjects = k.TeamsProjects.Select(t => new TeamsProjects()
+               {
+                   ProjectId = t.ProjectId,
+                   TeamId = t.TeamId
+               })
+           };
 
         public List<ProjectStatusModification> GetStatusModifications(int projectId)
         {
@@ -227,29 +300,29 @@ namespace ProjectTracking.Data.Methods
 
             var dbProject = db.Projects.Include(k => k.Tasks).FirstOrDefault(k => k.ID == id);
 
-            if (dbProject != null)
+            if (dbProject == null)
             {
-                foreach (var dbTask in dbProject.Tasks)
-                {
-                    db.ProjectTasks.Remove(dbTask);
-                }
-
-                db.Projects.Remove(dbProject);
-
-                return db.SaveChanges() > 0;
+                throw new ClientException("project doesn't exist");
             }
 
-            return false;
+
+            if (dbProject.Tasks.Count > 0)
+            {
+                throw new ClientException("HAS_TASKS");
+            }
+
+            db.Projects.Remove(dbProject);
+
+            return db.SaveChanges() > 0;
         }
 
         public Project GetById(int id)
         {
             var record = db.Projects
-                .Include(k => k.Category)
-                .Include(k => k.TeamsProjects)
+                .Select(MapProjectForGet)
                 .FirstOrDefault(k => k.ID == id);
 
-            return record != null ? _mapper.Map<Project>(record) : null;
+            return record;
         }
 
 

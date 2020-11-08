@@ -8,7 +8,9 @@ namespace ProjectTracking.DataContract
         public int ProjectId { get; set; }
         public short StatusCode { get; set; }
         public DateTime DateModified { get; set; }
+        public string ModifiedByUserId { get; set; }
 
+        public string ModifiedByUserName { get; set; }
         public string DateModifiedDisplay => DateModified.ToString("dd-MM-yyyy HH:mm");
         public string StatusDisplay
         {

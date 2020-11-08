@@ -9,6 +9,7 @@ using System.Linq;
 using ProjectTracking.Models.Projects;
 using ProjectTracking.Exceptions;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ProjectTracking.Controllers
 {
@@ -82,7 +83,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save([FromBody]ProjectSaveModel model)
+        public async Task<IActionResult> Save([FromBody]ProjectSaveModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -93,7 +94,9 @@ namespace ProjectTracking.Controllers
             {
                 string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                return Ok(_projects.Save(model, userId));
+                model.SetStatusByUserId(userId);
+
+                return Ok(await _projects.Save(model));
             }
             catch (ClientException ex)
             {

@@ -23,9 +23,16 @@
 
 </div>
 
-<h4 v-show="!projectTasks.isLoading && !projectTasks.data.length ">
+<h4  v-show="!projectTasks.isLoading && !projectTasks.data.length ">
     <br />
-    <span class="clickable-link" v-on:click="projectTasks_openModal">Click Here</span> to add
+    <template v-if="isProjectSupervisor">
+        Nothing here yet,
+        <span class="clickable-link" v-on:click="projectTasks_openModal">Click Here</span> to start adding tasks
+
+    </template>
+    <template v-else>
+        Nothing here yet
+    </template>
 </h4>
 
 <section id="Pagination" class="c-pagination" v-show="projectTasksTotalPages > 1">
@@ -38,7 +45,8 @@
     </div>
 </section>
 
-<p class="c-display-message">{{projectTasks.isLoading ? 'Loading...':'&nbsp;'}}</p>
+   
+<h4 class="c-display-message">{{projectTasks.isLoading ? ' Loading...':'&nbsp;'}}</h4>
 
 <div v-show="projectTasks.data.length" class="ProjectTasks c-table-data-container"
      v-bind:class="{'lock-controls': projectTasks.isProcessing }">
@@ -123,8 +131,8 @@
                             <i class="fa fa-trash"></i> Delete
                         </button>
 
-                        <a class="s-btn s-btn-sm s-btn-outline" :href="`/tasks/${item.id}`">
-                            Overview <i class="fa fa-angle-right"></i>
+                        <a class="s-btn s-btn-sm s-btn-primary" :href="`/tasks/${item.id}`">
+                            <i class="fa fa-angle-right"></i>
                         </a>
 
                     </td>

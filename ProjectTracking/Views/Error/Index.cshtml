@@ -1,14 +1,28 @@
 ﻿
 @model int
 @{
-    ViewData["Title"] = "Error";
+
+    string title = "Error";
+
+    if (Model == 404)
+    {
+        title = "Not Found";
+    }
+    else if (Model == 401)
+    {
+        title = "Not Authorized";
+    }
+
+    ViewData["Title"] = title;
+
 }
 
 <div class="v-container error-container">
 
     @if (Model == 404)
     {
-        <h1 class="h1">404 Page Not Found!  <i class="far fa-meh-blank"></i> </h1>
+        <h1  class="h1">404 Page Not Found!  <i class="far fa-meh-blank"></i><br /> </h1>
+        <h3>The page you're looking for might be deleted</h3>
     }
     else if (Model == 401)
     {

@@ -20,6 +20,7 @@ namespace ProjectTracking.Data.DataSets
         public short StatusCode { get; set; }
         [Required]
         public string AddedByUserId { get; set; }
+        public string StatusByUserId { get; set; }
 
 
         public Category Category { get; set; }
@@ -29,6 +30,7 @@ namespace ProjectTracking.Data.DataSets
         public DateTime? LastModifiedDate { get; set; }
 
         public ApplicationUser AddedByUser { get; set; }
+        public ApplicationUser StatusByUser { get; set; }
         public List<TeamsProjects> TeamsProjects { get; set; }
         //public List<TimeSheetActivity> TimeSheetActivities { get; set; }
         public List<ProjectTask> Tasks { get; set; }

@@ -96,6 +96,9 @@
                                     <a :href="`/timesheets/explore?tid=${item.timeSheetId}`" class="notification__actions" v-if="item.timeSheetId">
                                         <i class="fa fa-angle-right"></i>
                                     </a>
+                                    <a :href="`/projects/${item.projectId}`" class="notification__actions" v-if="item.projectId">
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
                                     <div class="notification__date">{{item.dateSentDisplay}}</div>
                                 </div>
                             </div>

@@ -412,7 +412,19 @@ const projectsMethods = {
 
                 console.error('delete', e)
 
-                this.projects_setMessage(BASIC_ERROR_MESSAGE)
+                let errorMessage = getAxiosErrorMessage(e)
+
+                if (errorMessage === 'HAS_TASKS') {
+
+                    errorMessage = 'project has tasks and cannot be deleted'
+
+
+                    this.projects_getAll();
+                }
+
+                bootbox.alert(errorMessage)
+
+                this.projects_setMessage(errorMessage)
 
             })
             .then(() => {

@@ -131,6 +131,8 @@
     <Compile Remove="Migrations\20201005201320_added constraints.Designer.cs" />
     <Compile Remove="Migrations\20201007175214_supervisorlog.cs" />
     <Compile Remove="Migrations\20201007175214_supervisorlog.Designer.cs" />
+    <Compile Remove="Migrations\20201108193903_status by to proj.cs" />
+    <Compile Remove="Migrations\20201108193903_status by to proj.Designer.cs" />
     <Compile Remove="Models\TimeSheet\TimeSheetModel.cs" />
   </ItemGroup>
 

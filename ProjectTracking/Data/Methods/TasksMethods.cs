@@ -307,7 +307,7 @@ namespace ProjectTracking.Data.Methods
 
             //dbTask.TimeSheetTasks.Clear();
 
-            //db.ProjectTasks.Remove(dbTask);
+            db.ProjectTasks.Remove(dbTask);
 
             return db.SaveChanges() > 0;
         }

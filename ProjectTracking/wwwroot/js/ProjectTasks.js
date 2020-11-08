@@ -460,16 +460,17 @@ const projectTasksMethods = {
 
                 let errorMessage = getAxiosErrorMessage(e);
 
-
-
                 console.error('delete', errorMessage)
 
                 if (errorMessage === 'IS_ASSIGNED_TO_TIMESHEET') {
 
                     errorMessage = 'Task is assigned to a timesheet and cannot be deleted'
 
+
                     this.projectTasks_getAll(0)
                 }
+
+                bootbox.alert(errorMessage)
 
                 this.projectTasks_setMessage(errorMessage)
             })

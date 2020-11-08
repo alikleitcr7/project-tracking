@@ -20,7 +20,7 @@
     <h4 v-if="!teams.isLoading && !teams.data.length">Nothing Here Yet! </h4>
 
 
-    <div class="c-box-view">
+    <div class="c-box-view ">
         <a class="c-box" :href="`/teams/${team.id}`" v-for="team in teams.data">
 
             <h5 class="c-box-title">{{team.name}}</h5>

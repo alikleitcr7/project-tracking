@@ -64,7 +64,7 @@ else
 
         <section class="team-info">
 
-            <h2>@Model.Name</h2>
+            <h2>@Model.Name.ToUpper()</h2>
 
             <table class="table">
                 <tr>
@@ -91,16 +91,16 @@ else
         @* Tabs (Overview, Members, Broadcasts) *@
 
         <section class="team-visualization">
-            <div class="c-box-view c-box-view--wrap" v-if="team">
+            <div class="c-box-view c-box-view--responsive" v-if="team">
                 <div class="c-box">
                     <h5 class="c-box-title">Active Activities</h5>
                     <div class="scrollable-container-200">
                         <table class="table" v-if="team.activeActivities.length">
                             <thead>
                                 <tr>
-                                    <th>task</th>
-                                    <th>started on</th>
-                                    <th>by user</th>
+                                    <th>Task</th>
+                                    <th>Started On</th>
+                                    <th>By User</th>
                                 </tr>
                             </thead>
                             <tbody>

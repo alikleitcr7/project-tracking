@@ -42,7 +42,7 @@ namespace ProjectTracking.Data.Methods
         {
             return _context.Broadcasts
                 .Include(k => k.FromUser);
-                //.Include(k => k.ToTeam);
+            //.Include(k => k.ToTeam);
         }
 
 
@@ -86,7 +86,7 @@ namespace ProjectTracking.Data.Methods
         }
 
 
-        public async Task<UserNotification> Send(string fromUserId, string toUserId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false, int? timesheetId = null)
+        public async Task<UserNotification> Send(string fromUserId, string toUserId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false, int? timesheetId = null, int? projectId = null)
         {
             DataSets.UserNotification notification = new DataSets.UserNotification()
             {
@@ -95,7 +95,8 @@ namespace ProjectTracking.Data.Methods
                 Message = message,
                 NotificationTypeCode = (short)notificationType,
                 DateSent = DateTime.Now,
-                TimeSheetId = timesheetId
+                TimeSheetId = timesheetId,
+                ProjectId = projectId
             };
 
             _context.UserNotifications.Add(notification);

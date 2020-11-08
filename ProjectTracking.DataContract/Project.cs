@@ -28,6 +28,8 @@ namespace ProjectTracking.DataContract
         public DateTime? LastModifiedDate { get; set; }
         public string AddedByUserId { get; set; }
         public string AddedByUserName { get; set; }
+        public string StatusByUserId { get; set; }
+        public string StatusByUserName { get; set; }
 
         public string DateAddedDisplay
         {
@@ -75,8 +77,11 @@ namespace ProjectTracking.DataContract
             }
         }
 
-        public List<TeamsProjects> TeamsProjects { get; set; }
+        public IEnumerable<TeamsProjects> TeamsProjects { get; set; }
         public List<ProjectTask> Tasks { get; set; }
         public List<ProjectStatusModification> ProjectStatusModifications { get; set; }
+
+        public bool? HasTasks { get; set; }
+
     }
 }
