@@ -153,22 +153,27 @@
                     padding: .5em .7em;
                     min-width: 120px;
 
+                    .c-box-title {
+                        font-weight: 400;
+                        max-width: 100px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        position: relative;
+                        background-color: transparent!important;
+                        border: none;
+                        padding: .5em 0;
+                    }
+
+
                     &.active {
                         border: 2px solid @main-color;
                         animation: border-pulse 2s infinite;
                     }
+
                 }
 
-                .c-box-title {
-                    font-weight: 400;
-                    max-width: 100px;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    position:relative;
-                    border:none;
-                    padding: .5em 0;
-                }
+
 
                 &--loading {
                     .c-box-title {

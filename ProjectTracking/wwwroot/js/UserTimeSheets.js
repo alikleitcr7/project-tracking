@@ -56,7 +56,6 @@ const activityModalForm = (activity) => {
     }
 }
 
-
 function getTaskFilterClass(status) {
     return `task-filter--${status.code}`
 }
@@ -134,6 +133,33 @@ const TASK_STATUSES_KEYS = {
     FAILED_OR_TERMINATED: 3,
 }
 
+const changeUrlQuery = (tid, pt) => {
+
+    if ('URLSearchParams' in window) {
+
+        var searchParams = new URLSearchParams(window.location.search);
+
+        if (!tid) {
+            searchParams.delete('id')
+        }
+        else {
+            searchParams.set("tid", tid);
+        }
+
+        if (!pt) {
+            searchParams.delete('pt')
+        }
+        else {
+            searchParams.set("pt", pt);
+        }
+
+        let newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
+
+        history.pushState(null, '', newRelativePathQuery);
+    }
+
+}
+
 var user_timesheet_app = new Vue({
     el: '#UserTimeSheets',
     data: {
@@ -208,7 +234,8 @@ var user_timesheet_app = new Vue({
             isStarting: false,
             isLoading: true,
             showDeleted: false
-        }
+        },
+        activeRole: null
     },
     computed: {
         activeTimeSheetDisplay: function () {
@@ -631,6 +658,13 @@ var user_timesheet_app = new Vue({
 
                     this.activeTimeSheet.projects = r.data
 
+
+                    const projects = this.activeTimeSheet.projects
+
+
+                   
+
+
                     //.projects.map(k => ({
                     //    ...k,
                     //    tasks: k.tasks.map(sp => ({
@@ -655,9 +689,9 @@ var user_timesheet_app = new Vue({
 
                     if (this.activeDateIndexIsCurrentDay > -1) {
 
+                        // open current day index
 
                         this.openTimeSheetDate(this.activeDateIndexIsCurrentDay)
-
 
                         setTimeout(() => {
 
@@ -669,6 +703,12 @@ var user_timesheet_app = new Vue({
 
                         }, 100)
                     }
+                    else if (datesList.length) {
+
+                        // open first index
+
+                        this.openTimeSheetDate(0)
+                    }
 
                     //,
                     //activities: sp.activities.map(a => ({
@@ -678,6 +718,34 @@ var user_timesheet_app = new Vue({
                     //}))
 
                     this.filteredProjects = [];
+
+                    var url_string = window.location.href
+
+                    var url = new URL(url_string);
+
+                    const taskId_param = url.searchParams.get("pt");
+                    const taskId = taskId_param ? parseInt(taskId_param) : null;
+
+                    if (taskId) {
+
+                        // search for the task and open it
+                        for (var i = 0; i < projects.length; i++) {
+                            for (var j = 0; j < projects[i].tasks.length; j++) {
+                                const task = projects[i].tasks[j]
+
+                                if (task.id === taskId) {
+                                    this.openTaskActivities(task)
+                                }
+
+                            }
+                        }
+                    } else if (projects.length && projects[0].tasks.length) {
+
+                        // open first task 
+                        const task = projects[0].tasks[0]
+                        this.openTaskActivities(task)
+
+                    }
 
                     //console.log('filteredProjects init')
                     //this.activeTimeSheet.filteredProjectsLoading = false;
@@ -776,6 +844,8 @@ var user_timesheet_app = new Vue({
 
             const timesheet = this.timesheets.find(k => k.id === id)
 
+            changeUrlQuery(id)
+
             this.openTimeSheet(timesheet)
         },
         taskFilter: function (key) {
@@ -798,6 +868,8 @@ var user_timesheet_app = new Vue({
             }
         },
         openTaskActivities: function (task) {
+
+            changeUrlQuery(this.activeTimeSheet.id, task ? task.id : undefined)
 
             if (!task) {
                 this.selectedTask = null
@@ -863,14 +935,12 @@ var user_timesheet_app = new Vue({
 
             bootboxExtension.confirm('Status Change', `You are about to change the current task status`, null, () => {
 
-
                 let selectedTask = { ...this.selectedTask }
 
                 selectedTask.statusIsChanging = true
                 this.selectedTask = selectedTask
 
-
-                ProjectTasksService.ChangeStatus(selectedTask.id, status.key)
+                ProjectTasksService.ChangeTimeSheetTaskStatus(this.activeTimeSheet.id, selectedTask.id, status.key)
                     .then((r) => {
 
                         const record = r.data
@@ -943,14 +1013,17 @@ var user_timesheet_app = new Vue({
         var url = new URL(url_string);
 
         var userId = $('#UserTimeSheets').attr('data-user');
-        var timeSheetId = $('#UserTimeSheets').attr('data-timesheet');
+        var timeSheetId = url.searchParams.get("tid") || $('#UserTimeSheets').attr('data-timesheet');
         var activeRole = $('#UserTimeSheets').attr('data-active-role');
         var activeUserId = $('#UserTimeSheets').attr('data-active-user');
         var isActiveSupervisor = $('#UserTimeSheets').attr('data-active-supervisor') === 'True';
 
         console.log({ userId, activeUserId })
 
-        this.readOnly = userId !== activeUserId
+
+        this.activeRole = activeRole
+
+        this.readOnly = activeRole !== APP_USER_ROLES.teamMember.value || userId !== activeUserId
 
         //if (userId) {
 
@@ -964,7 +1037,8 @@ var user_timesheet_app = new Vue({
         //    //    })
         //}
 
-        //const timeSheetId = url.searchParams.get("timeSheetId");
+
+        const taskId = url.searchParams.get("pt");
 
         TimeSheetsService.GetUserTimeSheets(userId)
             .then((r) => {

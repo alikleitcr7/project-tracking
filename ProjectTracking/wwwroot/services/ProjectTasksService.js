@@ -64,4 +64,12 @@ const ProjectTasksService = {
 
         return axios.put(url);
     },
+    ChangeTimeSheetTaskStatus: function (timeSheetId, taskId, statusCode) {
+
+        const query = serialize({ timeSheetId, taskId, statusCode })
+
+        const url = PROJECT_TASKS_SERVICE_URI(`ChangeTimeSheetTaskStatus?${query}`)
+
+        return axios.put(url);
+    },
 }

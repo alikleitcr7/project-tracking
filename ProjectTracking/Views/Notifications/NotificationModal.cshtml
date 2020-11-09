@@ -93,7 +93,8 @@
                                     <div class="notification__user"> {{item.fromUserDisplay}}</div>
                                     
                                     <div class="notification__message" v-html="item.message"></div>
-                                    <a :href="`/timesheets/explore?tid=${item.timeSheetId}`" class="notification__actions" v-if="item.timeSheetId">
+                                    <a :href="`/timesheets/explore?tid=${item.timeSheetId}&pt=${item.projectTaskId}`" class="notification__actions" v-if="item.timeSheetId && item.projectTaskId">
+                                    <a :href="`/timesheets/explore?tid=${item.timeSheetId}`" class="notification__actions" v-else-if="item.timeSheetId">
                                         <i class="fa fa-angle-right"></i>
                                     </a>
                                     <a :href="`/projects/${item.projectId}`" class="notification__actions" v-if="item.projectId">

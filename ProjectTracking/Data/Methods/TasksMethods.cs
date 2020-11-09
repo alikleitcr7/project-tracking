@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Linq;
 using ProjectTracking.Models.Tasks;
 using ProjectTracking.Models.Users;
+using System.Threading.Tasks;
 
 namespace ProjectTracking.Data.Methods
 {
@@ -18,11 +19,13 @@ namespace ProjectTracking.Data.Methods
     {
         private readonly ApplicationDbContext db;
         private readonly IMapper _mapper;
+        private readonly INotificationMethods notificationMethods;
 
-        public TasksMethods(IMapper mapper, ApplicationDbContext context)
+        public TasksMethods(IMapper mapper, INotificationMethods notificationMethods, ApplicationDbContext context)
         {
             db = context;
             _mapper = mapper;
+            this.notificationMethods = notificationMethods;
         }
 
         public ProjectTask Save(TaskSaveModel model)
@@ -157,7 +160,7 @@ namespace ProjectTracking.Data.Methods
                 .ToList();
         }
 
-        public void ChangeStatus(int taskId, short statusCode, string byUserId)
+        public async Task ChangeTimeSheetTaskStatus(int timesheetId, int taskId, short statusCode, string byUserId)
         {
             var dbTask = db.ProjectTasks.FirstOrDefault(k => k.ID == taskId);
 
@@ -187,7 +190,74 @@ namespace ProjectTracking.Data.Methods
             dbTask.StatusByUserId = byUserId;
 
             db.SaveChanges();
+
+            // notify supervisor
+
+            int? userTeamId = db.Users.Select(k => new { k.Id, k.TeamId }).FirstOrDefault(k => k.Id == byUserId)?.TeamId;
+
+            if (userTeamId.HasValue)
+            {
+                // get supervisor of that team
+
+                string supervisorId = db.Teams.Select(k => new { k.SupervisorId, k.ID }).First(k => k.ID == userTeamId.Value).SupervisorId;
+
+                // timesheet id needed
+                await notificationMethods.Send(byUserId, supervisorId, $"Task status changed to {((ProjectTaskStatus)statusCode).ToString()}", NotificationType.Default, true, timesheetId, null, taskId);
+            }
+
         }
+
+        public async Task ChangeStatus(int taskId, short statusCode, string byUserId)
+        {
+            var dbTask = db.ProjectTasks.FirstOrDefault(k => k.ID == taskId);
+
+            if (dbTask == null)
+            {
+                throw new ClientException("record not found");
+            }
+
+            bool hasChange = dbTask.StatusCode != statusCode;
+
+            if (!hasChange)
+            {
+                return;
+            }
+
+            // append project's status modification
+            db.ProjectTaskStatusModifications.Add(new DataSets.ProjectTaskStatusModification()
+            {
+                ProjectTaskId = dbTask.ID,
+                StatusCode = dbTask.StatusCode,
+                ModifiedByUserId = dbTask.StatusByUserId,
+                DateModified = DateTime.Now
+            });
+
+            // set new status by user
+            dbTask.StatusCode = statusCode;
+            dbTask.StatusByUserId = byUserId;
+
+            db.SaveChanges();
+
+            // notify supervisor
+
+            int? userTeamId = db.Users.Select(k => new { k.Id, k.TeamId }).FirstOrDefault(k => k.Id == byUserId)?.TeamId;
+
+            if (userTeamId.HasValue)
+            {
+                // get supervisor of that team
+
+                string supervisorId = db.Teams.Select(k => new { k.SupervisorId, k.ID }).First(k => k.ID == userTeamId.Value).SupervisorId;
+
+                // timesheet id needed
+                //await notificationMethods.Send(supervisorId, byUserId, "", notificationType, true, null, projectId);
+            }
+
+
+
+        }
+
+
+
 
         public static Expression<Func<DataSets.ProjectTask, ProjectTask>> MapProjectTaskWithUser =>
             k => new ProjectTask()

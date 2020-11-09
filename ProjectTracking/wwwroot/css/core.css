@@ -428,7 +428,11 @@
 }
 .c-box-view a.c-box:hover,
 .c-box-view .c-box-clickable:hover {
-  background-color: #d1d1d1;
+  background-color: #d1d1d1 !important;
+}
+.c-box-view a.c-box:hover .c-box-title,
+.c-box-view .c-box-clickable:hover .c-box-title {
+  background-color: #d1d1d1 !important;
 }
 .c-box-view--wrap {
   flex-wrap: wrap;

@@ -41,7 +41,11 @@
         cursor: pointer;
 
         &:hover {
-            background-color: @gray-light;
+            .c-box-title {
+                background-color: @gray-light!important;
+            }
+
+            background-color: @gray-light!important;
         }
     }
 
@@ -110,7 +114,8 @@
 
 
     &--responsive {
-        flex-wrap:wrap;
+        flex-wrap: wrap;
+
         .c-box {
             width: 45%;
         }

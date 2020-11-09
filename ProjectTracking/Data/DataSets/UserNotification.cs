@@ -9,9 +9,11 @@ namespace ProjectTracking.Data.DataSets
         [Required]
         public string ToUserId { get; set; }
 
+        public int? ProjectTaskId { get; set; }
         public int? TimeSheetId { get; set; }
         public int? ProjectId { get; set; }
 
+        public ProjectTask ProjectTask { get; set; }
         public TimeSheet TimeSheet { get; set; }
         public Project TProject { get; set; }
 

@@ -86,7 +86,7 @@ namespace ProjectTracking.Data.Methods
         }
 
 
-        public async Task<UserNotification> Send(string fromUserId, string toUserId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false, int? timesheetId = null, int? projectId = null)
+        public async Task<UserNotification> Send(string fromUserId, string toUserId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false, int? timesheetId = null, int? projectId = null, int? taskId = null)
         {
             DataSets.UserNotification notification = new DataSets.UserNotification()
             {
@@ -96,7 +96,8 @@ namespace ProjectTracking.Data.Methods
                 NotificationTypeCode = (short)notificationType,
                 DateSent = DateTime.Now,
                 TimeSheetId = timesheetId,
-                ProjectId = projectId
+                ProjectId = projectId,
+                ProjectTaskId = taskId
             };
 
             _context.UserNotifications.Add(notification);

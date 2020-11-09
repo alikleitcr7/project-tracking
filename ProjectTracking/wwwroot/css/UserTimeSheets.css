@@ -519,19 +519,20 @@
   padding: 0.5em 0.7em;
   min-width: 120px;
 }
-#UserTimeSheets .user-timesheets-content .task-activities .c-box-view .c-box.active {
-  border: 2px solid #2286c3;
-  animation: border-pulse 2s infinite;
-}
-#UserTimeSheets .user-timesheets-content .task-activities .c-box-view .c-box-title {
+#UserTimeSheets .user-timesheets-content .task-activities .c-box-view .c-box .c-box-title {
   font-weight: 400;
   max-width: 100px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   position: relative;
+  background-color: transparent!important;
   border: none;
   padding: 0.5em 0;
+}
+#UserTimeSheets .user-timesheets-content .task-activities .c-box-view .c-box.active {
+  border: 2px solid #2286c3;
+  animation: border-pulse 2s infinite;
 }
 #UserTimeSheets .user-timesheets-content .task-activities .c-box-view--loading .c-box-title {
   min-height: 0.9em;

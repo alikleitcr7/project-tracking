@@ -237,11 +237,31 @@ namespace ProjectTracking.Controllers
 
         [HttpPut]
         //[Route("ChangeStatus")]
-        public IActionResult ChangeStatus(int taskId, short statusCode)
+        public async Task<IActionResult> ChangeStatus(int taskId, short statusCode)
         {
             try
             {
-                _tasksMethods.ChangeStatus(taskId, statusCode, GetCurrentUserId());
+                await _tasksMethods.ChangeStatus(taskId, statusCode, GetCurrentUserId());
+
+                return Ok(true);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        //[Route("ChangeStatus")]
+        public async Task<IActionResult> ChangeTimeSheetTaskStatus(int timeSheetId, int taskId, short statusCode)
+        {
+            try
+            {
+                await _tasksMethods.ChangeTimeSheetTaskStatus(timeSheetId, taskId, statusCode, GetCurrentUserId());
 
                 return Ok(true);
             }
