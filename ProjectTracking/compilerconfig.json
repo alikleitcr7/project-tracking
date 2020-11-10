@@ -62,5 +62,37 @@
   {
     "outputFile": "wwwroot/css/IpAddresses.css",
     "inputFile": "wwwroot/css/IpAddresses.less"
+  },
+  {
+    "outputFile": "wwwroot/css/logon.css",
+    "inputFile": "wwwroot/css/logon.less"
+  },
+  {
+    "outputFile": "wwwroot/css/Dashboard.css",
+    "inputFile": "wwwroot/css/Dashboard.less"
+  },
+  {
+    "outputFile": "wwwroot/css/employees.css",
+    "inputFile": "wwwroot/css/employees.less"
+  },
+  {
+    "outputFile": "wwwroot/css/pendingRequests.css",
+    "inputFile": "wwwroot/css/pendingRequests.less"
+  },
+  {
+    "outputFile": "wwwroot/css/ProjectsInventory.css",
+    "inputFile": "wwwroot/css/ProjectsInventory.less"
+  },
+  {
+    "outputFile": "wwwroot/css/timesheet.css",
+    "inputFile": "wwwroot/css/timesheet.less"
+  },
+  {
+    "outputFile": "wwwroot/css/UserInsights.css",
+    "inputFile": "wwwroot/css/UserInsights.less"
+  },
+  {
+    "outputFile": "wwwroot/css/user-profile.css",
+    "inputFile": "wwwroot/css/user-profile.less"
   }
 ]
