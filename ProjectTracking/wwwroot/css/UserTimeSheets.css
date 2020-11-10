@@ -384,6 +384,7 @@
   display: none !important;
 }
 .ts-column-scrollable {
+  min-height: 80vh;
   max-height: 80vh;
   overflow-y: auto;
   -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
@@ -394,6 +395,7 @@
 #UserTimeSheets {
   display: flex;
   flex-direction: column;
+  padding-right: 1em;
 }
 #UserTimeSheets .list-group-item {
   -moz-user-select: none;
@@ -423,6 +425,29 @@
   background-color: #1776b0;
   color: #fff;
 }
+#UserTimeSheets .list-group-item--loading {
+  min-height: 2em;
+  padding: 1em;
+}
+#UserTimeSheets .list-group-item--loading > span {
+  position: relative;
+  overflow: hidden;
+  background-color: #dbdbdd;
+  display: block;
+  border-radius: 10px;
+  min-height: 1.5em;
+}
+#UserTimeSheets .list-group-item--loading > span::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0.5) 60%, rgba(255, 255, 255, 0));
+  animation: shimmer 2s infinite;
+  content: '';
+}
 #UserTimeSheets .user-timesheets {
   /*width: 210px;*/
   /*min-width: 210px;*/
@@ -443,7 +468,9 @@
   display: flex;
 }
 #UserTimeSheets .user-timesheets-content__days {
-  width: 150px;
+  /*width: 150px;*/
+  min-width: 150px;
+  min-height: 80vh;
   max-height: 80vh;
   overflow-y: auto;
   -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
@@ -526,7 +553,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   position: relative;
-  background-color: transparent!important;
+  background-color: transparent !important;
   border: none;
   padding: 0.5em 0;
 }
@@ -752,4 +779,41 @@ table td {
   pointer-events: none;
   background-color: #eeeeee;
   border: none;
+}
+@media (max-width: 991px) {
+  #UserTimeSheets {
+    min-width: 400px;
+  }
+  #UserTimeSheets .user-timesheets {
+    flex: 1;
+    padding: 1em 0;
+  }
+  #UserTimeSheets .user-timesheets-content {
+    display: flex;
+    flex: 1;
+  }
+  #UserTimeSheets .user-timesheets-content .user-timesheets-content-container {
+    flex-direction: column;
+    width: 100%;
+  }
+  #UserTimeSheets .user-timesheets-content__days {
+    /*width: 150px;*/
+    min-width: 100% !important;
+    width: 100%;
+    min-height: unset;
+    height: 30vh;
+    margin-bottom: 2em;
+  }
+  #UserTimeSheets .user-timesheets-content__projects {
+    width: 100%;
+    margin: 0;
+  }
+  #UserTimeSheets .user-timesheets-content__projects .assigned-tasks-container {
+    height: 30vh;
+    overflow-y: auto;
+  }
+  #UserTimeSheets .user-timesheets-content .task-activities {
+    flex: 1;
+    padding-top: 1em;
+  }
 }

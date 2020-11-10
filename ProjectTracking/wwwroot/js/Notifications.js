@@ -29,6 +29,7 @@ var notification_app = new Vue({
             },
         },
         selectedIdx: 0,
+        currentUserId: null,
         tabs: null
     },
     watch: {

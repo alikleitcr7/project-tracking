@@ -9,6 +9,7 @@
 }
 
 .ts-column-scrollable {
+    min-height: 80vh;
     max-height: 80vh;
     overflow-y: auto;
     .box-shadow();
@@ -18,6 +19,7 @@
 #UserTimeSheets {
     display: flex;
     flex-direction: column;
+    padding-right: 1em;
 
     .list-group-item {
         -moz-user-select: none;
@@ -46,6 +48,18 @@
             background-color: @main-dark;
             color: #fff;
         }
+
+        &--loading {
+            min-height: 2em;
+            padding: 1em;
+
+            > span {
+                .skeleton();
+                display: block;
+                border-radius: 10px;
+                min-height: 1.5em;
+            }
+        }
     }
 
     .user-timesheets {
@@ -73,7 +87,8 @@
         }
 
         &__days {
-            width: 150px;
+            /*width: 150px;*/
+            min-width: 150px;
             .ts-column-scrollable;
         }
 
@@ -160,7 +175,7 @@
                         overflow: hidden;
                         text-overflow: ellipsis;
                         position: relative;
-                        background-color: transparent!important;
+                        background-color: transparent !important;
                         border: none;
                         padding: .5em 0;
                     }
@@ -170,7 +185,6 @@
                         border: 2px solid @main-color;
                         animation: border-pulse 2s infinite;
                     }
-
                 }
 
 
@@ -390,8 +404,6 @@ table td {
     }
 }
 
-
-
 .mark-as-container {
     display: inline-block;
     margin-left: 5px;
@@ -444,11 +456,57 @@ table td {
         }
     }
 
-    .readonly-section{
-        input,select,textarea{
-            pointer-events :none;
-            background-color:@gray-xlight;
-            border:none;
+    .readonly-section {
+        input, select, textarea {
+            pointer-events: none;
+            background-color: @gray-xlight;
+            border: none;
+        }
+    }
+}
+
+
+@media (max-width:@screen-md) {
+
+    #UserTimeSheets {
+        min-width:400px;
+        .user-timesheets {
+            flex: 1;
+            padding: 1em 0;
+        }
+
+        .user-timesheets-content {
+            display: flex;
+            flex: 1;
+
+            .user-timesheets-content-container {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            &__days {
+                /*width: 150px;*/
+                min-width: 100% !important;
+                width: 100%;
+                min-height: unset;
+                height: 30vh;
+                margin-bottom: 2em;
+            }
+
+            &__projects {
+                width: 100%;
+                margin: 0;
+
+                .assigned-tasks-container {
+                    height: 30vh;
+                    overflow-y: auto;
+                }
+            }
+
+            .task-activities {
+                flex: 1;
+                padding-top: 1em;
+            }
         }
     }
 }

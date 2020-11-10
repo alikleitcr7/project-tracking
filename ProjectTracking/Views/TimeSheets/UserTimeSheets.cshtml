@@ -33,13 +33,22 @@
         *@
     </div>
 
-    <div class="user-timesheets-content" v-show="activeTimeSheet">
+    <div class="user-timesheets-content" >
 
-        <h4 v-show="activeTimeSheetDisplay">{{activeTimeSheetDisplay}}</h4>
+        @*<h4 v-show="activeTimeSheetDisplay">{{activeTimeSheetDisplay}}</h4>*@
 
         <div class="user-timesheets-content-container">
 
-            <div class="user-timesheets-content__days">
+            <div class="user-timesheets-content__days" v-if="activeTimeSheetLoading">
+                <ul class="list-group" >
+                    <li v-for="i in [,,,,,,,,,,,,,]"
+                        class="list-group-item list-group-item--loading">
+                        <span></span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="user-timesheets-content__days" v-if="!activeTimeSheetLoading">
                 <ul class="list-group" v-if="activeTimeSheet && activeTimeSheet.datesList && activeTimeSheet.datesList.length">
                     <li v-for="(dateDisplay, idx) in activeTimeSheet && activeTimeSheet.datesList"
                         v-on:click="openTimeSheetDate(idx)"
@@ -53,8 +62,7 @@
             <div v-if="activeTimeSheet" class="user-timesheets-content__projects" :class="{'collapsed':activeDateIdx === -1}">
 
                 <p v-show="filteredProjectsLoading">Loading...</p>
-                <h4>{{activeDate ? activeDate.format('LL') : ''}} {{activeDateIndexIsCurrentDay !== -1 && activeDateIndexIsCurrentDay === activeDateIdx ? '(Today)' : ''}} <i class="main-color">{{activeTimeSheet && activeTimeSheet.isSigned ? ' | (SIGNED)' :''}}</i> </h4>
-                @*<button class="btn btn-default btn-sm" v-if="canUnlock" v-on:click="toggleReadOnly"> <i class="glyphicon glyphicon-lock"></i> {{readOnly ? 'Unlock' : 'Lock'}}</button>*@
+                <h4>{{activeDate ? activeDate.format('LL') : ''}} {{activeDateIndexIsCurrentDay !== -1 && activeDateIndexIsCurrentDay === activeDateIdx ? '(Today)' : ''}} </h4>
 
                 <div class="tasks-filter-container">
                     <span :class="taskStatusClass(status)"
