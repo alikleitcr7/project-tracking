@@ -24,12 +24,11 @@
         </tr>
     </table>
 
-
 </div>
 
 <h4 v-show="!projects.isLoading && !projects.data.length ">
     <br />
-    <span class="clickable-link" v-on:click="projects_openModal">Click Here</span> to add
+    <span v-if="projects.filterBy.categoryId">Nothing under this category, </span> <span v-else>Nothing here yet, </span> <span class="clickable-link" v-on:click="projects_openModal">Click Here</span> to add
 </h4>
 
 <section id="Pagination" class="c-pagination" v-show="projectsTotalPages > 1">
@@ -70,7 +69,7 @@
 
             <template v-for="(item ,idx) in projects.data">
 
-                <tr>
+                <tr :class="item.statusDisplay.toLowerCase()">
 
                     <td>
                         {{item.id}}

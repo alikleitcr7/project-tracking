@@ -315,7 +315,7 @@ const chartsHelper = {
                 return Math.round(number * factor) / factor;
             }
 
-            const labels = metrics.map(k => `${k.code}: ${projectsPerformance[k.fromProp]} (${(precisionRound(projectsPerformance[k.fromProp] / projectsPerformance.totalCount * 100))}%)`)
+            const labels = metrics.map(k => `${k.code}: ${projectsPerformance[k.fromProp]} (${(projectsPerformance[k.fromProp] ? precisionRound(projectsPerformance[k.fromProp] / projectsPerformance.totalCount * 100) : 0)}%)`)
             const data = metrics.map(k => projectsPerformance[k.fromProp])
             const pieColors = metrics.map(k => colors[k.code])
 

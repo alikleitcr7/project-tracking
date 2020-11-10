@@ -384,7 +384,7 @@ namespace ProjectTracking.Data
                    .HasMany(k => k.UserLogs)
                    .WithOne(k => k.IpAddress)
                    .HasForeignKey(k => k.Address)
-                   .OnDelete(DeleteBehavior.ClientSetNull);
+                   .OnDelete(DeleteBehavior.SetNull);
 
             #endregion
 

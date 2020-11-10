@@ -135,7 +135,7 @@ new Vue({
                 return 'no members yet'
             }
 
-            const label = `member${count > 0 ? 's' : ''}`
+            const label = `member${count > 1 ? 's' : ''}`
 
             return `${count} ${label}`
         },
@@ -145,7 +145,7 @@ new Vue({
                 return 'no projects yet'
             }
 
-            const label = `project${count > 0 ? 's' : ''}`
+            const label = `project${(count > 1 ? 's' : '')}`
 
             return `${count} ${label}`
         },

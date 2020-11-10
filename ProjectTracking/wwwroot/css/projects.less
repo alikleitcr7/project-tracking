@@ -1,4 +1,6 @@
-﻿.buttons-cell {
+﻿@import 'variables.less';
+
+.buttons-cell {
 
     span {
         cursor: pointer;
@@ -32,6 +34,40 @@
     table {
         td, th {
             padding: 5px;
+        }
+    }
+}
+
+.Projects {
+
+
+    tr {
+        td:first-child {
+            border-left: .8em solid;
+        }
+
+        &.proposed {
+            td:first-child {
+                border-left-color: @project-proposed-color;
+            }
+        }
+
+        &.inprogress {
+            td:first-child {
+                border-left-color: @project-inprogress-color;
+            }
+        }
+
+        &.done {
+            td:first-child {
+                border-left-color: @project-done-color;
+            }
+        }
+
+        &.failed, &.terminated {
+            td:first-child {
+                border-left-color: @project-failed-color;
+            }
         }
     }
 }
