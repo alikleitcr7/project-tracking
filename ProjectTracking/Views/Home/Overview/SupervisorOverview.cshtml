@@ -12,13 +12,17 @@
             <table class="table table-sm" v-if="overview.data.userLogsToday.length">
                 <thead>
                     <tr>
-                        <th>from</th>
-                        <th>to</th>
-                        <th>status</th>
+                        <th>Name</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="log in overview.data.userLogsToday">
+                        <td>
+                            <a :href="`/profile/${log.userId}`">{{log.userName}}</a>
+                        </td>
                         <td>{{log.displayFromDate}}</td>
                         <td>{{log.displayToDate}}</td>
                         <td>{{log.logStatusDisplay}}</td>
@@ -35,10 +39,10 @@
             <table class="table table-sm " v-if="overview.data.latestActivities.length">
                 <thead>
                     <tr>
-                        <th>task</th>
-                        <th>from</th>
-                        <th>to</th>
-                        <th>status</th>
+                        <th>Task</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>

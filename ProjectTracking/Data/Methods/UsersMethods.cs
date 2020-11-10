@@ -1292,7 +1292,15 @@ namespace ProjectTracking.Data.Methods
             return db.UserLogging
                             .Where(k => supervisingUsersIds.Contains(k.UserId) && k.FromDate.Date == date)
                             .OrderByDescending(k => k.ID)
-                            .Select(_mapper.Map<UserLog>)
+                            .Select(k => new UserLog()
+                            {
+                                ID = k.ID,
+                                FromDate = k.FromDate,
+                                ToDate = k.ToDate,
+                                LogStatusCode = k.LogStatusCode,
+                                UserId = k.UserId,
+                                UserName = k.User.FirstName + " " + k.User.LastName,
+                            })
                             .ToList();
         }
 
