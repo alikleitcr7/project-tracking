@@ -41,13 +41,14 @@ namespace ProjectTracking.Controllers
         }
 
 
-        [Authorize]
+        //[Authorize] 
+        // manually bcz it will add return url to login
         public IActionResult Index()
         {
-            //if (!User.Identity.IsAuthenticated)
-            //{
-            //    return Redirect("/login");
-            //}
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Redirect("/login");
+            }
 
             return View();
         }

@@ -13,8 +13,11 @@ a,
 a:hover,
 a:focus,
 a:active {
-  outline: none!important;
-  text-decoration: none!important;
+  outline: none !important;
+  text-decoration: none !important;
+}
+body {
+  /*background-image: url('/images/background.jpg');*/
 }
 .side-bar {
   padding-top: 20px;
@@ -26,7 +29,8 @@ a:active {
   display: block;
   overflow-y: auto;
   overflow-x: hidden;
-  background-color: #5B87A8;
+  background-color: #3c7fb1;
+  border-right: 2px solid #3c7fb1;
   -webkit-box-shadow: 1px -1px 7px 0px #a3a3a3;
   -moz-box-shadow: 1px -1px 7px 0px #a3a3a3;
   box-shadow: 1px -1px 7px 0px #a3a3a3;
@@ -322,7 +326,7 @@ p.skeleton-loading-item::after {
   border: 1px solid #549bd0;
 }
 .s-btn.s-btn-primary:hover {
-  background-color: #5B87A8;
+  background-color: #3c7fb1;
 }
 .s-btn.s-btn-outline {
   background-color: transparent;
@@ -334,8 +338,8 @@ p.skeleton-loading-item::after {
 }
 .s-btn.s-btn-outline-main {
   background-color: transparent;
-  border: 1px solid #5B87A8;
-  color: #5B87A8;
+  border: 1px solid #3c7fb1;
+  color: #3c7fb1;
 }
 .s-btn.s-btn-outline-main:hover {
   background-color: rgba(212, 212, 212, 0.34);

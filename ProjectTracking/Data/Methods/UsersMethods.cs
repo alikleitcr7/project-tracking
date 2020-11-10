@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using ProjectTracking.Models.Tasks;
 using ProjectTracking.Models.Dashboard;
 using ProjectTracking.Models.Teams;
+using System.Linq.Expressions;
 
 namespace ProjectTracking.Data.Methods
 {
@@ -846,6 +847,10 @@ namespace ProjectTracking.Data.Methods
 
         //    return new { All = allUsers, SuperVise = supervisorIds };
         //}
+
+      
+
+
         #endregion
 
         public object GetRoles(string Id)
@@ -1292,15 +1297,7 @@ namespace ProjectTracking.Data.Methods
             return db.UserLogging
                             .Where(k => supervisingUsersIds.Contains(k.UserId) && k.FromDate.Date == date)
                             .OrderByDescending(k => k.ID)
-                            .Select(k => new UserLog()
-                            {
-                                ID = k.ID,
-                                FromDate = k.FromDate,
-                                ToDate = k.ToDate,
-                                LogStatusCode = k.LogStatusCode,
-                                UserId = k.UserId,
-                                UserName = k.User.FirstName + " " + k.User.LastName,
-                            })
+                            .Select(MapUserLogForOverview)
                             .ToList();
         }
 
@@ -1309,9 +1306,20 @@ namespace ProjectTracking.Data.Methods
             return db.UserLogging
                             .Where(k => k.FromDate.Date == date)
                             .OrderByDescending(k => k.ID)
-                            .Select(_mapper.Map<UserLog>)
+                            .Select(MapUserLogForOverview)
                             .ToList();
         }
+
+        public static Expression<Func<DataSets.UserLog, UserLog>> MapUserLogForOverview =>
+      k => new UserLog()
+      {
+          ID = k.ID,
+          FromDate = k.FromDate,
+          ToDate = k.ToDate,
+          LogStatusCode = k.LogStatusCode,
+          UserId = k.UserId,
+          UserName = k.User.FirstName + " " + k.User.LastName,
+      };
 
         public UserInsights GetUserInsights(string userId)
         {

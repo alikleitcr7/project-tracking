@@ -278,7 +278,7 @@
   max-height: 400px;
 }
 .clickable-link {
-  color: #5B87A8;
+  color: #3c7fb1;
   cursor: pointer;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -312,7 +312,7 @@
   cursor: pointer;
 }
 .cell-arrow * {
-  fill: #5B87A8;
+  fill: #3c7fb1;
 }
 .cell-arrow.rotate-180 {
   transform: rotate(180deg);
@@ -327,7 +327,7 @@
   /* Safari 3-8 */
 }
 .main-dark-color {
-  color: #5B87A8 !important;
+  color: #3c7fb1 !important;
 }
 .main-light-color {
   color: #BDD2E1;
@@ -339,7 +339,7 @@
   color: #fff;
 }
 .main-dark-background {
-  background-color: #5B87A8;
+  background-color: #3c7fb1;
 }
 .main-light-background {
   background-color: #9de8fb;
@@ -359,7 +359,7 @@
   background-color: rgba(207, 207, 207, 0.63);
 }
 .main-background {
-  background-color: #5B87A8;
+  background-color: #3c7fb1;
 }
 .BoxShadow {
   -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
@@ -390,7 +390,7 @@
   color: #fff !important;
 }
 .Button-Shared:hover {
-  background-color: #5B87A8;
+  background-color: #3c7fb1;
 }
 .Button-Shared:disabled {
   opacity: 0.5;
@@ -407,8 +407,8 @@
   border: none;
   text-decoration: none;
   background-color: #fff;
-  color: #5B87A8 !important;
-  border: 1px solid #5B87A8;
+  color: #3c7fb1 !important;
+  border: 1px solid #3c7fb1;
 }
 .Button-Danger:hover {
   background-color: rgba(255, 255, 255, 0.85);
@@ -433,7 +433,7 @@
 .Link-Shared {
   cursor: pointer !important;
   text-decoration: none;
-  color: #5B87A8;
+  color: #3c7fb1;
 }
 .Link-Shared:not(:first-child),
 .Link-Shared:not(:last-child) {
@@ -451,7 +451,7 @@
 .LinksSection a {
   cursor: pointer !important;
   text-decoration: none;
-  color: #5B87A8;
+  color: #3c7fb1;
 }
 .LinksSection a:not(:first-child),
 .LinksSection a:not(:last-child) {
@@ -514,28 +514,28 @@
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]::-webkit-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
-  color: #365267;
+  color: #224865;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=email]::-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=text]::-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]::-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select::-moz-placeholder {
   /* Firefox 19+ */
-  color: #365267;
+  color: #224865;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=email]:-ms-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=text]:-ms-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]:-ms-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select:-ms-input-placeholder {
   /* IE 10+ */
-  color: #365267;
+  color: #224865;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=email]:-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=text]:-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]:-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select:-moz-placeholder {
   /* Firefox 18- */
-  color: #365267;
+  color: #224865;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select {
   -webkit-appearance: none;
@@ -580,7 +580,7 @@
   cursor: pointer;
 }
 .Icon-Default * {
-  fill: #5B87A8;
+  fill: #3c7fb1;
 }
 .Icon-Default:hover * {
   fill: #549bd0;
@@ -595,19 +595,19 @@
 }
 .Light-Gray-Control::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
-  color: #365267;
+  color: #224865;
 }
 .Light-Gray-Control::-moz-placeholder {
   /* Firefox 19+ */
-  color: #365267;
+  color: #224865;
 }
 .Light-Gray-Control:-ms-input-placeholder {
   /* IE 10+ */
-  color: #365267;
+  color: #224865;
 }
 .Light-Gray-Control:-moz-placeholder {
   /* Firefox 18- */
-  color: #365267;
+  color: #224865;
 }
 .Light-Gray-Control:focus {
   outline: none;

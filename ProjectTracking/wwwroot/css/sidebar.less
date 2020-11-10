@@ -1,8 +1,13 @@
 ﻿@import 'variables.less';
 
-a,a:hover,a:focus,a:active{
-    outline:none!important;
-    text-decoration:none!important; 
+a, a:hover, a:focus, a:active {
+    outline: none !important;
+    text-decoration: none !important;
+}
+
+body {
+
+    /*background-image: url('/images/background.jpg');*/
 }
 
 .side-bar {
@@ -11,13 +16,18 @@ a,a:hover,a:focus,a:active{
     position: fixed;
     z-index: 9999;
     top: 0px;
-    left:0;
-
+    left: 0;
     display: block;
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: @primary-color-dark;
+    background-color: @main-dark;
+    border-right:2px solid @main-dark;
     .box-shadow-right();
+
+
+    &:after{
+
+    }
 
     hr {
         display: block;
@@ -42,9 +52,10 @@ a,a:hover,a:focus,a:active{
         color: #fff;
         padding: 5px 10px;
     }
-    
+
     a:not(.title):not(.Button):not(.side-bar-arrow) {
-        cursor:pointer;
+        cursor: pointer;
+
         &:hover {
             background-color: rgba(196, 196, 196, 0.20);
         }
