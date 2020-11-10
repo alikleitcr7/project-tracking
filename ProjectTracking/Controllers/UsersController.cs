@@ -15,32 +15,14 @@ namespace ProjectTracking.Controllers
 {
     //[Route("api/[controller]")]
     //[ApiController]
+    [Authorize]
     public class UsersController : BaseSupervisorController
     {
-        //private readonly IUserMethods _userMethods;
-        //private readonly RoleManager<ApplicationIdentityRole> _roleManager;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UsersController(IUserMethods usersMethods, UserManager<ApplicationUser> userManager)
+        public UsersController(IUserMethods usersMethods)
             : base(usersMethods)
         {
-            //_userMethods = usersMethods;
-            _userManager = userManager;
-            //_roleManager = roleManager;
         }
-
-        //[Route("/profile/{userId}")]
-        //public IActionResult Profile(string userId)
-        //{
-        //    User user = _userMethods.GetById(userId);
-
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(user);
-        //}
 
         [HttpGet]
         public IActionResult GetById(string id)
@@ -185,7 +167,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Admin")]
+        [Authorize(AuthPolicies.Admins)]
         public IActionResult SetRole(string userId, short roleCode)
         {
             try
@@ -205,7 +187,6 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "Admin")]
         public IActionResult GetUserRole(string userId)
         {
             try
@@ -224,7 +205,6 @@ namespace ProjectTracking.Controllers
             }
         }
 
-
         public class AddRemoveTeamsFromSupervisorParam
         {
             public string userId { get; set; }
@@ -232,6 +212,7 @@ namespace ProjectTracking.Controllers
             //public List<int> teamIds { get; set; }
         }
 
+        [Authorize(AuthPolicies.Admins)]
         [HttpPost]
         public IActionResult AddRemoveTeamsFromSupervisor([FromBody]AddRemoveTeamsFromSupervisorParam model)
         {
@@ -253,6 +234,7 @@ namespace ProjectTracking.Controllers
             }
         }
 
+        [Authorize(AuthPolicies.Admins)]
         [HttpPost]
         public IActionResult Save([FromBody]UserSaveModel user)
         {
@@ -270,23 +252,24 @@ namespace ProjectTracking.Controllers
             }
         }
 
-        [HttpDelete]
-        public IActionResult Delete(string id)
-        {
-            try
-            {
-                _userMethods.Delete(id);
-                return Ok(true);
-            }
-            catch (ClientException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = ex.Message });
-            }
-        }
+        //[Authorize(AuthPolicies.Admins)]
+        //[HttpDelete]
+        //public IActionResult Delete(string id)
+        //{
+        //    try
+        //    {
+        //        _userMethods.Delete(id);
+        //        return Ok(true);
+        //    }
+        //    catch (ClientException ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = ex.Message });
+        //    }
+        //}
 
         [HttpGet]
         public IActionResult GetEmploymentTypes()

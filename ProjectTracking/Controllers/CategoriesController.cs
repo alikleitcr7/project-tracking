@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectTracking.Data.Methods.Interfaces;
@@ -10,6 +11,7 @@ using ProjectTracking.Exceptions;
 
 namespace ProjectTracking.Controllers
 {
+    [Authorize]
     public class CategoriesController : Controller
     {
         private readonly ICategoriesMethods _categoriesMethods;
@@ -54,6 +56,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthPolicies.Managers)]
         public IActionResult Add([FromBody]Category category)
         {
             try
@@ -71,6 +74,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPut]
+        [Authorize(AuthPolicies.Managers)]
         public IActionResult Update([FromBody]Category category)
         {
             try
@@ -88,6 +92,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpDelete]
+        [Authorize(AuthPolicies.Managers)]
         public IActionResult Delete(int id)
         {
             try

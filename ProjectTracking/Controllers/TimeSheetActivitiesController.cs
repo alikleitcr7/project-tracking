@@ -8,9 +8,11 @@ using ProjectTracking.Data.Methods.Interfaces;
 using Microsoft.AspNetCore.Http;
 using ProjectTracking.Models.TimeSheet;
 using ProjectTracking.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectTracking.Controllers
 {
+    [Authorize]
     public class TimeSheetActivitiesController : Controller
     {
         private readonly ITimeSheetActivitiesMethods _activitiesMethods;
@@ -22,6 +24,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthPolicies.TeamMembers)]
         public IActionResult Start(int timeSheetTaskId)
         {
             try
@@ -41,6 +44,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthPolicies.TeamMembers)]
         public IActionResult Stop([FromBody]TimeSheetActivityStopModel model)
         {
             try
@@ -58,6 +62,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthPolicies.TeamMembers)]
         public IActionResult Update([FromBody]TimeSheetActivityUpdateModel model)
         {
             try
@@ -98,6 +103,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpDelete]
+        [Authorize(AuthPolicies.TeamMembers)]
         public IActionResult Delete(int id)
         {
             try

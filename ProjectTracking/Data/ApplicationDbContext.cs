@@ -59,6 +59,23 @@ namespace ProjectTracking.Data
                      .WithMany(c => c.ToUserNotifications)
                      .OnDelete(DeleteBehavior.Restrict);
 
+
+            builder.Entity<UserNotification>()
+                     .HasOne(c => c.Project)
+                     .WithMany(c => c.UserNotifications)
+                     .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<UserNotification>()
+                     .HasOne(c => c.ProjectTask)
+                     .WithMany(c => c.UserNotifications)
+                     .HasForeignKey(k => k.ProjectTaskId)
+                     .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<UserNotification>()
+                     .HasOne(c => c.TimeSheet)
+                     .WithMany(c => c.UserNotifications)
+                     .OnDelete(DeleteBehavior.SetNull);
+
             #region Team
 
             builder.Entity<Team>()
@@ -213,17 +230,17 @@ namespace ProjectTracking.Data
 
             builder.Entity<UserRoleLog>()
                    .HasKey(k => new { k.UserId, k.DateAssigned });
-            
+
             builder.Entity<UserRoleLog>()
                    .HasOne(k => k.User)
-                   .WithMany(k=>k.UserRoleLogs)
-                   .HasForeignKey(k=>k.UserId)
+                   .WithMany(k => k.UserRoleLogs)
+                   .HasForeignKey(k => k.UserId)
                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<UserRoleLog>()
                    .HasOne(k => k.AssignedByUser)
-                   .WithMany(k=>k.AssignedUserRoleLogs)
-                   .HasForeignKey(k=>k.AssignedByUserId)
+                   .WithMany(k => k.AssignedUserRoleLogs)
+                   .HasForeignKey(k => k.AssignedByUserId)
                    .OnDelete(DeleteBehavior.Restrict);
 
             #endregion
@@ -434,7 +451,7 @@ namespace ProjectTracking.Data
                 PasswordHash = hasher.HashPassword(null, "123123"),
                 SecurityStamp = string.Empty,
                 Title = "Developer",
-                DateOfBirth = new DateTime(1996,5,21),
+                DateOfBirth = new DateTime(1996, 5, 21),
                 RoleCode = (short)ApplicationUserRole.Supervisor,
                 RoleAssignedDate = DateTime.Now
             });
@@ -448,7 +465,7 @@ namespace ProjectTracking.Data
             string USER_ROBIN_ID = _config.GetValue<string>("Tokens:SysUsers:Robin");
 
 
-            SeedUser(builder, hasher, ADMIN_ID, USER_MARK_ID, "mark", "mark@project-tracking.com", "Mark", "Goldman", "123123", "Head IT", ApplicationUserRole.Supervisor, new DateTime(1996,1,1));
+            SeedUser(builder, hasher, ADMIN_ID, USER_MARK_ID, "mark", "mark@project-tracking.com", "Mark", "Goldman", "123123", "Head IT", ApplicationUserRole.Supervisor, new DateTime(1996, 1, 1));
             SeedUser(builder, hasher, ADMIN_ID, USER_ASHTON_ID, "ashton", "ashton@project-tracking.com", "Ashton", "Kutcher", "123123", "Sr. Designer", ApplicationUserRole.Supervisor, new DateTime(1996, 1, 2));
 
             SeedUser(builder, hasher, ADMIN_ID, USER_TED_ID, "ted", "ted@project-tracking.com", "Ted", "Mosby", "123123", "Software Engineer", ApplicationUserRole.TeamMember, new DateTime(1996, 1, 3));

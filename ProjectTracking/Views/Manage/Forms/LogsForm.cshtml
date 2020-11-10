@@ -3,7 +3,7 @@
     <div class="input-group-container" style="max-width:400px">
         <div class="input-group-item">
             <label>From Date</label>
-            <date-picker  v-model="fromDate" :config="dateOptions"></date-picker>
+            <date-picker v-model="fromDate" :config="dateOptions"></date-picker>
         </div>
         <div class="input-group-item">
             <label>To Date</label>
@@ -13,7 +13,7 @@
             <label>&nbsp;</label>
             <div class="s-btn-group">
                 <button v-on:click="searchUserLogs" class="s-btn s-btn-primary">Search</button>
-                <button v-on:click="resetLogsFilter"  :disabled="!(toDate || fromDate)" class="s-btn s-btn-outline">Reset</button>
+                <button v-on:click="resetLogsFilter" :disabled="!(toDate || fromDate)" class="s-btn s-btn-outline">Reset</button>
             </div>
         </div>
     </div>

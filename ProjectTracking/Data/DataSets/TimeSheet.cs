@@ -25,6 +25,7 @@ namespace ProjectTracking.Data.DataSets
         public ApplicationUser AddedByUser { get; set; }
         public ApplicationUser User { get; set; }
         public ICollection<TimeSheetTask> TimeSheetTasks { get; set; }
+        public ICollection<UserNotification> UserNotifications { get; set; }
     }
 
 }

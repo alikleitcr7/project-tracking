@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using ProjectTracking.Data.Methods.Interfaces;
@@ -12,16 +13,14 @@ using ProjectTracking.Hubs;
 
 namespace ProjectTracking.Controllers
 {
+    [Authorize]
     public class BroadcastsController : BaseController
     {
         private readonly IBroadcastsMethods _broadcastsMethods;
-        private readonly IHubContext<BroadcastsHub> _notificationsHub;
 
-        public BroadcastsController(IBroadcastsMethods broadcastsMethods, IHubContext<BroadcastsHub> notificationsHub)
-            //: base(userMethods)
+        public BroadcastsController(IBroadcastsMethods broadcastsMethods)
         {
             _broadcastsMethods = broadcastsMethods;
-            _notificationsHub = notificationsHub;
         }
 
 

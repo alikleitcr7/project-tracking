@@ -21,46 +21,39 @@ namespace ProjectTracking.Controllers
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        //private readonly RoleManager<ApplicationIdentityRole> roleManager;
         private readonly IHttpContextAccessor _accessor;
         private readonly IUserMethods _users;
-        private readonly IIpAddressMethods _ipAddressMethods;
         private readonly IUserLogsMethods _userLogsMethods;
 
-        //private readonly IProjectsMethods _projects;
-
-        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         public HomeController(SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-            //RoleManager<ApplicationIdentityRole> roleManager,
             IUserMethods users,
-            IIpAddressMethods ipAddressMethods,
             IUserLogsMethods userLogsMethods,
             IHttpContextAccessor accessor
             )
         {
             _signInManager = signInManager;
             _userManager = userManager;
-            //this.roleManager = roleManager;
             _accessor = accessor;
             _users = users;
-            this._ipAddressMethods = ipAddressMethods;
             _userLogsMethods = userLogsMethods;
-            //_projects = projects;
         }
 
+
+        [Authorize]
         public IActionResult Index()
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return Redirect("/login");
-            }
+            //if (!User.Identity.IsAuthenticated)
+            //{
+            //    return Redirect("/login");
+            //}
 
             return View();
         }
 
         [Route("/login")]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             if (User.Identity.IsAuthenticated)
@@ -77,6 +70,7 @@ namespace ProjectTracking.Controllers
 
 
         [Route("/login")]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -154,7 +148,6 @@ namespace ProjectTracking.Controllers
             return View();
         }
 
-
         // GET api/role
         [HttpGet]
         [Authorize]
@@ -172,6 +165,7 @@ namespace ProjectTracking.Controllers
 
         //[HttpPost]
         [Route("/logout")]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             if (!User.Identity.IsAuthenticated)
@@ -212,6 +206,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult GetOverview()
         {
             try
@@ -246,17 +241,6 @@ namespace ProjectTracking.Controllers
             }
         }
 
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

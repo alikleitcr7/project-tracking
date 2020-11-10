@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjectTracking.Data.Methods.Interfaces;
@@ -11,6 +12,7 @@ using ProjectTracking.Models.Projects;
 
 namespace ProjectTracking.Controllers
 {
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ProjectTasksController : BaseController
     {
@@ -84,7 +86,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
-        //[Route("Save")]
+        [Authorize(AuthPolicies.Managers)]
         public IActionResult Save([FromBody]TaskSaveModel model)
         {
             if (!ModelState.IsValid)
@@ -218,6 +220,7 @@ namespace ProjectTracking.Controllers
 
 
         [HttpDelete]
+        [Authorize(AuthPolicies.Managers)]
         //[Route("Delete")]
         public IActionResult Delete(int id)
         {

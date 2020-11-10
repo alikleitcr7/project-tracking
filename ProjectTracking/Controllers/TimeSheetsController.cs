@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using ProjectTracking.DataContract;
@@ -17,19 +16,16 @@ using ProjectTracking.Models.TimeSheet;
 
 namespace ProjectTracking.Controllers
 {
+    [Authorize]
     [Route("[controller]/[action]")]
     public class TimeSheetsController : BaseController
     {
 
         private readonly ITimeSheetsMethods _timeSheets;
         private readonly IUserMethods _users;
-        private readonly INotificationMethods _notificationMethods;
-        //private readonly IHubContext<NotificationsHub> _notificationsHub;
-        public TimeSheetsController(ITimeSheetsMethods timeSheets, IUserMethods users,
-            INotificationMethods notificationMethods)
+
+        public TimeSheetsController(ITimeSheetsMethods timeSheets, IUserMethods users)
         {
-            _notificationMethods = notificationMethods;
-            //_notificationsHub = notificationsHub;
             _timeSheets = timeSheets;
             _users = users;
         }
@@ -158,6 +154,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthPolicies.Supervisors)]
         public async Task<IActionResult> AddProjectToTimeSheet([FromBody]ProjectAssignModel model)
         {
             try
@@ -177,6 +174,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthPolicies.Supervisors)]
         public async Task<IActionResult> RemoveProjectFromTimeSheet([FromBody]ProjectAssignModel model)
         {
             try
@@ -251,7 +249,6 @@ namespace ProjectTracking.Controllers
             }
         }
 
-
         [HttpGet]
         public IActionResult GetTimeSheetProjectsWithTasks(int timeSheetId)
         {
@@ -271,24 +268,46 @@ namespace ProjectTracking.Controllers
             }
         }
 
-
-        public Models.TimeSheet.TimeSheetProjectModel GetTimeSheetProjectModel(int timeSheetId)
+        public IActionResult GetTimeSheetProjectModel(int timeSheetId)
         {
-            var timeSheet = _timeSheets.Get(timeSheetId, out List<Project> project, false);
-
-            if (timeSheet == null)
+            try
             {
-                return null;
+
+                var timeSheet = _timeSheets.Get(timeSheetId, out List<Project> project, false);
+
+                if (timeSheet == null)
+                {
+                    return null;
+                }
+
+                var model = Models.TimeSheet.TimeSheetProjectModel.GenerateModel(timeSheet, project);
+
+                return Ok(model);
             }
-
-            var model = Models.TimeSheet.TimeSheetProjectModel.GenerateModel(timeSheet, project);
-
-            return model;
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
-        public List<TimeSheetActivity> GetActivities(int timesheetId)
+        public IActionResult GetActivities(int timesheetId)
         {
-            return _timeSheets.GetTimeSheetActivities(timesheetId);
+            try
+            {
+                return Ok(_timeSheets.GetTimeSheetActivities(timesheetId));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
         public IActionResult GetTimeSheetProjects(int timesheetId)
@@ -310,6 +329,7 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
         public IActionResult TimeSheetTasksWithActivityCheck(int timesheetId)
         {
             try
@@ -326,20 +346,53 @@ namespace ProjectTracking.Controllers
             }
         }
 
-        public List<TimeSheetActivity> GetActivitiesByDate(int timeSheetId, int? taskId, DateTime date, bool includeDeleted)
+        public IActionResult GetActivitiesByDate(int timeSheetId, int? taskId, DateTime date, bool includeDeleted)
         {
-            return _timeSheets.GetTimeSheetActivities(timeSheetId, taskId, date, includeDeleted);
+            try
+            {
+                return Ok(_timeSheets.GetTimeSheetActivities(timeSheetId, taskId, date, includeDeleted));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
-        public List<DataContract.TimeSheet> CurrentUserTimeSheets()
+        public IActionResult CurrentUserTimeSheets()
         {
-            string currentUserId = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
-            return _timeSheets.GetByUser(currentUserId);
+            try
+            {
+                string currentUserId = User.Claims.First(k => k.Type == ClaimTypes.NameIdentifier).Value;
+                return Ok(_timeSheets.GetByUser(currentUserId));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
-        public List<DataContract.TimeSheet> GetUserTimeSheets(string userId)
+        public IActionResult GetUserTimeSheets(string userId)
         {
-            return _timeSheets.GetByUser(userId);
+            try
+            {
+                return Ok(_timeSheets.GetByUser(userId));
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
     }
 }

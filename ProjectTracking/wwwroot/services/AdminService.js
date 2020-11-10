@@ -1,5 +1,5 @@
 ﻿
-const ADMINS_SERVICE_URI = (method) => `/admin/${method}`;
+const ADMINS_SERVICE_URI = (method) => `/manage/${method}`;
 
 const AdminsService = {
 

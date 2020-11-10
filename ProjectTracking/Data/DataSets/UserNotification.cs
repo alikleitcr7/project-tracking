@@ -15,7 +15,7 @@ namespace ProjectTracking.Data.DataSets
 
         public ProjectTask ProjectTask { get; set; }
         public TimeSheet TimeSheet { get; set; }
-        public Project TProject { get; set; }
+        public Project Project { get; set; }
 
         public ApplicationUser FromUser { get; set; }
         public ApplicationUser ToUser { get; set; }

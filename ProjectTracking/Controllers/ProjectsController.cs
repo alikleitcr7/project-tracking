@@ -14,33 +14,29 @@ using System.Threading.Tasks;
 namespace ProjectTracking.Controllers
 {
     //[Authorize(Policy = "Administration")]
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ProjectsController : Controller
     {
         private readonly ITeamsMethods _teams;
         private readonly ICategoriesMethods _categoriesMethods;
         private readonly IProjectsMethods _projects;
-        //private readonly IProjectFilesMethods _file;
-        //private readonly IProjectsStatistics _projectsStatistics;
-        //private readonly IUserMethods _users;
 
         public ProjectsController(ITeamsMethods teams,
-            ICategoriesMethods categoriesMethods, IProjectsMethods projects)
+            ICategoriesMethods categoriesMethods,
+            IProjectsMethods projects)
         {
             _teams = teams;
             _categoriesMethods = categoriesMethods;
             _projects = projects;
-            //_users = users;
-            //_projectsStatistics = projectsStatistics;
         }
 
         [Route("/projects")]
-        //[Authorize(Policy = "Administration")]
+        [Authorize(AuthPolicies.Managers)]
         public IActionResult Index()
         {
             return View();
         }
-
 
         #region Methods
 
@@ -56,6 +52,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthPolicies.Managers)]
         public JsonResult Add([FromBody] AddProjectModel model)
         {
             if (!ModelState.IsValid)
@@ -83,6 +80,8 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthPolicies.Managers)]
+
         public async Task<IActionResult> Save([FromBody]ProjectSaveModel model)
         {
             if (!ModelState.IsValid)
@@ -116,6 +115,8 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthPolicies.Managers)]
+
         public IActionResult GetProjectStatuses()
         {
             return Ok(Enum.GetNames(typeof(ProjectStatus)).Select((key, value) => new KeyValuePair<int, string>(value, key)).ToList());
@@ -124,7 +125,7 @@ namespace ProjectTracking.Controllers
         [HttpGet]
         public IActionResult GetOverview(int projectId)
         {
-             try
+            try
             {
 
                 return Ok(_projects.GetOverview(projectId));
@@ -138,8 +139,9 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
-        
+
         [HttpGet]
+        [Authorize(AuthPolicies.Managers)]
         public IActionResult Search(int? categoryId, string keyword, int page, int countPerPage)
         {
             try
@@ -163,6 +165,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
+        [Authorize(AuthPolicies.Managers)]
         public IActionResult GetStatusModifications(int projectId)
         {
             try
@@ -202,6 +205,7 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpDelete]
+        [Authorize(AuthPolicies.Managers)]
         public IActionResult Delete(int id)
         {
             try

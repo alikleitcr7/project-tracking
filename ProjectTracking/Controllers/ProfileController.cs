@@ -17,22 +17,15 @@ using ProjectTracking.Models.Profile;
 namespace ProjectTracking.Controllers
 {
 
+    [Authorize]
     [Route("[controller]/[action]")]
     public class ProfileController : BaseController
     {
         private readonly IUserMethods _userMethods;
-        //private readonly ITeamsMethods _departments;
-        private readonly ITimeSheetsMethods _timeSheets;
-        //private readonly UserManager<ApplicationUser> _userManager;
-        //private readonly ApplicationDbContext _context;
-        //private readonly IProjectsMethods _projects;
-        ////private readonly RoleManager<ApplicationIdentityRole> _roleManager;
-        //private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public ProfileController(IUserMethods users, ITimeSheetsMethods timeSheets)
+        public ProfileController(IUserMethods users)
         {
             _userMethods = users;
-            _timeSheets = timeSheets;
         }
 
         [Route("/profile/{userId?}")]
@@ -72,25 +65,5 @@ namespace ProjectTracking.Controllers
 
             return View(model);
         }
-
-        //[Route("/supervisor/{userId}")]
-        //public IActionResult SupervisorTeams(string userId)
-        //{
-        //    User user = _userMethods.GetById(userId);
-
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    Models.Teams.SupervisorTeamsViewModel supervisorTeamsViewModel = new Models.Teams.SupervisorTeamsViewModel()
-        //    {
-        //        IncludeTitle = true,
-        //        SupervisorId = user.Id,
-        //        SupervisorName = user.FullName
-        //    };
-
-        //    return View(supervisorTeamsViewModel);
-        //}
     }
 }

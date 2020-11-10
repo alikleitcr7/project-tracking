@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectTracking.DataContract;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjectTracking.Controllers
 {
+    [Authorize]
     public class IpAddressesController : Controller
     {
         private readonly IIpAddressMethods _ipAddresses;
@@ -19,10 +21,10 @@ namespace ProjectTracking.Controllers
             _ipAddresses = ipAddresses;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        //public IActionResult Index()
+        //{
+        //    return View();
+        //}
 
         [HttpGet]
         public IActionResult GetUnlistedIps()

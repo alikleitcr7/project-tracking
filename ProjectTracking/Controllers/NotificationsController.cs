@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using ProjectTracking.Data.Methods.Interfaces;
@@ -12,22 +13,23 @@ using ProjectTracking.Hubs;
 
 namespace ProjectTracking.Controllers
 {
+    [Authorize]
     public class NotificationsController : BaseController
     {
         private readonly INotificationMethods _notificationMethods;
         //private readonly IHubContext<NotificationsHub> _notificationsHub;
 
-        public NotificationsController(INotificationMethods notificationMethods, IHubContext<NotificationsHub> notificationsHub)
+        //, IHubContext<NotificationsHub> notificationsHub
+        public NotificationsController(INotificationMethods notificationMethods)
         {
             _notificationMethods = notificationMethods;
             //_notificationsHub = notificationsHub;
         }
 
-
-        public ActionResult Index()
-        {
-            return View();
-        }
+        //public ActionResult Index()
+        //{
+        //    return View();
+        //}
 
         public object GetFromUser(string fromUserId, int page, int countPerPage)
         {

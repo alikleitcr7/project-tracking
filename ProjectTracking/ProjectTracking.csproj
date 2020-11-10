@@ -14,6 +14,7 @@
     <Compile Remove="Views\Employees\**" />
     <Compile Remove="Views\Holidays\**" />
     <Compile Remove="Views\InventoryProjects\**" />
+    <Compile Remove="Views\IpAddresses\**" />
     <Compile Remove="Views\PendingRequests\**" />
     <Compile Remove="Views\Permissions\**" />
     <Compile Remove="Views\UserInsights\**" />
@@ -26,6 +27,7 @@
     <Content Remove="Views\Employees\**" />
     <Content Remove="Views\Holidays\**" />
     <Content Remove="Views\InventoryProjects\**" />
+    <Content Remove="Views\IpAddresses\**" />
     <Content Remove="Views\PendingRequests\**" />
     <Content Remove="Views\Permissions\**" />
     <Content Remove="Views\UserInsights\**" />
@@ -38,6 +40,7 @@
     <EmbeddedResource Remove="Views\Employees\**" />
     <EmbeddedResource Remove="Views\Holidays\**" />
     <EmbeddedResource Remove="Views\InventoryProjects\**" />
+    <EmbeddedResource Remove="Views\IpAddresses\**" />
     <EmbeddedResource Remove="Views\PendingRequests\**" />
     <EmbeddedResource Remove="Views\Permissions\**" />
     <EmbeddedResource Remove="Views\UserInsights\**" />
@@ -50,6 +53,7 @@
     <None Remove="Views\Employees\**" />
     <None Remove="Views\Holidays\**" />
     <None Remove="Views\InventoryProjects\**" />
+    <None Remove="Views\IpAddresses\**" />
     <None Remove="Views\PendingRequests\**" />
     <None Remove="Views\Permissions\**" />
     <None Remove="Views\UserInsights\**" />
@@ -62,6 +66,7 @@
     <TypeScriptCompile Remove="Views\Employees\**" />
     <TypeScriptCompile Remove="Views\Holidays\**" />
     <TypeScriptCompile Remove="Views\InventoryProjects\**" />
+    <TypeScriptCompile Remove="Views\IpAddresses\**" />
     <TypeScriptCompile Remove="Views\PendingRequests\**" />
     <TypeScriptCompile Remove="Views\Permissions\**" />
     <TypeScriptCompile Remove="Views\UserInsights\**" />
@@ -133,19 +138,20 @@
     <Compile Remove="Migrations\20201007175214_supervisorlog.Designer.cs" />
     <Compile Remove="Migrations\20201108193903_status by to proj.cs" />
     <Compile Remove="Migrations\20201108193903_status by to proj.Designer.cs" />
+    <Compile Remove="Migrations\20201110124814_UserNotifRefDeleteSetNull.cs" />
+    <Compile Remove="Migrations\20201110124814_UserNotifRefDeleteSetNull.Designer.cs" />
     <Compile Remove="Models\TimeSheet\TimeSheetModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
-    <Content Remove="Views\Admin\AddNewRole.cshtml" />
-    <Content Remove="Views\Admin\AddUser.cshtml" />
-    <Content Remove="Views\Admin\AddUserToRole.cshtml" />
-    <Content Remove="Views\Admin\DeleteUserFromRole.cshtml" />
-    <Content Remove="Views\Admin\EditRole.cshtml" />
-    <Content Remove="Views\Admin\EditUser.cshtml" />
-    <Content Remove="Views\Admin\Index.cshtml" />
-    <Content Remove="Views\Admin\RoleManagement.cshtml" />
+    <Content Remove="Views\Manage\AddNewRole.cshtml" />
+    <Content Remove="Views\Manage\AddUser.cshtml" />
+    <Content Remove="Views\Manage\AddUserToRole.cshtml" />
+    <Content Remove="Views\Manage\DeleteUserFromRole.cshtml" />
+    <Content Remove="Views\Manage\EditRole.cshtml" />
+    <Content Remove="Views\Manage\EditUser.cshtml" />
+    <Content Remove="Views\Manage\RoleManagement.cshtml" />
     <Content Remove="Views\Home\About.cshtml" />
     <Content Remove="Views\Home\Contact.cshtml" />
     <Content Remove="Views\Home\Content.cshtml" />
@@ -241,19 +247,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Views\Admin\Forms\LogsForm.cshtml">
+    <Content Update="Views\Manage\Forms\LogsForm.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Admin\Forms\LocationsForm.cshtml">
+    <Content Update="Views\Manage\Forms\LocationsForm.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Admin\Forms\UsersNotifications.cshtml">
+    <Content Update="Views\Manage\Forms\UsersNotifications.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Admin\Modals\UserRoleLogsModal.cshtml">
+    <Content Update="Views\Manage\Modals\UserRoleLogsModal.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Admin\Forms\UsersForm.cshtml">
+    <Content Update="Views\Manage\Forms\UsersForm.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Error\Index.cshtml">

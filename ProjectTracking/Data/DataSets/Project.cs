@@ -32,6 +32,7 @@ namespace ProjectTracking.Data.DataSets
         public ApplicationUser AddedByUser { get; set; }
         public ApplicationUser StatusByUser { get; set; }
         public List<TeamsProjects> TeamsProjects { get; set; }
+        public List<UserNotification> UserNotifications { get; set; }
         //public List<TimeSheetActivity> TimeSheetActivities { get; set; }
         public List<ProjectTask> Tasks { get; set; }
         public List<ProjectStatusModification> ProjectStatusModifications { get; set; }
