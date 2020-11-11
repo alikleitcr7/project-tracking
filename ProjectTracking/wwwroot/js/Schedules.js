@@ -126,10 +126,10 @@ function getTimeSheetFormDates() {
 
     currentDate = currentDate.set('date', 1)
 
-    let prevDate = currentDate.clone().subtract(1, 'months')
-    let nextDate = currentDate.clone().add(1, 'months')
+    let nextDate_1 = currentDate.clone().add(1, 'months')
+    let nextDate_2 = currentDate.clone().add(2, 'months')
 
-    return [prevDate, currentDate, nextDate]
+    return [currentDate, nextDate_1, nextDate_2]
 }
 
 const userProfileData = {
@@ -711,7 +711,7 @@ new Vue({
         },
         nextDateDisplay: function (date) {
 
-            return date.clone().add(1, 'months').format('MMM')
+            return date.format('MMM')
         }
     },
     mounted: function () {

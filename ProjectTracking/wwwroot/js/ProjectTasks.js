@@ -252,7 +252,7 @@ const projectTasksMethods = {
         //}
 
         // GET RECORD
-        const record = this.projectTasks.data.find(k => k.id === id)
+        //const record = this.projectTasks.data.find(k => k.id === id)
 
         // OPEN MODAL
         Modals_ProjectTasks.ProjectTask.Show();
@@ -263,7 +263,7 @@ const projectTasksMethods = {
 
         // GET REQUEST
 
-        ProjectTasksService.GetById(record.id)
+        ProjectTasksService.GetById(id)
             .then(r => {
 
                 const record = r.data
@@ -845,6 +845,7 @@ var projectTasks_app = new Vue({
                     ]
                 },
                 defaultPoint_events_click: function () {
+
                     app.projectTasks_edit(this.id)
                 },
                 //title_label_text: 'Project Alpha ',

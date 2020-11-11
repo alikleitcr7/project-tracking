@@ -168,16 +168,16 @@
   margin-bottom: 1em;
 }
 .c-card-view .c-card--pending {
-  border-left: 6px solid rgba(247, 132, 56, 0.95);
+  border-left: 6px solid rgba(247, 132, 56, 0.74);
 }
 .c-card-view .c-card--progress {
-  border-left: 6px solid rgba(75, 89, 255, 0.84);
+  border-left: 6px solid rgba(75, 89, 255, 0.74);
 }
 .c-card-view .c-card--failed {
-  border-left: 6px solid rgba(187, 0, 0, 0.7);
+  border-left: 6px solid rgba(187, 0, 0, 0.66);
 }
 .c-card-view .c-card--done {
-  border-left: 6px solid rgba(63, 204, 53, 0.86);
+  border-left: 6px solid rgba(63, 204, 53, 0.65);
 }
 .c-card-view .c-card .c-card-title {
   display: block;

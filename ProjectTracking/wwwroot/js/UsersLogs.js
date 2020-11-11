@@ -56,12 +56,22 @@
         },
         GetUsersLogs: function (page, countPerPage, fromDate, toDate) {
             this.usersLogs = [];
-            UsersLogs.GetUsersLogs(page, countPerPage, fromDate, toDate).then(response => {
-                const { data } = response
-                this.usersLogs = data.records;
-                this.dataPaging.totalCount = data.totalCount
-                this.UsersLogsAreLoading = false;
-            }).catch(error => { console.log(error) });
+            this.UsersLogsAreLoading = true
+            UsersLogs.GetUsersLogs(page, countPerPage, fromDate, toDate)
+                .then(response => {
+                    const { data } = response
+                    this.usersLogs = data.records;
+                    this.dataPaging.totalCount = data.totalCount
+                })
+                .catch(e => {
+                    const errorMessage = getAxiosErrorMessage(e)
+                    console.error(e)
+                    //bootbox.alert(errorMessage)
+                })
+                .then(() => {
+
+                    this.UsersLogsAreLoading = false;
+                });
         },
         userIsActive: function (userLog) {
             return !userLog.toDate && userLog.logStatusCode === 0

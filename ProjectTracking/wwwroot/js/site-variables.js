@@ -66,10 +66,10 @@ var colors = {
     mainLightTransparent: 'rgba(91, 203, 238, 0.66)',
     main: '#2286c3',
     mainDark: '#1776b0',
-    pending: 'rgba(247, 132, 56, 0.95)',
-    done: 'rgba(63, 204, 53, 0.86)',
-    progress: 'rgba(75, 89, 255, 0.84)',
-    failed: 'rgba(187, 0, 0, 0.70)',
+    pending: 'rgba(247, 132, 56, 0.75)',
+    done: 'rgba(63, 204, 53, 0.75)',
+    progress: 'rgba(75, 89, 255, 0.75)',
+    failed: 'rgba(187, 0, 0, 0.75)',
 }
 
 function initTasksPerformanceProgress() {

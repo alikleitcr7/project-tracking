@@ -53,6 +53,19 @@ namespace ProjectTracking.Data.Methods
             return _mapper.Map<UserLog>(dbLog);
         }
 
+        public void EndActiveLog(string userId, UserLogStatus status)
+        {
+            var log = db.UserLogging.FirstOrDefault(k => k.UserId == userId && !k.ToDate.HasValue);
+
+            if (log != null)
+            {
+                log.ToDate = DateTime.Now;
+                log.LogStatusCode = (short)status;
+                //db.UserLogging.Update(log);
+                db.SaveChanges();
+            }
+        }
+
         public UserLog GetActiveUserLog(string userId)
         {
             var dbLog = db.UserLogging

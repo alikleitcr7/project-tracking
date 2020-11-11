@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <section v-show="!UsersLogsAreLoading" id="Pagination" v-bind:class="{ 'd-none':(dataPaging.totalPages < 2 )}">
+    <section v-show="!UsersLogsAreLoading && dataPaging.totalPages > 1" id="Pagination" >
         <div class="container">
 
             <paginate :page-count="dataPaging.totalPages"
@@ -30,8 +30,10 @@
 
         </div>
     </section>
+
     <p v-show="UsersLogsAreLoading">Loading...</p>
-    <table class="table">
+    <h5 v-if="!UsersLogsAreLoading && !usersLogs.length">Nothing here yet</h5>
+    <table class="table user-logs-results" v-if="usersLogs.length">
         <thead>
             <tr>
                 <th>Full Name </th>
@@ -43,7 +45,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="userLog in usersLogs">
+            <tr v-for="userLog in usersLogs" :class="userLog.logStatusDisplay.toLowerCase()">
                 <td>{{userLog.fullName}}</td>
                 <td>{{userLog.userName}}</td>
                 <td v-bind:class="{'text-success  text-bold ':userIsActive(userLog)}">{{userLog.logStatusDisplay}}</td>

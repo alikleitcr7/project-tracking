@@ -256,9 +256,6 @@ namespace ProjectTracking.Data.Methods
 
         }
 
-
-
-
         public static Expression<Func<DataSets.ProjectTask, ProjectTask>> MapProjectTaskWithUser =>
             k => new ProjectTask()
             {
@@ -357,7 +354,6 @@ namespace ProjectTracking.Data.Methods
                 .Select(MapProjectTaskWithUser)
                 .ToList();
         }
-
 
         public bool Delete(int id)
         {
@@ -500,5 +496,8 @@ namespace ProjectTracking.Data.Methods
 
             return overview;
         }
+
+
+
     }
 }

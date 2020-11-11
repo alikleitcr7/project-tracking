@@ -19,7 +19,7 @@ namespace ProjectTracking.Hubs
         private readonly IUserLogsMethods _userLogsMethods;
         private IHttpContextAccessor _context;
 
-        public ObserverHub(IHttpContextAccessor httpContextAccessor, IUserMethods userMethods,IUserLogsMethods userLogsMethods, IHttpContextAccessor context)
+        public ObserverHub(IHttpContextAccessor httpContextAccessor, IUserMethods userMethods, IUserLogsMethods userLogsMethods, IHttpContextAccessor context)
         {
             _httpContextAccessor = httpContextAccessor;
             _users = userMethods;
@@ -43,18 +43,33 @@ namespace ProjectTracking.Hubs
 
             //&& Users.Where(k => k.UserId == Context.User.FindFirst(ClaimTypes.NameIdentifier).Value).Count() < 2
 
-            if (Context.User.Identity.IsAuthenticated )
+            if (Context.User.Identity.IsAuthenticated)
             {
                 string id = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                ObservedUser user = new ObservedUser()
+                ObservedUser user = Users.FirstOrDefault(k => k.UserId == id);
+
+                if (user == null)
                 {
-                    UserId = id,
-                    ConnectionId = Context.ConnectionId
-                };
+                    user = new ObservedUser()
+                    {
+                        UserId = id,
+                    };
 
-                Users.Add(user);
+                    // add connection id
+                    user.AddConnection(Context.ConnectionId);
 
+                    // append to obs. users
+                    Users.Add(user);
+                }
+                else
+                {
+                    // append connections
+                    user.AddConnection(Context.ConnectionId);
+                }
+
+
+                // add log if not exist as login
                 if (!ApplicationContext.ActiveLogs.Any(k => k.UserId == id))
                 {
                     var ip = _context.HttpContext?.Connection?.RemoteIpAddress?.ToString();
@@ -71,6 +86,34 @@ namespace ProjectTracking.Hubs
             await base.OnConnectedAsync();
         }
 
+        public void CheckIfUserDisconnected(string userId)
+        {
+            var user = Users.FirstOrDefault(k => k.UserId == userId);
+
+            bool disconnected = true;
+
+            if (user != null)
+            {
+                // user has no connections
+                disconnected = !user.IsActive;
+
+                if (disconnected)
+                {
+                    // remove from obs users
+                    Users.Remove(user);
+
+                    // end log
+                    var activeLog = ApplicationContext.ActiveLogs.FirstOrDefault(k => k.UserId == userId);
+
+                    if (activeLog != null)
+                    {
+                        _userLogsMethods.EndActiveLog(userId, DataContract.UserLogStatus.Disconnected);
+                        ApplicationContext.ActiveLogs.Remove(activeLog);
+                    }
+                }
+            }
+        }
+
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             ActiveConnections.Remove(Context.ConnectionId);
@@ -79,12 +122,36 @@ namespace ProjectTracking.Hubs
 
             if (Context.User.Identity.IsAuthenticated)
             {
-                ObservedUser user = Users.FirstOrDefault(x => x.ConnectionId == Context.ConnectionId);
+                string id = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                ObservedUser user = Users.FirstOrDefault(x => x.HasConnection(Context.ConnectionId));
 
                 if (user != null)
                 {
-                    Users.Remove(user);
+                    // remove connectionid
+                    user.RemoveConnection(Context.ConnectionId);
+
+
+                    // no connections left 
+                    // this maybe a refresh of one page 
+                    // or closed the app
+                    // we will wait n seconds to see if the user still disconnected
+                    // then we will mark as disconnected
+                    if (!user.IsActive)
+                    {
+                        await Task.Delay(5000).ContinueWith(k => CheckIfUserDisconnected(id));
+                    }
+                    //// if not active > disconnected
+                    //if (!user.IsActive)
+                    //{
+
+                    //}
                 }
+
+                //if (user != null)
+                //{
+                //    Users.Remove(user);
+                //}
 
                 //if (Users.Any(x => x.ConnectionId == Context.ConnectionId))
                 //{

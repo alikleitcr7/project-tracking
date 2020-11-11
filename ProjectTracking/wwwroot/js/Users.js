@@ -56,6 +56,12 @@ const userFields = [
         type: DATA_TYPES.TEXT,
         required: false,
     },
+    {
+        name: 'userName',
+        displayName: 'UserName',
+        type: DATA_TYPES.TEXT,
+        required: true,
+    },
 ]
 
 
@@ -107,6 +113,7 @@ const userFormObject = (obj) => {
         monthlySalary: obj.monthlySalary,
         hourlyRate: obj.hourlyRate,
         employmentTypeCode: obj.employmentTypeCode,
+        userName: obj.userName,
     } : {
             id: null,
             firstName: null,
@@ -117,6 +124,7 @@ const userFormObject = (obj) => {
             monthlySalary: null,
             hourlyRate: null,
             employmentTypeCode: null,
+            userName: null,
         }
 
     return {
@@ -137,7 +145,7 @@ const userObject = () => {
         dataPaging: {
             page: 0,
             totalPages: 0,
-            length: 5,
+            length: 7,
             totalCount: 0,
             pagination: 'custom-pagination',
             prev: 'Prev',

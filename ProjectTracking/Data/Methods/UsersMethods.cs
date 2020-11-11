@@ -61,6 +61,13 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException($"email already exist!");
             }
 
+            bool usernameExist = db.Users.Any(k => k.UserName == model.userName && k.Id != model.id);
+
+            if (usernameExist)
+            {
+                throw new ClientException($"username already exist!");
+            }
+
             if (model.id != null)
             {
                 // save user
@@ -76,8 +83,8 @@ namespace ProjectTracking.Data.Methods
 
                 dbUser.Email = model.email;
                 dbUser.NormalizedEmail = model.email.ToUpper();
-                dbUser.UserName = model.email;
-                dbUser.NormalizedUserName = model.email.ToUpper();
+                dbUser.UserName = model.userName;
+                dbUser.NormalizedUserName = model.userName.ToUpper();
                 dbUser.FirstName = model.firstName;
                 dbUser.LastName = model.lastName;
                 dbUser.MiddleName = model.middleName;

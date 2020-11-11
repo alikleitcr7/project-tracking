@@ -71,7 +71,7 @@
 
             <template v-for="(item ,idx) in projectTasks.data">
 
-                <tr>
+                <tr :class="item.statusDisplay.toLowerCase()">
 
                     <td>
                         {{item.id}}
@@ -110,6 +110,7 @@
                                 Tasks
                             </a>*@
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
+                                style="min-width:60px"
                                 v-on:click="projectTasks_edit(item.id)">
                             <template v-if="isProjectSupervisor">
                                 <i class="fa fa-edit"></i> Edit
@@ -121,12 +122,15 @@
                         </button>
 
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
+                                 style="min-width:122px"
                                 v-on:click="projectTasks_viewStatusesModification(item)">
                             <i class="fa fa-history"></i> Status History
                         </button>
 
                         <button class="s-btn s-btn-sm s-btn-danger" type="button"
                                 v-if="isProjectSupervisor && !item.isAssignedToTimeSheet"
+                                 style="min-width:60px"
+
                                 v-on:click="projectTasks_delete(idx)">
                             <i class="fa fa-trash"></i> Delete
                         </button>

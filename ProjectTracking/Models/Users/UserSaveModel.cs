@@ -29,5 +29,6 @@ namespace ProjectTracking.Models.Users
         public float? hourlyRate { get; set; }
         public float? hoursPerDay { get; set; }
         public short? employmentTypeCode { get; set; }
+        public string userName { get; set; }
     }
 }

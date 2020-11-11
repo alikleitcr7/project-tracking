@@ -48,7 +48,7 @@
                 </ul>
             </div>
 
-            <div class="user-timesheets-content__days" v-if="!activeTimeSheetLoading">
+            <div class="user-timesheets-content__days" v-if="!activeTimeSheetLoading && activeTimeSheet">
                 <ul class="list-group" v-if="activeTimeSheet && activeTimeSheet.datesList && activeTimeSheet.datesList.length">
                     <li v-for="(dateDisplay, idx) in activeTimeSheet && activeTimeSheet.datesList"
                         v-on:click="openTimeSheetDate(idx)"

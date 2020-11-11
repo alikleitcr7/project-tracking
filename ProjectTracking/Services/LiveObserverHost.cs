@@ -71,38 +71,6 @@ namespace ProjectTracking.Services
             {
                 DateTime dateNow = DateTime.Now;
 
-
-                //// CHECK ACTIVITIES AT 4 PM EVERY WORKING WEEK DAY
-
-                //if (dateNow.DayOfWeek != DayOfWeek.Saturday && dateNow.DayOfWeek != DayOfWeek.Sunday)
-                //{
-                //    const int HOUR_TO_CHECK = 14;
-
-                //    if (CheckedToday && dateNow.Hour < HOUR_TO_CHECK)
-                //    {
-                //        CheckedToday = false;
-                //    }
-                //    else if (!CheckedToday && dateNow.Hour >= HOUR_TO_CHECK)
-                //    {
-                //        // check activities here
-
-                //        //List<User> usersWithNoActivity = _users.UsersNotRegisteredTimeSheetActivityToday();
-
-                //        //if (usersWithNoActivity.Count > 0)
-                //        //{
-                //        //    string userNames = string.Join(", ", usersWithNoActivity.Select(k => k.FullName).ToArray());
-                //        //    string message = $"The following employees did not fill any activity today ${userNames}";
-
-                //        //    foreach (string managerId in managerIds)
-                //        //    {
-                //        //        Notification sent = _notifications.Send(systemAdminId, managerId, message, NotificationType.Important, true).Result;
-                //        //    }
-                //        //}
-
-                //        CheckedToday = true;
-                //    }
-                //}
-
                 if (!ApplicationContext.LogsLastUpdatedDate.HasValue)
                 {
                     ApplicationContext.ActiveLogs = _users.GetActiveLogs();
@@ -131,6 +99,7 @@ namespace ProjectTracking.Services
                         _users.EndActiveLog(activeUsr.UserId, UserLogStatus.Disconnected);
                     }
                 }
+
 
                 // remove inactive users from active
                 foreach (var inactiveUser in inactiveUsers)

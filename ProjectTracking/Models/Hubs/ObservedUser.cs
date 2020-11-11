@@ -9,5 +9,30 @@ namespace ProjectTracking.DataContract.Hubs
     {
         public string UserId { get; set; }
         public string ConnectionId { get; set; }
+
+        List<string> ConnectionIds = new List<string>();
+
+        public void AddConnection(string id)
+        {
+            if (!HasConnection(id))
+            {
+                ConnectionIds.Add(id);
+            }
+        }
+
+        public void RemoveConnection(string id)
+        {
+            if (HasConnection(id))
+            {
+                ConnectionIds.Remove(id);
+            }
+        }
+
+        public bool HasConnection(string id)
+        {
+            return ConnectionIds.Contains(id);
+        }
+
+        public bool IsActive => ConnectionIds.Count > 0;
     }
 }

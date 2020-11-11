@@ -94,5 +94,9 @@
   {
     "outputFile": "wwwroot/css/user-profile.css",
     "inputFile": "wwwroot/css/user-profile.less"
+  },
+  {
+    "outputFile": "wwwroot/css/manage.css",
+    "inputFile": "wwwroot/css/manage.less"
   }
 ]

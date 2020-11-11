@@ -3,11 +3,13 @@
 #GanttChart {
     padding: 1em;
     min-width: 600px;
+    width: 100%!important;
     overflow: auto;
 
     #gantt-chart {
         /*overflow: auto;*/
         height: 400px;
+        width: 100%!important;
         /*max-height:450px;*/
         /*.t;*/
     }
@@ -18,6 +20,74 @@
     opacity: 0 !important;
 }
 
+.ProjectTasks {
+
+    tr {
+        th {
+        }
+
+        td:first-child {
+            border-left: .8em solid;
+        }
+
+        &.pending {
+            td:first-child {
+                border-left-color: @project-proposed-color;
+            }
+        }
+
+        &.inprogress {
+            td:first-child {
+                border-left-color: @project-inprogress-color;
+            }
+        }
+
+        &.done {
+            td:first-child {
+                border-left-color: @project-done-color;
+            }
+        }
+
+        &.failed, &.terminated {
+            td:first-child {
+                border-left-color: @project-failed-color;
+            }
+        }
+    }
+}
+
+#ProjectTaskModal {
+
+    .modal-dialog {
+        .modal-header {
+            border-bottom: .5em solid @gray;
+        }
+
+        &.pending {
+            .modal-header {
+                border-bottom-color: @project-proposed-color;
+            }
+        }
+
+        &.inprogress {
+            .modal-header {
+                border-bottom-color: @project-inprogress-color;
+            }
+        }
+
+        &.done {
+            .modal-header {
+                border-bottom-color: @project-done-color;
+            }
+        }
+
+        &.failed, &.terminated {
+            .modal-header {
+                border-bottom-color: @project-failed-color;
+            }
+        }
+    }
+}
 
 body {
 }
