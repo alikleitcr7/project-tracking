@@ -21,7 +21,7 @@
   -webkit-box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
   -moz-box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
   box-shadow: -1px 1px 15px -10px rgba(0, 0, 0, 0.95);
-  border-left: 6px solid #5B87A8;
+  border-left: 6px solid #3c7fb1;
   background-color: #f8f8f8;
 }
 #Profile .top-intro .top-intro-left {
@@ -31,7 +31,7 @@
   width: 2.2em;
   height: 2.2em;
   display: block;
-  background-color: #5B87A8;
+  background-color: #3c7fb1;
   color: #fff;
   border-radius: 50%;
   margin-right: 10px;

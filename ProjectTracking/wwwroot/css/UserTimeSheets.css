@@ -47,14 +47,14 @@
   transition: 100ms;
 }
 #UserTimeSheets .list-group-item.is-current-day {
-  color: #5B87A8;
+  color: #3c7fb1;
   font-weight: bold;
 }
 #UserTimeSheets .list-group-item:hover {
   background-color: #9de8fb;
 }
 #UserTimeSheets .list-group-item.active-tab {
-  background-color: #5B87A8;
+  background-color: #3c7fb1;
   color: #fff;
 }
 #UserTimeSheets .list-group-item--loading {
@@ -355,16 +355,16 @@ table td {
   padding: 5px 10px 5px 5px;
 }
 .task-filter--pending {
-  color: rgba(247, 132, 56, 0.95) !important;
+  color: rgba(247, 132, 56, 0.74) !important;
 }
 .task-filter--progress {
-  color: rgba(75, 89, 255, 0.84) !important;
+  color: rgba(75, 89, 255, 0.74) !important;
 }
 .task-filter--done {
-  color: rgba(63, 204, 53, 0.86) !important;
+  color: rgba(63, 204, 53, 0.65) !important;
 }
 .task-filter--failed {
-  color: rgba(187, 0, 0, 0.7) !important;
+  color: rgba(187, 0, 0, 0.66) !important;
 }
 .mark-as-container {
   display: inline-block;

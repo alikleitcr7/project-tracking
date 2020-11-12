@@ -6,7 +6,6 @@ a, a:hover, a:focus, a:active {
 }
 
 body {
-
     /*background-image: url('/images/background.jpg');*/
 }
 
@@ -21,12 +20,17 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     background-color: @main-dark;
-    border-right:2px solid @main-dark;
+    border-right: 2px solid @main-dark;
     .box-shadow-right();
+    .fast-transition();
 
+    &[v-cloak] {
+        .notification-flag{
+            display:none!important; 
+        }
+    }
 
-    &:after{
-
+    &:after {
     }
 
     hr {
@@ -50,7 +54,7 @@ body {
     a:not(.Button) {
         display: block;
         color: #fff;
-        padding: 5px 10px;
+        padding: 5px 13px;
     }
 
     a:not(.title):not(.Button):not(.side-bar-arrow) {
@@ -71,8 +75,8 @@ body {
     }
 
     .icon {
-        width: 25px;
-        display: block;
+        width: 28px;
+        display: inline-block;
 
         svg {
             display: block;
@@ -84,7 +88,23 @@ body {
         }
     }
 
+
+    .notification-flag {
+        position: absolute;
+        right: 5px;
+        top: 11.5px;
+        height: 8px;
+        width: 8px;
+        display: block;
+        background-color: #ffd800;
+        border: 1px solid #ffd800;
+        border-radius: 50%;
+        animation: blinker 2s linear infinite;
+    }
+
     .side-bar-item {
+        position: relative;
+
         .name {
         }
     }
@@ -95,5 +115,12 @@ body {
             display: block;
             width: 100%;
         }
+    }
+}
+
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
     }
 }

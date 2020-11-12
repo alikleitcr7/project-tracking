@@ -564,7 +564,13 @@ $.notify.addStyle('shared-notification', {
 });
 
 const notify = (message) => {
-    $.notify(message, { style: 'shared-notification', className: 'base', position: 'top right' });
+    $.notify(message, {
+        //style: 'shared-notification',
+        className: 'shared-notification',
+        position: 'top center',
+        clickToHide: false,
+        autoHide: false,
+    });
 }
 //#endregion 
 
