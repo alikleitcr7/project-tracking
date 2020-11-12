@@ -35,12 +35,12 @@ else
 
     <div class="main-container">
 
-        <h2>Activity log for "@activity.Message" for Task "@projectTask.Title" in Project "@(projectTask.Project == null ? "-" : projectTask.Project.Title)" </h2>
+        <h3>Activity log for "@activity.Message" for Task "@projectTask.Title" in Project "@(projectTask.Project == null ? "-" : projectTask.Project.Title)" </h3>
         <hr />
-        <h4>
+        <h5>
             <i class="fa fa-user"></i> 
             By User
-        </h4>
+        </h5>
         <table class="table table-sm">
             <tr>
                 <th>Name</th>
@@ -58,10 +58,10 @@ else
             </tr>
         </table>
 
-        <h4>
+        <h5>
             <i class="fa fa-paperclip"></i>
             Latest Activity
-        </h4>
+        </h5>
         <table class="table table-sm">
             <tr>
                 <th>From</th>
@@ -77,10 +77,10 @@ else
             </tr>
         </table>
 
-        <h4>
+        <h5>
             <i class="fa fa-history"></i>
             Activity Logs
-        </h4>
+        </h5>
         @if (logs.Count == 0)
         {
             <p>No logs recorded for this activity</p>

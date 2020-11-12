@@ -238,7 +238,6 @@ namespace ProjectTracking.Data.Methods
                 .ToList();
         }
 
-
         public UserKeyValue GetUserKeyValue(string userId)
         {
             return db.Users
@@ -275,7 +274,6 @@ namespace ProjectTracking.Data.Methods
             return db.Teams.Any(k => k.ID == teamId.Value && k.SupervisorId == supervisorId);
         }
 
-
         public bool IsSupervisor(string userId)
         {
             return db.Teams.Any(k => k.SupervisorId == userId);
@@ -310,39 +308,39 @@ namespace ProjectTracking.Data.Methods
             db.SaveChanges();
         }
 
-        public void AddRemoveTeamsFromSupervisor(string userId, List<int> teamIds)
-        {
-            var dbUser = db.Users.Include(k => k.Supervising).FirstOrDefault(k => k.Id == userId);
+        //public void AddRemoveTeamsFromSupervisor(string userId, List<int> teamIds)
+        //{
+        //    var dbUser = db.Users.Include(k => k.Supervising).FirstOrDefault(k => k.Id == userId);
 
-            if (dbUser == null)
-            {
-                throw new ClientException("user dont exist");
-            }
+        //    if (dbUser == null)
+        //    {
+        //        throw new ClientException("user dont exist");
+        //    }
 
-            // remove all teams supervising from db that are not in the model
-            dbUser.Supervising.RemoveAll(k => !teamIds.Contains(k.TeamId));
+        //    // remove all teams supervising from db that are not in the model
+        //    dbUser.Supervising.RemoveAll(k => !teamIds.Contains(k.TeamId));
 
-            // remove all items in the model that are already in db
-            teamIds.RemoveAll(k => dbUser.Supervising.Any(u => u.TeamId == k));
+        //    // remove all items in the model that are already in db
+        //    teamIds.RemoveAll(k => dbUser.Supervising.Any(u => u.TeamId == k));
 
-            // add the rest
-            if (teamIds.Count > 0)
-            {
-                dbUser.Supervising.AddRange(teamIds.Select(k => new DataSets.SupervisorLog()
-                {
-                    UserId = userId,
-                    TeamId = k
-                }));
-            }
+        //    // add the rest
+        //    if (teamIds.Count > 0)
+        //    {
+        //        dbUser.Supervising.AddRange(teamIds.Select(k => new DataSets.SupervisorLog()
+        //        {
+        //            UserId = userId,
+        //            TeamId = k
+        //        }));
+        //    }
 
-            db.SaveChanges();
-        }
+        //    db.SaveChanges();
+        //}
 
-        public List<ApplicationIdentityRole> GetAllRoles()
-        {
-            throw new NotImplementedException();
-            //return db.Roles.ToList();
-        }
+        //public List<ApplicationIdentityRole> GetAllRoles()
+        //{
+        //    throw new NotImplementedException();
+        //    //return db.Roles.ToList();
+        //}
 
         public List<KeyValuePair<string, string>> GetAllUsersKeyValues()
         {
@@ -388,143 +386,143 @@ namespace ProjectTracking.Data.Methods
             return dbLogs.Select(k => _mapper.Map<UserLog>(k)).ToList();
         }
 
-        public List<string> GetSupervisorsIds(string forUserId)
-        {
-            throw new NotImplementedException();
-
-            //var dbUser = db.Users.FirstOrDefault(k => k.Id == forUserId);
-
-            //if (dbUser == null)
-            //{
-            //    throw new KeyNotFoundException("user dont exist");
-            //}
-
-            //if (!dbUser.TeamId.HasValue)
-            //{
-            //    // user is not a part of a team
-            //    return new List<string>();
-            //}
-
-            //return db.Supervisers.Where(k => k.TeamId == dbUser.TeamId).Select(k => k.SupervisorId).ToList();
-        }
-
-        //public List<string> GetSupervisorsIdsIncludingParents(string forUserId, int levels)
+        //public List<string> GetSupervisorsIds(string forUserId)
         //{
-        //    var dbUser = db.Users.FirstOrDefault(k => k.Id == forUserId);
+        //    throw new NotImplementedException();
 
-        //    List<string> ids = db.Supervisers.Where(k => k.TeamId == forUserId).Select(k => k.SupervisorId).ToList();
+        //    //var dbUser = db.Users.FirstOrDefault(k => k.Id == forUserId);
 
-        //    List<string> upperIds = new List<string>();
-
-
-        //    if (levels > 0)
-        //    {
-        //        foreach (var upperId in ids)
-        //        {
-        //            upperIds.AddRange(GetSupervisorsIds(upperId));
-        //        }
-
-        //        ids.AddRange(upperIds);
-        //        upperIds.Clear();
-
-        //        if (levels > 1)
-        //        {
-        //            foreach (var upperId in ids)
-        //            {
-        //                upperIds.AddRange(GetSupervisorsIds(upperId));
-        //            }
-
-        //            ids.AddRange(upperIds);
-        //            upperIds.Clear();
-
-        //            if (levels > 2)
-        //            {
-        //                foreach (var upperId in ids)
-        //                {
-        //                    upperIds.AddRange(GetSupervisorsIds(upperId));
-        //                }
-
-        //                ids.AddRange(upperIds);
-        //                upperIds.Clear();
-        //            }
-        //        }
-        //    }
-
-        //    return ids.Distinct().ToList();
-
-        //    //List<string> ids = new List<string>(initIds);
-
-        //    //if (ids.Count == 0)
+        //    //if (dbUser == null)
         //    //{
-        //    //    levels = 0;
+        //    //    throw new KeyNotFoundException("user dont exist");
         //    //}
 
-        //    //while (levels != 0)
+        //    //if (!dbUser.TeamId.HasValue)
         //    //{
-        //    //    int nextLevel = --levels;
-
-        //    //    foreach (var upperLevelId in initIds)
-        //    //    {
-        //    //        List<string> upperLevelIds = GetSupervisorsIds(upperLevelId, nextLevel);
-
-        //    //        ids.AddRange(upperLevelIds);
-        //    //    }
+        //    //    // user is not a part of a team
+        //    //    return new List<string>();
         //    //}
 
-        //    //return ids.Distinct().ToList();
+        //    //return db.Supervisers.Where(k => k.TeamId == dbUser.TeamId).Select(k => k.SupervisorId).ToList();
         //}
 
-        public List<int> GetSupervisingIds(string forUserId)
-        {
-            throw new NotImplementedException();
+        ////public List<string> GetSupervisorsIdsIncludingParents(string forUserId, int levels)
+        ////{
+        ////    var dbUser = db.Users.FirstOrDefault(k => k.Id == forUserId);
 
-            //var dbUser = db.Users.FirstOrDefault(k => k.Id == forUserId);
+        ////    List<string> ids = db.Supervisers.Where(k => k.TeamId == forUserId).Select(k => k.SupervisorId).ToList();
 
-            //if (dbUser == null)
-            //{
-            //    throw new KeyNotFoundException("user dont exist");
-            //}
+        ////    List<string> upperIds = new List<string>();
 
-            //if (!dbUser.TeamId.HasValue)
-            //{
-            //    // user is not a part of a team
-            //    return new List<int>();
-            //}
 
-            //return db.Supervisers.Where(k => k.SupervisorId == dbUser.Id).Select(k => k.TeamId).ToList();
-        }
+        ////    if (levels > 0)
+        ////    {
+        ////        foreach (var upperId in ids)
+        ////        {
+        ////            upperIds.AddRange(GetSupervisorsIds(upperId));
+        ////        }
 
-        public List<string> GetUsersInRole(string role)
-        {
+        ////        ids.AddRange(upperIds);
+        ////        upperIds.Clear();
 
-            throw new NotImplementedException();
+        ////        if (levels > 1)
+        ////        {
+        ////            foreach (var upperId in ids)
+        ////            {
+        ////                upperIds.AddRange(GetSupervisorsIds(upperId));
+        ////            }
 
-            //var dbRole = db.Roles.FirstOrDefault(k => k.Name.Equals(role, StringComparison.OrdinalIgnoreCase));
+        ////            ids.AddRange(upperIds);
+        ////            upperIds.Clear();
 
-            //List<string> users = new List<string>();
+        ////            if (levels > 2)
+        ////            {
+        ////                foreach (var upperId in ids)
+        ////                {
+        ////                    upperIds.AddRange(GetSupervisorsIds(upperId));
+        ////                }
 
-            //if (dbRole == null)
-            //{
-            //    return users;
-            //}
+        ////                ids.AddRange(upperIds);
+        ////                upperIds.Clear();
+        ////            }
+        ////        }
+        ////    }
 
-            //return db.UserRoles.Where(k => k.RoleId == dbRole.Id).Select(k => k.UserId).ToList();
-            //List<string> userIds = db.UserRoles.Where(k => k.RoleId == dbRole.Id).Select(k => k.UserId).ToList();
+        ////    return ids.Distinct().ToList();
 
-            //if (userIds.Count == 0)
-            //{
-            //    return users;
-            //}
+        ////    //List<string> ids = new List<string>(initIds);
 
-            //var dbUsers = db.Users.Where(u => userIds.Any(k => k == u.Id)).ToList();
+        ////    //if (ids.Count == 0)
+        ////    //{
+        ////    //    levels = 0;
+        ////    //}
 
-            //if (dbUsers.Count == 0)
-            //{
-            //    return users;
-            //}
+        ////    //while (levels != 0)
+        ////    //{
+        ////    //    int nextLevel = --levels;
 
-            //return dbUsers.Select(_mapper.Map<User>).ToList();
-        }
+        ////    //    foreach (var upperLevelId in initIds)
+        ////    //    {
+        ////    //        List<string> upperLevelIds = GetSupervisorsIds(upperLevelId, nextLevel);
+
+        ////    //        ids.AddRange(upperLevelIds);
+        ////    //    }
+        ////    //}
+
+        ////    //return ids.Distinct().ToList();
+        ////}
+
+        //public List<int> GetSupervisingIds(string forUserId)
+        //{
+        //    throw new NotImplementedException();
+
+        //    //var dbUser = db.Users.FirstOrDefault(k => k.Id == forUserId);
+
+        //    //if (dbUser == null)
+        //    //{
+        //    //    throw new KeyNotFoundException("user dont exist");
+        //    //}
+
+        //    //if (!dbUser.TeamId.HasValue)
+        //    //{
+        //    //    // user is not a part of a team
+        //    //    return new List<int>();
+        //    //}
+
+        //    //return db.Supervisers.Where(k => k.SupervisorId == dbUser.Id).Select(k => k.TeamId).ToList();
+        //}
+
+        //public List<string> GetUsersInRole(string role)
+        //{
+
+        //    throw new NotImplementedException();
+
+        //    //var dbRole = db.Roles.FirstOrDefault(k => k.Name.Equals(role, StringComparison.OrdinalIgnoreCase));
+
+        //    //List<string> users = new List<string>();
+
+        //    //if (dbRole == null)
+        //    //{
+        //    //    return users;
+        //    //}
+
+        //    //return db.UserRoles.Where(k => k.RoleId == dbRole.Id).Select(k => k.UserId).ToList();
+        //    //List<string> userIds = db.UserRoles.Where(k => k.RoleId == dbRole.Id).Select(k => k.UserId).ToList();
+
+        //    //if (userIds.Count == 0)
+        //    //{
+        //    //    return users;
+        //    //}
+
+        //    //var dbUsers = db.Users.Where(u => userIds.Any(k => k == u.Id)).ToList();
+
+        //    //if (dbUsers.Count == 0)
+        //    //{
+        //    //    return users;
+        //    //}
+
+        //    //return dbUsers.Select(_mapper.Map<User>).ToList();
+        //}
 
         public User GetEmployee(string id)
         {
@@ -535,59 +533,59 @@ namespace ProjectTracking.Data.Methods
             return dbUser == null ? null : _mapper.Map<User>(dbUser);
         }
 
-        public List<TimeSheet> GetTimeSheets(string userId)
-        {
-            var dbTimeSheets = db.TimeSheets
-                                 .Include(k => k.TimeSheetTasks)
-                                 .Where(k => k.UserId == userId);
+        //public List<TimeSheet> GetTimeSheets(string userId)
+        //{
+        //    var dbTimeSheets = db.TimeSheets
+        //                         .Include(k => k.TimeSheetTasks)
+        //                         .Where(k => k.UserId == userId);
 
 
-            var parsedTimeSheets = dbTimeSheets.Select(_mapper.Map<TimeSheet>).ToList();
+        //    var parsedTimeSheets = dbTimeSheets.Select(_mapper.Map<TimeSheet>).ToList();
 
-            return parsedTimeSheets;
-        }
+        //    return parsedTimeSheets;
+        //}
 
-        public User GetProfile(string id)
-        {
-            var dbUser = db.Users.Include(k => k.Team)
-                                 //.Include(k => k.RequestedPermissions)
-                                 .Include(k => k.Supervising)
-                                 //.Include(k => k.Supervisors)
-                                 .Include(k => k.Team)
-                                 .Where(k => k.Id == id)
-                                 .FirstOrDefault();
+        //public User GetProfile(string id)
+        //{
+        //    var dbUser = db.Users.Include(k => k.Team)
+        //                         //.Include(k => k.RequestedPermissions)
+        //                         .Include(k => k.Supervising)
+        //                         //.Include(k => k.Supervisors)
+        //                         .Include(k => k.Team)
+        //                         .Where(k => k.Id == id)
+        //                         .FirstOrDefault();
 
-            return dbUser == null ? null : _mapper.Map<User>(dbUser);
-        }
+        //    return dbUser == null ? null : _mapper.Map<User>(dbUser);
+        //}
 
-        public List<User> GetTeamMembers(int departmentId)
-        {
-            var dbUsers = db.Users.Include(k => k.Team)
-                                  //.Include(k => k.RequestedPermissions)
-                                  //.Include(k => k.Company)
-                                  .Where(k => departmentId == 0 ? !k.TeamId.HasValue : k.TeamId.Value == departmentId)
-                                  .ToList();
+        //public List<User> GetTeamMembers(int departmentId)
+        //{
+        //    var dbUsers = db.Users.Include(k => k.Team)
+        //                          //.Include(k => k.RequestedPermissions)
+        //                          //.Include(k => k.Company)
+        //                          .Where(k => departmentId == 0 ? !k.TeamId.HasValue : k.TeamId.Value == departmentId)
+        //                          .ToList();
 
-            if (dbUsers.Count == 0)
-            {
-                return new List<User>();
-            }
+        //    if (dbUsers.Count == 0)
+        //    {
+        //        return new List<User>();
+        //    }
 
-            return dbUsers.Select(_mapper.Map<User>).ToList();
+        //    return dbUsers.Select(_mapper.Map<User>).ToList();
 
-        }
-        public List<User> GetEmployees()
-        {
-            var dbUsers = db.Users.Include("Department")
-                                  //.Include(k => k.RequestedPermissions)
-                                  .Include(k => k.Team)
-                                  //.Include(k => k.Supervisors)
-                                  .Include(k => k.Supervising)
-                                  .ToList();
-            List<User> mappedUser = dbUsers.Select(_mapper.Map<User>).ToList();
+        ////}
+        //public List<User> GetEmployees()
+        //{
+        //    var dbUsers = db.Users.Include("Department")
+        //                          //.Include(k => k.RequestedPermissions)
+        //                          .Include(k => k.Team)
+        //                          //.Include(k => k.Supervisors)
+        //                          .Include(k => k.Supervising)
+        //                          .ToList();
+        //    List<User> mappedUser = dbUsers.Select(_mapper.Map<User>).ToList();
 
-            return mappedUser;
-        }
+        //    return mappedUser;
+        //}
 
         //public object GetSupervising(string Id)
         //{
@@ -723,42 +721,42 @@ namespace ProjectTracking.Data.Methods
 
         }
 
-        public List<User> UsersNotRegisteredTimeSheetActivityToday()
-        {
-            string sql = @" select distinct anu.Id, FirstName, LastName 
-                            from AspNetUsers anu
-                            left join TimeSheets ts on UserId = anu.Id
-                            left join TimeSheetProjects tsp on tsp.TimeSheetId=ts.ID
-                            left join TimeSheetActivities tsa on tsa.TimeSheetProjectId=tsp.ID 
-                            where GETDATE()  between ts.fromdate and ts.todate and tsa.ID  is null and istracked =1 
-                            and anu.id not in (select distinct users.Id 
-                                               from RequestedPermissions rp 
-                                               inner join RequestedPermissionsStatuses rps on RequestedPermissionId = rp.ID
-                                               inner join AspNetUsers users on users.Id = rp.ApplicationUserId
-                                               where rp.id not in (select distinct RequestedPermissionId 
-                                                                   from RequestedPermissionsStatuses
-                                                                   where IsApproved <> 1)
-							                    and GETDATE() between rp.FromDate and rp.ToDate)";
-            SqlCommand cmd = new SqlCommand(sql);
+        //public List<User> UsersNotRegisteredTimeSheetActivityToday()
+        //{
+        //    string sql = @" select distinct anu.Id, FirstName, LastName 
+        //                    from AspNetUsers anu
+        //                    left join TimeSheets ts on UserId = anu.Id
+        //                    left join TimeSheetProjects tsp on tsp.TimeSheetId=ts.ID
+        //                    left join TimeSheetActivities tsa on tsa.TimeSheetProjectId=tsp.ID 
+        //                    where GETDATE()  between ts.fromdate and ts.todate and tsa.ID  is null and istracked =1 
+        //                    and anu.id not in (select distinct users.Id 
+        //                                       from RequestedPermissions rp 
+        //                                       inner join RequestedPermissionsStatuses rps on RequestedPermissionId = rp.ID
+        //                                       inner join AspNetUsers users on users.Id = rp.ApplicationUserId
+        //                                       where rp.id not in (select distinct RequestedPermissionId 
+        //                                                           from RequestedPermissionsStatuses
+        //                                                           where IsApproved <> 1)
+							 //                   and GETDATE() between rp.FromDate and rp.ToDate)";
+        //    SqlCommand cmd = new SqlCommand(sql);
 
-            return dataAccess.ToObjectList<User>(cmd);
-        }
-        public List<User> UsersNotHavingTimeSheetThisMonthYet()
-        {
-            string sql = @"select anu.Id, FirstName, LastName 
-                            from AspNetUsers anu
-                            where anu.Id not in (select userid 
-                                                 from TimeSheets ts 
-                                                 where GETDATE()  between ts.fromdate and ts.todate )";
+        //    return dataAccess.ToObjectList<User>(cmd);
+        //}
+        //public List<User> UsersNotHavingTimeSheetThisMonthYet()
+        //{
+        //    string sql = @"select anu.Id, FirstName, LastName 
+        //                    from AspNetUsers anu
+        //                    where anu.Id not in (select userid 
+        //                                         from TimeSheets ts 
+        //                                         where GETDATE()  between ts.fromdate and ts.todate )";
 
-            SqlCommand cmd = new SqlCommand(sql);
+        //    SqlCommand cmd = new SqlCommand(sql);
 
-            return dataAccess.ToObjectList<User>(cmd);
-        }
-        public List<User> GetAllUsers()
-        {
-            return db.Users.ToList().Select(_mapper.Map<User>).ToList();
-        }
+        //    return dataAccess.ToObjectList<User>(cmd);
+        //}
+        //public List<User> GetAllUsers()
+        //{
+        //    return db.Users.ToList().Select(_mapper.Map<User>).ToList();
+        //}
 
         #region supervising
         //public bool AddSupervising(string userId, string superVisedId)
@@ -861,77 +859,77 @@ namespace ProjectTracking.Data.Methods
 
         #endregion
 
-        public object GetRoles(string Id)
-        {
-            return null;
-            //if (string.IsNullOrEmpty(Id))
-            //    throw new ArgumentNullException();
-            //ApplicationUser employee = db.Users.FirstOrDefault(c => c.Id == Id);
-            //if (employee == null)
-            //    throw new NullReferenceException();
-            //List<IdentityRole> roles = _roleManager.Roles.ToList();
-            //string[] rolesTakenIds = db.UserRoles.Where(c => c.UserId == Id).Select(c => c.RoleId).ToArray();
-            //return new { All = roles, rolesTakes = rolesTakenIds };
+        //public object GetRoles(string Id)
+        //{
+        //    return null;
+        //    //if (string.IsNullOrEmpty(Id))
+        //    //    throw new ArgumentNullException();
+        //    //ApplicationUser employee = db.Users.FirstOrDefault(c => c.Id == Id);
+        //    //if (employee == null)
+        //    //    throw new NullReferenceException();
+        //    //List<IdentityRole> roles = _roleManager.Roles.ToList();
+        //    //string[] rolesTakenIds = db.UserRoles.Where(c => c.UserId == Id).Select(c => c.RoleId).ToArray();
+        //    //return new { All = roles, rolesTakes = rolesTakenIds };
 
-        }
+        //}
 
-        public bool CheckIfEmployeeHasSubordinates(string userId)
-        {
-            throw new NotImplementedException();
+        //public bool CheckIfEmployeeHasSubordinates(string userId)
+        //{
+        //    throw new NotImplementedException();
 
-            //var subs = db.Supervisers.Where(c => c.SupervisorId == userId).ToList();
-            //return subs.Count > 0;
-        }
+        //    //var subs = db.Supervisers.Where(c => c.SupervisorId == userId).ToList();
+        //    //return subs.Count > 0;
+        //}
 
-        public List<User> GetSubordinatesWithTimeSheets(string superVisorId)
-        {
-            throw new NotImplementedException();
-        }
+        //public List<User> GetSubordinatesWithTimeSheets(string superVisorId)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public List<string> GetSupervisorsIdsIncludingParents(string forUserId, int levels)
-        {
-            throw new NotImplementedException();
-        }
+        //public List<string> GetSupervisorsIdsIncludingParents(string forUserId, int levels)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public bool AddSupervising(string userId, string superVisedId)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool AddSupervising(string userId, string superVisedId)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public bool AddSupervising(string userId, List<string> superVisedIds)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool AddSupervising(string userId, List<string> superVisedIds)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public bool RemoveSuperVised(string userId, string superVisedId)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool RemoveSuperVised(string userId, string superVisedId)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public bool RemoveSuperVised(string userId, List<string> superVisedIds)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool RemoveSuperVised(string userId, List<string> superVisedIds)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public object GetSupervising(string Id)
-        {
-            throw new NotImplementedException();
-        }
+        //public object GetSupervising(string Id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public bool AddSupervisors(string userId, List<string> superVisedIds)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool AddSupervisors(string userId, List<string> superVisedIds)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public bool RemoveSuperVisors(string userId, List<string> superVisedIds)
-        {
-            throw new NotImplementedException();
-        }
+        //public bool RemoveSuperVisors(string userId, List<string> superVisedIds)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public object GetSupervisors(string Id)
-        {
-            throw new NotImplementedException();
-        }
+        //public object GetSupervisors(string Id)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public DateTime SetRole(string byUserId, string userId, short roleCode)
         {
@@ -1405,6 +1403,7 @@ namespace ProjectTracking.Data.Methods
         {
             return db.TimeSheetActivities.Where(k => !k.DeletedAt.HasValue && k.TimeSheetTask.TimeSheet.UserId == userId);
         }
+
         private IQueryable<DataSets.TimeSheetActivity> GetUserActivitiesQuery()
         {
             return db.TimeSheetActivities.Where(k => !k.DeletedAt.HasValue);
@@ -1425,7 +1424,6 @@ namespace ProjectTracking.Data.Methods
                 .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
                 .ToList();
         }
-
 
         private List<KeyValuePair<DateTime, int>> GetUserActivitiesMinutes(IQueryable<DataSets.TimeSheetActivity> q_tsActivities)
         {
