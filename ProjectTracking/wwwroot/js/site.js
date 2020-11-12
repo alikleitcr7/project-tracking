@@ -568,8 +568,8 @@ const notify = (message) => {
         //style: 'shared-notification',
         className: 'shared-notification',
         position: 'top center',
-        clickToHide: false,
-        autoHide: false,
+        //clickToHide: false,
+        //autoHide: false,
     });
 }
 //#endregion 
