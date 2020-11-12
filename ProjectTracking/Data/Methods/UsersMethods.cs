@@ -720,6 +720,7 @@ namespace ProjectTracking.Data.Methods
                 //db.UserLogging.Update(log);
                 db.SaveChanges();
             }
+
         }
 
         public List<User> UsersNotRegisteredTimeSheetActivityToday()
@@ -1069,7 +1070,7 @@ namespace ProjectTracking.Data.Methods
             return overview;
         }
 
-        public SupervisorOverview GetSupervisorOverview(string userId)
+        public SupervisorOverview GetSupervisorOverview(string userId, bool logsOnly)
         {
             if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.Supervisor))
             {
@@ -1087,6 +1088,9 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException("NO_SUPERVISING_TEAMS");
             }
 
+            DateTime today = DateTime.Now.Date;
+
+
             // supervising users
             List<UserKeyValue> supervisingUsers = db.Users.Where(k => supervisingTeamsIds.Contains(k.TeamId.Value))
                     .Select(k => new UserKeyValue(k.Id, k.FirstName + " " + k.LastName))
@@ -1095,16 +1099,22 @@ namespace ProjectTracking.Data.Methods
             // s.users ids
             List<string> supervisingUsersIds = supervisingUsers.Select(k => k.Id).ToList();
 
+
+            // today's logs
+            overview.UserLogsToday = GetUsersLogsByDate(supervisingUsersIds, today);
+
+            if (logsOnly)
+            {
+                return overview;
+            }
+
             // s.users activities query
             var q_tsActivities = GetUserActivitiesQuery(supervisingUsersIds);
 
             // latest activities
             overview.LatestActivities = GetUserLatestActivities(q_tsActivities);
 
-            DateTime today = DateTime.Now.Date;
 
-            // today's logs
-            overview.UserLogsToday = GetUsersLogsByDate(supervisingUsersIds, today);
 
             // target from/to days
             int fromDateTargetDays = 30;
@@ -1182,7 +1192,7 @@ namespace ProjectTracking.Data.Methods
             return overview;
         }
 
-        public AdminOverview GetAdminOverview(string userId)
+        public AdminOverview GetAdminOverview(string userId, bool logsAndCountersOnly)
         {
             if (!db.Users.Any(k => k.Id == userId && k.RoleCode == (short)ApplicationUserRole.Admin))
             {
@@ -1217,6 +1227,12 @@ namespace ProjectTracking.Data.Methods
             DateTime today = DateTime.Now.Date;
 
             overview.UserLogsToday = GetUsersLogsByDate(today);
+
+
+            if (logsAndCountersOnly)
+            {
+                return overview;
+            }
 
             // s.users activities query
             var q_tsActivities = GetUserActivitiesQuery();

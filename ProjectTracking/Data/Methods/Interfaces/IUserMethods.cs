@@ -62,8 +62,8 @@ namespace ProjectTracking.Data.Methods.Interfaces
         Models.Users.UserInsights GetUserInsights(string userId);
         UserLog GetLatestUserLog(string userId);
         List<UserLog> GetLatestUserLogs(string userId, int take);
-        Models.Dashboard.SupervisorOverview GetSupervisorOverview(string userId);
-        Models.Dashboard.AdminOverview GetAdminOverview(string userId);
+        Models.Dashboard.SupervisorOverview GetSupervisorOverview(string userId, bool logsOnly);
+        Models.Dashboard.AdminOverview GetAdminOverview(string userId, bool logsAndCountersOnly);
         Models.Dashboard.TeamMemberOverview GetTeamMemberOverview(string userId);
         Models.Users.UserKeyValue GetUserKeyValue(string userId);
         #endregion

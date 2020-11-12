@@ -47,6 +47,36 @@
     }
 }
 
+.latest-logs {
+    tr {
+
+        td:first-child {
+            border-left: .5em solid;
+        }
+
+
+        &.login {
+            td:first-child {
+                border-left-color: @green-light;
+            }
+        }
+
+        &.logout {
+
+            td:first-child {
+                border-left-color: @red-light;
+            }
+        }
+
+        &.disconnected {
+
+            td:first-child {
+                border-left-color: @gray-light;
+            }
+        }
+    }
+}
+
 @media (max-width: 992px) {
     #Dashboard {
 

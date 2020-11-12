@@ -5,11 +5,11 @@
 <div class="v-container">
 
     <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#UsersTab"> <i class="fa fa-user"></i> Users </a></li>
-        <li><a data-toggle="tab" href="#CategoriesTab"> <i class="fa fa-th-large"></i> Categories </a></li>
-        <li><a data-toggle="tab" href="#LocationTab"><i class="fa fa-network-wired"></i> Locations</a></li>
-        <li><a data-toggle="tab" href="#UserLogsTab"><i class="fa fa-history"></i> Logs</a></li>
-        <li><a data-toggle="tab" href="#UsersNotificationsTab"><i class="fa fa-comment-dots"></i> Notifications</a></li>
+        <li class="active"><a data-toggle="tab" data-code="users" href="#UsersTab"> <i class="fa fa-user"></i> Users </a></li>
+        <li><a data-toggle="tab"  data-code="categories" href="#CategoriesTab"> <i class="fa fa-th-large"></i> Categories </a></li>
+        <li><a data-toggle="tab" data-code="locations" href="#LocationTab"><i class="fa fa-network-wired"></i> Locations</a></li>
+        <li><a data-toggle="tab" data-code="logs"  href="#UserLogsTab"><i class="fa fa-history"></i> Logs</a></li>
+        <li><a data-toggle="tab"  data-code="notifications"href="#UsersNotificationsTab"><i class="fa fa-comment-dots"></i> Notifications</a></li>
     </ul>
 
     <div class="tab-content">
@@ -53,6 +53,7 @@
     <script src="~/services/IpAddressesService.js"></script>
     <script src="~/services/UsersLogsService.js"></script>
 
+    <script src="~/js/Manage.js"></script>
     <script src="~/js/UsersNotifications.js"></script>
     <script src="~/js/UsersLogs.js"></script>
     <script src="~/js/Categories.js"></script>

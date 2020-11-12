@@ -19,6 +19,16 @@ connection.on('ReceiveMessage', (message) => {
     //alert('message from server', message);
 });
 
+connection.on('RefreshLogs', () => {
+
+    console.log('refresh signal')
+
+    if (homeApp) {
+        homeApp.refreshSignal();
+    }
+
+});
+
 
 connection.start().catch(function (err) {
     return console.error(err.toString());

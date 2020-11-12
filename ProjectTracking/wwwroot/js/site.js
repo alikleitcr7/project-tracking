@@ -25,6 +25,34 @@ $(document).ready(function () {
 });
 
 
+function getDurationDisplay(fromDate, toDate) {
+
+    let mToDate = toDate ? moment(toDate) : moment();
+    let mFromDate = moment(fromDate);
+
+    const days = mToDate.diff(mFromDate, 'days')
+    const hours = mToDate.diff(mFromDate, 'hours')
+    const minutes = mToDate.diff(mFromDate, 'minutes')
+    const seconds = mToDate.diff(mFromDate, 'seconds')
+
+    if (days > 0) {
+        return `${days}d`
+    }
+
+    if (hours < 1) {
+        if (minutes < 1) {
+            return `${seconds}s`
+            //return 'just now'
+        }
+        else {
+            return `${minutes}m`
+        }
+    }
+
+    return `${hours}h`
+}
+
+
 $(document).on('click', '.side-bar-arrow', function () {
     var sidebar = $('body');
 
@@ -643,4 +671,6 @@ const currentUser = {
     }
 }
 
+
+var homeApp;
 

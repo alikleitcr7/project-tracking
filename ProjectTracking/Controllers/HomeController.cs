@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using ProjectTracking.AppStart;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
 using ProjectTracking.Exceptions;
+using ProjectTracking.Hubs;
 using ProjectTracking.Models;
 using ProjectTracking.Models.Admin;
 using System;
@@ -22,6 +24,7 @@ namespace ProjectTracking.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _accessor;
+        private readonly IHubContext<ObserverHub> observerHub;
         private readonly IUserMethods _users;
         private readonly IUserLogsMethods _userLogsMethods;
 
@@ -30,12 +33,14 @@ namespace ProjectTracking.Controllers
             UserManager<ApplicationUser> userManager,
             IUserMethods users,
             IUserLogsMethods userLogsMethods,
-            IHttpContextAccessor accessor
+            IHttpContextAccessor accessor,
+            IHubContext<ObserverHub> observerHub
             )
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _accessor = accessor;
+            this.observerHub = observerHub;
             _users = users;
             _userLogsMethods = userLogsMethods;
         }
@@ -96,28 +101,28 @@ namespace ProjectTracking.Controllers
                         user = await _userManager.FindByNameAsync(model.UserName);
                     }
 
-                    var id = user?.Id;
-                    var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+                    //var id = user?.Id;
+                    //var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
 
-                    ApplicationContext.LogsLastUpdatedDate = DateTime.Now;
+                    //ApplicationContext.LogsLastUpdatedDate = DateTime.Now;
 
-                    UserLog log = _userLogsMethods.GetActiveUserLog(id);
+                    //UserLog log = _userLogsMethods.GetActiveUserLog(id);
 
-                    if (log == null || log.ToDate.HasValue)
-                    {
-                        log = _userLogsMethods.AddStartLog(id, ip, UserLogStatus.Login);
-                    }
+                    //if (log == null || log.ToDate.HasValue)
+                    //{
+                    //    log = _userLogsMethods.AddStartLog(id, ip, UserLogStatus.Login);
+                    //}
 
-                    if (ApplicationContext.ActiveLogs == null || !ApplicationContext.LogsLastUpdatedDate.HasValue)
-                    {
-                        ApplicationContext.ActiveLogs = _users.GetActiveLogs() ?? new List<UserLog>();
-                        ApplicationContext.LogsLastUpdatedDate = DateTime.Now;
-                    }
+                    //if (ApplicationContext.ActiveLogs == null || !ApplicationContext.LogsLastUpdatedDate.HasValue)
+                    //{
+                    //    ApplicationContext.ActiveLogs = _users.GetActiveLogs() ?? new List<UserLog>();
+                    //    ApplicationContext.LogsLastUpdatedDate = DateTime.Now;
+                    //}
 
-                    if (log != null && !ApplicationContext.ActiveLogs.Any(k => k.UserId == id))
-                    {
-                        ApplicationContext.ActiveLogs.Add(log);
-                    }
+                    //if (log != null && !ApplicationContext.ActiveLogs.Any(k => k.UserId == id))
+                    //{
+                    //    ApplicationContext.ActiveLogs.Add(log);
+                    //}
 
                     if (Request.Headers["Referer"].Count != 0)
                     {
@@ -201,14 +206,16 @@ namespace ProjectTracking.Controllers
 
             // end db log session 
 
-            _users.EndActiveLog(id, UserLogStatus.Logout);
+            _userLogsMethods.EndActiveLog(id, UserLogStatus.Logout);
+
+            await observerHub.Clients.All.SendAsync("RefreshLogs");
 
             return Redirect("/login");
         }
 
         [HttpGet]
         [Authorize]
-        public IActionResult GetOverview()
+        public IActionResult GetOverview(bool logsAndCountersOnly)
         {
             try
             {
@@ -223,10 +230,10 @@ namespace ProjectTracking.Controllers
                         overview = _users.GetTeamMemberOverview(userId);
                         break;
                     case ApplicationUserRole.Supervisor:
-                        overview = _users.GetSupervisorOverview(userId);
+                        overview = _users.GetSupervisorOverview(userId, logsAndCountersOnly);
                         break;
                     case ApplicationUserRole.Admin:
-                        overview = _users.GetAdminOverview(userId);
+                        overview = _users.GetAdminOverview(userId, logsAndCountersOnly);
                         break;
                 }
 

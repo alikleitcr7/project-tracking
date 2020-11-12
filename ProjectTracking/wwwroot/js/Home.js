@@ -1,5 +1,4 @@
-﻿
-const role = currentUser.role()
+﻿const role = currentUser.role()
 
 const getLoadingBoxesCountByRole = () => {
 
@@ -13,7 +12,9 @@ const getLoadingBoxesCountByRole = () => {
     }
 }
 
-new Vue({
+var userLogsInterval;
+
+homeApp = new Vue({
     el: '#Dashboard',
     data: {
         loadingBoxesCount: getLoadingBoxesCountByRole(),
@@ -26,14 +27,37 @@ new Vue({
         },
     },
     methods: {
+        logsDurationInterval: function () {
+
+            if (userLogsInterval) {
+                clearInterval(userLogsInterval)
+            }
+
+            if (this.overview.data.userLogsToday) {
+
+                this.overview.data.userLogsToday = this.overview.data.userLogsToday.map(k => ({ ...k, durationDisplay: getDurationDisplay(k.fromDate, k.toDate) }))
+
+                userLogsInterval = setInterval(() => {
+
+                    this.overview.data.userLogsToday = this.overview.data.userLogsToday.map(k => k.toDate ? k : ({ ...k, durationDisplay: getDurationDisplay(k.fromDate, k.toDate) }))
+
+                }, 5000)
+            }
+        },
         populateDashboard: function (data) {
 
             console.log({ role })
             switch (role) {
                 case APP_USER_ROLES.admin.value:
+
+                    //getDurationDisplay()
+                    this.logsDurationInterval();
+
                     this.populateAdminVisuals(data)
                     break;
                 case APP_USER_ROLES.supervisor.value:
+                    this.logsDurationInterval();
+
                     this.populateSupervisorVisuals(data)
                     break;
                 case APP_USER_ROLES.teamMember.value:
@@ -113,6 +137,81 @@ new Vue({
 
 
             return `Total of ${count} User${(count > 1 ? 's' : '')}`
+        },
+        loadDashboard: function () {
+
+            HomeService.GetOverview()
+                .then((r) => {
+                    const record = r.data
+
+                    if (!record) {
+                        this.overview.errorMessage = BASIC_ERROR_MESSAGE
+                        return
+                    }
+
+                    this.overview.data = record
+
+                    this.populateDashboard(record)
+                })
+                .catch((e) => {
+                    const errorMessage = getAxiosErrorMessage(e)
+
+                    if (errorMessage === 'DONT_EXIST_OR_NOT_CLAIMED_ROLE') {
+                        this.overview.message = "Your role might have changed!"
+                        this.overview.showLogout = true
+
+                    }
+                    else if (errorMessage === 'NO_SUPERVISING_TEAMS') {
+                        this.overview.message = 'No supervising team assigned yet!'
+                    }
+                    else {
+                        this.overview.message = errorMessage
+                    }
+                })
+                .then(() => {
+                    this.overview.isLoading = false
+
+                })
+        },
+        refreshSignal: function () {
+
+            HomeService.GetOverview(true)
+                .then((r) => {
+
+                    const record = r.data
+
+                    if (!record) {
+                        console.error(BASIC_ERROR_MESSAGE)
+                    }
+
+                    let hasUpdate = false
+
+                    let data = { ...this.overview.data }
+
+                    if (record.userLogsToday) {
+                        data.userLogsToday = record.userLogsToday
+                        hasUpdate = true
+                    }
+
+                    if (record.loggedInUsers) {
+                        data.loggedInUsers = record.loggedInUsers
+                        hasUpdate = true
+                    }
+
+                    if (hasUpdate) {
+                        this.overview.data = data
+
+                        this.logsDurationInterval();
+
+                    }
+
+                })
+                .catch((e) => {
+                    console.error(e)
+                })
+                .then(() => {
+
+                })
         }
     },
     computed: {
@@ -129,37 +228,7 @@ new Vue({
 
         this.overview.isLoading = true
 
-        HomeService.GetOverview()
-            .then((r) => {
-                const record = r.data
+        this.loadDashboard()
 
-                if (!record) {
-                    this.overview.errorMessage = BASIC_ERROR_MESSAGE
-                    return
-                }
-
-                this.overview.data = record
-
-                this.populateDashboard(record)
-            })
-            .catch((e) => {
-                const errorMessage = getAxiosErrorMessage(e)
-
-                if (errorMessage === 'DONT_EXIST_OR_NOT_CLAIMED_ROLE') {
-                    this.overview.message = "Your role might have changed!"
-                    this.overview.showLogout = true
-
-                }
-                else if (errorMessage === 'NO_SUPERVISING_TEAMS') {
-                    this.overview.message = 'No supervising team assigned yet!'
-                }
-                else {
-                    this.overview.message = errorMessage
-                }
-            })
-            .then(() => {
-                this.overview.isLoading = false
-
-            })
     }
 })

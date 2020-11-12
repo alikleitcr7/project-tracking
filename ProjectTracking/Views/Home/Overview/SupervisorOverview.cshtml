@@ -15,16 +15,18 @@
                         <th>Name</th>
                         <th>From</th>
                         <th>To</th>
+                        <th>Duration</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="log in overview.data.userLogsToday">
+                    <tr v-for="log in overview.data.userLogsToday" :class="log.logStatusDisplay.toLowerCase()">
                         <td>
                             <a :href="`/profile/${log.userId}`">{{log.userName}}</a>
                         </td>
                         <td>{{log.displayFromDate}}</td>
                         <td>{{log.displayToDate}}</td>
+                        <td>{{log.durationDisplay}}</td>
                         <td>{{log.logStatusDisplay}}</td>
                     </tr>
                 </tbody>

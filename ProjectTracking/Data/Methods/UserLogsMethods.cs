@@ -7,6 +7,7 @@ using ProjectTracking.DataContract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace ProjectTracking.Data.Methods
@@ -29,40 +30,60 @@ namespace ProjectTracking.Data.Methods
 
         public UserLog AddStartLog(string userId, string ipAddress, UserLogStatus status)
         {
-            var isActive = db.UserLogging.Any(k => k.UserId == userId && !k.ToDate.HasValue);
+            try
+            {
+                var isActive = db.UserLogging.Any(k => k.UserId == userId && !k.ToDate.HasValue);
 
-            if (isActive)
+                if (isActive)
+                {
+                    return null;
+                }
+
+                bool ipAdded = _ipAddressesMethods.AddIfNotExist(ipAddress);
+
+                DataSets.UserLog dbLog = new DataSets.UserLog()
+                {
+                    LogStatusCode = (short)status,
+                    Address = ipAdded ? ipAddress : null,
+                    FromDate = DateTime.Now,
+                    UserId = userId
+                };
+
+                db.UserLogging.Add(dbLog);
+
+                db.SaveChanges();
+
+                UserLog log = _mapper.Map<UserLog>(dbLog);
+
+                log.UserName = db.Users.Select(k => new { k.Id, FullName = k.FirstName + " " + k.LastName }).First(k => k.Id == userId).FullName;
+
+                return log;
+            }
+            catch (Exception)
             {
                 return null;
             }
-
-            bool ipAdded = _ipAddressesMethods.AddIfNotExist(ipAddress);
-
-            DataSets.UserLog dbLog = new DataSets.UserLog()
-            {
-                LogStatusCode = (short)status,
-                Address = ipAdded ? ipAddress : null,
-                FromDate = DateTime.Now,
-                UserId = userId
-            };
-
-            db.UserLogging.Add(dbLog);
-
-            db.SaveChanges();
-
-            return _mapper.Map<UserLog>(dbLog);
         }
 
-        public void EndActiveLog(string userId, UserLogStatus status)
+        public UserLog EndActiveLog(string userId, UserLogStatus status)
         {
-            var log = db.UserLogging.FirstOrDefault(k => k.UserId == userId && !k.ToDate.HasValue);
-
-            if (log != null)
+            try
             {
-                log.ToDate = DateTime.Now;
-                log.LogStatusCode = (short)status;
-                //db.UserLogging.Update(log);
-                db.SaveChanges();
+                var log = db.UserLogging.FirstOrDefault(k => k.UserId == userId && !k.ToDate.HasValue);
+
+                if (log != null)
+                {
+                    log.ToDate = DateTime.Now;
+                    log.LogStatusCode = (short)status;
+                    //db.UserLogging.Update(log);
+                    db.SaveChanges();
+                }
+
+                return log != null ? _mapper.Map<UserLog>(log) : null;
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 
@@ -73,5 +94,18 @@ namespace ProjectTracking.Data.Methods
 
             return dbLog == null ? null : _mapper.Map<UserLog>(dbLog);
         }
+
+
+        public static Expression<Func<DataSets.UserLog, UserLog>> MapGetUserLog =>
+      k => new UserLog()
+      {
+          ID = k.ID,
+          FromDate = k.FromDate,
+          ToDate = k.ToDate,
+          LogStatusCode = k.LogStatusCode,
+          UserId = k.UserId,
+          UserName = k.User.FirstName + " " + k.User.LastName,
+      };
+
     }
 }

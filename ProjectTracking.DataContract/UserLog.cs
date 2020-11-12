@@ -17,6 +17,17 @@ namespace ProjectTracking.DataContract
         public short LogStatusCode { get; set; } // was Comment
         public string FullName { get; set; }
         public string UserName { get; set; }
+        //public short? UserRoleCode { get; set; }
+
+
+
+        //public string DurationDisplay
+        //{
+        //    get
+        //    {
+        //        return DateTimeExtensions.GetDurationDisplay(FromDate, ToDate);
+        //    }
+        //}
 
         public UserLogStatus LogStatus
         {

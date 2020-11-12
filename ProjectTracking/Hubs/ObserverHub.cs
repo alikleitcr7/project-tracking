@@ -46,6 +46,7 @@ namespace ProjectTracking.Hubs
             if (Context.User.Identity.IsAuthenticated)
             {
                 string id = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                string role = Context.User.FindFirst(ClaimTypes.Role).Value;
 
                 ObservedUser user = Users.FirstOrDefault(k => k.UserId == id);
 
@@ -68,13 +69,16 @@ namespace ProjectTracking.Hubs
                     user.AddConnection(Context.ConnectionId);
                 }
 
-
                 // add log if not exist as login
                 if (!ApplicationContext.ActiveLogs.Any(k => k.UserId == id))
                 {
                     var ip = _context.HttpContext?.Connection?.RemoteIpAddress?.ToString();
 
-                    ApplicationContext.ActiveLogs.Add(_userLogsMethods.AddStartLog(id, ip, DataContract.UserLogStatus.Login));
+                    var log = _userLogsMethods.AddStartLog(id, ip, DataContract.UserLogStatus.Login);
+
+                    ApplicationContext.ActiveLogs.Add(log);
+
+                    await Clients.All.SendAsync("RefreshLogs");
                 }
 
                 //var cId = Context.User.FindFirst(ClaimTypes.NameIdentifier);
@@ -86,7 +90,7 @@ namespace ProjectTracking.Hubs
             await base.OnConnectedAsync();
         }
 
-        public void CheckIfUserDisconnected(string userId)
+        public async Task CheckIfUserDisconnected(string userId, string role)
         {
             var user = Users.FirstOrDefault(k => k.UserId == userId);
 
@@ -108,7 +112,10 @@ namespace ProjectTracking.Hubs
                     if (activeLog != null)
                     {
                         _userLogsMethods.EndActiveLog(userId, DataContract.UserLogStatus.Disconnected);
+
                         ApplicationContext.ActiveLogs.Remove(activeLog);
+
+                        await Clients.All.SendAsync("RefreshLogs");
                     }
                 }
             }
@@ -123,6 +130,7 @@ namespace ProjectTracking.Hubs
             if (Context.User.Identity.IsAuthenticated)
             {
                 string id = Context.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+                string role = Context.User.FindFirst(ClaimTypes.Role).Value;
 
                 ObservedUser user = Users.FirstOrDefault(x => x.HasConnection(Context.ConnectionId));
 
@@ -139,7 +147,7 @@ namespace ProjectTracking.Hubs
                     // then we will mark as disconnected
                     if (!user.IsActive)
                     {
-                        await Task.Delay(5000).ContinueWith(k => CheckIfUserDisconnected(id));
+                        await Task.Delay(5000).ContinueWith(k => CheckIfUserDisconnected(id, role));
                     }
                     //// if not active > disconnected
                     //if (!user.IsActive)
