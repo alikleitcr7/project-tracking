@@ -35,15 +35,9 @@ $(document).ready(function () {
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
 
-        setTimeout(() => {
+        var target = $(e.target).attr("data-code")
 
-
-            var target = $(e.target).attr("data-code")
-
-            changeUrlQuery(target)
-
-        }, 200)
-
+        changeUrlQuery(target)
     });
 
 })

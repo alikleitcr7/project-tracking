@@ -59,17 +59,17 @@
 
             <ul class="nav nav-tabs">
 
-                <li class="active"><a data-toggle="tab" href="#InsightsTab"><i class="fa fa-chart-line"></i> Insights</a></li>
+                <li class="active"><a data-toggle="tab" data-code="insights" href="#InsightsTab"><i class="fa fa-chart-line"></i> Insights</a></li>
 
                 @if (Model.ShowSupervisorTab)
                 {
-                    <li><a data-toggle="tab" href="#SupervisorTeamsTab"> <i class="fa fa-users"></i> Teams</a></li>
+                    <li><a data-toggle="tab" data-code="supervisor" href="#SupervisorTeamsTab"> <i class="fa fa-users"></i> Teams</a></li>
                 }
 
 
                 @if (Model.ShowScheduleTab)
                 {
-                    <li><a data-toggle="tab" href="#SchedulesTab"> <i class="fa fa-tasks"></i> Schedules</a></li>
+                    <li><a data-toggle="tab" data-code="schedule"  href="#SchedulesTab"> <i class="fa fa-tasks"></i> Schedules</a></li>
                 }
             </ul>
 
