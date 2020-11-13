@@ -23,8 +23,7 @@
 
     }
 
-    bool sidebarCollapsed = (HttpContextAccessor.HttpContext.Request.Cookies["sidebarCollapsed"] ?? "false") == "true";
-
+    bool sidebarCollapsed = (HttpContextAccessor.HttpContext.Request.Cookies["sidebarCollapsed"] ?? "true") == "true";
 
 }
 

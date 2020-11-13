@@ -762,74 +762,9 @@ var user_timesheet_app = new Vue({
             this.activeDate = moment(this.activeTimeSheet.datesList[idx].date, 'MM/DD/YYYY')
             this.activeDateIdx = idx
 
-            return
-
-            this.filteredProjectsLoading = true
-
-            // get activities
-            TimeSheetsService.GetActivitiesByDate(this.activeTimeSheet.id, this.activeTimeSheet.datesList[idx].date)
-                .then(r => {
-
-                    const activities = r.data
-
-                    let filteredProjects = [...this.activeTimeSheet.projects];
-
-                    for (var i = 0; i < filteredProjects.length; i++) {
-                        for (var j = 0; j < filteredProjects[i].tasks.length; j++) {
-
-                            //let subProject = filteredProjects[i].tasks[j]
-
-                            let subProjectActivities = activities.filter(k => k.timeSheetProjectId === filteredProjects[i].tasks[j].id)
-
-                            filteredProjects[i].tasks[j].activities = subProjectActivities
-
-                            let activeTagIndex = subProjectActivities.findIndex(k => !k.toDate);
-
-                            if (activeTagIndex > -1) {
-
-                                let subProjectActiveActivity = subProjectActivities[activeTagIndex]
-
-                                const activeActivityParsed = getActiveActivity(subProjectActiveActivity, activeTagIndex, i, j)
-
-                                let activityExist = false
-                                if (this.activeActivities && this.activeActivities.length) {
-                                    activityExist = this.activeActivities.findIndex(k => k.projectIndex === activeActivityParsed.projectIndex && k.subProjectIndex === activeActivityParsed.subProjectIndex) > -1
-                                }
-
-
-                                if (!activityExist) {
-
-                                    this.activeActivities.push(activeActivityParsed)
-                                }
-
-                                filteredProjects[i].tasks[j].isActive = true
-                            }
-                            else {
-
-                                filteredProjects[i].tasks[j].isActive = false
-                            }
-
-
-                            //filteredProjects[i].tasks[j].activities = filteredProjects[i].tasks[j].activities.map(a => ({
-                            //    ...a,
-                            //    oFromDate: moment(a.fromDate),
-                            //    oToDate: a.toDate ? moment(a.toDate) : null,
-                            //}))
-                        }
-                    }
-
-                    //console.log({filteredProjects})
-
-                    this.filteredProjects = filteredProjects
-
-                    //SetTimeSheetProjetsActivities(this, r.data)
-                })
-                .catch(e => {
-                    console.warn({ e })
-                })
-                .then(() => {
-                    this.filteredProjectsLoading = false
-                })
+            if (this.selectedTask) {
+                this.openTaskActivities(this.selectedTask)
+            }
         },
         toggleReadOnly: function () {
             this.readOnly = !this.readOnly
