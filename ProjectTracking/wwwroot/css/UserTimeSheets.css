@@ -147,7 +147,7 @@
   font-size: 0.8em;
 }
 #UserTimeSheets .user-timesheets-content__projects .timesheet-subProjects .item-subproject-activity:hover {
-  background-color: #BDD2E1;
+  background-color: #5eb0ed;
 }
 #UserTimeSheets .user-timesheets-content .task-activities {
   flex: 1;
@@ -311,6 +311,7 @@ table td {
   padding: 0.5em 0.7em;
   cursor: pointer;
   border-radius: 15px;
+  position: relative;
 }
 .assigned-tasks .assigned-task:not(.active):hover {
   background-color: #9de8fb;
@@ -411,6 +412,18 @@ table td {
   pointer-events: none;
   background-color: #eeeeee;
   border: none;
+}
+.active-task-flag {
+  position: absolute;
+  right: 10px;
+  top: 11px;
+  height: 12px;
+  width: 12px;
+  display: block;
+  background-color: #ffd800;
+  border: 1px solid #ffd800;
+  border-radius: 50%;
+  animation: blinker 2s linear infinite;
 }
 @media (max-width: 991px) {
   #UserTimeSheets {

@@ -19,6 +19,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         TimeSheetActivity Start(int timeSheetTaskId, string ipAddress);
         TimeSheetActivity Stop(TimeSheetActivityStopModel model);
         TimeSheetActivity Update(TimeSheetActivityUpdateModel model);
-        TimeSheetActivity GetUserActiveActivity(string userId);
+        TimeSheetActivity GetUserActiveActivity(string userId, bool includeTask);
     }
 }

@@ -184,7 +184,7 @@ namespace ProjectTracking.Data.Methods
             return db.TimeSheetActivities.Any(k => timesheetIds.Contains(k.TimeSheetTask.TimeSheetId) && !k.ToDate.HasValue && !k.DeletedAt.HasValue);
         }
 
-        public TimeSheetActivity GetUserActiveActivity(string userId)
+        public TimeSheetActivity GetUserActiveActivity(string userId, bool includeTask)
         {
             List<int> timesheetIds = db.TimeSheets.Where(k => k.UserId == userId)
                 .Select(k => k.ID).ToList();
@@ -195,11 +195,27 @@ namespace ProjectTracking.Data.Methods
             }
 
             var dbActiveActivity = db.TimeSheetActivities
+                .Include(k => k.TimeSheetTask)
                 .Include(k => k.IpAddress)
                 .FirstOrDefault(k => timesheetIds.Contains(k.TimeSheetTask.TimeSheetId) && !k.ToDate.HasValue && !k.DeletedAt.HasValue);
 
+            if (dbActiveActivity == null)
+            {
+                return null;
+            }
 
-            return dbActiveActivity != null ? _mapper.Map<TimeSheetActivity>(dbActiveActivity) : null;
+            TimeSheetActivity activity = _mapper.Map<TimeSheetActivity>(dbActiveActivity);
+
+            if (includeTask)
+            {
+                var dbTask = db.ProjectTasks.First(k => k.ID == activity.TimeSheetTask.ProjectTaskId);
+
+                activity.ProjectTask = _mapper.Map<ProjectTask>(dbTask);
+            }
+
+            //activity.ProjectTask = db.ProjectTasks.First(k=>k.ID == activity.TimeSheetTask)
+
+            return activity;
         }
 
         //public TimeSheetActivity Add(TimeSheetActivity activity, string ipAddress)

@@ -86,7 +86,7 @@
 
                         <div class="assigned-task" :class="{'active':(selectedTask ? selectedTask.id === task.id :false)}" v-for="(task,taskIdx) in project.tasks"
                              @@click="openTaskActivities(task)">
-                            {{task.title}}
+                            <i v-if="tasksFilter.selectedStatusKey === null" :class="getTaskStatusIcon(task)"></i> {{task.title}} <span class="active-task-flag" v-if="activeTask && activeTask.id === task.id"></span>
                         </div>
 
                         @*<table class="timesheet-tasks">
@@ -166,7 +166,7 @@
 
                 </div>
 
-                <p v-if="!taskActivities.data.length" class="nothing-here">Nothing Here! <i class="fa fa-cat"></i>  </p>
+                <p v-if="!taskActivities.isLoading && !taskActivities.data.length" class="nothing-here">Nothing Here! <i class="fa fa-cat"></i>  </p>
                 <h5 v-if="taskActivities.message">{{taskActivities.message}}</h5>
 
                 <div class="c-box-view">
@@ -199,7 +199,7 @@
 
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Activity - {{activityModal.title}} {{activityModal.form.id === 0 ? '(New)' : `(A${activityModal.form.id})`}} - {{activeSubProject ? activeSubProject.title : ''}}  <i class="main-dark-color"> @@{{activityModal.form.ipAddressDisplay}}</i> </h4>
+                    <h4 class="modal-title">Activity - {{activityModal.title}} {{activityModal.form.id === 0 ? '(New)' : `(A${activityModal.form.id})`}} - {{activeTask ? activeTask.title : ''}}  <i class="main-dark-color"> @@{{activityModal.form.ipAddressDisplay}}</i> </h4>
                 </div>
 
                 <div v-if="!(activityModal.isDeleted || activityModal.isSaved)" class="modal-body" v-bind:class="{'disabled-section': activityModal.isLoading || activityModal.isDeleting , 'readonly-section' : readOnly }">

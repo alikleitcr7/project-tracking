@@ -330,7 +330,7 @@
   color: #3c7fb1 !important;
 }
 .main-light-color {
-  color: #BDD2E1;
+  color: #5eb0ed;
 }
 .main-color {
   color: #549bd0;
@@ -411,7 +411,7 @@
   border: 1px solid #3c7fb1;
 }
 .Button-Danger:hover {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(218, 237, 251, 0.85);
 }
 .TextCenter {
   text-align: center;

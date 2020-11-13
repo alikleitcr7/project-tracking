@@ -662,7 +662,7 @@ var user_timesheet_app = new Vue({
                     const projects = this.activeTimeSheet.projects
 
 
-                   
+
 
 
                     //.projects.map(k => ({
@@ -1005,7 +1005,23 @@ var user_timesheet_app = new Vue({
             }
 
             return filterStatus.icon + ' ' + getTaskFilterClass(filterStatus)
-        }
+        },
+        getTaskStatusIcon: function (task) {
+
+            if (!task) {
+                return null
+            }
+
+            const statusCode = task.statusCode
+
+            const filterStatus = this.tasksFilter.statuses.find(k => k.key === statusCode)
+
+            if (!filterStatus) {
+                return null
+            }
+
+            return filterStatus.icon + ' ' + getTaskFilterClass(filterStatus)
+        },
     },
     mounted: function () {
 
@@ -1071,11 +1087,13 @@ var user_timesheet_app = new Vue({
                 this.timesheetsAreLoading = false
             })
 
-        TimeSheetActivitiesService.GetUserActiveActivity(userId)
+        TimeSheetActivitiesService.GetUserActiveActivity(userId, true)
             .then((r) => {
                 const record = r.data
 
                 this.activeActivity = record
+
+                this.activeTask = record.projectTask
             })
             .catch((e) => {
                 const errorMessage = getAxiosErrorMessage(e)

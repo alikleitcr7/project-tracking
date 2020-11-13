@@ -21,9 +21,9 @@ const TimeSheetActivitiesService = {
 
         return axios.post(url, model)
     },
-    GetUserActiveActivity: function (userId) {
+    GetUserActiveActivity: function (userId, includeTask) {
 
-        const query = serialize({ userId })
+        const query = serialize({ userId, includeTask})
 
         let url = TIMESHEET_ACTIVITIES_SERVICE_URI(`GetUserActiveActivity?${query}`)
 

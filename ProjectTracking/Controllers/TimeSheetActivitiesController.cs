@@ -84,11 +84,11 @@ namespace ProjectTracking.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetUserActiveActivity(string userId)
+        public IActionResult GetUserActiveActivity(string userId, bool includeTask)
         {
             try
             {
-                TimeSheetActivity activity = _activitiesMethods.GetUserActiveActivity(userId);
+                TimeSheetActivity activity = _activitiesMethods.GetUserActiveActivity(userId, includeTask);
 
                 return Ok(activity);
             }
