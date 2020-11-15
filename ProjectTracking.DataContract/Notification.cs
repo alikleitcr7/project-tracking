@@ -32,6 +32,15 @@ namespace ProjectTracking.DataContract
             }
         }
 
+        public bool IsNew
+        {
+            get
+            {
+                return !IsRead;
+
+            }
+        }
+
         public string DateSentDisplay
         {
             get

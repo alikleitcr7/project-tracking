@@ -76,8 +76,8 @@ namespace ProjectTracking.Data.Methods
             {
                 foreach (var user in userIds)
                 {
+                    SetHasNotificationFlag(user, true);
                     await _notificationsHub.Clients.User(user).SendAsync("ReceiveNotification", sent);
-
                 }
                 //await _notificationsHub.Clients.Users(userIds).SendAsync("ReceiveNotification", sent);
             }
@@ -114,6 +114,18 @@ namespace ProjectTracking.Data.Methods
             _context.SaveChanges();
         }
 
+        public bool GetHasNotificationFlag(string userId)
+        {
+            var dbUser = _context.Users.FirstOrDefault(k => k.Id == userId);
+
+            if (dbUser == null)
+            {
+                throw new ClientException("not found");
+            }
+
+            return dbUser.NotificationFlag;
+        }
+
         public async Task<UserNotification> Send(string fromUserId, string toUserId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false, int? timesheetId = null, int? projectId = null, int? taskId = null)
         {
             DataSets.UserNotification notification = new DataSets.UserNotification()
@@ -135,6 +147,8 @@ namespace ProjectTracking.Data.Methods
 
             if (sendLiveNotification && sent != null)
             {
+                SetHasNotificationFlag(sent.ToUserId, true);
+
                 await _notificationsHub.Clients.User(sent.ToUserId).SendAsync("ReceiveNotification", sent);
             }
 

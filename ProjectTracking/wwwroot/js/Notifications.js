@@ -103,6 +103,18 @@ var notification_app = new Vue({
 
             notifications[idx].isNew = false
 
+            NotificationService.MarkAsRead(notifications[idx].id)
+                .then((r) => {
+                    const record = r.data
+                })
+                .catch((e) => {
+                    const errorMessage = getAxiosErrorMessage(e)
+                    console.error(errorMessage)
+                })
+                .then(() => {
+
+                })
+
             this.notifications = notifications
         },
         changeTabIndex: function (idx) {
@@ -112,6 +124,18 @@ var notification_app = new Vue({
             let data = [...this.broadcasts.data]
 
             data[idx].isNew = false
+
+            BroadcastService.MarkAsRead(data[idx].id)
+                .then((r) => {
+                    const record = r.data
+                })
+                .catch((e) => {
+                    const errorMessage = getAxiosErrorMessage(e)
+                    console.error(errorMessage)
+                })
+                .then(() => {
+
+                })
 
             this.broadcasts.data = data
         },
@@ -166,7 +190,7 @@ var notification_app = new Vue({
             const hasNewBroadcasts = this.broadcasts.data.findIndex(k => k.isNew) > -1
             const hasNewUserNotification = this.notifications.findIndex(k => k.isNew) > -1
 
-            console.log({ hasNewBroadcasts, hasNewUserNotification})
+            console.log({ hasNewBroadcasts, hasNewUserNotification })
 
             return {
                 'new-broadcast': hasNewBroadcasts,

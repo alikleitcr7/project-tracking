@@ -64,18 +64,24 @@ const NotificationService = {
 
     MarkAsRead: function (id) {
 
-        let data = { id };
+        let query = serialize({ id })
 
-        let url = BROADCASTS_SERVICE_URI(`MarkAsRead`)
+        let url = NOTIFICATIONS_SERVICE_URI(`MarkAsRead?${query}`)
 
-        return axios.put(url, data);
+        return axios.put(url);
+    },
+    GetHasNotificationFlag: function () {
+
+        const url = NOTIFICATIONS_SERVICE_URI(`GetHasNotificationFlag`)
+
+        return axios.get(url);
     },
     SetHasNotificationFlag: function (hasNotification) {
 
-        let data = { hasNotification };
+        const query = serialize({ hasNotification });
 
-        let url = BROADCASTS_SERVICE_URI(`SetHasNotificationFlag`)
+        const url = NOTIFICATIONS_SERVICE_URI(`SetHasNotificationFlag?${query}`)
 
-        return axios.put(url, data);
+        return axios.put(url);
     },
 }

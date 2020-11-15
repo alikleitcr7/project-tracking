@@ -31,10 +31,10 @@ const BroadcastService = {
     },
     MarkAsRead: function (id) {
 
-        let data = { id };
+        let query = serialize({ id })
 
-        let url = BROADCASTS_SERVICE_URI(`MarkAsRead`)
+        let url = BROADCASTS_SERVICE_URI(`MarkAsRead?${query}`)
 
-        return axios.put(url, data);
+        return axios.put(url);
     },
 }

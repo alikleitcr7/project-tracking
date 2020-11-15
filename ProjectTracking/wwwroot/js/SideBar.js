@@ -6,12 +6,32 @@
     },
     methods: {
         handleSideBarNotificationClick: function () {
+
             this.hasNewNotification = false
+
+            NotificationService.SetHasNotificationFlag(false)
+                .then((r) => {
+                    const record = r.data
+                })
+                .catch((e) => {
+                    const errorMessage = getAxiosErrorMessage(e)
+                    console.error(errorMessage)
+                })
 
             $('#NotificationModal').modal('show')
         },
     },
     mounted: function () {
 
+        NotificationService.GetHasNotificationFlag()
+            .then((r) => {
+                const record = r.data
+
+                this.hasNewNotification = record
+            })
+            .catch((e) => {
+                const errorMessage = getAxiosErrorMessage(e)
+                console.error(errorMessage)
+            })
     }
 })

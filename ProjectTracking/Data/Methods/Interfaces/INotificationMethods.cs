@@ -7,6 +7,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
     public interface INotificationMethods
     {
         List<UserNotification> GetFromUser(string fromUserId, int page, int countPerPage, out int totalCount);
+        bool GetHasNotificationFlag(string userId);
         List<UserNotification> GetToUser(string toUserId, int page, int countPerPage, out int totalCount);
         void MarkAsRead(int id);
         Task<UserNotification> Send(string fromUserId, string toUserId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false, int? timesheetId = null, int? projectId = null,int? timeSheetTaskId= null);
