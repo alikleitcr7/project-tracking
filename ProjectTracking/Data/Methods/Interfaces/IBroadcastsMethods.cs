@@ -9,6 +9,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         Broadcast Get(int id);
         List<Broadcast> GetFromUser(string fromUserId, int page, int countPerPage, out int totalCount);
         List<Broadcast> GetToTeam(int toTeamId, int page, int countPerPage, out int totalCount);
+        void MarkAsRead(int id);
         Task<Broadcast> Send(string fromUserId, int toTeamId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false);
     }
 }

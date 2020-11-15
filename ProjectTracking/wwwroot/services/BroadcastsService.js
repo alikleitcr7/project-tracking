@@ -29,4 +29,12 @@ const BroadcastService = {
 
         return axios.post(url, data);
     },
+    MarkAsRead: function (id) {
+
+        let data = { id };
+
+        let url = BROADCASTS_SERVICE_URI(`MarkAsRead`)
+
+        return axios.put(url, data);
+    },
 }

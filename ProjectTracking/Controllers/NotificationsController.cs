@@ -114,6 +114,49 @@ namespace ProjectTracking.Controllers
 
         }
 
+        [HttpPut]
+        public IActionResult MarkAsRead(int id)
+        {
+            try
+            {
+                _notificationMethods.MarkAsRead(id);
+
+                return Ok(true);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
+        }
+
+
+        [HttpPut]
+        public IActionResult SetHasNotificationFlag(bool hasNotificaion)
+        {
+            try
+            {
+                string userId = GetCurrentUserId();
+
+                _notificationMethods.SetHasNotificationFlag(userId, hasNotificaion);
+
+                return Ok(true);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
+        }
+
         public class SendBroadCastObject
         {
             public List<string> selectedUserIds { get; set; }

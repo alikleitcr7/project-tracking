@@ -38,6 +38,21 @@ namespace ProjectTracking.Data.Methods
                 .Include(k => k.ToTeam);
         }
 
+
+        public void MarkAsRead(int id)
+        {
+            var dbBroadcast = _context.Broadcasts.FirstOrDefault(k => k.ID == id);
+
+            if (dbBroadcast == null)
+            {
+                throw new ClientException("not found");
+            }
+
+            dbBroadcast.IsRead = true;
+
+            _context.SaveChanges();
+        }
+
         public async Task<Broadcast> Send(string fromUserId, int toTeamId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false)
         {
             // get users under the team that user is supervising...

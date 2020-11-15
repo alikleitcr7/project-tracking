@@ -132,6 +132,25 @@ namespace ProjectTracking.Controllers
         }
 
 
+        [HttpPut]
+        public IActionResult MarkAsRead(int id)
+        {
+            try
+            {
+                _broadcastsMethods.MarkAsRead(id);
+
+                return Ok(true);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+
+        }
 
         public class SendBroadcastObject
         {

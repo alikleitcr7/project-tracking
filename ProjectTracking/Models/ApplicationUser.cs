@@ -34,6 +34,7 @@ namespace ProjectTracking
         public short RoleCode { get; set; }
 
         public Team Team { get; set; }
+        public bool? NotificationFlag { get; set; }
 
         //public List<TimeSheetActivity> TimeSheetActivities { get; set; }
         public ApplicationUser RoleAssignedByUser { get; set; }

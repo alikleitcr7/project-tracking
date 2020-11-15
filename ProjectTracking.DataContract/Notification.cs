@@ -11,7 +11,7 @@ namespace ProjectTracking.DataContract
         public int ID { get; set; }
         public string FromUserId { get; set; }
         public string Message { get; set; }
-        //public bool IsRead { get; set; }
+        public bool IsRead { get; set; }
 
         public NotificationType NotificationType
         {

@@ -86,6 +86,34 @@ namespace ProjectTracking.Data.Methods
         }
 
 
+        public void MarkAsRead(int id)
+        {
+            var dbNotification = _context.UserNotifications.FirstOrDefault(k => k.ID == id);
+
+            if (dbNotification == null)
+            {
+                throw new ClientException("not found");
+            }
+
+            dbNotification.IsRead = true;
+
+            _context.SaveChanges();
+        }
+
+        public void SetHasNotificationFlag(string userId, bool hasNotificaion)
+        {
+            var dbUser = _context.Users.FirstOrDefault(k => k.Id == userId);
+
+            if (dbUser == null)
+            {
+                throw new ClientException("not found");
+            }
+
+            dbUser.NotificationFlag = hasNotificaion;
+
+            _context.SaveChanges();
+        }
+
         public async Task<UserNotification> Send(string fromUserId, string toUserId, string message, NotificationType notificationType = NotificationType.Default, bool sendLiveNotification = false, int? timesheetId = null, int? projectId = null, int? taskId = null)
         {
             DataSets.UserNotification notification = new DataSets.UserNotification()
