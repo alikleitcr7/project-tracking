@@ -1,0 +1,68 @@
+﻿<div id="TaskDetailsModal" class="modal fade" v-if="selectedTask"   role="dialog">
+
+    <div class="modal-dialog modal-lg" :class="selectedTask.statusDisplay ? selectedTask.statusDisplay.toLowerCase() : ''">
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Task</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="projectTask-container">
+
+                    <div class=" scrollable-container-400">
+
+                        <div class="input-group-container">
+                            <div class="input-group-item">
+                                <label for="usr">Title</label>
+                                <label class="readonly-block-label" >{{selectedTask.title}}</label>
+                            </div>
+                            <div class="input-group-item">
+                                <label>Status</label>
+                                <label class="readonly-block-label" >{{selectedTask.statusDisplay}}</label>
+                            </div>
+
+                            <div class="input-group-item">
+                            
+                            </div>
+
+                        </div>
+
+                        <div class="input-group-container">
+                            <div class="input-group-item">
+                                <label>Start Date</label>
+                                <label class="readonly-block-label" >{{selectedTask.startDateDisplay}}</label>
+                            </div>
+                            <div class="input-group-item">
+                                <label>Planned End Date</label>
+                                <label class="readonly-block-label" >{{selectedTask.plannedEndDisplay}}</label>
+                            </div>
+                            <div class="input-group-item">
+                                <label>Actual End Date</label>
+                                <label class="readonly-block-label" >{{selectedTask.actualEndDisplay}}</label>
+                            </div>
+                        </div>
+
+                        <div class="input-group-container" v-if="selectedTask.description">
+                            <div class="input-group-item">
+                                <label>Description</label>
+                                <label class="readonly-block-label" >{{selectedTask.description}}</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="s-btn s-btn-outline" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>

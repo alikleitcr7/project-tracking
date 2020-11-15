@@ -328,6 +328,9 @@
     <Content Update="Views\Teams\Shared\SupervisorTeams.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Views\TimeSheets\TaskDetails.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

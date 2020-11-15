@@ -68,6 +68,7 @@ var colors = {
     mainDark: '#1776b0',
     pending: 'rgba(247, 132, 56, 0.75)',
     done: 'rgba(63, 204, 53, 0.75)',
+    doneLight: 'rgba(63, 204, 53, 0.55)',
     progress: 'rgba(75, 89, 255, 0.75)',
     failed: 'rgba(187, 0, 0, 0.75)',
 }

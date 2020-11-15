@@ -507,6 +507,7 @@ namespace ProjectTracking.Data.Methods
               .AsNoTracking()
               .Where(k => projectsIds.Contains(k.ID))
               .Select(_mapper.Map<Project>)
+              .OrderBy(k => k.StartDate.HasValue ? k.StartDate : k.DateAdded)
               .ToList();
 
             // connect projects with their tasks
@@ -521,6 +522,7 @@ namespace ProjectTracking.Data.Methods
 
                         return task;
                     })
+                    .OrderBy(k => k.StartDate.HasValue ? k.StartDate : k.DateAdded)
                     .ToList();
             }
 

@@ -29,8 +29,8 @@ body {
   display: block;
   overflow-y: auto;
   overflow-x: hidden;
-  background-color: #3c7fb1;
-  border-right: 2px solid #3c7fb1;
+  background-color: rgba(0, 147, 233, 0.67);
+  background-image: linear-gradient(160deg, #0093e9 0%, #80D0C7 100%);
   -webkit-box-shadow: 1px -1px 7px 0px #a3a3a3;
   -moz-box-shadow: 1px -1px 7px 0px #a3a3a3;
   box-shadow: 1px -1px 7px 0px #a3a3a3;
@@ -156,6 +156,9 @@ ul {
   display: block;
   font-weight: normal;
 }
+.table-gray-header th {
+  background-color: #eeeeee;
+}
 .readonly-select {
   font-weight: normal;
   border: none;
@@ -255,7 +258,7 @@ body:not(.is-logon).sidebar-collapsed .side-bar .side-bar-item .icon {
   border-top: none;
 }
 .bootbox-default .modal-header {
-  border-bottom: 3px solid #549bd0;
+  border-bottom: 3px solid #0093e9;
 }
 .bootbox-default .modal-footer {
   border-top: none;
@@ -352,7 +355,7 @@ p.skeleton-loading-item::after {
   border: none;
   padding: 0.5em 1em;
   text-decoration: none;
-  background-color: #549bd0;
+  background-color: #0093e9;
   color: #fff;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -367,10 +370,10 @@ p.skeleton-loading-item::after {
 }
 .s-btn.s-btn-primary {
   color: #fff;
-  border: 1px solid #549bd0;
+  border: 1px solid #0093e9;
 }
 .s-btn.s-btn-primary:hover {
-  background-color: #3c7fb1;
+  background-color: #0082ce;
 }
 .s-btn.s-btn-outline {
   background-color: transparent;
@@ -382,8 +385,8 @@ p.skeleton-loading-item::after {
 }
 .s-btn.s-btn-outline-main {
   background-color: transparent;
-  border: 1px solid #3c7fb1;
-  color: #3c7fb1;
+  border: 1px solid #0082ce;
+  color: #0082ce;
 }
 .s-btn.s-btn-outline-main:hover {
   background-color: rgba(212, 212, 212, 0.34);
@@ -519,7 +522,7 @@ table td {
   /* scrollbar is average 1em/16px width, remove it from thead width */
 }
 .table-fixed-header-container thead th {
-  border-bottom: 2px solid #549bd0 !important;
+  border-bottom: 2px solid #0093e9 !important;
 }
 .table-fixed-header-container table {
   width: 100%;
@@ -644,7 +647,7 @@ a:focus {
   text-align: right !important;
 }
 .dataTables_wrapper .top .paginate_button.page-item.active .page-link {
-  background-color: #549bd0;
+  background-color: #0093e9;
   border: none;
   padding: 5px !important;
   border-radius: 5px;
@@ -659,7 +662,7 @@ a:focus {
   margin-top: 5px;
 }
 .dataTable thead tr th {
-  background-color: #549bd0;
+  background-color: #0093e9;
   color: #fff;
 }
 .dataTable thead tr th:first-child {
@@ -698,7 +701,7 @@ a:focus {
   opacity: 0.8;
 }
 .btn-audit {
-  background-color: #549bd0 !important;
+  background-color: #0093e9 !important;
   color: white;
 }
 .btn-audit:hover {
@@ -713,10 +716,10 @@ a:focus {
   margin: 20px 0 !important;
 }
 .nav-pills li a {
-  color: #549bd0 !important;
+  color: #0093e9 !important;
 }
 .nav-pills li.active a {
-  background-color: #549bd0 !important;
+  background-color: #0093e9 !important;
   color: white !important;
 }
 textarea {
@@ -758,12 +761,12 @@ textarea {
   padding: 5px 10px;
 }
 #Pagination .custom-pagination li a:hover {
-  color: #549bd0;
+  color: #0093e9;
 }
 #Pagination .custom-pagination li.active a {
   position: relative;
   font-weight: bold;
-  color: #549bd0;
+  color: #0093e9;
   cursor: default;
   /*&::before {
                         content: '';
@@ -785,7 +788,7 @@ textarea {
 #Pagination .custom-pagination li:first-child a,
 #Pagination .custom-pagination li:last-child a {
   border-radius: 5px;
-  background-color: #549bd0;
+  background-color: #0093e9;
   color: #fff !important;
 }
 .modal-checkboxes > span {
@@ -794,7 +797,7 @@ textarea {
 .number-animation {
   font-size: 22px;
   font-weight: bold;
-  border: 5px solid #549bd0;
+  border: 5px solid #0093e9;
   box-shadow: 0 0 10px;
   display: inline-block;
   min-width: 130px;
@@ -828,6 +831,22 @@ textarea {
 .d-flex-controls__buttons button,
 .d-flex-controls__buttons a {
   display: inline;
+}
+.tasks-rows-highlight tr td:first-child {
+  border-left: 0.5em solid;
+}
+.tasks-rows-highlight tr.pending td:first-child {
+  border-left-color: rgba(247, 132, 56, 0.74);
+}
+.tasks-rows-highlight tr.inprogress td:first-child {
+  border-left-color: rgba(75, 89, 255, 0.74);
+}
+.tasks-rows-highlight tr.done td:first-child {
+  border-left-color: rgba(63, 204, 53, 0.65);
+}
+.tasks-rows-highlight tr.failed td:first-child,
+.tasks-rows-highlight tr.terminated td:first-child {
+  border-left-color: rgba(187, 0, 0, 0.66);
 }
 @media (max-width: 767px) {
   .input-group-container {

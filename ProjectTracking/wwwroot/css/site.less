@@ -56,6 +56,11 @@ a, label, ul {
     font-weight: normal;
 }
 
+.table-gray-header{
+    th{
+        background-color:@gray-xlight;
+    }
+}
 
 .readonly-select {
     font-weight: normal;
@@ -906,6 +911,42 @@ textarea {
         button,
         a {
             display: inline;
+        }
+    }
+}
+
+.tasks-rows-highlight {
+
+    tr {
+        th {
+        }
+
+        td:first-child {
+            border-left: .5em solid;
+        }
+
+        &.pending {
+            td:first-child {
+                border-left-color: @project-proposed-color;
+            }
+        }
+
+        &.inprogress {
+            td:first-child {
+                border-left-color: @project-inprogress-color;
+            }
+        }
+
+        &.done {
+            td:first-child {
+                border-left-color: @project-done-color;
+            }
+        }
+
+        &.failed, &.terminated {
+            td:first-child {
+                border-left-color: @project-failed-color;
+            }
         }
     }
 }

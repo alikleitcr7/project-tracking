@@ -4,6 +4,10 @@ const Modals_TimeSheets = {
     ActivityModal: {
         Show: () => { $('#ActivityModal').modal('show') },
         Hide: () => { $('#ActivityModal').modal('hide') },
+    },
+    TaskDetails: {
+        Show: () => { $('#TaskDetailsModal').modal('show') },
+        Hide: () => { $('#TaskDetailsModal').modal('hide') },
     }
 }
 
@@ -957,6 +961,9 @@ var user_timesheet_app = new Vue({
 
             return filterStatus.icon + ' ' + getTaskFilterClass(filterStatus)
         },
+        openTaskDetails: function () {
+            Modals_TimeSheets.TaskDetails.Show();
+        }
     },
     mounted: function () {
 

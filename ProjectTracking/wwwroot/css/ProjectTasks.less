@@ -20,41 +20,7 @@
     opacity: 0 !important;
 }
 
-.ProjectTasks {
 
-    tr {
-        th {
-        }
-
-        td:first-child {
-            border-left: .8em solid;
-        }
-
-        &.pending {
-            td:first-child {
-                border-left-color: @project-proposed-color;
-            }
-        }
-
-        &.inprogress {
-            td:first-child {
-                border-left-color: @project-inprogress-color;
-            }
-        }
-
-        &.done {
-            td:first-child {
-                border-left-color: @project-done-color;
-            }
-        }
-
-        &.failed, &.terminated {
-            td:first-child {
-                border-left-color: @project-failed-color;
-            }
-        }
-    }
-}
 
 #ProjectTaskModal {
 

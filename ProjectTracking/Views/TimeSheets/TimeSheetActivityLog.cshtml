@@ -37,11 +37,11 @@ else
 
         <h3>Activity log for "@activity.Message" for Task "@projectTask.Title" in Project "@(projectTask.Project == null ? "-" : projectTask.Project.Title)" </h3>
         <hr />
-        <h5>
-            <i class="fa fa-user"></i> 
+        <p>
+            <i class="fa fa-user"></i>&nbsp;
             By User
-        </h5>
-        <table class="table table-sm">
+        </p>
+        <table class="table table-gray-header  ">
             <tr>
                 <th>Name</th>
                 <th>Email</th>
@@ -58,11 +58,11 @@ else
             </tr>
         </table>
 
-        <h5>
-            <i class="fa fa-paperclip"></i>
+        <p>
+            <i class="fa fa-paperclip"></i>&nbsp;
             Latest Activity
-        </h5>
-        <table class="table table-sm">
+        </p>
+        <table class="table table-gray-header ">
             <tr>
                 <th>From</th>
                 <th>To</th>
@@ -77,17 +77,17 @@ else
             </tr>
         </table>
 
-        <h5>
-            <i class="fa fa-history"></i>
+        <p>
+            <i class="fa fa-history"></i>&nbsp;
             Activity Logs
-        </h5>
+        </p>
         @if (logs.Count == 0)
         {
             <p>No logs recorded for this activity</p>
         }
         else
         {
-            <table class="table">
+            <table class="table table-gray-header ">
                 <tr>
                     <th>From</th>
                     <th>To</th>

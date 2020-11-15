@@ -124,13 +124,13 @@ const chartsHelper = {
     },
     pallete: () => {
         return [
-            '#003049',
-            '#d62828',
-            '#f77f00',
-            '#fcbf49',
-            '#219ebc',
-            '#7400b8',
-            '#80ffdb',
+            'rgba(51, 0, 225, 0.75)',
+            'rgba(214, 40, 40, 0.76)',
+            'rgba(247, 127, 0, 0.71)',
+            'rgba(252, 191, 73, 0.71)',
+            'rgba(33, 158, 188, 0.80)',
+            'rgba(116, 0, 184, 0.80)',
+            'rgba(128, 255, 219, 0.77)',
             '#cdb4db',
             '#355070',
             '#212529',
@@ -191,6 +191,11 @@ const chartsHelper = {
             const labels = activitiesFrequency.map(k => moment(k.key).format('D/MMM'))
             const data = activitiesFrequency.map((k, idx) => ({ x: idx, y: k.value }))
 
+            const background = ctx.createLinearGradient(0, 0, 0, 600);
+            background.addColorStop(0, colors.mainLightTransparent);
+            background.addColorStop(1, colors.doneLight);
+
+
             return new Chart(ctx, {
                 // The type of chart we want to create
                 type,
@@ -200,7 +205,7 @@ const chartsHelper = {
                     labels,
                     datasets: [{
                         label: 'Activities',
-                        backgroundColor: colors.mainLightTransparent,
+                        backgroundColor: background,
                         borderColor: colors.main,
                         data
                     }]
@@ -220,14 +225,18 @@ const chartsHelper = {
             const labels = activitiesMinuts.map(k => moment(k.key).format('D/MMM'))
             const data = activitiesMinuts.map((k, idx) => ({ x: idx, y: k.value }))
 
+            const background = ctx.createLinearGradient(0, 0, 0, 600);
+            background.addColorStop(0, colors.mainLightTransparent);
+            background.addColorStop(1, colors.doneLight);
+
             return new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels,
                     datasets: [{
                         label: 'Minutes',
-                        backgroundColor: colors.mainLightTransparent,
-                        borderColor: colors.main,
+                        backgroundColor: background,
+                        borderColor: colors.mainDark,
                         data
                     }]
                 },
@@ -277,7 +286,7 @@ const chartsHelper = {
             const data = metrics.map(k => taskPerformance[k.fromProp])
             const pieColors = metrics.map(k => colors[k.code])
 
-            console.log({ labels, data, pieColors })
+            //console.log({ labels, data, pieColors })
 
 
             return new Chart(ctx, {

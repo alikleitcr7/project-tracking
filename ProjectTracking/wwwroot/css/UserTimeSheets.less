@@ -465,6 +465,37 @@ table td {
     }
 }
 
+#TaskDetailsModal {
+    .modal-dialog {
+        .modal-header {
+            border-bottom: .5em solid @gray;
+        }
+
+        &.pending {
+            .modal-header {
+                border-bottom-color: @project-proposed-color;
+            }
+        }
+
+        &.inprogress {
+            .modal-header {
+                border-bottom-color: @project-inprogress-color;
+            }
+        }
+
+        &.done {
+            .modal-header {
+                border-bottom-color: @project-done-color;
+            }
+        }
+
+        &.failed, &.terminated {
+            .modal-header {
+                border-bottom-color: @project-failed-color;
+            }
+        }
+    }
+}
 
 .active-task-flag {
     position: absolute;

@@ -87,6 +87,7 @@
                         <div class="assigned-task" :class="{'active':(selectedTask ? selectedTask.id === task.id :false)}" v-for="(task,taskIdx) in project.tasks"
                              @@click="openTaskActivities(task)">
                             <i v-if="tasksFilter.selectedStatusKey === null" :class="getTaskStatusIcon(task)"></i> {{task.title}} <span class="active-task-flag" v-if="activeTask && activeTask.id === task.id"></span>
+                            @*{{task.startDateDisplay}} display this in a modal when presssing a button*@
                         </div>
 
                         @*<table class="timesheet-tasks">
@@ -129,9 +130,9 @@
 
                 <h5 v-if="selectedTask">{{selectedTask.title}} Activities</h5>
 
-                <div class="task-activities-actions" v-if="activeDateIndexIsToday">
+                <div class="task-activities-actions" >
 
-                    <template v-if="!readOnly">
+                    <template v-if="activeDateIndexIsToday && !readOnly">
 
                         <button v-if="!activeActivity" class="s-btn s-btn-outline " @@click="startActivity()"><i class="fa fa-play"></i> Start</button>
                         <button v-if="activeActivity" class="s-btn s-btn-primary " @@click="openActivityCommitModal()"><i class="fa fa-stop"></i> Stop</button>
@@ -157,12 +158,17 @@
                         </div>
 
                     </template>
-                    <template v-else="taskActivitiesHasDeleted">
+
+                    <button v-if="selectedTask" class="s-btn s-btn-outline " @@click="openTaskDetails()"><i class="fa fa-info-circle"></i> Details</button>
+
+                    <template v-if="readOnly">
                         <label class="">
                             <input type="checkbox" v-model="taskActivities.showDeleted" />
                             Show Deleted
                         </label>
                     </template>
+
+
 
                 </div>
 
@@ -190,6 +196,8 @@
         </div>
 
     </div>
+
+    <partial name="~/Views/TimeSheets/TaskDetails.cshtml" />
 
     <div id="ActivityModal" class="modal " role="dialog">
 

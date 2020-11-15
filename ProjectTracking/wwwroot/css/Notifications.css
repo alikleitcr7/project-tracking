@@ -112,7 +112,7 @@
   margin-top: 1em;
 }
 .notification-container .notification.notification-default {
-  border-color: #549bd0;
+  border-color: #0093e9;
 }
 .notification-container .notification.notification-information {
   border-color: #5f5f5f;
@@ -179,7 +179,7 @@
         overflow-x: auto;*/
 }
 .notifyjs-container [class*=shared-notification] {
-  background-color: #549bd0;
+  background-color: #0093e9;
   border-radius: 15px 0 15px 15px;
   padding: 1em;
   color: #fff;

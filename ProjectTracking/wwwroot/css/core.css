@@ -278,7 +278,7 @@
   max-height: 400px;
 }
 .clickable-link {
-  color: #3c7fb1;
+  color: #0082ce;
   cursor: pointer;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -312,7 +312,7 @@
   cursor: pointer;
 }
 .cell-arrow * {
-  fill: #3c7fb1;
+  fill: #0082ce;
 }
 .cell-arrow.rotate-180 {
   transform: rotate(180deg);
@@ -327,22 +327,22 @@
   /* Safari 3-8 */
 }
 .main-dark-color {
-  color: #3c7fb1 !important;
+  color: #0082ce !important;
 }
 .main-light-color {
-  color: #5eb0ed;
+  color: #57c1b5;
 }
 .main-color {
-  color: #549bd0;
+  color: #0093e9;
 }
 .light-color {
   color: #fff;
 }
 .main-dark-background {
-  background-color: #3c7fb1;
+  background-color: #0082ce;
 }
 .main-light-background {
-  background-color: #9de8fb;
+  background-color: #86d4cb;
 }
 .table-child {
   font-size: 0.9em;
@@ -359,7 +359,7 @@
   background-color: rgba(207, 207, 207, 0.63);
 }
 .main-background {
-  background-color: #3c7fb1;
+  background-color: #0082ce;
 }
 .BoxShadow {
   -webkit-box-shadow: -2px 3px 20px -10px rgba(0, 0, 0, 0.75);
@@ -386,11 +386,11 @@
   border: none;
   text-decoration: none;
   /*line-height:16px;*/
-  background-color: #549bd0;
+  background-color: #0093e9;
   color: #fff !important;
 }
 .Button-Shared:hover {
-  background-color: #3c7fb1;
+  background-color: #0082ce;
 }
 .Button-Shared:disabled {
   opacity: 0.5;
@@ -407,11 +407,11 @@
   border: none;
   text-decoration: none;
   background-color: #fff;
-  color: #3c7fb1 !important;
-  border: 1px solid #3c7fb1;
+  color: #0082ce !important;
+  border: 1px solid #0082ce;
 }
 .Button-Danger:hover {
-  background-color: rgba(218, 237, 251, 0.85);
+  background-color: rgba(188, 230, 225, 0.85);
 }
 .TextCenter {
   text-align: center;
@@ -433,17 +433,17 @@
 .Link-Shared {
   cursor: pointer !important;
   text-decoration: none;
-  color: #3c7fb1;
+  color: #0082ce;
 }
 .Link-Shared:not(:first-child),
 .Link-Shared:not(:last-child) {
   margin-left: 5px;
 }
 .Link-Shared:hover {
-  color: #549bd0;
+  color: #0093e9;
 }
 .Link-Shared:active {
-  color: #549bd0;
+  color: #0093e9;
 }
 .LinksSection {
   display: block;
@@ -451,17 +451,17 @@
 .LinksSection a {
   cursor: pointer !important;
   text-decoration: none;
-  color: #3c7fb1;
+  color: #0082ce;
 }
 .LinksSection a:not(:first-child),
 .LinksSection a:not(:last-child) {
   margin-left: 5px;
 }
 .LinksSection a:hover {
-  color: #549bd0;
+  color: #0093e9;
 }
 .LinksSection a:active {
-  color: #549bd0;
+  color: #0093e9;
 }
 .Button-Block-Small {
   width: 100%;
@@ -487,7 +487,7 @@
   border-top-right-radius: 5px;
   padding: 30px 0;
   text-align: center;
-  background-color: #549bd0;
+  background-color: #0093e9;
   color: #fff;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent {
@@ -514,28 +514,28 @@
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]::-webkit-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
-  color: #224865;
+  color: #004268;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=email]::-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=text]::-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]::-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select::-moz-placeholder {
   /* Firefox 19+ */
-  color: #224865;
+  color: #004268;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=email]:-ms-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=text]:-ms-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]:-ms-input-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select:-ms-input-placeholder {
   /* IE 10+ */
-  color: #224865;
+  color: #004268;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=email]:-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=text]:-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent input[type=password]:-moz-placeholder,
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select:-moz-placeholder {
   /* Firefox 18- */
-  color: #224865;
+  color: #004268;
 }
 .MiddleBoxContainerTemplate .MiddleBox .MiddleBoxContent select {
   -webkit-appearance: none;
@@ -580,10 +580,10 @@
   cursor: pointer;
 }
 .Icon-Default * {
-  fill: #3c7fb1;
+  fill: #0082ce;
 }
 .Icon-Default:hover * {
-  fill: #549bd0;
+  fill: #0093e9;
 }
 .Light-Gray-Control {
   border: none;
@@ -595,19 +595,19 @@
 }
 .Light-Gray-Control::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
-  color: #224865;
+  color: #004268;
 }
 .Light-Gray-Control::-moz-placeholder {
   /* Firefox 19+ */
-  color: #224865;
+  color: #004268;
 }
 .Light-Gray-Control:-ms-input-placeholder {
   /* IE 10+ */
-  color: #224865;
+  color: #004268;
 }
 .Light-Gray-Control:-moz-placeholder {
   /* Firefox 18- */
-  color: #224865;
+  color: #004268;
 }
 .Light-Gray-Control:focus {
   outline: none;

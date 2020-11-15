@@ -35,24 +35,28 @@
         </div>
     </div>
 
-    <div class="c-box latest-activities">
+    <div class="c-box latest-activities tasks-rows-highlight">
         <h5 class="c-box-title">Activities</h5>
         <div class="table-fixed-header-container">
             <table class="table table-sm " v-if="overview.data.latestActivities.length">
                 <thead>
                     <tr>
                         <th>Task</th>
+                        <th>By</th>
                         <th>From</th>
                         <th>To</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="activity in overview.data.latestActivities">
+                    <tr v-for="activity in overview.data.latestActivities"  :class="activity.projectTask.statusDisplay.toLowerCase()">
                         <td>
                             <a :href="`/tasks/${activity.projectTask.id}`">
                                 {{activity.projectTask.title}}
                             </a>
+                        </td>
+                        <td>
+                            <a :href="`/profile/${activity.user.id}`">{{activity.user.fullName}}</a>
                         </td>
                         <td>{{activity.fromDateDisplay}}</td>
                         <td>{{activity.toDate ? activity.toDateDisplay : 'Active'}}</td>
