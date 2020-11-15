@@ -29,7 +29,31 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException("not found, might be already deleted");
             }
 
+            var dbActivities = _context.TimeSheetActivities.Where(k => k.Address == ipAddress);
+
+            foreach (var item in dbActivities)
+            {
+                item.Address = null;
+            }
+
+            var dbActivityLogs = _context.TimeSheetActivityLogs.Where(k => k.Address == ipAddress);
+
+            foreach (var item in dbActivityLogs)
+            {
+                item.Address = null;
+            }
+
+            var dbUserLoggings = _context.UserLogging.Where(k => k.Address == ipAddress);
+
+            foreach (var item in dbUserLoggings)
+            {
+                item.Address = null;
+            }
+
+            _context.SaveChanges();
+
             _context.IpAddresses.Remove(dbRecord);
+
             _context.SaveChanges();
         }
 
@@ -134,7 +158,7 @@ namespace ProjectTracking.Data.Methods
             {
                 throw new Exception("ip address is null");
             }
-            
+
 
             if (string.IsNullOrEmpty(ipAddress.Address))
             {

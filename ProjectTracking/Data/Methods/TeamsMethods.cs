@@ -236,11 +236,18 @@ namespace ProjectTracking.Data.Methods
 
         public bool Delete(int id)
         {
-            var record = _context.Teams.FirstOrDefault(c => c.ID == id);
+            var record = _context.Teams
+                .Include(k=>k.TeamsProjects)
+                .FirstOrDefault(c => c.ID == id);
 
             if (record == null)
             {
                 throw new KeyNotFoundException();
+            }
+
+            if (record.TeamsProjects.Count > 0)
+            {
+                throw new ClientException("HAS_PROJECTS");
             }
 
             _context.Teams.Remove(record);
@@ -275,6 +282,7 @@ namespace ProjectTracking.Data.Methods
                                    ID = k.ID,
                                    Name = k.Name,
                                    MembersCount = k.Members.Count(),
+                                   HasProjects = k.TeamsProjects.Any(),
                                    DateAdded = k.DateAdded,
                                    DateAssigned = k.DateAssigned,
                                    AddedByUserId = k.AddedByUserId,
@@ -303,12 +311,42 @@ namespace ProjectTracking.Data.Methods
             }
 
             return _context.Teams
-                .Include(k => k.AddedByUser)
-                .Include(k => k.Supervisor)
-                .Include(k => k.AssignedByUser)
-                .ToList()
-                .Select(k => _mapper.Map<Team>(k))
-                .ToList();
+                 .Select(k => new Team()
+                 {
+                     ID = k.ID,
+                     Name = k.Name,
+                     HasProjects = k.TeamsProjects.Any(),
+                     DateAdded = k.DateAdded,
+                     DateAssigned = k.DateAssigned,
+                     AddedByUserId = k.AddedByUserId,
+                     SupervisorId = k.SupervisorId,
+                     AssignedByUserId = k.AssignedByUserId,
+                     AddedByUser = new User()
+                     {
+                         Id = k.AddedByUser.Id,
+                         FirstName = k.AddedByUser.FirstName,
+                         LastName = k.AddedByUser.LastName,
+                     },
+                     Supervisor = new User()
+                     {
+                         Id = k.Supervisor.Id,
+                         FirstName = k.Supervisor.FirstName,
+                         LastName = k.Supervisor.LastName,
+                     },
+                     AssignedByUser = new User()
+                     {
+                         Id = k.AssignedByUser.Id,
+                         FirstName = k.AssignedByUser.FirstName,
+                         LastName = k.AssignedByUser.LastName,
+                     }
+                 }).ToList();
+
+            //.Include(k => k.AddedByUser)
+            //.Include(k => k.Supervisor)
+            //.Include(k => k.AssignedByUser)
+            //.ToList()
+            //.Select(k => _mapper.Map<Team>(k))
+            //.ToList();
         }
 
         public List<SupervisorLog> GetSupervisorLog(int teamId)
@@ -347,6 +385,7 @@ namespace ProjectTracking.Data.Methods
         public Team GetById(int id, bool includeMembers = true)
         {
             IQueryable<DataSets.Team> query = _context.Teams
+                .Include(k => k.TeamsProjects)
                 .Include(k => k.AddedByUser)
                 .Include(k => k.Supervisor)
                 .Include(k => k.AssignedByUser);
@@ -365,6 +404,7 @@ namespace ProjectTracking.Data.Methods
 
             Team pendingRecord = _mapper.Map<Team>(dbTeam);
             pendingRecord.MembersCount = dbTeam.Members?.Count;
+            pendingRecord.HasProjects = dbTeam.TeamsProjects?.Count > 0;
 
             return pendingRecord;
         }

@@ -36,6 +36,8 @@ namespace ProjectTracking.DataContract
             }
         }
 
+        public bool? HasProjects { get; set; }
+
         public User Supervisor { get; set; }
         public User AddedByUser { get; set; }
         public User AssignedByUser { get; set; }

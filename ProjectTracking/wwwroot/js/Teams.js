@@ -335,7 +335,15 @@ const teamsMethods = {
 
                 console.error('delete', e)
 
-                this.teams_setMessage(BASIC_ERROR_MESSAGE)
+                let errorMessage = getAxiosErrorMessage(e)
+
+                if (errorMessage === 'HAS_PROJECTS') {
+                    errorMessage = 'team has been assigned projects and cannot be deleted'
+
+                    this.teams_getAll();
+                }
+
+                this.teams_setMessage(errorMessage)
 
             })
             .then(() => {
@@ -348,7 +356,7 @@ const teamsMethods = {
         this.teams_setLoading(true)
         this.teams_setMessage('Loading...')
 
-        return TeamsService.GetAll()
+        return TeamsService.GetAll(true)
             .then((r) => {
 
                 /** @type {IClientResponseModel<ISubject>} */

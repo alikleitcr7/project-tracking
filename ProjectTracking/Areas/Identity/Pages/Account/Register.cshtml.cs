@@ -20,7 +20,7 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger<RegisterModel> _logger;
+        //private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly ApplicationDbContext _context;
         //private readonly RoleManager<ApplicationIdentityRole> _roleManager;
@@ -31,7 +31,7 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger,
+            //ILogger<RegisterModel> logger,
             IConfiguration configuration,
             IEmailSender emailSender,
             ApplicationDbContext context
@@ -41,7 +41,7 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
             _userManager = userManager;
             _configuration = configuration;
             _signInManager = signInManager;
-            _logger = logger;
+            //_logger = logger;
             //_roleManager = roleManager;
             _emailSender = emailSender;
         }
@@ -81,7 +81,7 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            //[StringLength(100, ErrorMessage = "The {0} must be at least {2} and max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -139,11 +139,27 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                string password = Input.Password;
+                var validator = new PasswordValidator<ApplicationUser>();
+                var result_password = await validator.ValidateAsync(_userManager, null, password);
+
+                if (!result_password.Succeeded)
+                {
+                    ViewData["ErrorMessage"] = "Password should be at least 6 characters and contain at least one upper-case and one digit";
+                    return Page();
+                }
+
+                if (_context.Users.Any(k => k.Email == Input.Email.ToLower()))
+                {
+                    ViewData["ErrorMessage"] = "Email already exist";
+                    return Page();
+                }
+
                 var user = new ApplicationUser
                 {
-                    UserName = Input.Email,
+                    UserName = Input.Email.ToLower(),
                     NormalizedUserName = Input.Email.ToUpper(),
-                    Email = Input.Email,
+                    Email = Input.Email.ToLower(),
                     NormalizedEmail = Input.Email.ToUpper(),
                     EmailConfirmed = false,
                     //CompanyID = Input.CompanyID,
@@ -154,11 +170,12 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
                     RoleCode = (short)role.Value
                 };
 
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    //_logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 

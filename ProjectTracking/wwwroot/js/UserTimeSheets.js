@@ -407,6 +407,7 @@ var user_timesheet_app = new Vue({
 
                     if (this.activeActivity && this.activeActivity.id === id) {
                         this.activeActivity = null
+                        this.activeTask = null
                     }
 
                     activityModal.isDeleted = true

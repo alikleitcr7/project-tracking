@@ -223,12 +223,11 @@ namespace ProjectTracking
 
             services.Configure<IdentityOptions>(options =>
             {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 5;
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
                 options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
+                options.Password.RequireUppercase = true;
                 options.Password.RequireNonAlphanumeric = false;
-
             });
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
