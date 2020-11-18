@@ -183,7 +183,7 @@ namespace ProjectTracking.Controllers
 
         public class SendNotificationObject
         {
-            public string fromUserId { get; set; }
+            //public string fromUserId { get; set; }
             public string toUserId { get; set; }
             public string message { get; set; }
             public NotificationType notificationType { get; set; }
@@ -218,7 +218,7 @@ namespace ProjectTracking.Controllers
 
         public async Task<UserNotification> Send([FromBody]SendNotificationObject model)
         {
-            UserNotification notification = await _notificationMethods.Send(model.fromUserId, model.toUserId, model.message, model.notificationType, true);
+            UserNotification notification = await _notificationMethods.Send(GetCurrentUserId(), model.toUserId, model.message, model.notificationType, true);
 
             //if (notification != null)
             //{

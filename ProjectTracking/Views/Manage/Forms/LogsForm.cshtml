@@ -41,6 +41,7 @@
                 <th>Status</th>
                 <th>From Date</th>
                 <th>To Date </th>
+                <th>Duration </th>
                 <th>Location</th>
             </tr>
         </thead>
@@ -51,6 +52,7 @@
                 <td v-bind:class="{'text-success  text-bold ':userIsActive(userLog)}">{{userLog.logStatusDisplay}}</td>
                 <td>{{userLog.displayFromDate}}</td>
                 <td>{{userLog.displayToDate}}</td>
+                <td>{{userLog.durationDisplay}}</td>
                 <td>{{userLog.ipAddressDisplay}}</td>
             </tr>
         </tbody>

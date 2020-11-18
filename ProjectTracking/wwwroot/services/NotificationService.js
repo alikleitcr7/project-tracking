@@ -37,9 +37,9 @@ const NotificationService = {
 
         return axios.get(url);
     },
-    Send: function (fromUserId, toUserId, message, notificationType) {
+    Send: function (toUserId, message, notificationType) {
 
-        let data = { fromUserId, toUserId, message, notificationType };
+        let data = { toUserId, message, notificationType };
 
         let url = NOTIFICATIONS_SERVICE_URI(`Send`)
 

@@ -50,7 +50,7 @@
 
             <tbody>
 
-                <tr v-for="(item ,idx) in usersNotifications.data">
+                <tr v-for="(item ,idx) in usersNotifications.data" :class="item.notificationTypeDisplay.toLowerCase()">
                     <td>
                         {{item.id}}
                     </td>
@@ -103,8 +103,8 @@
                     </div>
 
                     <ul class="nav nav-tabs" v-show="isAdmin" >
-                        <li class="active"><a data-toggle="tab" href="#MembersTab"><span v-bind:class="{'text-danger':!usersNotifications.form.record.selectedUserIds.length  }"> Members</span></a></li>
-                        <li><a data-toggle="tab" href="#SupervisorTab"><span v-bind:class="{'text-danger':!usersNotifications.form.record.selectedUserIds.length  }">Supervisors</span> </a></li>
+                        <li class="active"><a data-toggle="tab" href="#MembersTab"><span v-bind:class="{'text-danger':!usersNotifications.form.record.selectedUserId}"> Members</span></a></li>
+                        <li><a data-toggle="tab" href="#SupervisorTab"><span v-bind:class="{'text-danger':!usersNotifications.form.record.selectedUserId  }">Supervisors</span> </a></li>
                     </ul>
 
                     <div class="tab-content">
@@ -116,7 +116,7 @@
 
                                 <p v-show="!teamMembers.isLoading && !teamMembers.data.length">There are currently no team members registered!</p>
                                 <p v-for="(user, idx) in teamMembers.data">
-                                    <input type="checkbox" :value="user.key" v-model="usersNotifications.form.record.selectedUserIds" />
+                                    <input type="radio" :value="user.key" v-model="usersNotifications.form.record.selectedUserId" />
                                     {{user.value}}
                                 </p>
                             </div>
@@ -129,7 +129,7 @@
 
                                 <p v-show="!supervisors.isLoading && !supervisors.data.length">There are currently no team supervisors registered!</p>
                                 <p v-for="(user, idx) in supervisors.data">
-                                    <input type="checkbox" :value="user.key" v-model="usersNotifications.form.record.selectedUserIds" />
+                                    <input type="radio" :value="user.key" v-model="usersNotifications.form.record.selectedUserId" />
                                     {{user.value}}
                                 </p>
                             </div>

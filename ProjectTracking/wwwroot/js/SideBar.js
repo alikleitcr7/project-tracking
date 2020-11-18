@@ -33,5 +33,25 @@
                 const errorMessage = getAxiosErrorMessage(e)
                 console.error(errorMessage)
             })
+
+        const pathname = window.location.pathname
+        const items = $('.side-bar-item')
+
+        for (var i = 0; i < items.length; i++) {
+            const item = items.eq(i)
+            const href = item.attr('href')
+            const altPaths = item.attr('data-alt-paths')
+
+            if (!href) {
+                continue
+            }
+
+            if ((pathname === href )|| (altPaths && altPaths.split(',').includes(pathname))) {
+                item.addClass('active')
+                break
+            }
+
+        }
+
     }
 })

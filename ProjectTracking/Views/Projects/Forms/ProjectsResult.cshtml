@@ -116,21 +116,21 @@
 
                     <td>
                         <a class="s-btn s-btn-sm s-btn-outline" :href="`/projects/${item.id}`">
-                            Tasks
+                            <i class="fa fa-tasks"></i> Tasks
                         </a>
 
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
                                 v-on:click="projects_viewStatusesModification(item)">
-                            Status History
+                            <i class="fa fa-history"></i> Status History
                         </button>
 
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
                                 v-on:click="projects_edit(idx)">
-                            Edit
+                            <i class="fa fa-edit"></i> Edit
                         </button>
                         <button class="s-btn s-btn-sm s-btn-danger" type="button" v-if="!item.hasTasks"
                                 v-on:click="projects_delete(idx)">
-                            Delete
+                            <i class="fa fa-trash"></i> 
                         </button>
                     </td>
 

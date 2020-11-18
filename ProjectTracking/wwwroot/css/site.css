@@ -101,6 +101,9 @@ body {
 .side-bar .side-bar-item {
   position: relative;
 }
+.side-bar .side-bar-item.active {
+  background-color: #0082ce;
+}
 .side-bar .buttons a {
   display: block;
   width: 100%;
@@ -229,7 +232,7 @@ body:not(.is-logon).sidebar-collapsed .side-bar .side-bar-arrow {
 body:not(.is-logon).sidebar-collapsed .side-bar .side-bar-item {
   padding-top: 0.6em;
   padding-bottom: 0.6em;
-  margin-bottom: 1.2em;
+  margin-bottom: 1.1em;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -239,10 +242,12 @@ body:not(.is-logon).sidebar-collapsed .side-bar .side-bar-item {
 }
 body:not(.is-logon).sidebar-collapsed .side-bar .side-bar-item .name {
   order: 2;
-  padding-top: 0.5em;
+  padding-top: 0.4em;
+  padding-bottom: 0.2em;
   font-size: 0.7em;
 }
 body:not(.is-logon).sidebar-collapsed .side-bar .side-bar-item .icon {
+  padding-top: 0.2em;
   text-align: center;
 }
 .bootbox-danger .modal-header {

@@ -10,10 +10,12 @@ const usersNotificationFields = [
         required: true,
     },
     {
-        name: 'selectedUserIds',
-        displayName: 'Users',
+        name: 'selectedUserId',
+        //name: 'selectedUserIds',
+        displayName: 'User',
+        errorMessage: 'User is required',
         min: 1,
-        type: DATA_TYPES.ARRAY,
+        type: DATA_TYPES.TEXT,
         required: true,
     },
 ]
@@ -154,9 +156,9 @@ const usersNotificationsMethods = {
         // START UPDATE/CREATE REQUEST
         this.usersNotifications_setFormSaving(true)
 
-        const { selectedUserIds, message, type } = pendingRecord
+        const { selectedUserId, message, type } = pendingRecord
 
-        NotificationService.SendBroadCast(selectedUserIds, message, type)
+        NotificationService.Send(selectedUserId, message, type)
             .then((r) => {
 
                 const record = r.data
@@ -168,7 +170,7 @@ const usersNotificationsMethods = {
                 if (record) {
 
                     // update data array
-                    let data = [...record, ...this.usersNotifications.data]
+                    let data = [record, ...this.usersNotifications.data]
 
                     //data.unshift(record)
 

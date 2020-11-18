@@ -55,12 +55,14 @@
 
         },
         GetUsersLogs: function (page, countPerPage, fromDate, toDate) {
+
             this.usersLogs = [];
             this.UsersLogsAreLoading = true
+
             UsersLogs.GetUsersLogs(page, countPerPage, fromDate, toDate)
                 .then(response => {
                     const { data } = response
-                    this.usersLogs = data.records;
+                    this.usersLogs = data.records.map(k => ({ ...k, durationDisplay: getDurationDisplay(k.fromDate, k.toDate) }));
                     this.dataPaging.totalCount = data.totalCount
                 })
                 .catch(e => {
@@ -77,9 +79,6 @@
             return !userLog.toDate && userLog.logStatusCode === 0
         }
     },
-    mounted: function () {
-        this.GetUsersLogs(0, this.dataPaging.length, this.fromDate, this.toDate);
-    },
     watch: {
         dataPaging: {
             handler: function (newVal, oldVal) {
@@ -88,6 +87,9 @@
             },
             deep: true
         }
+    },
+    mounted: function () {
+        this.GetUsersLogs(0, this.dataPaging.length, this.fromDate, this.toDate);
     },
 
 });

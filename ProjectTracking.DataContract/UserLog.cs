@@ -19,8 +19,6 @@ namespace ProjectTracking.DataContract
         public string UserName { get; set; }
         //public short? UserRoleCode { get; set; }
 
-
-
         //public string DurationDisplay
         //{
         //    get
