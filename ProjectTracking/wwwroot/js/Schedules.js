@@ -290,6 +290,8 @@ new Vue({
                     }
                     else {
 
+                        this.resetYears()
+
                         this.timeSheetForm.message = isNew ? 'TimeSheet Added!' : 'TimeSheet Updated!';
 
                         if (isNew) {
@@ -524,6 +526,13 @@ new Vue({
                         this.timeSheetProjects.availableProjects = availableProjects;
                         this.timeSheetProjects.assignedProjects = assignedProjects;
 
+
+                        // update has timesheets
+                        const hasTasks = this.timeSheetProjects.assignedProjects.filter(k => k.tasks.length).length > 0
+
+                        console.log({ hasTasks, timeSheetId })
+
+                        this.timeSheets = this.timeSheets.map(k => k.id === timeSheetId ? ({ ...k, hasTasks }) : k)
                     }
                     else {
                         alert('something went wrong, please try again')
@@ -531,7 +540,10 @@ new Vue({
                 })
                 .catch(e => {
 
-                    alert('something went wrong, please try again')
+                    let errorMessage = getAxiosErrorMessage(e)
+
+                    bootbox.alert(errorMessage)
+
 
                     console.error('assign error', e)
                 })
@@ -548,8 +560,6 @@ new Vue({
             let timeSheetId = this.timeSheetProjects.timeSheetId;
 
             this.assignProjectsLoading = true;
-
-
 
             TimeSheetsService.RemoveProjectFromTimeSheet({ timeSheetId, projectIds })
                 .then(r => {
@@ -610,6 +620,13 @@ new Vue({
                         this.timeSheetProjects.assignedProjects = assignedProjects;
 
 
+                        // update has timesheets
+                        const hasTasks = this.timeSheetProjects.assignedProjects.filter(k => k.tasks.length).length > 0
+
+                        console.log({ hasTasks, timeSheetId })
+
+                        this.timeSheets = this.timeSheets.map(k => k.id === timeSheetId ? ({ ...k, hasTasks }) : k)
+
                     }
                     else {
 
@@ -619,16 +636,19 @@ new Vue({
                 })
                 .catch(e => {
 
-                    alert('something went wrong, please try again')
+                    let errorMessage = getAxiosErrorMessage(e)
 
-                    console.error('assign error', e)
+                    bootbox.alert(errorMessage);
+                    console.error('remove task error', e)
                 })
                 .then(() => {
                     this.assignProjectsLoading = false;
                 })
 
-            this.timeSheetProjects.availableProjects = availableProjects;
-            this.timeSheetProjects.assignedProjects = assignedProjects;
+            //this.timeSheetProjects.availableProjects = availableProjects;
+            //this.timeSheetProjects.assignedProjects = assignedProjects;
+
+
         },
         getLatestTimeSheet: function () {
             TimeSheetsService.GetLatest(this.userId).then(response => {
@@ -688,11 +708,22 @@ new Vue({
 
                 })
                 .catch(e => {
-                    this.timesheetDeleteModal.message = getAxiosErrorMessage(e)
+
+                    let errorMessage = getAxiosErrorMessage(e)
+
+                    if (errorMessage === 'HAS_TASKS') {
+                        errorMessage = 'this timesheet has tasks and cannot be deleted'
+                        this.filterTimeSheets()
+                    }
+
+                    bootbox.alert(errorMessage)
+
+                    //this.timesheetDeleteModal.message = errorMessage
                 })
                 .then(() => {
                     this.timesheetDeleteModal.isDeleting = false
 
+                    this.resetYears()
                 })
         },
         filterTimeSheets: function () {
@@ -712,6 +743,17 @@ new Vue({
         nextDateDisplay: function (date) {
 
             return date.format('MMM')
+        },
+        resetYears: function () {
+
+            TimeSheetsService.GetTimeSheetYears(this.userId)
+                .then(r => {
+                    console.log('get timesheet years', r)
+                    this.timeSheetYears = r.data
+                })
+                .catch(e => {
+                    console.error('error', e)
+                })
         }
     },
     mounted: function () {
@@ -737,16 +779,9 @@ new Vue({
                 this.projectsLoading = false;
             })
 
-        TimeSheetsService.GetTimeSheetYears(this.userId)
-            .then(r => {
-                console.log('get timesheet years', r)
-                this.timeSheetYears = r.data
-            })
-            .catch(e => {
-                console.error('error', e)
-            })
 
 
+        this.resetYears()
         this.filterTimeSheets()
     }
 });

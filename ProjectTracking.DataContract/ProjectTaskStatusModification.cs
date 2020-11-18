@@ -18,7 +18,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return ((ProjectStatus)StatusCode).ToString();
+                return ((ProjectTaskStatus)StatusCode).ToString();
             }
         }
 

@@ -266,6 +266,7 @@ namespace ProjectTracking.Data.Methods
                 FromDate = k.FromDate,
                 ToDate = k.ToDate,
                 UserId = k.UserId,
+                HasTasks = k.TimeSheetTasks.Any(),
                 TimeSheetTasks = includeTasks ? k.TimeSheetTasks.Select(t => new TimeSheetTask()
                 {
                     ID = t.ID,
@@ -442,27 +443,34 @@ namespace ProjectTracking.Data.Methods
 
         public bool Delete(int id)
         {
-            var dbTimeSheet = db.TimeSheets.FirstOrDefault(k => k.ID == id);
+            var dbTimeSheet = db.TimeSheets
+                .Include(k=>k.TimeSheetTasks)
+                .FirstOrDefault(k => k.ID == id);
 
-            if (dbTimeSheet != null)
+            if (dbTimeSheet == null)
             {
-                var tasks = db.TimeSheetTasks.Where(k => k.TimeSheetId == id);
-
-                db.TimeSheetTasks.RemoveRange(tasks);
-
-                foreach (var task in tasks)
-                {
-                    var taskActivities = db.TimeSheetActivities.Where(k => k.TimeSheetTaskId == task.ID);
-                    db.TimeSheetActivities.RemoveRange(taskActivities);
-                }
-
-                db.TimeSheets.Remove(dbTimeSheet);
-
-                return db.SaveChanges() > 0;
+                throw new ClientException("already deleted");
             }
 
+            if (dbTimeSheet.TimeSheetTasks.Count > 0)
+            {
+                throw new ClientException("HAS_TASKS");
+            }
 
-            return false;
+            //var tasks = db.TimeSheetTasks.Where(k => k.TimeSheetId == id);
+
+            //db.TimeSheetTasks.RemoveRange(tasks);
+
+            //foreach (var task in tasks)
+            //{
+            //    var taskActivities = db.TimeSheetActivities.Where(k => k.TimeSheetTaskId == task.ID);
+
+            //    db.TimeSheetActivities.RemoveRange(taskActivities);
+            //}
+
+            db.TimeSheets.Remove(dbTimeSheet);
+
+            return db.SaveChanges() > 0;
         }
 
         public List<int> GetTimeSheetYears(string userId)

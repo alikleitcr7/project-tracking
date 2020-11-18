@@ -47,6 +47,7 @@ namespace ProjectTracking.DataContract
 
         public  User User { get; set; }
         public  List<TimeSheetTask> TimeSheetTasks { get; set; }
+        public bool HasTasks { get; set; }
     }
    
 }
