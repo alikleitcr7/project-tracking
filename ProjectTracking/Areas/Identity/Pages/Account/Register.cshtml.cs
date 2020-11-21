@@ -167,7 +167,8 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
                     DateOfBirth = DateTime.Parse(Input.DateOfBirth),
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
-                    RoleCode = (short)role.Value
+                    RoleCode = (short)role.Value,
+                    RoleAssignedDate = DateTime.Now
                 };
 
 

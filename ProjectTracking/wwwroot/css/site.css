@@ -378,7 +378,7 @@ p.skeleton-loading-item::after {
   border: 1px solid #0093e9;
 }
 .s-btn.s-btn-primary:hover {
-  background-color: #0082ce;
+  background-color: #0082ce !important;
 }
 .s-btn.s-btn-outline {
   background-color: transparent;

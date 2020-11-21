@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
 using ProjectTracking.Exceptions;
+using ProjectTracking.Hubs;
 using ProjectTracking.Models.Users;
 
 namespace ProjectTracking.Controllers
@@ -18,10 +20,12 @@ namespace ProjectTracking.Controllers
     [Authorize]
     public class UsersController : BaseSupervisorController
     {
+        private readonly IHubContext<ObserverHub> observerHub;
 
-        public UsersController(IUserMethods usersMethods)
+        public UsersController(IUserMethods usersMethods, IHubContext<ObserverHub> observerHub)
             : base(usersMethods)
         {
+            this.observerHub = observerHub;
         }
 
         [HttpGet]
@@ -168,13 +172,17 @@ namespace ProjectTracking.Controllers
 
         [HttpPut]
         [Authorize(AuthPolicies.Admins)]
-        public IActionResult SetRole(string userId, short roleCode)
+        public async Task<IActionResult> SetRole(string userId, short roleCode)
         {
             try
             {
                 string currentUserId = GetCurrentUserId();
 
-                return Ok(_userMethods.SetRole(currentUserId, userId, roleCode).ToDisplayDate());
+                string date = _userMethods.SetRole(currentUserId, userId, roleCode).ToDisplayDate();
+
+                //await observerHub.Clients.User(userId).SendAsync("SessionEnd","your role has been changed, you are required to login again");
+
+                return Ok(date);
             }
             catch (ClientException ex)
             {

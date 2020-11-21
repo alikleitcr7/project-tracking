@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Identity\Pages\Account\Manage\**" />
     <Compile Remove="Data\Methods\Interfaces\Statistics\**" />
     <Compile Remove="Data\Methods\Statistics\**" />
     <Compile Remove="Data\Shared\**" />
@@ -19,6 +20,7 @@
     <Compile Remove="Views\Permissions\**" />
     <Compile Remove="Views\UserInsights\**" />
     <Compile Remove="Views\UsersLogs\**" />
+    <Content Remove="Areas\Identity\Pages\Account\Manage\**" />
     <Content Remove="Data\Methods\Interfaces\Statistics\**" />
     <Content Remove="Data\Methods\Statistics\**" />
     <Content Remove="Data\Shared\**" />
@@ -32,6 +34,7 @@
     <Content Remove="Views\Permissions\**" />
     <Content Remove="Views\UserInsights\**" />
     <Content Remove="Views\UsersLogs\**" />
+    <EmbeddedResource Remove="Areas\Identity\Pages\Account\Manage\**" />
     <EmbeddedResource Remove="Data\Methods\Interfaces\Statistics\**" />
     <EmbeddedResource Remove="Data\Methods\Statistics\**" />
     <EmbeddedResource Remove="Data\Shared\**" />
@@ -45,6 +48,7 @@
     <EmbeddedResource Remove="Views\Permissions\**" />
     <EmbeddedResource Remove="Views\UserInsights\**" />
     <EmbeddedResource Remove="Views\UsersLogs\**" />
+    <None Remove="Areas\Identity\Pages\Account\Manage\**" />
     <None Remove="Data\Methods\Interfaces\Statistics\**" />
     <None Remove="Data\Methods\Statistics\**" />
     <None Remove="Data\Shared\**" />
@@ -58,6 +62,7 @@
     <None Remove="Views\Permissions\**" />
     <None Remove="Views\UserInsights\**" />
     <None Remove="Views\UsersLogs\**" />
+    <TypeScriptCompile Remove="Areas\Identity\Pages\Account\Manage\**" />
     <TypeScriptCompile Remove="Data\Methods\Interfaces\Statistics\**" />
     <TypeScriptCompile Remove="Data\Methods\Statistics\**" />
     <TypeScriptCompile Remove="Data\Shared\**" />

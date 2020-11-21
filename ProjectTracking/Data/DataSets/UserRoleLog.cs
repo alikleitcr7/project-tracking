@@ -11,7 +11,7 @@ namespace ProjectTracking.Data.DataSets
     {
         [Column(Order = 1), Required]
         public string UserId { get; set; }
-        [Column(Order = 2), Required]
+        [Column(Order = 2)]
         public string AssignedByUserId { get; set; }
         [Column(Order = 3)]
         [Range(0, 2)]

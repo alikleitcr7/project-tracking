@@ -3,6 +3,7 @@
     data: {
         notificationsCount: 0,
         hasNewNotification: false,
+        endSessionMessage: null,
     },
     methods: {
         handleSideBarNotificationClick: function () {
@@ -20,6 +21,12 @@
 
             $('#NotificationModal').modal('show')
         },
+        endSession: function (message) {
+
+            $('#SessionEndModal').modal({ backdrop: 'static', keyboard: false })
+
+            this.endSessionMessage = message
+        }
     },
     mounted: function () {
 
@@ -46,7 +53,7 @@
                 continue
             }
 
-            if ((pathname === href )|| (altPaths && altPaths.split(',').includes(pathname))) {
+            if ((pathname === href) || (altPaths && altPaths.split(',').includes(pathname))) {
                 item.addClass('active')
                 break
             }

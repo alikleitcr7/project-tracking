@@ -29,7 +29,7 @@
                             <tr v-for="(log, idx) in userRoles.logs.data">
                                 <td>{{log.dateAssignedDisplay}}</td>
                                 <td>{{log.roleDisplay}}</td>
-                                <td>{{log.assignedByUser.fullName}}</td>
+                                <td>{{log.assignedByUserId ? log.assignedByUser.fullName : '-'}}</td>
                             </tr>
                         </tbody>
 

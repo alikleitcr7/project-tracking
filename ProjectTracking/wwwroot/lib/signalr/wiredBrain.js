@@ -29,6 +29,14 @@ connection.on('RefreshLogs', () => {
 
 });
 
+connection.on('SessionEnd', (message) => {
+
+    console.log('end session flag', message)
+
+    sidebar_app.endSession(message || null)
+
+});
+
 
 connection.start().catch(function (err) {
     return console.error(err.toString());

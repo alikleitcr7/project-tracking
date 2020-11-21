@@ -33,6 +33,11 @@ namespace ProjectTracking.DataContract.Hubs
             return ConnectionIds.Contains(id);
         }
 
+        public List<string> GetConnections()
+        {
+            return  ConnectionIds;
+        }
+
         public bool IsActive => ConnectionIds.Count > 0;
     }
 }
