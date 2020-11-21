@@ -18,7 +18,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="activity in overview.data.activeActivities">
-                           
+
                                 <td>{{activity.fromDateDisplay}}</td>
                                 <td>
                                     <a :href="`/profile/${activity.user.id}`">
@@ -33,20 +33,20 @@
             </div>
 
             <div class="c-box vis-workload">
-                <h5 class="c-box-title">ActivitiesMinutes</h5>
+                <h5 class="c-box-title">Activities Minutes</h5>
                 <canvas id="bar_activitiesMinutes"></canvas>
             </div>
             <div class="c-box vis-activities">
-                <h5 class="c-box-title">ActivitiesFrequency</h5>
+                <h5 class="c-box-title">Activities Frequency</h5>
                 <canvas id="line_activitiesFrequency"></canvas>
             </div>
 
             <div class="c-box vis-workload">
-                <h5 class="c-box-title">UserActivitiesMinutes</h5>
+                <h5 class="c-box-title">Activities Minutes - By Users</h5>
                 <canvas id="bar_userActivitiesMinutes"></canvas>
             </div>
             <div class="c-box vis-activities">
-                <h5 class="c-box-title">UserActivitiesFrequency</h5>
+                <h5 class="c-box-title">Activities Frequency - By Users</h5>
                 <canvas id="line_userActivitiesFrequency"></canvas>
             </div>
 
