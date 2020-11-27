@@ -28,7 +28,6 @@ namespace ProjectTracking.Controllers
         private readonly IUserMethods _users;
         private readonly IUserLogsMethods _userLogsMethods;
 
-
         public HomeController(SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IUserMethods users,
@@ -82,17 +81,9 @@ namespace ProjectTracking.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            //List<ApplicationIdentityRole> roles = _users.GetAllRoles();
-
-            //ViewData["Roles"] = roles;
-
             if (ModelState.IsValid)
-
             {
                 var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
-
-                // either add a claim of supervisor
-                // or a policy
 
                 if (result.Succeeded)
                 {
@@ -102,29 +93,6 @@ namespace ProjectTracking.Controllers
                     {
                         user = await _userManager.FindByNameAsync(model.UserName);
                     }
-
-                    //var id = user?.Id;
-                    //var ip = _accessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
-
-                    //ApplicationContext.LogsLastUpdatedDate = DateTime.Now;
-
-                    //UserLog log = _userLogsMethods.GetActiveUserLog(id);
-
-                    //if (log == null || log.ToDate.HasValue)
-                    //{
-                    //    log = _userLogsMethods.AddStartLog(id, ip, UserLogStatus.Login);
-                    //}
-
-                    //if (ApplicationContext.ActiveLogs == null || !ApplicationContext.LogsLastUpdatedDate.HasValue)
-                    //{
-                    //    ApplicationContext.ActiveLogs = _users.GetActiveLogs() ?? new List<UserLog>();
-                    //    ApplicationContext.LogsLastUpdatedDate = DateTime.Now;
-                    //}
-
-                    //if (log != null && !ApplicationContext.ActiveLogs.Any(k => k.UserId == id))
-                    //{
-                    //    ApplicationContext.ActiveLogs.Add(log);
-                    //}
 
                     if (Request.Headers["Referer"].Count != 0)
                     {
@@ -150,8 +118,6 @@ namespace ProjectTracking.Controllers
                     return View();
                 }
             }
-
-            //ViewData["ErrorMessage"] = "Enter Above Required Fields";
 
             return View();
         }

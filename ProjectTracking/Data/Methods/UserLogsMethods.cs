@@ -28,15 +28,24 @@ namespace ProjectTracking.Data.Methods
             this._mapper = mapper;
         }
 
+        private string GetUserName(string userId)
+        {
+            return db.Users.Select(k => new { k.Id, FullName = k.FirstName + " " + k.LastName }).First(k => k.Id == userId).FullName;
+        }
+
         public UserLog AddStartLog(string userId, string ipAddress, UserLogStatus status)
         {
             try
             {
-                var isActive = db.UserLogging.Any(k => k.UserId == userId && !k.ToDate.HasValue);
+                var dbActiveLog = db.UserLogging.FirstOrDefault(k => k.UserId == userId && !k.ToDate.HasValue);
 
-                if (isActive)
+                if (dbActiveLog != null)
                 {
-                    return null;
+                    UserLog activeLog = _mapper.Map<UserLog>(dbActiveLog);
+
+                    activeLog.UserName = GetUserName(userId);
+
+                    return activeLog;
                 }
 
                 bool ipAdded = _ipAddressesMethods.AddIfNotExist(ipAddress);
@@ -55,7 +64,7 @@ namespace ProjectTracking.Data.Methods
 
                 UserLog log = _mapper.Map<UserLog>(dbLog);
 
-                log.UserName = db.Users.Select(k => new { k.Id, FullName = k.FirstName + " " + k.LastName }).First(k => k.Id == userId).FullName;
+                log.UserName = GetUserName(userId);
 
                 return log;
             }

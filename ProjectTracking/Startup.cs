@@ -87,25 +87,25 @@ namespace ProjectTracking
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(AuthPolicies.Managers, policy =>
-                       policy.RequireRole("Admin", "Supervisor"));
+                       policy.RequireRole(ApplicationUserRole.Admin.ToString(), ApplicationUserRole.Supervisor.ToString()));
             });
 
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(AuthPolicies.Admins, policy =>
-                       policy.RequireRole("Admin"));
+                       policy.RequireRole(ApplicationUserRole.Admin.ToString()));
             });
 
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(AuthPolicies.TeamMembers, policy =>
-                       policy.RequireRole("TeamMember"));
+                       policy.RequireRole(ApplicationUserRole.TeamMember.ToString()));
             });
 
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(AuthPolicies.Supervisors, policy =>
-                       policy.RequireRole("Supervisor"));
+                       policy.RequireRole(ApplicationUserRole.Supervisor.ToString()));
             });
 
 
@@ -162,6 +162,7 @@ namespace ProjectTracking
 
             services.AddTransient<IBroadcastsMethods, Data.Methods.BroadcastsMethods>();
             services.AddTransient<INotificationMethods, Data.Methods.NotificationMethods>();
+
             services.AddScoped<ITimeSheetsMethods, Data.Methods.TimeSheetsMethods>();
             services.AddTransient<ICategoriesMethods, Data.Methods.CategoriesMethods>();
             services.AddTransient<ITeamsMethods, Data.Methods.TeamsMethods>();
@@ -219,7 +220,9 @@ namespace ProjectTracking
 
             #endregion
 
-            services.AddSignalR();
+            services.AddSignalR(e => {
+                e.EnableDetailedErrors = true;
+            });
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -232,11 +235,12 @@ namespace ProjectTracking
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
             services.AddSingleton<IEmailSender, EmailSender>();
+
             services.AddSingleton<IDataAccess, DataAccess>(k => new DataAccess(Setting.ConnectionString));
 
             //services.AddTransient<UserManager<ApplicationUser>>();
 
-            services.AddHostedService<LiveObserverHost>();
+            //services.AddHostedService<LiveObserverHost>();
             //services.AddSingleton<LiveObserverHost>();
             //services.AddHostedService<BackgroundServiceStarter<LiveObserverHost>>();
 
@@ -246,11 +250,8 @@ namespace ProjectTracking
         //configure your other properties
         opt.LoginPath = "/login";
         opt.AccessDeniedPath = new PathString("/accessdenied");
-        
+
     });
-
-
-
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
             //    .AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             //.AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

@@ -43,16 +43,13 @@ connection.on('ReceiveNotification', (message) => {
 
             const isToTeam = message.toTeamId ? true : false
 
-
             if (isToTeam) {
 
                 let broadcasts = { ...notification_app.broadcasts }
 
-                //console.log({ broadcasts})
+                let data = [message, ...broadcasts.data]
 
-                let data = [message,...broadcasts.data]
                 broadcasts.data = data;
-                //data.unshift(message)
 
                 if (data.length > broadcasts.dataPaging.length) {
 
@@ -65,25 +62,18 @@ connection.on('ReceiveNotification', (message) => {
 
                 broadcasts.dataPaging = dataPaging
 
-                //console.log({ broadcasts })
-
                 notification_app.broadcasts = broadcasts
             }
             else {
 
                 let notifications = [...notification_app.notifications]
 
-                //console.log('not1',{ notifications })
-
-                //message.isNew = true
                 notifications.unshift(message)
 
                 if (notifications.length > notification_app.dataPaging.length) {
 
                     notifications.pop()
                 }
-
-                //console.log('not2', { notifications })
 
                 notification_app.notifications = notifications
                 //sidebar_app.hasNewNotification = true

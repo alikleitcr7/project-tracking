@@ -74,14 +74,6 @@ const TeamsService = {
 
         return axios.get(url);
     },
-    //GetAllExecludingSupervising: function (userId) {
-
-    //    const query = serialize({ userId })
-
-    //    const url = TEAMS_SERVICE_URI(`GetAllExecludingSupervising?${query}`)
-
-    //    return axios.get(url);
-    //},
     GetAllSupervisableTeams: function (userId) {
 
         const query = serialize({ userId })

@@ -76,7 +76,6 @@ namespace ProjectTracking.Services
                     ApplicationContext.ActiveLogs = _users.GetActiveLogs();
                 }
 
-
                 List<ObservedUser> observedUsers = ObserverHub.Users;
                 List<UserLog> activeUsers = ApplicationContext.ActiveLogs;
 

@@ -20,12 +20,12 @@ namespace ProjectTracking.Controllers
     [Authorize]
     public class UsersController : BaseSupervisorController
     {
-        private readonly IHubContext<ObserverHub> observerHub;
-
-        public UsersController(IUserMethods usersMethods, IHubContext<ObserverHub> observerHub)
+        //private readonly IHubContext<ObserverHub> observerHub;
+        //, IHubContext<ObserverHub> observerHub
+        public UsersController(IUserMethods usersMethods)
             : base(usersMethods)
         {
-            this.observerHub = observerHub;
+            //this.observerHub = observerHub;
         }
 
         [HttpGet]

@@ -14,34 +14,28 @@ namespace ProjectTracking.Hubs
 {
     public class ObserverHub : Hub
     {
-        private IHttpContextAccessor _httpContextAccessor;
-        private IUserMethods _users;
         private readonly IUserLogsMethods _userLogsMethods;
         private IHttpContextAccessor _context;
 
-        public ObserverHub(IHttpContextAccessor httpContextAccessor, IUserMethods userMethods, IUserLogsMethods userLogsMethods, IHttpContextAccessor context)
+        //public static List<string> ActiveConnections = new List<string>();
+        public static List<ObservedUser> Users = new List<ObservedUser>();
+
+        public ObserverHub(IUserLogsMethods userLogsMethods, IHttpContextAccessor context)
         {
-            _httpContextAccessor = httpContextAccessor;
-            _users = userMethods;
             _userLogsMethods = userLogsMethods;
             _context = context;
         }
 
-        public static List<string> ActiveConnections = new List<string>();
-        public static List<ObservedUser> Users = new List<ObservedUser>();
-
-        public async Task SendMessage(string user, string message)
-        {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
-        }
+        //public async Task SendMessage(string user, string message)
+        //{
+        //    await Clients.All.SendAsync("ReceiveMessage", user, message);
+        //}
 
         public override async Task OnConnectedAsync()
         {
-            await Clients.All.SendAsync("ReceiveMessage", "User Connected " + Context.ConnectionId);
+            //await Clients.All.SendAsync("ReceiveMessage", "User Connected " + Context.ConnectionId);
 
-            ActiveConnections.Add(Context.ConnectionId);
-
-            //&& Users.Where(k => k.UserId == Context.User.FindFirst(ClaimTypes.NameIdentifier).Value).Count() < 2
+            //ActiveConnections.Add(Context.ConnectionId);
 
             if (Context.User.Identity.IsAuthenticated)
             {
@@ -76,9 +70,12 @@ namespace ProjectTracking.Hubs
 
                     var log = _userLogsMethods.AddStartLog(id, ip, DataContract.UserLogStatus.Login);
 
-                    ApplicationContext.ActiveLogs.Add(log);
+                    if (log != null)
+                    {
+                        ApplicationContext.ActiveLogs.Add(log);
 
-                    await Clients.All.SendAsync("RefreshLogs");
+                        await Clients.All.SendAsync("RefreshLogs");
+                    }
                 }
 
                 //var cId = Context.User.FindFirst(ClaimTypes.NameIdentifier);
@@ -90,7 +87,7 @@ namespace ProjectTracking.Hubs
             await base.OnConnectedAsync();
         }
 
-        public async Task CheckIfUserDisconnected(string userId, string role)
+        public async Task CheckIfUserDisconnected(string userId)
         {
             var user = Users.FirstOrDefault(k => k.UserId == userId);
 
@@ -123,9 +120,9 @@ namespace ProjectTracking.Hubs
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            ActiveConnections.Remove(Context.ConnectionId);
+            //ActiveConnections.Remove(Context.ConnectionId);
 
-            await Clients.All.SendAsync("ReceiveMessage", "User Disconnected " + Context.ConnectionId);
+            //await Clients.All.SendAsync("ReceiveMessage", "User Disconnected " + Context.ConnectionId);
 
             if (Context.User.Identity.IsAuthenticated)
             {
@@ -147,7 +144,7 @@ namespace ProjectTracking.Hubs
                     // then we will mark as disconnected
                     if (!user.IsActive)
                     {
-                        await Task.Delay(5000).ContinueWith(k => CheckIfUserDisconnected(id, role));
+                        await Task.Delay(5000).ContinueWith(k => CheckIfUserDisconnected(id));
                     }
                     //// if not active > disconnected
                     //if (!user.IsActive)

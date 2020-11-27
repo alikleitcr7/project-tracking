@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div class="c-box c-box--light assigned-tasks">
+    <div class="c-box c-box--light assigned-tasks" v-if="overview.data.projects">
         <h5 class="c-box-title">Projects</h5>
         <h5 v-if="!overview.data.projects.length">Nothing here yet</h5>
 
@@ -35,7 +35,7 @@
     <div class="c-box latest-logs">
         <h5 class="c-box-title">Today's Logs</h5>
         <div class="table-fixed-header-container">
-            <table class="table table-sm" v-if="overview.data.userLogsToday.length">
+            <table class="table table-sm" v-if="overview.data.userLogsToday && overview.data.userLogsToday.length">
                 <thead>
                     <tr>
                         <th>Name</th>

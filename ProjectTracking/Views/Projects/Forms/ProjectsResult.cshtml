@@ -58,7 +58,7 @@
                 <th>Start Date</th>
                 <th>Planned End</th>
                 <th>Actual End</th>
-                <th>Teams</th>
+                @*<th>Teams</th>*@
                 <th>Status</th>
                 <th>By User</th>
                 <th></th>
@@ -101,9 +101,9 @@
                         {{item.actualEndDisplay}}
                     </td>
 
-                    <td>
+                    @*<td>
                         {{item.teamsProjects ? item.teamsProjects.length : 0}}
-                    </td>
+                    </td>*@
                     
                     <td>
                         {{item.statusDisplay}}

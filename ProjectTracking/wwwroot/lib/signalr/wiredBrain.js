@@ -7,6 +7,14 @@ connection = new signalR.HubConnectionBuilder()
     .withUrl('/observer')
     .build();
 
+connection.start().catch(function (err) {
+    return console.error(err.toString());
+})
+
+connection.on('finished', (update) => {
+    connection.stop();
+});
+
 connection.on('ReceiveMessage', (message) => {
 
     console.log({ message })
@@ -38,11 +46,4 @@ connection.on('SessionEnd', (message) => {
 });
 
 
-connection.start().catch(function (err) {
-    return console.error(err.toString());
-})
-
-connection.on('finished', (update) => {
-    connection.stop();
-});
 
