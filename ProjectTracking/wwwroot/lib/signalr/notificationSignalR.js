@@ -6,6 +6,13 @@ connection = new signalR.HubConnectionBuilder()
     .withUrl('/notificationshub')
     .build();
 
+connection.start().catch(function (err) {
+    return console.error(err.toString());
+})
+
+connection.on('finished', (update) => {
+    connection.stop();
+});
 
 //var connection2 = new signalR.HubConnectionBuilder()
 //    .withUrl('/broadcastshub')
@@ -96,11 +103,4 @@ connection.on('ReceiveNotification', (message) => {
     //alert('message from server', message);
 });
 
-connection.start().catch(function (err) {
-    return console.error(err.toString());
-})
-
-connection.on('finished', (update) => {
-    connection.stop();
-});
 

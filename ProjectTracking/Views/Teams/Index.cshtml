@@ -19,10 +19,8 @@
 
     <h4 v-if="!teams.isLoading && !teams.data.length">Nothing Here Yet! </h4>
 
-
-    <div class="c-box-view ">
+    <div class="c-box-view c-box-view--wrap">
         <a class="c-box" :href="`/teams/${team.id}`" v-for="team in teams.data">
-
             <h5 class="c-box-title">{{team.name}}</h5>
             <p>{{getMembersText(team.membersCount)}}</p>
             <p>{{getProjectsText(team.projectsCount)}}</p>
@@ -47,7 +45,6 @@
                         width="250" height="120"></canvas>
             </section>
         </a>
-
     </div>
 
 </div>

@@ -132,6 +132,7 @@ namespace ProjectTracking.Data.Methods
                 _ipAddressMethods.AddIfNotExist(ipAddress);
             }
 
+
             var dbActivity = db.TimeSheetActivities
                 .Include(k => k.IpAddress)
                 .FirstOrDefault(k => k.ID == model.id);
@@ -139,6 +140,24 @@ namespace ProjectTracking.Data.Methods
             if (dbActivity == null)
             {
                 throw new ClientException("activity not found");
+            }
+
+            string userId = db.TimeSheets.First(k => k.TimeSheetTasks.Any(t => t.ID == dbActivity.TimeSheetTaskId)).UserId;
+
+            DataSets.TimeSheetActivity conflictedActivity = db.TimeSheetActivities.FirstOrDefault(c =>
+                                                         c.TimeSheetTask.TimeSheet.UserId == userId &&
+                                                         c.ID != dbActivity.ID
+                                                         && !c.DeletedAt.HasValue
+                                                         && ((model.fromDate >= c.FromDate && model.fromDate <= c.ToDate)
+                                                         || (model.toDate >= c.FromDate && model.toDate <= c.ToDate)
+                                                         || (!c.ToDate.HasValue && model.fromDate >= c.FromDate)
+                                                         || (!c.ToDate.HasValue && model.toDate >= c.FromDate)
+                                                         ));
+
+            if (conflictedActivity != null)
+            {
+                throw new ClientException($"An activity is already made on the choosen dates. " +
+                    $"Activity No.{conflictedActivity.ID} ({conflictedActivity.FromDate.ToDisplayDateTime()} - {(conflictedActivity.ToDate.HasValue ? conflictedActivity.ToDate.ToDisplayDateTime() : "*")})");
             }
 
             // check for change

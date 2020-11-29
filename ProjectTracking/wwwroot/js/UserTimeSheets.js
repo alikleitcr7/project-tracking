@@ -41,8 +41,8 @@ const activityModalForm = (activity) => {
         return {
             id: activity.id,
             timeSheetTaskId: activity.timeSheetTaskId,
-            fromDate: activity.fromDate ? moment(activity.fromDate) : null,
-            toDate: activity.toDate ? moment(activity.toDate) : null,
+            fromDate: activity.fromDate ? activity.fromDate : null,
+            toDate: activity.toDate ? activity.toDate : null,
             message: activity.message,
             ipAddressDisplay: activity.ipAddressDisplay,
             deletedAtDisplay: activity.deletedAtDisplay,

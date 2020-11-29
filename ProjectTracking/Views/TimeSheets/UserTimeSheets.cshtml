@@ -184,6 +184,7 @@
                     <div class="c-box"
                          v-for="activity in taskActivitiesView"
                          @@click="openActivityCommitModal(activity)"
+                         :title="`${activity.id} - ${getActivityTitle(activity)}`"
                          :class="{'active':!activity.toDate, 'activity-deleted' :activity.deletedAt !== null  , 'c-box-clickable':(activity.toDate || !readOnly)}">
                         <div class="c-box-title">{{getActivityTitle(activity)}}</div>
                         <small>{{activity.fromDateDisplay}}</small>
