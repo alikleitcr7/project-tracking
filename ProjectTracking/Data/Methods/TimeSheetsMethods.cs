@@ -278,29 +278,28 @@ namespace ProjectTracking.Data.Methods
 
         public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, int? taskId, DateTime date, bool includeDeleted)
         {
-            var dbTimeSheetActivities = db.TimeSheetActivities
+            IQueryable<DataSets.TimeSheetActivity> query = db.TimeSheetActivities
                 //.Include(k => k.TimeSheetTask)
                 .Include(k => k.IpAddress)
                 //  k.TimeSheetTask != null &&
                 .Where(k =>
                             k.TimeSheetTask.TimeSheetId == timeSheetId &&
-                            k.TimeSheetTask.ProjectTaskId == taskId
-                            && k.FromDate.Month == date.Month
+                            k.TimeSheetTask.ProjectTaskId == taskId &&
+                            k.FromDate.Month == date.Month
                             && k.FromDate.Day == date.Day
                             && k.FromDate.Year == date.Year
                             && (includeDeleted ? true : !k.DeletedAt.HasValue)
-                            ).ToList();
+                            );
+
+
+            var dbTimeSheetActivities = query.ToList();
 
             if (dbTimeSheetActivities.Count == 0)
             {
                 return new List<TimeSheetActivity>();
             }
 
-            List<TimeSheetActivity> activities = dbTimeSheetActivities.Select(_mapper.Map<TimeSheetActivity>).ToList();
-
-            //TimeSheetActivitiesMethods.PopulateIpAddresses(activities, db.IpAddresses.ToList());
-
-            return activities;
+            return dbTimeSheetActivities.Select(_mapper.Map<TimeSheetActivity>).ToList();
         }
 
         public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId)
@@ -444,7 +443,7 @@ namespace ProjectTracking.Data.Methods
         public bool Delete(int id)
         {
             var dbTimeSheet = db.TimeSheets
-                .Include(k=>k.TimeSheetTasks)
+                .Include(k => k.TimeSheetTasks)
                 .FirstOrDefault(k => k.ID == id);
 
             if (dbTimeSheet == null)

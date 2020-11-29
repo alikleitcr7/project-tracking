@@ -176,11 +176,11 @@
 #UserTimeSheets .user-timesheets-content .task-activities .c-box-view .c-box {
   min-height: 60px;
   padding: 0.5em 0.7em;
-  min-width: 120px;
+  min-width: 140px;
 }
 #UserTimeSheets .user-timesheets-content .task-activities .c-box-view .c-box .c-box-title {
   font-weight: 400;
-  max-width: 100px;
+  max-width: 130px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
