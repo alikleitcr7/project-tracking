@@ -32,7 +32,7 @@ namespace ProjectTracking.DataContract
         {
             get
             {
-                return $"{FirstName} {MiddleName} {LastName}";
+                return $"{FirstName} {LastName}";
             }
         }
         public DateTime DateOfBirth { get; set; }

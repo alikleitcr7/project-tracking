@@ -63,7 +63,7 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
-        
+
 
         [HttpGet]
         public IActionResult GetTotalCountByRoles()
@@ -268,6 +268,21 @@ namespace ProjectTracking.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    List<string> errors = new List<string>();
+
+                    foreach (var modelState in ModelState.Values)
+                    {
+                        errors.Add(string.Join(", ", modelState.Errors.Select(k => k.ErrorMessage)));
+                    }
+
+                    if (errors.Count > 0)
+                    {
+                        throw new ClientException(string.Join(", ", errors));
+                    }
+                }
+
                 return Ok(_userMethods.Save(user));
             }
             catch (ClientException ex)

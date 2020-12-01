@@ -174,35 +174,40 @@
                 <div class="modal-body">
 
                     <div class="input-group-container">
+
+
+                        <div class="input-group-item">
+                            <label>Username (*)</label>
+                            <input type="text" class="form-control" maxlength="30" v-model="users.form.record.userName" />
+                        </div>
+
                         <div class="input-group-item">
                             <label>First Name (*)</label>
-                            <input type="text" class="form-control" v-model="users.form.record.firstName" />
-                        </div>
-                        <div class="input-group-item">
-                            <label>Middle Name (*)</label>
-                            <input type="text" class="form-control" v-model="users.form.record.middleName" />
+                            <input type="text" class="form-control" maxlength="30" v-model="users.form.record.firstName" />
                         </div>
                         <div class="input-group-item">
                             <label>Last Name (*)</label>
-                            <input type="text" class="form-control" v-model="users.form.record.lastName" />
+                            <input type="text" class="form-control" maxlength="30" v-model="users.form.record.lastName" />
                         </div>
                     </div>
 
                     <div class="input-group-container">
 
+
                         <div class="input-group-item">
                             <label>Title</label>
-                            <input type="text" class="form-control" v-model="users.form.record.title" />
+                            <input type="text" class="form-control" maxlength="60" v-model="users.form.record.title" />
                         </div>
 
                         <div class="input-group-item">
                             <label>Email (*)</label>
-                            <input type="text" class="form-control" v-model="users.form.record.email" />
+                            <input type="text" class="form-control" maxlength="255" v-model="users.form.record.email" />
                         </div>
 
+
                         <div class="input-group-item">
-                            <label>Username (*)</label>
-                            <input type="text" class="form-control" v-model="users.form.record.userName" />
+                            <label>Date of Birth</label>
+                            <date-picker v-model="users.form.record.dateOfBirth" :config="dateOptions"></date-picker>
                         </div>
 
                     </div>
@@ -219,20 +224,20 @@
                                 </option>
                             </select>
                         </div>
-
                         <div class="input-group-item">
-                            <label>Date of Birth</label>
-                            <date-picker v-model="users.form.record.dateOfBirth" :config="dateOptions"></date-picker>
+                        </div>
+                        <div class="input-group-item">
                         </div>
 
+
                         @*<div class="input-group-item">
-                                <label>Monthly Salary</label>
-                                <input type="text" class="form-control" v-model="users.form.record.monthlySalary" />
-                            </div>
-                            <div class="input-group-item">
-                                <label>Hourly Rate</label>
-                                <input type="text" class="form-control" v-model="users.form.record.hourlyRate" />
-                            </div>*@
+            <label>Monthly Salary</label>
+            <input type="text" class="form-control" v-model="users.form.record.monthlySalary" />
+        </div>
+        <div class="input-group-item">
+            <label>Hourly Rate</label>
+            <input type="text" class="form-control" v-model="users.form.record.hourlyRate" />
+        </div>*@
 
                     </div>
 

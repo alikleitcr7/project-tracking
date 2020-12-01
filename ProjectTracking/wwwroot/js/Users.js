@@ -33,18 +33,6 @@ const userFields = [
         required: true,
     },
     {
-        name: 'monthlySalary',
-        displayName: 'Monthly Salary',
-        type: DATA_TYPES.NUMBER,
-        required: false,
-    },
-    {
-        name: 'hourlyRate',
-        displayName: 'Hourly Rate',
-        type: DATA_TYPES.NUMBER,
-        required: false,
-    },
-    {
         name: 'employmentTypeCode',
         displayName: 'Employment Type',
         type: DATA_TYPES.NUMBER,

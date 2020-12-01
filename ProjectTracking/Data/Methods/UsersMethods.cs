@@ -87,7 +87,7 @@ namespace ProjectTracking.Data.Methods
                 dbUser.NormalizedUserName = model.userName.ToUpper();
                 dbUser.FirstName = model.firstName;
                 dbUser.LastName = model.lastName;
-                dbUser.MiddleName = model.middleName;
+                //dbUser.MiddleName = model.middleName;
                 dbUser.Title = model.title;
                 dbUser.EmploymentTypeCode = model.employmentTypeCode;
                 //dbUser.MonthlySalary = model.monthlySalary;
@@ -124,7 +124,7 @@ namespace ProjectTracking.Data.Methods
             {
                 Id = k.Id,
                 FirstName = k.FirstName,
-                MiddleName = k.MiddleName,
+                ////MiddleName = k.MiddleName,
                 LastName = k.LastName,
                 Title = k.Title,
                 Email = k.Email,
