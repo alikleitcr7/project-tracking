@@ -688,9 +688,11 @@ const userRoleFormObject = (userRole) => {
 
     let record = userRole || {}
 
-    if (userRole && currentUser.id() === record.assignedByUser.id) {
+    if (userRole && record.assignedByUser && currentUser.id() === record.assignedByUser.id) {
         record.assignedByUser.fullName = 'You'
     }
+
+    record.activeRoleCode = record.roleCode
 
     return {
         record,
@@ -805,11 +807,18 @@ const userRolesMethods = {
 
         let pendingRecord = { ...this.userRoles.form.record }
 
+     
+        console.log({ pendingRecord })
+        const { userId, roleCode, activeRoleCode } = pendingRecord
+
+        if (roleCode == activeRoleCode) {
+            return
+        }
+
+
         // START UPDATE/CREATE REQUEST
         this.userRoles_setFormSaving(true)
 
-        console.log({ pendingRecord })
-        const { userId, roleCode } = pendingRecord
 
         // UPDATE
         UsersService.SetRole(userId, roleCode)
@@ -819,8 +828,13 @@ const userRolesMethods = {
 
                 if (record) {
 
+                    if (!this.userRoles.form.record.assignedByUser) {
+                        this.userRoles.form.record.assignedByUser = {}
+                    }
+
                     this.userRoles.form.record.dateAssignedDisplay = record
                     this.userRoles.form.record.assignedByUser.fullName = 'You'
+                    this.userRoles.form.record.activeRoleCode = roleCode
 
                     this.userRoles_setFormMessage('Saved!')
 
@@ -838,6 +852,7 @@ const userRolesMethods = {
                     }
 
 
+                    this.userRoles_getAllTotals();
                     //// update members count (teams)
                     //let data = [...this.users.data]
 
@@ -895,6 +910,32 @@ const userRolesMethods = {
                 this.userRoles_setLoading(false)
             })
     },
+    userRoles_getAllTotals: function () {
+        if (this.isAdmin) {
+            UsersService.GetTotalCountByRoles()
+                .then((r) => {
+                    const record = r.data || []
+
+                    const appUserRoles = APP_USER_ROLES._toList();
+
+                    const getDisplay = (roleKeyVal) => {
+
+                        const oRole = appUserRoles.find(k => k.value === roleKeyVal.key);
+
+                        return oRole ? `${roleKeyVal.value} ${oRole.name}s` : ''
+                    }
+
+                    this.totalCountByRole = record.map(getDisplay).join(', ')
+                })
+                .catch((e) => {
+                    const errorMessage = getAxiosErrorMessage(e)
+                })
+                .then(() => {
+
+                })
+        }
+    }
+
 }
 
 
@@ -943,29 +984,8 @@ var users_app = new Vue({
 
         this.isAdmin = currentUser.role() === APP_USER_ROLES.admin.value
 
-        if (this.isAdmin) {
-            UsersService.GetTotalCountByRoles()
-                .then((r) => {
-                    const record = r.data || []
-
-                    const appUserRoles = APP_USER_ROLES._toList();
-
-                    const getDisplay = (roleKeyVal) => {
-
-                        const oRole = appUserRoles.find(k => k.value === roleKeyVal.key);
-
-                        return oRole ? `${roleKeyVal.value} ${oRole.name}s` : ''
-                    }
-
-                    this.totalCountByRole = record.map(getDisplay).join(', ')
-                })
-                .catch((e) => {
-                    const errorMessage = getAxiosErrorMessage(e)
-                })
-                .then(() => {
-
-                })
-        }
+      
+        this.userRoles_getAllTotals()
         //this.supervisors_getAll()
     }
 })

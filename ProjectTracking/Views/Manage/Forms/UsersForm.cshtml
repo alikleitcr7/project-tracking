@@ -1,8 +1,8 @@
 ﻿<div id="Users" class="Users v-container" v-cloak=v-cloak>
 
     @*<div class="buttons mb-2">
-            <button type="button" v-on:click="users_openModal" class="s-btn s-btn-primary">New User &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
-        </div>*@
+        <button type="button" v-on:click="users_openModal" class="s-btn s-btn-primary">New User &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
+    </div>*@
 
     <div class="input-group " style="max-width:300px">
 
@@ -50,11 +50,8 @@
                     <th>Title</th>
                     <th>Email</th>
                     <th>Date of Birth</th>
-                    @*<th v-if="isAdmin">Monthly Salary</th>
-                        <th v-if="isAdmin">Hourly Rate</th>*@
                     <th>Employment Type</th>
                     <th v-if="isAdmin">Role</th>
-                    @*<th>Supervising</th>*@
                     <th></th>
                     <th v-if="isAdmin"></th>
                 </tr>
@@ -78,14 +75,6 @@
                         {{users_isAdmin(item) ? '-': item.dateOfBirthDisplay}}
                     </td>
 
-                    @*<td v-if="isAdmin">
-                            {{item.monthlySalary || '-'}}
-                        </td>*@
-
-                    @*<td v-if="isAdmin">
-                            {{item.hourlyRate || '-'}}
-                        </td>*@
-
                     <td>
                         {{item.employmentTypeDisplay || '-'}}
                     </td>
@@ -94,69 +83,44 @@
                         {{item.roleDisplay}}
                     </td>
 
-                    <td v-if="users_isAdmin(item)" colspan="3"></td>
 
-                    <template v-if="!users_isAdmin(item)">
+                    <td>
+                        <a class="s-btn s-btn-sm s-btn-primary" :href="`/profile/${item.id}`"><i class="fa fa-user"></i> Profile</a>
+                    </td>
 
-                        @*<td>
-                                <button class="s-btn s-btn-sm s-btn-outline"
-                                        v-on:click="supervisors_edit(item.id)"
-                                        type="button">
-                                    <i class="glyphicon glyphicon-user"></i>
-                                    Team
-                                </button>
-                            </td>*@
+                    <td v-if="users_isAdmin(item)"></td>
 
-                        <td>
-                            <a class="s-btn s-btn-sm s-btn-primary" :href="`/profile/${item.id}`"><i class="fa fa-user"></i> Profile</a>
-                        </td>
+                    <td v-if="isAdmin && !users_isAdmin(item)">
 
-                        <td v-if="isAdmin">
+                        <div class="dropdown">
 
-                            <div class="dropdown">
+                            <i class="fa fa-ellipsis-v cursor-pointer fa-lg"
+                               data-toggle="dropdown"></i>
 
-                                <i class="fa fa-ellipsis-v cursor-pointer fa-lg"
-                                   data-toggle="dropdown"></i>
+                            <ul class="dropdown-menu dropdown-menu-right " role="menu">
+                                <li>
+                                    <a v-on:click="userRoles_edit(item)">
+                                        <i class="glyphicon glyphicon-file"></i>
+                                        Role
+                                    </a>
+                                </li>
+                                <li>
+                                    <a v-on:click="userRoles_explore(item.id)">
+                                        <i class="fa fa-history"></i>
+                                        Role History
+                                    </a>
+                                </li>
+                                <li>
+                                    <a v-on:click="users_edit(idx)">
+                                        <i class="glyphicon glyphicon-edit"></i>
+                                        Edit
+                                    </a>
+                                </li>
+                            </ul>
 
-                                <ul class="dropdown-menu dropdown-menu-right " role="menu">
-                                    <li>
-                                        <a v-on:click="userRoles_edit(item)">
-                                            <i class="glyphicon glyphicon-file"></i>
-                                            Role
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a v-on:click="userRoles_explore(item.id)">
-                                            <i class="fa fa-history"></i>
-                                            Role History
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a v-on:click="users_edit(idx)">
-                                            <i class="glyphicon glyphicon-edit"></i>
-                                            Edit
-                                        </a>
-                                    </li>
-                                    @*<li>
-                                            <a class="dropdown-item-danger" v-on:click="users_delete(idx)">
-                                                <i class="glyphicon glyphicon-trash"></i>
-                                                Delete
-                                            </a>
-                                        </li>*@
-                                </ul>
+                        </div>
 
-                            </div>
-
-
-                            @*<button class="s-btn s-btn-sm s-btn-outline" type="button"></button>*@
-
-                            @*<button class="s-btn s-btn-sm s-btn-outline" type="button"
-                                          v-on:click="users_edit(idx)"></button>
-                                <button class="s-btn s-btn-sm s-btn-danger" type="button"></button>*@
-                        </td>
-
-                    </template>
-
+                    </td>
                 </tr>
 
             </tbody>
@@ -168,8 +132,8 @@
             <div class="modal-content">
 
                 @*<div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>*@
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>*@
 
                 <div class="modal-body">
 
@@ -231,13 +195,13 @@
 
 
                         @*<div class="input-group-item">
-            <label>Monthly Salary</label>
-            <input type="text" class="form-control" v-model="users.form.record.monthlySalary" />
-        </div>
-        <div class="input-group-item">
-            <label>Hourly Rate</label>
-            <input type="text" class="form-control" v-model="users.form.record.hourlyRate" />
-        </div>*@
+                            <label>Monthly Salary</label>
+                            <input type="text" class="form-control" v-model="users.form.record.monthlySalary" />
+                        </div>
+                        <div class="input-group-item">
+                            <label>Hourly Rate</label>
+                            <input type="text" class="form-control" v-model="users.form.record.hourlyRate" />
+                        </div>*@
 
                     </div>
 
@@ -316,7 +280,7 @@
                             {{role.value}}
                         </p>
                     </div>
-                    <h5 v-if="userRoles.form.record.assignedByUser">Assigned On {{userRoles.form.record.dateAssignedDisplay}} By {{userRoles.form.record.assignedByUser}}</h5>
+                    <h5 v-if="userRoles.form.record.assignedByUser">Assigned On {{userRoles.form.record.dateAssignedDisplay}} By {{userRoles.form.record.assignedByUser.fullName}}</h5>
                 </div>
 
                 <div class="modal-footer modal-footer-centered">

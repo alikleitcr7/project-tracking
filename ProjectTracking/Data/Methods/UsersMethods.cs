@@ -1030,8 +1030,8 @@ namespace ProjectTracking.Data.Methods
         public UserRoleLog GetUserRole(string userId)
         {
             return db.Users
-              .AsNoTracking()
-              .Include(k => k.RoleAssignedByUser)
+              //.AsNoTracking()
+              //.Include(k => k.RoleAssignedByUser)
               .Where(k => k.Id == userId)
               .Select(k => new UserRoleLog()
               {
@@ -1039,7 +1039,7 @@ namespace ProjectTracking.Data.Methods
                   UserId = k.Id,
                   AssignedByUserId = k.RoleAssignedByUserId,
                   DateAssigned = k.RoleAssignedDate,
-                  AssignedByUser = new User()
+                  AssignedByUser = k.RoleAssignedByUser == null ? null : new User()
                   {
                       Id = k.RoleAssignedByUser.Id,
                       FirstName = k.RoleAssignedByUser.FirstName,
