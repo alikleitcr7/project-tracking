@@ -1,7 +1,7 @@
 ﻿const APP_USER_ROLES = {
-    teamMember: { key: 0, value: 'TeamMember' },
-    supervisor: { key: 1, value: 'Supervisor' },
-    admin: { key: 2, value: 'Admin' },
+    teamMember: { key: 0, value: 'TeamMember', name:'Team Member' },
+    supervisor: { key: 1, value: 'Supervisor', name: 'Supervisor' },
+    admin: { key: 2, value: 'Admin' , name: 'Admin'},
     _toList: function () {
         return [
             this.teamMember,

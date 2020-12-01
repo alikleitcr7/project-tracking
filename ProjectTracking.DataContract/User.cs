@@ -74,9 +74,9 @@ namespace ProjectTracking.DataContract
         //public List<Supervising> Supervisors { get; set; }
         //public List<User> Supervising { get; set; }
 
-        public float? MonthlySalary { get; set; }
-        public float? HourlyRate { get; set; }
-        public float? HoursPerDay { get; set; }
+        //public float? MonthlySalary { get; set; }
+        //public float? HourlyRate { get; set; }
+        //public float? HoursPerDay { get; set; }
         public short? EmploymentTypeCode { get; set; }
 
         public EmploymentType? EmploymentType

@@ -110,8 +110,8 @@ const userFormObject = (obj) => {
         lastName: obj.lastName,
         title: obj.title,
         email: obj.email,
-        monthlySalary: obj.monthlySalary,
-        hourlyRate: obj.hourlyRate,
+        dateOfBirth: obj.dateOfBirth,
+        //hourlyRate: obj.hourlyRate,
         employmentTypeCode: obj.employmentTypeCode,
         userName: obj.userName,
     } : {
@@ -121,8 +121,9 @@ const userFormObject = (obj) => {
             lastName: null,
             title: null,
             email: null,
-            monthlySalary: null,
-            hourlyRate: null,
+            //monthlySalary: null,
+            //hourlyRate: null,
+            dateOfBirth: null,
             employmentTypeCode: null,
             userName: null,
         }
@@ -142,6 +143,7 @@ const userObject = () => {
             keyword: '',
             categoryId: null,
         },
+        hasSearch: false,
         dataPaging: {
             page: 0,
             totalPages: 0,
@@ -194,6 +196,15 @@ const usersMethods = {
 
         console.log('end validation')
 
+        // validate age
+
+        if (isValid) {
+
+            const dob = moment(form.dateOfBirth)
+            const age = moment().diff(dob, 'years');
+            isValid = (age >= 14);
+            finalMessage = 'Age should be >= 14'
+        }
 
         if (!isValid) {
             this.users_setFormMessage(finalMessage || 'Fill Required Fields to Continue')
@@ -424,6 +435,8 @@ const usersMethods = {
 
         const { keyword } = this.users.filterBy
         const { length } = this.users.dataPaging
+
+        this.users.hasSearch = keyword && keyword.length > 0
 
         return UsersService.Search(keyword, page, length)
             .then((r) => {
@@ -905,7 +918,8 @@ var users_app = new Vue({
         users: userObject(),
         supervisors: supervisorObject(),
         userRoles: userRoleObject(),
-        isAdmin:false,
+        isAdmin: false,
+        totalCountByRole: null,
         errors: '',
         oNull: null,
     },
@@ -940,6 +954,30 @@ var users_app = new Vue({
         this.userRoles_getAll()
 
         this.isAdmin = currentUser.role() === APP_USER_ROLES.admin.value
+
+        if (this.isAdmin) {
+            UsersService.GetTotalCountByRoles()
+                .then((r) => {
+                    const record = r.data || []
+
+                    const appUserRoles = APP_USER_ROLES._toList();
+
+                    const getDisplay = (roleKeyVal) => {
+
+                        const oRole = appUserRoles.find(k => k.value === roleKeyVal.key);
+
+                        return oRole ? `${roleKeyVal.value} ${oRole.name}s` : ''
+                    }
+
+                    this.totalCountByRole = record.map(getDisplay).join(', ')
+                })
+                .catch((e) => {
+                    const errorMessage = getAxiosErrorMessage(e)
+                })
+                .then(() => {
+
+                })
+        }
         //this.supervisors_getAll()
     }
 })

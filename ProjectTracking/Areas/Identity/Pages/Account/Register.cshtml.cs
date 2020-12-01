@@ -80,6 +80,11 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+
+            [Required]
+            [Display(Name = "UserName")]
+            public string UserName { get; set; }
+
             [Required]
             //[StringLength(100, ErrorMessage = "The {0} must be at least {2} and max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
@@ -94,7 +99,7 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
             //public int CompanyID { get; set; }
             //[Required]
             //public int DepartmentID { get; set; }
-            [Display(Name = "Secret Key")]
+            [Display(Name = "Role Key")]
             public string RoleKey { get; set; }
         }
         public void OnGet(string returnUrl = null)
@@ -137,8 +142,21 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
 
             returnUrl = returnUrl ?? Url.Content("~/");
 
+
             if (ModelState.IsValid)
             {
+                // Save today's date.
+                var today = DateTime.Today;
+                DateTime dateOfBirth = DateTime.Parse(Input.DateOfBirth);
+                // Calculate the age.
+                var age = today.Year - dateOfBirth.Year;
+
+                if (age < 14)
+                {
+                    ViewData["ErrorMessage"] = "Age should be above 14 years old";
+                    return Page();
+                }
+
                 string password = Input.Password;
                 var validator = new PasswordValidator<ApplicationUser>();
                 var result_password = await validator.ValidateAsync(_userManager, null, password);
@@ -155,6 +173,12 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
                     return Page();
                 }
 
+                if (_context.Users.Any(k => k.UserName == Input.UserName.ToLower()))
+                {
+                    ViewData["ErrorMessage"] = "Username already exist";
+                    return Page();
+                }
+
                 var user = new ApplicationUser
                 {
                     UserName = Input.Email.ToLower(),
@@ -164,13 +188,12 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
                     EmailConfirmed = false,
                     //CompanyID = Input.CompanyID,
                     //DepartmentID = Input.DepartmentID,
-                    DateOfBirth = DateTime.Parse(Input.DateOfBirth),
+                    DateOfBirth = dateOfBirth,
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     RoleCode = (short)role.Value,
                     RoleAssignedDate = DateTime.Now
                 };
-
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 

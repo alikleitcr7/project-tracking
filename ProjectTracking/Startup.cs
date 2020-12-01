@@ -157,6 +157,7 @@ namespace ProjectTracking
             services.AddScoped<ITimeSheetActivityLogsMethods, Data.Methods.TimeSheetActivityLogsMethods>();
             services.AddScoped<ITimeSheetActivitiesMethods, Data.Methods.TimeSheetActivitiesMethods>();
             services.AddScoped<IIpAddressMethods, Data.Methods.IpAddressesMethods>();
+            services.AddScoped<IRoleKeyMethods, Data.Methods.RoleKeyMethods>();
 
             services.AddSingleton<Utils.IValidationExtensions, Utils.ValidationExtensions>();
 

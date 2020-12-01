@@ -90,8 +90,8 @@ namespace ProjectTracking.Data.Methods
                 dbUser.MiddleName = model.middleName;
                 dbUser.Title = model.title;
                 dbUser.EmploymentTypeCode = model.employmentTypeCode;
-                dbUser.MonthlySalary = model.monthlySalary;
-                dbUser.HourlyRate = model.hourlyRate;
+                //dbUser.MonthlySalary = model.monthlySalary;
+                //dbUser.HourlyRate = model.hourlyRate;
 
                 db.SaveChanges();
 
@@ -133,8 +133,8 @@ namespace ProjectTracking.Data.Methods
                 UserName = k.UserName,
                 //SupervisingCount = k.Supervising.Count(),
                 EmploymentTypeCode = k.EmploymentTypeCode,
-                MonthlySalary = k.MonthlySalary,
-                HourlyRate = k.HourlyRate,
+                //MonthlySalary = k.MonthlySalary,
+                //HourlyRate = k.HourlyRate,
                 RoleAssignedDate = k.RoleAssignedDate,
                 RoleAssignedByUserId = k.RoleAssignedByUserId,
                 //RoleAssignedByUserName = k.RoleAssignedByUser.FirstName + " " + k.RoleAssignedByUser.LastName,
@@ -159,6 +159,16 @@ namespace ProjectTracking.Data.Methods
             return query.Skip(page * countPerPage)
                 .Take(countPerPage)
                 .ToList();
+        }
+
+
+        public List<KeyValuePair<string, int>> GetTotalCountByRoles()
+        {
+            return db.Users
+                    .GroupBy(k => k.RoleCode)
+                    .AsEnumerable()
+                    .Select(k => new KeyValuePair<string, int>(((ApplicationUserRole)k.Key).ToString(), k.Count()))
+                    .ToList();
         }
 
         public void Delete(string id)
@@ -736,7 +746,7 @@ namespace ProjectTracking.Data.Methods
         //                                       where rp.id not in (select distinct RequestedPermissionId 
         //                                                           from RequestedPermissionsStatuses
         //                                                           where IsApproved <> 1)
-							 //                   and GETDATE() between rp.FromDate and rp.ToDate)";
+        //                   and GETDATE() between rp.FromDate and rp.ToDate)";
         //    SqlCommand cmd = new SqlCommand(sql);
 
         //    return dataAccess.ToObjectList<User>(cmd);
@@ -854,7 +864,7 @@ namespace ProjectTracking.Data.Methods
         //    return new { All = allUsers, SuperVise = supervisorIds };
         //}
 
-      
+
 
 
         #endregion

@@ -40,6 +40,7 @@ namespace ProjectTracking.Controllers
             _userManager = userManager;
             _accessor = accessor;
             this.observerHub = observerHub;
+
             _users = users;
             _userLogsMethods = userLogsMethods;
         }

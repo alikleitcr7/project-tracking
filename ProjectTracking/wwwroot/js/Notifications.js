@@ -203,7 +203,7 @@ var notification_app = new Vue({
         this.teamId = currentUser.team()
 
         if (this.teamId) {
-            this.tabs = ['Team', 'Other']
+            this.tabs = ['Team', 'Personal']
         }
         else {
             this.selectedIdx = 1

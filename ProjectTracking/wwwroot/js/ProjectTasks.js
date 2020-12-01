@@ -109,7 +109,7 @@ const projectTaskObject = () => {
         dataPaging: {
             page: 0,
             totalPages: 0,
-            length: 5,
+            length: 7,
             totalCount: 0,
             pagination: 'custom-pagination',
             prev: 'Prev',
@@ -199,18 +199,16 @@ const projectTasksMethods = {
                     isValid = false
                 }
             }
-            else if (plannedEnd || actualEnd) {
+            //else if (plannedEnd || actualEnd) {
 
-                finalMessage = 'Cannot add Planned or Actual end date without start date'
-                isValid = false
-            }
+            //    finalMessage = 'Cannot add Planned or Actual end date without start date'
+            //    isValid = false
+            //}
 
 
             if (!isValid) {
                 this.projectTasks_setFormMessage(finalMessage)
             }
-
-
         }
 
         return isValid;

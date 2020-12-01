@@ -1,13 +1,13 @@
 ﻿<div id="UserLogs" class="v-container" v-cloak>
 
-    <div class="input-group-container" style="max-width:400px">
+    <div class="input-group-container" style="max-width:550px">
         <div class="input-group-item">
             <label>From Date</label>
-            <date-picker v-model="fromDate" :config="dateOptions"></date-picker>
+            <date-picker v-model="fromDate" :config="dateTimeOptions"></date-picker>
         </div>
         <div class="input-group-item">
             <label>To Date</label>
-            <date-picker v-model="toDate" :config="dateOptions"></date-picker>
+            <date-picker v-model="toDate" :config="dateTimeOptions"></date-picker>
         </div>
         <div class="input-group-item">
             <label>&nbsp;</label>
@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <section v-show="!UsersLogsAreLoading && dataPaging.totalPages > 1" id="Pagination" >
+    <section v-show="!UsersLogsAreLoading && dataPaging.totalPages > 1" id="Pagination">
         <div class="container">
 
             <paginate :page-count="dataPaging.totalPages"
@@ -33,6 +33,7 @@
 
     <p v-show="UsersLogsAreLoading">Loading...</p>
     <h5 v-if="!UsersLogsAreLoading && !usersLogs.length">Nothing here yet</h5>
+
     <table class="table user-logs-results" v-if="usersLogs.length">
         <thead>
             <tr>

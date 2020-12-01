@@ -67,6 +67,7 @@ namespace ProjectTracking.Data.Methods.Interfaces
         Models.Dashboard.AdminOverview GetAdminOverview(string userId, bool logsAndCountersOnly);
         Models.Dashboard.TeamMemberOverview GetTeamMemberOverview(string userId);
         Models.Users.UserKeyValue GetUserKeyValue(string userId);
+        List<KeyValuePair<string, int>> GetTotalCountByRoles();
         #endregion
     }
 }

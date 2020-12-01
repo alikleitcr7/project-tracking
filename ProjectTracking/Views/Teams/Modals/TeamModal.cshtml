@@ -11,7 +11,7 @@
 
                 <div class="input-group-container">
                     <div class="input-group-item">
-                        <label>Team Name</label>
+                        <label>Team Name (*)</label>
                         <input type="text" class="form-control" v-model="teams.form.record.name" />
 
                     </div>
@@ -19,8 +19,8 @@
 
 
                 <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#MembersTab"><span v-bind:class="{'text-danger':!teams.form.record.userIds.length  }"> Members ({{teams.form.record.userIds.length}})</span></a></li>
-                    <li><a data-toggle="tab" href="#SupervisorTab"><span v-bind:class="{'text-danger':!teams.form.record.supervisorId  }">Supervisor</span> </a></li>
+                    <li class="active"><a data-toggle="tab" href="#MembersTab"><span v-bind:class="{'text-danger':!teams.form.record.userIds.length  }"> Members ({{teams.form.record.userIds.length || '*'}})</span></a></li>
+                    <li><a data-toggle="tab" href="#SupervisorTab"><span v-bind:class="{'text-danger':!teams.form.record.supervisorId  }">Supervisor ({{teams.form.record.supervisorId ? '' :'*'}})</span> </a></li>
                 </ul>
 
                 <div class="tab-content">

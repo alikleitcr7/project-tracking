@@ -26,8 +26,8 @@ namespace ProjectTracking
         public DateTime RoleAssignedDate { get; set; }
 
         public int? TeamId { get; set; }
-        public float? MonthlySalary { get; set; }
-        public float? HourlyRate { get; set; }
+        //public float? MonthlySalary { get; set; }
+        //public float? HourlyRate { get; set; }
         public short? EmploymentTypeCode { get; set; }
 
         [Range(0, 2)]

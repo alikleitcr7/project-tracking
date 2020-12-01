@@ -63,6 +63,26 @@ namespace ProjectTracking.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+        
+
+        [HttpGet]
+        public IActionResult GetTotalCountByRoles()
+        {
+            try
+            {
+                var record = _userMethods.GetTotalCountByRoles();
+
+                return Ok(record);
+            }
+            catch (ClientException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
 
         [HttpGet]
         public IActionResult GetRoles()

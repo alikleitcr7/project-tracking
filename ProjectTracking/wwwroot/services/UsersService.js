@@ -19,6 +19,12 @@ const UsersService = {
 
         return axios.get(url);
     },
+    GetTotalCountByRoles: function () {
+
+        const url = USERS_SERVICE_URI(`GetTotalCountByRoles`)
+
+        return axios.get(url);
+    },
     GetRoles: function () {
 
         const url = USERS_SERVICE_URI(`GetRoles`)

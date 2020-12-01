@@ -31,7 +31,8 @@
         </div>
     </section>
 
-    <p class="c-display-message">{{usersNotifications.isLoading ? 'Loading...':'&nbsp;'}}</p>
+    <hr />
+    <h5 class="c-display-message">{{usersNotifications.isLoading ? 'Loading...':`Total of ${usersNotifications.dataPaging.totalCount} sent notifications`}}</h5>
 
     <div v-show="usersNotifications.data.length" class="UsersNotifications c-table-data-container "
          v-bind:class="{'lock-controls': usersNotifications.isProcessing }">

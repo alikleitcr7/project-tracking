@@ -18,8 +18,8 @@
             </paginate>
         </div>
     </section>
-
-    <p class="c-display-message">{{categories.isLoading ? 'Loading...':'&nbsp;'}}</p>
+    <hr />
+    <h5 class="c-display-message">{{categories.isLoading ? 'Loading...':`Total of ${categories.data.length} categories`}}</h5>
 
     <div v-show="categories.data.length" class="Categories c-table-data-container"
          v-bind:class="{'lock-controls': categories.isProcessing }">

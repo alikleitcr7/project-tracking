@@ -17,7 +17,7 @@
 
                         <div class="input-group-container">
                             <div class="input-group-item">
-                                <label for="usr">Title</label>
+                                <label for="usr">Title (*)</label>
                                 <input type="text"
                                        maxlength="100"
                                        v-if="isProjectSupervisor"
@@ -27,7 +27,7 @@
 
                             </div>
                             <div class="input-group-item">
-                                <label>Status</label>
+                                <label>Status (*)</label>
                                 <p v-show="projectTasks.statuses.isLoading">Loading Statuses...</p>
                                 <select v-if="isProjectSupervisor && projectTasks.statuses.data.length"
                                         v-model="projectTasks.form.record.statusCode" class="form-control ">

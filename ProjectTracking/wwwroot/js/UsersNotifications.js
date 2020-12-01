@@ -57,7 +57,7 @@ const usersNotificationObject = () => {
         dataPaging: {
             page: 0,
             totalPages: 0,
-            length: 5,
+            length: 7,
             totalCount: 0,
             pagination: 'custom-pagination',
             prev: 'Prev',

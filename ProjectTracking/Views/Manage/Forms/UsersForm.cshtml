@@ -6,13 +6,12 @@
 
     <div class="input-group " style="max-width:300px">
 
-        <input type="text" 
-                @@keyup.enter="users_getAll(0)"
+        <input type="text"
+               @@keyup.enter="users_getAll(0)"
                class="form-control" placeholder="Search" v-model="users.filterBy.keyword">
 
         <div class="input-group-btn">
-            <button class="btn btn-default" type="submit" 
-                   
+            <button class="btn btn-default" type="submit"
                     v-on:click="users_getAll(0)">
                 <i class="glyphicon glyphicon-search"></i>
             </button>
@@ -36,7 +35,9 @@
         </div>
     </section>
 
-    <p class="c-display-message">{{users.isLoading ? 'Loading...':'&nbsp;'}}</p>
+    <hr />
+
+    <h5 class="c-display-message" v-if="!users.isLoading">{{users.isLoading ? 'Loading...': `${(users.hasSearch ? 'Found':'Total')} of ${users.dataPaging.totalCount} user${(users.dataPaging.totalCount == 0 || users.dataPaging.totalCount > 1  ? 's':'')}`}}   <span v-if="!users.hasSearch && totalCountByRole"> -  {{totalCountByRole}}</span> </h5>
 
     <div v-show="users.data.length" class="Users c-table-data-container "
          v-bind:class="{'lock-controls': users.isProcessing }">
@@ -49,12 +50,12 @@
                     <th>Title</th>
                     <th>Email</th>
                     <th>Date of Birth</th>
-                    <th v-if="isAdmin">Monthly Salary</th>
-                    <th v-if="isAdmin">Hourly Rate</th>
-                    <th >Employment Type</th>
+                    @*<th v-if="isAdmin">Monthly Salary</th>
+                        <th v-if="isAdmin">Hourly Rate</th>*@
+                    <th>Employment Type</th>
                     <th v-if="isAdmin">Role</th>
                     @*<th>Supervising</th>*@
-                    <th ></th>
+                    <th></th>
                     <th v-if="isAdmin"></th>
                 </tr>
             </thead>
@@ -77,13 +78,13 @@
                         {{users_isAdmin(item) ? '-': item.dateOfBirthDisplay}}
                     </td>
 
-                    <td v-if="isAdmin">  
-                        {{item.monthlySalary || '-'}}
-                    </td>
+                    @*<td v-if="isAdmin">
+                            {{item.monthlySalary || '-'}}
+                        </td>*@
 
-                    <td v-if="isAdmin">
-                        {{item.hourlyRate || '-'}}
-                    </td>
+                    @*<td v-if="isAdmin">
+                            {{item.hourlyRate || '-'}}
+                        </td>*@
 
                     <td>
                         {{item.employmentTypeDisplay || '-'}}
@@ -167,22 +168,22 @@
             <div class="modal-content">
 
                 @*<div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>*@
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>*@
 
                 <div class="modal-body">
 
                     <div class="input-group-container">
                         <div class="input-group-item">
-                            <label>First Name</label>
+                            <label>First Name (*)</label>
                             <input type="text" class="form-control" v-model="users.form.record.firstName" />
                         </div>
                         <div class="input-group-item">
-                            <label>Middle Name</label>
+                            <label>Middle Name (*)</label>
                             <input type="text" class="form-control" v-model="users.form.record.middleName" />
                         </div>
                         <div class="input-group-item">
-                            <label>Last Name</label>
+                            <label>Last Name (*)</label>
                             <input type="text" class="form-control" v-model="users.form.record.lastName" />
                         </div>
                     </div>
@@ -195,12 +196,12 @@
                         </div>
 
                         <div class="input-group-item">
-                            <label>Email</label>
+                            <label>Email (*)</label>
                             <input type="text" class="form-control" v-model="users.form.record.email" />
                         </div>
 
                         <div class="input-group-item">
-                            <label>Username</label>
+                            <label>Username (*)</label>
                             <input type="text" class="form-control" v-model="users.form.record.userName" />
                         </div>
 
@@ -220,13 +221,19 @@
                         </div>
 
                         <div class="input-group-item">
-                            <label>Monthly Salary</label>
-                            <input type="text" class="form-control" v-model="users.form.record.monthlySalary" />
+                            <label>Date of Birth</label>
+                            <date-picker v-model="users.form.record.dateOfBirth" :config="dateOptions"></date-picker>
                         </div>
-                        <div class="input-group-item">
-                            <label>Hourly Rate</label>
-                            <input type="text" class="form-control" v-model="users.form.record.hourlyRate" />
-                        </div>
+
+                        @*<div class="input-group-item">
+                                <label>Monthly Salary</label>
+                                <input type="text" class="form-control" v-model="users.form.record.monthlySalary" />
+                            </div>
+                            <div class="input-group-item">
+                                <label>Hourly Rate</label>
+                                <input type="text" class="form-control" v-model="users.form.record.hourlyRate" />
+                            </div>*@
+
                     </div>
 
                 </div>
@@ -304,7 +311,7 @@
                             {{role.value}}
                         </p>
                     </div>
-                    <h5>Assigned On {{userRoles.form.record.dateAssignedDisplay}}  {{userRoles.form.record.assignedByUser ? 'By '+userRoles.form.record.assignedByUser.fullName: '-'}}</h5>
+                    <h5 v-if="userRoles.form.record.assignedByUser">Assigned On {{userRoles.form.record.dateAssignedDisplay}} By {{userRoles.form.record.assignedByUser}}</h5>
                 </div>
 
                 <div class="modal-footer modal-footer-centered">

@@ -5,11 +5,11 @@
             <tr>
                 <td>
                     <label>Address</label>
-                    <input  @@keyup.enter="addIpAddress" type="text" class="form-control" v-model="ipAddresses.form.address" />
+                    <input @@keyup.enter="addIpAddress" type="text" class="form-control" v-model="ipAddresses.form.address" />
                 </td>
                 <td>
                     <label>Title</label>
-                    <input  @@keyup.enter="addIpAddress" type="text" class="form-control" v-model="ipAddresses.form.title" />
+                    <input @@keyup.enter="addIpAddress" type="text" class="form-control" v-model="ipAddresses.form.title" />
                 </td>
                 <td>
                     <label>&nbsp;</label>
@@ -20,8 +20,11 @@
             </tr>
         </table>
 
-        <h5 class="display-message">{{ipAddresses.message || '&nbsp;' }}</h5>
+        <h5 class="display-message" v-if="ipAddresses.message">{{ipAddresses.message}}</h5>
     </div>
+
+    <hr />
+    <h5 class="c-display-message">{{ipAddresses.isLoading || unlistedIsLoading ? '':`Total of ${ipAddresses.data.length} defined and ${unlistedIps.length} undefined ip addresses`}}</h5>
 
 
     <div class="split-ips">
@@ -73,7 +76,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                     <tr v-if="!unlistedIsLoading && !unlistedIps.length">
                         <td colspan="2">Nothing Here</td>
                     </tr>

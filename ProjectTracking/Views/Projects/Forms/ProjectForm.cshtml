@@ -15,14 +15,14 @@
 
                         <div class="input-group-container">
                             <div class="input-group-item">
-                                <label for="usr">Title</label>
+                                <label for="usr">Title (*)</label>
                                 <input type="text"
                                        maxlength="100"
                                        class="form-control" v-model="projects.form.record.title">
 
                             </div>
                             <div class="input-group-item">
-                                <label>Category</label>
+                                <label>Category (*)</label>
                                 <p v-show="categories.isLoading">Loading Categories...</p>
                                 <p v-show="!categories.isLoading && !categories.data.length">No categories added!</p>
                                 <select v-if="categories.data.length" v-model="projects.form.record.categoryId" class="form-control ">
@@ -33,7 +33,7 @@
                                 </select>
                             </div>
                             <div class="input-group-item">
-                                <label>Status</label>
+                                <label>Status (*)</label>
                                 <p v-show="projects.statuses.isLoading">Loading Statuses...</p>
                                 <select v-if="projects.statuses.data.length" v-model="projects.form.record.statusCode" class="form-control " >
                                     @*<option :value="oNull" >Choose a Status</option>*@
