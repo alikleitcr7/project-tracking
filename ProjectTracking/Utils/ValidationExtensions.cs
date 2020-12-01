@@ -17,5 +17,6 @@ namespace ProjectTracking.Utils
             // The variable isValid will be true if everything is valid
             // The results variable contains the results of the validation
         }
+
     }
 }

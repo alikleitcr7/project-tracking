@@ -1,6 +1,6 @@
 ﻿//#region Document
 $(document).ready(function () {
-    let dataTables_en = $('[data-custom-dt=en]');
+    //let dataTables_en = $('[data-custom-dt=en]');
 
     //$('[data-toggle="tooltip"]').tooltip();
 
@@ -12,16 +12,20 @@ $(document).ready(function () {
             format: 'YYYY-MM-DD',
             maxDate: moment(),
         });
+
+        //dateTimePicker.val('')
     }
 
     if (dateTimePicker_time.length) {
         dateTimePicker_time.datetimepicker({
             format: 'YYYY-MM-DD HH:mm:ss',
         });
+
+        dateTimePicker.val('')
     }
-    if (dataTables_en.length) {
-        dataTables_en.DataTable(dtOptions_TopControls_en);
-    }
+    //if (dataTables_en.length) {
+    //    dataTables_en.DataTable(dtOptions_TopControls_en);
+    //}
 });
 
 

@@ -16,15 +16,20 @@ namespace ProjectTracking.Data.Methods
             {ApplicationUserRole.Admin , 2 },
         };
 
+        private string GetRoleKeyFile()
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), "rolekeys.txt"); ;
+        }
+
         public Dictionary<ApplicationUserRole, string> GetRoleKeys()
         {
-            string file = Path.Combine(Directory.GetCurrentDirectory(), "rolekeys.txt");
+            string file = GetRoleKeyFile();
 
             using (var sr = new StreamReader(file))
             {
                 string content = sr.ReadToEnd();
 
-                string[] keys = content.Split('\n');
+                string[] keys = content.Split('\n').Select(k => k.Trim('\r')).ToArray();
 
                 return new Dictionary<ApplicationUserRole, string>()
                 {
@@ -35,11 +40,15 @@ namespace ProjectTracking.Data.Methods
             }
         }
 
-        public void ChangeKey(string newText, string fileName, int line_to_edit)
+        public void ChangeKey(ApplicationUserRole role, string key)
         {
-            string[] arrLine = File.ReadAllLines(fileName);
-            arrLine[line_to_edit - 1] = newText;
-            File.WriteAllLines(fileName, arrLine);
+            string file = GetRoleKeyFile();
+
+            string[] arrLine = File.ReadAllLines(file);
+
+            arrLine[role_indexes[role]] = key;
+
+            File.WriteAllLines(file, arrLine);
         }
     }
 }

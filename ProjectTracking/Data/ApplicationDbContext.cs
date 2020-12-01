@@ -48,6 +48,8 @@ namespace ProjectTracking.Data
                                          .Ignore(c => c.LockoutEnd)
                                          .Ignore(c => c.AccessFailedCount);
 
+            builder.Entity<ApplicationUser>().Property(x => x.UserName).HasMaxLength(30);
+            builder.Entity<ApplicationUser>().Property(x => x.NormalizedUserName).HasMaxLength(30);
 
             builder.Entity<UserNotification>()
                      .HasOne(c => c.FromUser)

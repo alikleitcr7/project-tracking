@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProjectTracking.Data;
+using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.Services;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         //private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IRoleKeyMethods roleKeyMethods;
         private readonly ApplicationDbContext _context;
         //private readonly RoleManager<ApplicationIdentityRole> _roleManager;
 
@@ -34,6 +36,7 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
             //ILogger<RegisterModel> logger,
             IConfiguration configuration,
             IEmailSender emailSender,
+            IRoleKeyMethods roleKeyMethods,
             ApplicationDbContext context
             )
         {
@@ -44,6 +47,7 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
             //_logger = logger;
             //_roleManager = roleManager;
             _emailSender = emailSender;
+            this.roleKeyMethods = roleKeyMethods;
         }
 
         [BindProperty]
@@ -61,11 +65,11 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [Display(Name = "First Name")]
+            [Display(Name = "First Name"), MaxLength(30)]
             public string FirstName { get; set; }
 
             [Required]
-            [Display(Name = "Last Name")]
+            [Display(Name = "Last Name"), MaxLength(30)]
             public string LastName { get; set; }
 
             //[Required]
@@ -78,28 +82,25 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
 
             [Required]
             [EmailAddress]
-            [Display(Name = "Email")]
+            [Display(Name = "Email"), MaxLength(255)]
             public string Email { get; set; }
 
             [Required]
-            [Display(Name = "UserName")]
+            [Display(Name = "UserName"), RegularExpression(@"^(?=.{3,30}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$", ErrorMessage = "Username should be between 3 to 30 characters and can contain letters from a-z and numbers 0-9 and can contain (.-_) but not in a row and not in the beginning or end")]
             public string UserName { get; set; }
 
             [Required]
             //[StringLength(100, ErrorMessage = "The {0} must be at least {2} and max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Password"), MaxLength(65)]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-            //[Required]
-            //public int CompanyID { get; set; }
-            //[Required]
-            //public int DepartmentID { get; set; }
-            [Display(Name = "Role Key")]
+
+            [Display(Name = "Role Key"), MaxLength(20)]
             public string RoleKey { get; set; }
         }
         public void OnGet(string returnUrl = null)
@@ -114,24 +115,21 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
         {
             string roleKey = Input.RoleKey;
 
-            var secretToken_member = _configuration.GetSection($"Tokens:TeamMember").Value;
-            var secretToken_admin = _configuration.GetSection($"Tokens:Admin").Value;
-            var secretToken_supervisor = _configuration.GetSection($"Tokens:Supervisor").Value;
+            if (string.IsNullOrWhiteSpace(roleKey))
+            {
+                ViewData["ErrorMessage"] = "role key is required";
 
-            ApplicationUserRole? role = null;
+                return Page();
+            }
 
-            if (roleKey == secretToken_member)
-            {
-                role = ApplicationUserRole.TeamMember;
-            }
-            else if (roleKey == secretToken_admin)
-            {
-                role = ApplicationUserRole.Admin;
-            }
-            else if (roleKey == secretToken_supervisor)
-            {
-                role = ApplicationUserRole.Supervisor;
-            }
+
+
+
+            Dictionary<ApplicationUserRole, string> roleKeys = roleKeyMethods.GetRoleKeys();
+
+            bool hasValue = roleKeyMethods.GetRoleKeys().ContainsValue(roleKey);
+
+            ApplicationUserRole? role = hasValue ? roleKeys.First(k => k.Value == roleKey).Key : (ApplicationUserRole?)null;
 
             if (!role.HasValue)
             {
@@ -141,7 +139,6 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
             }
 
             returnUrl = returnUrl ?? Url.Content("~/");
-
 
             if (ModelState.IsValid)
             {
@@ -181,8 +178,8 @@ namespace ProjectTracking.Areas.Identity.Pages.Account
 
                 var user = new ApplicationUser
                 {
-                    UserName = Input.Email.ToLower(),
-                    NormalizedUserName = Input.Email.ToUpper(),
+                    UserName = Input.UserName.ToLower(),
+                    NormalizedUserName = Input.UserName.ToUpper(),
                     Email = Input.Email.ToLower(),
                     NormalizedEmail = Input.Email.ToUpper(),
                     EmailConfirmed = false,
