@@ -37,7 +37,7 @@
 
     <hr />
 
-    <h5 class="c-display-message" v-if="!users.isLoading">{{users.isLoading ? 'Loading...': `${(users.hasSearch ? 'Found':'Total')} of ${users.dataPaging.totalCount} user${(users.dataPaging.totalCount == 0 || users.dataPaging.totalCount > 1  ? 's':'')}`}}   <span v-if="!users.hasSearch && totalCountByRole"> -  {{totalCountByRole}}</span> </h5>
+    <h5 class="c-display-message">{{users.isLoading ? 'Loading...': `${(users.hasSearch ? 'Found':'Total of')} ${users.dataPaging.totalCount} user${(users.dataPaging.totalCount == 0 || users.dataPaging.totalCount > 1  ? 's':'')}`}}   <span v-if="!users.hasSearch && totalCountByRole"> -  {{totalCountByRole}}</span> </h5>
 
     <div v-show="users.data.length" class="Users c-table-data-container "
          v-bind:class="{'lock-controls': users.isProcessing }">

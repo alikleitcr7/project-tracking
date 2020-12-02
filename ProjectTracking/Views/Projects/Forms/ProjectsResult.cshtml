@@ -13,11 +13,16 @@
                 </select>
             </td>
             <td>
-                <input class="form-control" v-model="projects.filterBy.keyword" />
+                <input class="form-control"
+                       
+                        @@keyup.enter="projects_getAll(0)"
+                       placeholder="Enter Name Here..."
+                       v-model="projects.filterBy.keyword" />
             </td>
             <td>
-                <button class="s-btn s-btn-primary" v-on:click="projects_getAll()">Search
-                <i class="glyphicon glyphicon-search"></i>
+                <button class="s-btn s-btn-primary" v-on:click="projects_getAll()">
+                    Search
+                    <i class="glyphicon glyphicon-search"></i>
                 </button>
 
             </td>
@@ -26,7 +31,7 @@
 
 </div>
 
-<h4 v-show="!projects.isLoading && !projects.data.length ">
+<h4 v-show="!projects.isLoading && !projects.hasSearch && !projects.data.length ">
     <br />
     <span v-if="projects.filterBy.categoryId">Nothing under this category, </span> <span v-else>Nothing here yet, </span> <span class="clickable-link" v-on:click="projects_openModal">Click Here</span> to add
 </h4>
@@ -41,7 +46,7 @@
     </div>
 </section>
 
-<p class="c-display-message">{{projects.isLoading ? 'Loading...':'&nbsp;'}}</p>
+<h5 class="c-display-message">{{projects.isLoading ? 'Loading...': `${(projects.hasSearch ? 'Found':'Total of')}  ${projects.dataPaging.totalCount} project${(projects.dataPaging.totalCount == 0 || projects.dataPaging.totalCount > 1  ? 's':'')}`}}   </h5>
 
 <div v-show="projects.data.length" class="Projects c-table-data-container"
      v-bind:class="{'lock-controls': projects.isProcessing }">
@@ -78,7 +83,7 @@
                     <td>
                         {{item.title}}
                     </td>
-                    
+
                     <td>
                         {{item.addedByUserName}}
                     </td>
@@ -88,30 +93,30 @@
                     <td>
                         {{item.lastModifiedDateDisplay}}
                     </td>
-                    
+
                     <td>
                         {{item.startDateDisplay}}
                     </td>
-                    
+
                     <td>
                         {{item.plannedEndDisplay}}
                     </td>
-                    
+
                     <td>
                         {{item.actualEndDisplay}}
                     </td>
 
                     @*<td>
-                        {{item.teamsProjects ? item.teamsProjects.length : 0}}
-                    </td>*@
-                    
+                            {{item.teamsProjects ? item.teamsProjects.length : 0}}
+                        </td>*@
+
                     <td>
                         {{item.statusDisplay}}
                     </td>
 
                     <td>
                         <a :href="`/profile/${item.statusByUserId}`">{{item.statusByUserName}}</a>
-                        
+
                     </td>
 
                     <td>
@@ -130,7 +135,7 @@
                         </button>
                         <button class="s-btn s-btn-sm s-btn-danger" type="button" v-if="!item.hasTasks"
                                 v-on:click="projects_delete(idx)">
-                            <i class="fa fa-trash"></i> 
+                            <i class="fa fa-trash"></i>
                         </button>
                     </td>
 

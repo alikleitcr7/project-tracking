@@ -198,6 +198,9 @@ h6 {
 b {
   font-weight: 600;
 }
+.color-dark-gray {
+  color: #333 !important;
+}
 body {
   position: relative;
   /*background-color:#fafafa;*/

@@ -12,7 +12,7 @@ namespace ProjectTracking.Data.DataSets
         //public int ID { get; set; }
 
         [DataType(DataType.Text)]
-        [Required(ErrorMessage = "Please enter name"), MaxLength(30), MinLength(2)]
+        [Required(ErrorMessage = "Please enter name"), MaxLength(50)]
         public string Name { get; set; }
         [Required]
         public string AddedByUserId { get; set; }

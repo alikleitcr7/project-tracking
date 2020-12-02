@@ -571,6 +571,8 @@ namespace ProjectTracking.Data.Methods
         {
             IQueryable<DataSets.ProjectTask> q_tasks = _context.ProjectTasks.Where(t => t.Project.TeamsProjects.Any(tp => tp.TeamId == team.ID));
 
+            //var taskList = q_tasks.ToList();
+            
             // tasks performance
             team.TasksPerformance = new TasksPerformance()
             {
@@ -582,6 +584,8 @@ namespace ProjectTracking.Data.Methods
             };
 
         }
+
+
 
         /// <summary>
         ///// returns number of tasks assigned to a member on a team

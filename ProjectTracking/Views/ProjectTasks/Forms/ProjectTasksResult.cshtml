@@ -8,7 +8,10 @@
     <table class="s-table-controls">
         <tr>
             <td>
-                <input class="form-control" v-model="projectTasks.filterBy.keyword" />
+                <input class="form-control" 
+                        @@keyup.enter="projectTasks_getAll(0)"
+                       placeholder="Task Name Here..."
+                       v-model="projectTasks.filterBy.keyword" />
             </td>
             <td>
                 <button class="s-btn s-btn-primary" v-on:click="projectTasks_getAll()">
@@ -20,10 +23,10 @@
         </tr>
     </table>
 
-
 </div>
 
-<h4  v-show="!projectTasks.isLoading && !projectTasks.data.length ">
+
+<h4 v-show="!projectTasks.isLoading && !projectTasks.hasSearch && !projectTasks.data.length ">
     <br />
     <template v-if="isProjectSupervisor">
         Nothing here yet,
@@ -45,8 +48,9 @@
     </div>
 </section>
 
-   
-<h4 class="c-display-message">{{projectTasks.isLoading ? ' Loading...':'&nbsp;'}}</h4>
+
+<h5 class="c-display-message">{{projectTasks.isLoading ? 'Loading...': `${(projectTasks.hasSearch ? 'Found':'Total of')}  ${projectTasks.dataPaging.totalCount} task${(projectTasks.dataPaging.totalCount == 0 || projectTasks.dataPaging.totalCount > 1  ? 's':'')}`}}   </h5>
+
 
 <div v-show="projectTasks.data.length" class="ProjectTasks c-table-data-container"
      v-bind:class="{'lock-controls': projectTasks.isProcessing }">
@@ -122,15 +126,14 @@
                         </button>
 
                         <button class="s-btn s-btn-sm s-btn-outline" type="button"
-                                 style="min-width:122px"
+                                style="min-width:122px"
                                 v-on:click="projectTasks_viewStatusesModification(item)">
                             <i class="fa fa-history"></i> Status History
                         </button>
 
                         <button class="s-btn s-btn-sm s-btn-danger" type="button"
                                 v-if="isProjectSupervisor && !item.isAssignedToTimeSheet"
-                                 style="min-width:60px"
-
+                                style="min-width:60px"
                                 v-on:click="projectTasks_delete(idx)">
                             <i class="fa fa-trash"></i> Delete
                         </button>

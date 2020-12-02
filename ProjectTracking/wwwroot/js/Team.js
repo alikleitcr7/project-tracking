@@ -167,12 +167,26 @@ new Vue({
             .then((r) => {
                 this.isLoading = false
 
+
                 /** @type {TeamViewModel} */
                 const team = r
+
+                const workloadTaskPerformance = team.workload
+                    .map(k => k.value)
+                    .reduce((acc, k) => ({
+                        doneCount: (acc.doneCount + k.doneCount) || 0,
+                        progressCount: (acc.progressCount + k.progressCount) || 0,
+                        pendingCount: (acc.pendingCount + k.pendingCount) || 0,
+                        failedOrTerminatedCount: (acc.failedOrTerminatedCount + k.failedOrTerminatedCount) || 0,
+                    }))
+
+
+                workloadTaskPerformance.totalCount = workloadTaskPerformance.doneCount + workloadTaskPerformance.progressCount + workloadTaskPerformance.pendingCount + workloadTaskPerformance.failedOrTerminatedCount
 
                 chartsHelper.charts.populateWorkload('bar_workload', team.workload)
                 chartsHelper.charts.populateActivities('line_activities', team.activitiesFrequency)
                 chartsHelper.charts.populateTasks('pie_tasks', team.tasksPerformance)
+                chartsHelper.charts.populateTasks('pie_assigned_tasks', workloadTaskPerformance)
             })
 
 

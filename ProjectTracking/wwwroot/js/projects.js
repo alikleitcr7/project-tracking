@@ -95,6 +95,7 @@ const projectObject = () => {
             prev: 'Prev',
             next: 'Next',
         },
+        hasSearch: false,
         isLoading: false,
         isProcessing: false,
         message: '',
@@ -439,6 +440,8 @@ const projectsMethods = {
 
         const { keyword, categoryId } = this.projects.filterBy
         const { length } = this.projects.dataPaging
+
+        this.projects.hasSearch = keyword && keyword.length > 0
 
         return ProjectsService.Search(categoryId, keyword, page, length)
             .then((r) => {

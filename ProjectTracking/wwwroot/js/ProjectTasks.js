@@ -115,6 +115,7 @@ const projectTaskObject = () => {
             prev: 'Prev',
             next: 'Next',
         },
+        hasSearch: false,
         isLoading: false,
         isProcessing: false,
         message: '',
@@ -485,6 +486,8 @@ const projectTasksMethods = {
         const { keyword } = this.projectTasks.filterBy
         const { length } = this.projectTasks.dataPaging
         const projectId = getActiveProjectId();
+
+        this.projectTasks.hasSearch = keyword && keyword.length > 0
 
         return ProjectTasksService.Search(keyword, projectId, page, length)
             .then((r) => {
