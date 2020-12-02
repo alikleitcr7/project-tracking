@@ -237,7 +237,7 @@ namespace ProjectTracking.Data.Methods
         public bool Delete(int id)
         {
             var record = _context.Teams
-                .Include(k=>k.TeamsProjects)
+                .Include(k => k.TeamsProjects)
                 .FirstOrDefault(c => c.ID == id);
 
             if (record == null)
@@ -524,14 +524,43 @@ namespace ProjectTracking.Data.Methods
                 {
                     List<string> membersIds = team.Members.Select(k => k.Key).ToList();
 
-                    team.ActivitiesFrequency = _context.TimeSheetActivities
-                        .Where(k => !k.DeletedAt.HasValue && membersIds.Contains(k.TimeSheetTask.TimeSheet.UserId))
+                    int fromDateTargetDays = 15;
+                    DateTime dateNow = DateTime.Now.Date;
+                    DateTime fromDateTarget = dateNow.AddDays(-fromDateTargetDays);
+
+                    // fill dates
+                    List<DateTime> dates = Enumerable.Range(1, fromDateTargetDays)
+                              .Select(x => fromDateTarget.AddDays(x))
+                              .ToList();
+
+                    DateTime minDate = dates.Min();
+
+                    // group activities under supervising teams
+                    var enum_teamsActivities = _context.TimeSheetActivities
+                        .Where(k => !k.DeletedAt.HasValue && membersIds.Contains(k.TimeSheetTask.TimeSheet.UserId) && k.FromDate.Date >= minDate)
                         .OrderByDescending(k => k.FromDate)
                         .GroupBy(k => k.FromDate.Date)
-                        .Take(30)
-                        .AsEnumerable()
-                        .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
+                        //.Take(30)
+                        .AsEnumerable();
+
+                    team.ActivitiesFrequency =
+                        dates.Select(date =>
+                        {
+                            var foundKey = enum_teamsActivities.FirstOrDefault(a => a.Key == date.Date);
+
+                            return new KeyValuePair<DateTime, int>(date, foundKey == null ? 0 : foundKey.Count());
+                        })
                         .ToList();
+
+                    //team.ActivitiesFrequency = _context.TimeSheetActivities
+                    //    .Where(k => !k.DeletedAt.HasValue && membersIds.Contains(k.TimeSheetTask.TimeSheet.UserId))
+                    //    .OrderByDescending(k => k.FromDate)
+                    //    .GroupBy(k => k.FromDate.Date)
+                    //    .Take(30)
+                    //    .AsEnumerable()
+                    //    .Select((key) => new KeyValuePair<DateTime, int>(key.Key, key.Count()))
+                    //    .ToList();
+
                 }
             }
 

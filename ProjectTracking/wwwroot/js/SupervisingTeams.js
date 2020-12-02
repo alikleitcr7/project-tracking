@@ -9,7 +9,7 @@ function renderCharts(teams) {
         layout: {
             padding: {
                 top: 5,
-                left: 5,
+                left: 0,
                 right: 5
             }
         },
@@ -17,10 +17,12 @@ function renderCharts(teams) {
             yAxes: [{
                 display: false,
                 ticks: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    //stepSize:1
                 },
                 gridLines: {
-                    display: false
+                    display: false,
+
                 },
             }],
             xAxes: [{
@@ -31,6 +33,11 @@ function renderCharts(teams) {
                 }
             }],
         },
+        elements: {
+            point: {
+                radius: 2
+            }
+        }
     }
 
     for (var i = 0; i < teams.length; i++) {
@@ -44,6 +51,10 @@ function renderCharts(teams) {
 
         console.log({ labels })
 
+        const opts = { ...options }
+
+        opts.scales.yAxes[0].ticks.max = Math.max.apply(Math, data.map(function (o) { return o.y + 1; }));
+        console.log({ 'opts.scales.yAxes[0].ticks.max': opts.scales.yAxes[0].ticks.max})
         new Chart(ctx, {
             type: 'line',
             data: {
@@ -53,10 +64,10 @@ function renderCharts(teams) {
                     fill: false,
                     borderColor: "#2286c3",
                     data,
-                    borderWidth: 1
+                    borderWidth: 2
                 }]
             },
-            options
+            options: { ...options }
         });
 
     }
