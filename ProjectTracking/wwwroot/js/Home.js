@@ -70,6 +70,12 @@ homeApp = new Vue({
          * @param {AdminOverview} data
          */
         populateAdminVisuals: function (data) {
+
+
+            $('#teams_line_activities_minutes').closest('.c-box').show();
+            $('#teams_line_activities_frequency').closest('.c-box').show();
+            $('#pie_projects').closest('.c-box').show();
+
             chartsHelper.charts.populateTeamActivitiesFrequency('teams_line_activities_minutes', data.teamsActivitiesMinutes)
             chartsHelper.charts.populateTeamActivitiesFrequency('teams_line_activities_frequency', data.teamsActivitiesFrequency)
 
@@ -99,6 +105,10 @@ homeApp = new Vue({
          * @param {TeamMemberOverview} data
          */
         populateTeamMemberVisuals: function (data) {
+
+
+            $('#line_activities_minutes').closest('.c-box').show();
+            $('#line_activities_frequency').closest('.c-box').show();
 
             chartsHelper.charts.populateActivitiesMinuts('line_activities_minutes', data.activitiesMinuts)
             chartsHelper.charts.populateActivities('line_activities_frequency', data.activitiesFrequency)

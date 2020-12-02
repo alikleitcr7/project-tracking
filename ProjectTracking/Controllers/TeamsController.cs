@@ -58,6 +58,11 @@ namespace ProjectTracking.Controllers
         {
             Team team = _teamsMethods.GetById(id, true);
 
+            if (team == null)
+            {
+                return NotFound();
+            }
+
             string userId = GetCurrentUserId();
             Models.Users.UserKeyValue user = userMethods.GetUserKeyValue(userId);
 

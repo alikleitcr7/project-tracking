@@ -81,6 +81,12 @@ namespace ProjectTracking
             //           policy.RequireRole("Manager", "Admin"));
             //});
 
+            services.Configure<SecurityStampValidatorOptions>(options =>
+            {
+                // enables immediate logout, after updating the user's stat.
+                options.ValidationInterval = TimeSpan.Zero;
+            });
+
 
             // policies
 

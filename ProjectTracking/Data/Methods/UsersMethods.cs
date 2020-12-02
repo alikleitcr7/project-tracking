@@ -981,6 +981,7 @@ namespace ProjectTracking.Data.Methods
             dbUser.RoleAssignedDate = DateTime.Now;
             dbUser.RoleAssignedByUserId = byUserId;
             dbUser.RoleCode = roleCode;
+            dbUser.SecurityStamp = Guid.NewGuid().ToString("D");
 
             db.SaveChanges();
 

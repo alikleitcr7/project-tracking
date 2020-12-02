@@ -37,7 +37,7 @@
   animation-name: none;
   animation-duration: 0s;
 }
-#NotificationModal.new-user-notification .nav-tabs [data-name=Other]:not(.active) {
+#NotificationModal.new-user-notification .nav-tabs [data-name=Personal]:not(.active) {
   -webkit-animation-name: notification_blink;
   -webkit-animation-duration: 1s;
   animation-name: notification_blink;
@@ -45,7 +45,7 @@
   animation-iteration-count: infinite;
   border-radius: 10px 10px 0 0;
 }
-#NotificationModal.new-user-notification .nav-tabs [data-name=Other]:not(.active):hover {
+#NotificationModal.new-user-notification .nav-tabs [data-name=Personal]:not(.active):hover {
   animation-name: none;
   animation-duration: 0s;
 }

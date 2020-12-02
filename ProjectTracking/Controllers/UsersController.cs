@@ -20,12 +20,12 @@ namespace ProjectTracking.Controllers
     [Authorize]
     public class UsersController : BaseSupervisorController
     {
-        //private readonly IHubContext<ObserverHub> observerHub;
+        private readonly IHubContext<ObserverHub> observerHub;
         //, IHubContext<ObserverHub> observerHub
-        public UsersController(IUserMethods usersMethods)
+        public UsersController(IUserMethods usersMethods, IHubContext<ObserverHub> observerHub)
             : base(usersMethods)
         {
-            //this.observerHub = observerHub;
+            this.observerHub = observerHub;
         }
 
         [HttpGet]
@@ -200,7 +200,7 @@ namespace ProjectTracking.Controllers
 
                 string date = _userMethods.SetRole(currentUserId, userId, roleCode).ToDisplayDate();
 
-                //await observerHub.Clients.User(userId).SendAsync("SessionEnd","your role has been changed, you are required to login again");
+                await observerHub.Clients.User(userId).SendAsync("SessionEnd", "your role has been changed, you are required to login again");
 
                 return Ok(date);
             }

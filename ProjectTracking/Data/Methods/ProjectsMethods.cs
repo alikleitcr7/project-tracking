@@ -343,6 +343,10 @@ namespace ProjectTracking.Data.Methods
             return db.Teams.Any(k => projectTeamsIds.Contains(k.ID) && k.SupervisorId == supervisorId);
         }
 
+        public bool MemberCanAccessTask(string memberId, int taskId)
+        {
+            return db.TimeSheetTasks.Any(k => k.TimeSheet.UserId == memberId && k.ProjectTaskId == taskId);
+        }
         public bool MemberCanAccessProject(string memberId, int projectId)
         {
             // get project's team
@@ -357,7 +361,22 @@ namespace ProjectTracking.Data.Methods
             }
 
             // check if the member is a part of at least one of those teams 
-            return db.Users.Any(k => k.Id == memberId && projectTeamsIds.Contains(k.TeamId.Value));
+            bool hasTeam = db.Users.Any(k => k.Id == memberId && projectTeamsIds.Contains(k.TeamId.Value));
+
+            if (hasTeam)
+            {
+                return true;
+            }
+
+            // check tasks if some exist in prev. schedule
+            List<int> taskIds = db.ProjectTasks.Where(k => k.ProjectId == projectId).Select(k => k.ID).ToList();
+
+            if (taskIds.Count == 0)
+            {
+                return false;
+            }
+
+            return db.TimeSheetTasks.Any(k => k.TimeSheet.UserId == memberId && taskIds.Contains(k.ProjectTaskId));
         }
 
         public ProjectOverview GetOverview(int projectId)

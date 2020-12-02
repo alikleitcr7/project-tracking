@@ -29,9 +29,9 @@
             </tr>
             <tr>
                 <td>@Model.StatusDisplay</td>
-                <td>@Model.StatusByUserName</td>
+                <td><a href="/profile/@Model.StatusByUserId"> @Model.StatusByUserName</a></td>
                 <td>@Model.LastModifiedDateDisplay</td>
-                <td><a href="/projects/@Model.ProjectId"></a> @Model.ProjectTitle</td>
+                <td><a href="/projects/@Model.ProjectId"> @Model.ProjectTitle</a></td>
                 <td>@Model.DateAddedDisplay</td>
                 <td>@Model.StartDateDisplay</td>
                 <td>@Model.PlannedEndDisplay</td>

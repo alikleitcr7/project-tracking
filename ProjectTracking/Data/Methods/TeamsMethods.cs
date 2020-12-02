@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
@@ -19,18 +20,22 @@ namespace ProjectTracking.Data.Methods
     public class TeamsMethods : ITeamsMethods
     {
         private ApplicationDbContext _context;
+        private readonly IHubContext<Hubs.ObserverHub> observerHub;
+        private readonly INotificationMethods notificationMethods;
         private readonly IMapper _mapper;
 
         //public TeamsMethods()
         //{
         //}
 
-        public TeamsMethods(IMapper mapper, ApplicationDbContext dbContext)
+        public TeamsMethods(IMapper mapper, ApplicationDbContext dbContext, IHubContext<Hubs.ObserverHub> observerHub, INotificationMethods notificationMethods)
         {
             //var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             //optionsBuilder.UseSqlServer(Setting.ConnectionString);
             //_context = new ApplicationDbContext(optionsBuilder.Options);
             _context = dbContext;
+            this.observerHub = observerHub;
+            this.notificationMethods = notificationMethods;
             _mapper = mapper;
         }
 
@@ -92,7 +97,7 @@ namespace ProjectTracking.Data.Methods
 
             if (supervisorId == null || assignedById == null)
             {
-                throw new Exception("supervisor and assigned by user claims were not provided");
+                throw new Exception("supervisor and assigned by user are required");
             }
 
             if (model.userIds == null || model.userIds.Count == 0)
@@ -144,7 +149,7 @@ namespace ProjectTracking.Data.Methods
                 dbTeam.Name = model.name;
 
                 // add/remove team members
-                await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds);
+                await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds, assignedById);
 
 
                 // save changes
@@ -188,7 +193,7 @@ namespace ProjectTracking.Data.Methods
                 _context.SaveChanges();
 
                 // set team members
-                await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds);
+                await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds, addedByUserId);
 
                 // save changes on teamsteams
                 _context.SaveChanges();
@@ -214,22 +219,48 @@ namespace ProjectTracking.Data.Methods
         /// <summary>
         /// no commit is made to the db
         /// </summary>
-        private async Task AddRemoveTeamsUsersFromContext(int teamId, List<string> userIds)
+        private async Task AddRemoveTeamsUsersFromContext(int teamId, List<string> userIds, string byUserId)
         {
-            // remove all items not in the model
+            string notifyMessage = "your team has been changed, you are required to login again";
+
+            // get existing users under the team
             var existingUsersUnderTeam = _context.Users.Where(k => k.TeamId == teamId);
 
             // set null for users that are not in the list and where removed
-            await existingUsersUnderTeam.Where(k => !userIds.Contains(k.Id)).ForEachAsync(k => k.TeamId = null);
+
+            IQueryable<ApplicationUser> usersRemovedFromTeam = existingUsersUnderTeam.Where(k => !userIds.Contains(k.Id));
+
+            foreach (ApplicationUser user in usersRemovedFromTeam)
+            {
+                user.TeamId = null;
+                user.SecurityStamp = Guid.NewGuid().ToString("D");
+                user.NotificationFlag = true;
+
+                await observerHub.Clients.User(user.Id).SendAsync("SessionEnd", notifyMessage);
+                await notificationMethods.Send(byUserId, user.Id, "You have been removed from a team", NotificationType.Important);
+            }
+
 
             // remove all items in the model that are already in db
             userIds.RemoveAll(k => existingUsersUnderTeam.Any(u => u.Id == k));
 
-            // update the rest's team id
+            // update/change the rest's team id
             if (userIds.Count > 0)
             {
-                await _context.Users.Where(k => userIds.Contains(k.Id)).ForEachAsync(k => k.TeamId = teamId);
+                await _context.Users.Where(k => userIds.Contains(k.Id)).ForEachAsync(k =>
+                {
+                    k.TeamId = teamId;
+                    k.NotificationFlag = true;
+                    k.SecurityStamp = Guid.NewGuid().ToString("D");
+                });
+
+                foreach (string userId in userIds)
+                {
+                    await observerHub.Clients.User(userId).SendAsync("SessionEnd", notifyMessage);
+                    await notificationMethods.Send(byUserId, userId, "You are assigned to a new team", NotificationType.Important);
+                }
             }
+
 
             _context.SaveChanges();
         }
@@ -572,7 +603,7 @@ namespace ProjectTracking.Data.Methods
             IQueryable<DataSets.ProjectTask> q_tasks = _context.ProjectTasks.Where(t => t.Project.TeamsProjects.Any(tp => tp.TeamId == team.ID));
 
             //var taskList = q_tasks.ToList();
-            
+
             // tasks performance
             team.TasksPerformance = new TasksPerformance()
             {

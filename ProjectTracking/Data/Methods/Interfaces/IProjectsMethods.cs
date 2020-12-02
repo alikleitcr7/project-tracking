@@ -28,5 +28,6 @@ namespace ProjectTracking.Data.Methods.Interfaces
         Models.Projects.ProjectOverview GetOverview(int projectId);
         bool IsSupervisorOfProject(string supervisorId, int projectId);
         bool MemberCanAccessProject(string memberId, int projectId);
+        bool MemberCanAccessTask(string memberId, int taskId);
     }
 }

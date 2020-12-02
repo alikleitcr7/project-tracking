@@ -244,6 +244,7 @@ const teamsMethods = {
                     }
 
                     if (record) {
+
                         if (isNewRecord) {
 
                             let data = [...this.teams.data]
@@ -270,6 +271,8 @@ const teamsMethods = {
                                 this.teams.data = data;
                             }
                         }
+
+                        this.teams_getAll()
                     }
                     else {
                         this.teams_setFormMessage(BASIC_ERROR_MESSAGE)

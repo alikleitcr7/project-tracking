@@ -178,7 +178,12 @@ new Vue({
                         progressCount: (acc.progressCount + k.progressCount) || 0,
                         pendingCount: (acc.pendingCount + k.pendingCount) || 0,
                         failedOrTerminatedCount: (acc.failedOrTerminatedCount + k.failedOrTerminatedCount) || 0,
-                    }))
+                    }), {
+                        doneCount: 0,
+                        progressCount: 0,
+                        pendingCount: 0,
+                        failedOrTerminatedCount: 0,
+                    })
 
 
                 workloadTaskPerformance.totalCount = workloadTaskPerformance.doneCount + workloadTaskPerformance.progressCount + workloadTaskPerformance.pendingCount + workloadTaskPerformance.failedOrTerminatedCount
