@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 using ProjectTracking.Data.Methods.Interfaces;
 using ProjectTracking.DataContract;
 using ProjectTracking.Exceptions;
@@ -21,11 +22,14 @@ namespace ProjectTracking.Controllers
     public class UsersController : BaseSupervisorController
     {
         private readonly IHubContext<ObserverHub> observerHub;
+        private readonly IConfiguration config;
+
         //, IHubContext<ObserverHub> observerHub
-        public UsersController(IUserMethods usersMethods, IHubContext<ObserverHub> observerHub)
+        public UsersController(IUserMethods usersMethods, IHubContext<ObserverHub> observerHub, IConfiguration config)
             : base(usersMethods)
         {
             this.observerHub = observerHub;
+            this.config = config;
         }
 
         [HttpGet]
@@ -198,6 +202,13 @@ namespace ProjectTracking.Controllers
             {
                 string currentUserId = GetCurrentUserId();
 
+                string ADMIN_ID = config.GetValue<string>("Tokens:SysUsers:Admin");
+
+                if (userId == ADMIN_ID)
+                {
+                    throw new Exception("System admin role cannot be changed!");
+                }
+
                 string date = _userMethods.SetRole(currentUserId, userId, roleCode).ToDisplayDate();
 
                 await observerHub.Clients.User(userId).SendAsync("SessionEnd", "your role has been changed, you are required to login again");
@@ -281,6 +292,13 @@ namespace ProjectTracking.Controllers
                     {
                         throw new ClientException(string.Join(", ", errors));
                     }
+                }
+
+                string ADMIN_ID = config.GetValue<string>("Tokens:SysUsers:Admin");
+
+                if (user.id == ADMIN_ID && user.userName != "admin")
+                {
+                    throw new Exception("System admin username cannot be changed!");
                 }
 
                 return Ok(_userMethods.Save(user));

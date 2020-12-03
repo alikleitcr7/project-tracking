@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,6 +8,7 @@ namespace ProjectTracking.Models.Users
 
     public class UserSaveModel
     {
+
         public string id { get; set; }
 
         [Required(ErrorMessage = "email is required")]
@@ -27,5 +29,7 @@ namespace ProjectTracking.Models.Users
 
         [RegularExpression(@"^(?=.{3,30}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$", ErrorMessage = "Username should be between 3 to 30 characters and can contain letters from a-z and numbers 0-9 and can contain (.-_) but not in a row and not in the beginning or end")]
         public string userName { get; set; }
+
+        public DateTime dateOfBirth { get; set; }
     }
 }

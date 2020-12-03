@@ -88,9 +88,8 @@
                         <a class="s-btn s-btn-sm s-btn-primary" :href="`/profile/${item.id}`"><i class="fa fa-user"></i> Profile</a>
                     </td>
 
-                    <td v-if="users_isAdmin(item)"></td>
 
-                    <td v-if="isAdmin && !users_isAdmin(item)">
+                    <td v-if="isAdmin">
 
                         <div class="dropdown">
 
@@ -98,13 +97,13 @@
                                data-toggle="dropdown"></i>
 
                             <ul class="dropdown-menu dropdown-menu-right " role="menu">
-                                <li>
+                                <li  v-if="!users_isAdmin(item)">
                                     <a v-on:click="userRoles_edit(item)">
                                         <i class="glyphicon glyphicon-file"></i>
                                         Role
                                     </a>
                                 </li>
-                                <li>
+                                <li v-if="!users_isAdmin(item)">
                                     <a v-on:click="userRoles_explore(item.id)">
                                         <i class="fa fa-history"></i>
                                         Role History
@@ -141,8 +140,8 @@
 
 
                         <div class="input-group-item">
-                            <label>Username (*)</label>
-                            <input type="text" class="form-control" maxlength="30" v-model="users.form.record.userName" />
+                            <label>Username <span v-show="!users_isAdmin(users.form.record)">(*)</span> </label>
+                            <input type="text" :readonly="users_isAdmin(users.form.record)" class="form-control" maxlength="30" v-model="users.form.record.userName" />
                         </div>
 
                         <div class="input-group-item">

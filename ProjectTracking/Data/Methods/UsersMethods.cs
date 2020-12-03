@@ -81,6 +81,16 @@ namespace ProjectTracking.Data.Methods
                     throw new ClientException("record not found");
                 }
 
+                // validate age
+                var today = DateTime.Today;
+                var age = today.Year - model.dateOfBirth.Year;
+
+                if (age < 14)
+                {
+                    throw new ClientException("age should be >= 14");
+                }
+
+
                 dbUser.Email = model.email;
                 dbUser.NormalizedEmail = model.email.ToUpper();
                 dbUser.UserName = model.userName;
@@ -89,6 +99,7 @@ namespace ProjectTracking.Data.Methods
                 dbUser.LastName = model.lastName;
                 //dbUser.MiddleName = model.middleName;
                 dbUser.Title = model.title;
+                dbUser.DateOfBirth = model.dateOfBirth;
                 dbUser.EmploymentTypeCode = model.employmentTypeCode;
                 //dbUser.MonthlySalary = model.monthlySalary;
                 //dbUser.HourlyRate = model.hourlyRate;
