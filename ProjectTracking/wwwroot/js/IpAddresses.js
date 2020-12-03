@@ -133,9 +133,11 @@ var ipAddressesMethods = {
             .catch((e) => {
 
                 const errorMessage = getAxiosErrorMessage(e)
-                console.error(errorMessage)
+                //console.error(errorMessage)
 
-                this.ipAddresses.message = errorMessage;
+                bootbox.alert(errorMessage)
+
+                //this.ipAddresses.message = errorMessage;
             })
             .then(() => {
                 this.ipAddresses.isLoading = false
