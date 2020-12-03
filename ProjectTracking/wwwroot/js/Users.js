@@ -135,7 +135,7 @@ const userObject = () => {
         dataPaging: {
             page: 0,
             totalPages: 0,
-            length: 7,
+            length: 5,
             totalCount: 0,
             pagination: 'custom-pagination',
             prev: 'Prev',
