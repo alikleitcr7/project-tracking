@@ -29,28 +29,28 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException("not found, might be already deleted");
             }
 
-            var dbActivities = _context.TimeSheetActivities.Where(k => k.Address == ipAddress);
+            bool hasActvities = _context.TimeSheetActivities.Any(k => k.Address == ipAddress);
 
-            foreach (var item in dbActivities)
+            string deletionFlagMessage = "Cannot delete this ip address, there are {0} with this ip address";
+
+            if (hasActvities)
             {
-                item.Address = null;
+                throw new ClientException(string.Format(deletionFlagMessage, "activities"));
             }
 
-            var dbActivityLogs = _context.TimeSheetActivityLogs.Where(k => k.Address == ipAddress);
+            var hasTimeSheetLogs = _context.TimeSheetActivityLogs.Any(k => k.Address == ipAddress);
 
-            foreach (var item in dbActivityLogs)
+            if (hasTimeSheetLogs)
             {
-                item.Address = null;
+                throw new ClientException(string.Format(deletionFlagMessage, "activities logs"));
             }
 
-            var dbUserLoggings = _context.UserLogging.Where(k => k.Address == ipAddress);
+            var hasUserLoggings = _context.UserLogging.Any(k => k.Address == ipAddress);
 
-            foreach (var item in dbUserLoggings)
+            if (hasUserLoggings)
             {
-                item.Address = null;
+                throw new ClientException(string.Format(deletionFlagMessage, "user logs"));
             }
-
-            _context.SaveChanges();
 
             _context.IpAddresses.Remove(dbRecord);
 
