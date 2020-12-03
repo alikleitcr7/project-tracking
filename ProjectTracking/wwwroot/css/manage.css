@@ -33,3 +33,9 @@
 .UsersNotifications tr.important td:first-child {
   border-left-color: rgba(176, 59, 59, 0.82);
 }
+#RolesKeys table {
+  max-width: 300px;
+}
+#RolesKeys table tr td label {
+  font-weight: 500;
+}

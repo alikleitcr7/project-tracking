@@ -1,4 +1,5 @@
 ﻿const USERS_SERVICE_URI = (method) => `/users/${method}`;
+const MANAGE_SERVICE_URI = (method) => `/manage/${method}`;
 
 const UsersService = {
     GetById: function (id) {
@@ -113,4 +114,19 @@ const UsersService = {
 
         return axios.delete(url);
     },
+    RegenerateKey: function (role) {
+
+        const query = serialize({ role })
+
+        const url = MANAGE_SERVICE_URI(`RegenerateKey?${query}`)
+
+        return axios.put(url);
+    },
+    GetRoleKeys: function () {
+
+        const url = MANAGE_SERVICE_URI(`GetRoleKeys`)
+
+        return axios.get(url);
+    },
+
 }

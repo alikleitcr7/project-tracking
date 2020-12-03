@@ -266,6 +266,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\Manage\Forms\RolesKeysForm.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\Manage\Forms\LogsForm.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

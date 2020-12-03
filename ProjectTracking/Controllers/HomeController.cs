@@ -86,15 +86,19 @@ namespace ProjectTracking.Controllers
             {
                 var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
 
+                // check email
+                if (!result.Succeeded)
+                {
+                    ApplicationUser user = await _userManager.FindByEmailAsync(model.UserName);
+
+                    if (user != null)
+                    {
+                        result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+                    }
+                }
+
                 if (result.Succeeded)
                 {
-                    var user = await _userManager.FindByEmailAsync(model.UserName);
-
-                    if (user == null)
-                    {
-                        user = await _userManager.FindByNameAsync(model.UserName);
-                    }
-
                     if (Request.Headers["Referer"].Count != 0)
                     {
                         string uriQuery = new System.Uri(Request.Headers["Referer"].ToString()).Query;

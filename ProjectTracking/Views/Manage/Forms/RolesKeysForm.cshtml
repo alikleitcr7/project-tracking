@@ -1,0 +1,23 @@
+﻿<div id="RolesKeys" class="v-container" v-cloak>
+
+    <h5>{{message || '&nbsp;'}}</h5>
+
+    <table class="table table-borderless">
+        <tr v-for="role in keys">
+            <td>
+                <label>{{role.key}}</label>
+                <input type="text"
+                       readonly
+                       :disabled="isGenerating"
+                       v-model="role.value"
+                       class="form-control">
+            </td>
+            <td>
+                <label>&nbsp;</label>
+                <button class="s-btn s-btn-outline-main" @@click="regenerate(role.key)">Regenrate</button>
+            </td>
+        </tr>
+    </table>
+
+
+</div>
