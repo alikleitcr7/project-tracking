@@ -204,6 +204,19 @@ namespace ProjectTracking.Data.Methods
                 // timesheet id needed
                 await notificationMethods.Send(byUserId, supervisorId, $"Task status changed to {((ProjectTaskStatus)statusCode).ToString()}", NotificationType.Default, true, timesheetId, null, taskId);
             }
+            else
+            {
+                // teams that have the task's project
+                List<int> teamsIds = db.TeamsProjects.Where(k => k.ProjectId == dbTask.ProjectId).Select(k => k.TeamId).ToList();
+
+                // send to supervisors
+                foreach (var teamId in teamsIds)
+                {
+                    string supervisorId = db.Teams.Select(k => new { k.SupervisorId, k.ID }).First(k => k.ID == teamId).SupervisorId;
+
+                    await notificationMethods.Send(byUserId, supervisorId, $"Task status changed to {((ProjectTaskStatus)statusCode).ToString()}", NotificationType.Default, true, timesheetId, null, taskId);
+                }
+            }
 
         }
 

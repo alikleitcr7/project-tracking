@@ -75,7 +75,14 @@ namespace ProjectTracking.Data.Methods
 
                 await notificationMethods.Send(model.GetAddedByUser(), model.userId, $"schedule time was modified", NotificationType.Information, true, dbTimeSheet.ID);
 
-                return _mapper.Map<TimeSheet>(dbTimeSheet);
+
+                
+
+                var parsed =  _mapper.Map<TimeSheet>(dbTimeSheet);
+
+                parsed.HasTasks = db.TimeSheetTasks.Any(k => k.TimeSheetId == parsed.ID);
+
+                return parsed;
             }
             else
             {

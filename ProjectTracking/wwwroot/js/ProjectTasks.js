@@ -898,9 +898,27 @@ var projectTasks_app = new Vue({
                 /** @type {ProjectOverview} */
                 const overview = r
 
+                const workloadTaskPerformance = overview.workload
+                    .map(k => k.value)
+                    .reduce((acc, k) => ({
+                        doneCount: (acc.doneCount + k.doneCount) || 0,
+                        progressCount: (acc.progressCount + k.progressCount) || 0,
+                        pendingCount: (acc.pendingCount + k.pendingCount) || 0,
+                        failedOrTerminatedCount: (acc.failedOrTerminatedCount + k.failedOrTerminatedCount) || 0,
+                    }), {
+                        doneCount: 0,
+                        progressCount: 0,
+                        pendingCount: 0,
+                        failedOrTerminatedCount: 0,
+                    })
+
+                workloadTaskPerformance.totalCount = workloadTaskPerformance.doneCount + workloadTaskPerformance.progressCount + workloadTaskPerformance.pendingCount + workloadTaskPerformance.failedOrTerminatedCount
+
                 chartsHelper.charts.populateWorkload('bar_workload', overview.workload)
                 chartsHelper.charts.populateActivities('line_activities', overview.activitiesFrequency)
                 chartsHelper.charts.populateTasks('pie_tasks', overview.tasksPerformance)
+                chartsHelper.charts.populateTasks('pie_assigned_tasks', workloadTaskPerformance)
+
             })
     }
 })

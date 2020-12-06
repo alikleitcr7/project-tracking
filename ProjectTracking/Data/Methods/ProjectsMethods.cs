@@ -450,9 +450,13 @@ namespace ProjectTracking.Data.Methods
                     })
                     .ToList();
 
+
+                //List<int> tasksIds = db.TimeSheetTasks.Where(k => k.ProjectTask.ProjectId == projectId)
+                //    .Select(k => k.ID)
+                //    .ToList();
+
                 overview.Workload = db.TimeSheetTasks.Where(k => k.ProjectTask.ProjectId == projectId)
                     .Select(k => new { k.TimeSheet.UserId, Name = k.TimeSheet.User.FirstName + " " + k.TimeSheet.User.LastName, k.ProjectTask.StatusCode, })
-                    //.Where(k => k.TimeSheetTask.ProjectTask.StatusCode == (short)ProjectTaskStatus.Pending)
                     .GroupBy(k => new { k.UserId, k.Name, })
                     .AsEnumerable()
                     .Select(k => new KeyValuePair<Models.Users.UserKeyValue, TasksWorkload>(new Models.Users.UserKeyValue(k.Key.UserId, k.Key.Name), new TasksWorkload()

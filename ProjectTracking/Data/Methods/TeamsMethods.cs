@@ -129,6 +129,28 @@ namespace ProjectTracking.Data.Methods
                 if (dbTeam.SupervisorId != supervisorId)
                 {
                     // supervisor has changed
+                    string removedSupervisorId = dbTeam.SupervisorId;
+                    string addedSupervisorId = supervisorId;
+
+                    // end session and notify removed supervisor
+                    await observerHub.Clients.User(removedSupervisorId).SendAsync("SessionEnd", "You have been removed from supervising a team");
+                    await notificationMethods.Send(assignedById, removedSupervisorId, "You have been removed from supervising a team", NotificationType.Important);
+
+                    var dbRemovedSupervisor = _context.Users.First(k => k.Id == removedSupervisorId);
+
+                    dbRemovedSupervisor.NotificationFlag = true;
+                    dbRemovedSupervisor.SecurityStamp = Guid.NewGuid().ToString("D");
+
+
+                    // end session and notify new supervisor
+                    await observerHub.Clients.User(addedSupervisorId).SendAsync("SessionEnd", "You have been assigned as a supervisor to a team");
+                    await notificationMethods.Send(assignedById, addedSupervisorId, "You have been assigned as a supervisor to a team", NotificationType.Important);
+
+                    var dbNewSupervisor = _context.Users.First(k => k.Id == addedSupervisorId);
+
+                    dbNewSupervisor.NotificationFlag = true;
+                    dbNewSupervisor.SecurityStamp = Guid.NewGuid().ToString("D");
+
 
                     // move current to logs
                     _context.SupervisorLogs.Add(new DataSets.SupervisorLog()
@@ -186,6 +208,16 @@ namespace ProjectTracking.Data.Methods
                     SupervisorId = supervisorId,
                 };
 
+                // end session and notify new supervisor
+                await observerHub.Clients.User(supervisorId).SendAsync("SessionEnd", "You have been assigned as a supervisor to a team");
+                await notificationMethods.Send(addedByUserId, supervisorId, "You have been assigned as a supervisor to a team", NotificationType.Important);
+
+
+                var dbSupervisor = _context.Users.First(k => k.Id == supervisorId);
+
+                dbSupervisor.NotificationFlag = true;
+                dbSupervisor.SecurityStamp = Guid.NewGuid().ToString("D");
+
                 // add the team
                 _context.Teams.Add(dbTeam);
 
@@ -223,6 +255,13 @@ namespace ProjectTracking.Data.Methods
         {
             string notifyMessage = "your team has been changed, you are required to login again";
 
+            var dbTeam = _context.Teams.First(k => k.ID == teamId);
+
+            if (dbTeam == null)
+            {
+                throw new ClientException("team not found");
+            }
+
             // get existing users under the team
             var existingUsersUnderTeam = _context.Users.Where(k => k.TeamId == teamId);
 
@@ -237,7 +276,7 @@ namespace ProjectTracking.Data.Methods
                 user.NotificationFlag = true;
 
                 await observerHub.Clients.User(user.Id).SendAsync("SessionEnd", notifyMessage);
-                await notificationMethods.Send(byUserId, user.Id, "You have been removed from a team", NotificationType.Important);
+                await notificationMethods.Send(byUserId, user.Id, $"You have been removed from team \"{dbTeam.Name}\"", NotificationType.Important);
             }
 
 
@@ -257,7 +296,7 @@ namespace ProjectTracking.Data.Methods
                 foreach (string userId in userIds)
                 {
                     await observerHub.Clients.User(userId).SendAsync("SessionEnd", notifyMessage);
-                    await notificationMethods.Send(byUserId, userId, "You are assigned to a new team", NotificationType.Important);
+                    await notificationMethods.Send(byUserId, userId, $"You are assigned to team \"{dbTeam.Name}\"", NotificationType.Important);
                 }
             }
 

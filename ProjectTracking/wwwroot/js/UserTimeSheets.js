@@ -357,6 +357,18 @@ var user_timesheet_app = new Vue({
             }
 
             return this.taskActivities.data.filter(k => k.deletedAt === null)
+        },
+        activitiesHasDeletedItems: function () {
+
+            const activities = this.taskActivities.data
+
+            if (!activities || !activities.length) {
+                return false
+            }
+
+            const idx = activities.findIndex(k => k.deletedAt != null)
+
+            return idx > -1
         }
     },
     methods: {
@@ -703,7 +715,7 @@ var user_timesheet_app = new Vue({
                             const el = $('.user-timesheets-content__days .list-group-item.is-current-day')
 
                             $('.user-timesheets-content__days').animate({
-                                scrollTop: $(el).offset().top / 2
+                                scrollTop: $(el).offset().top / 1.5
                             }, 800);
 
                         }, 100)

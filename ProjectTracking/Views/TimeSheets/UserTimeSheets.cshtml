@@ -161,10 +161,11 @@
 
                     <button v-if="selectedTask" class="s-btn s-btn-outline " @@click="openTaskDetails()"><i class="fa fa-info-circle"></i> Details</button>
 
-                    <template v-if="readOnly">
+                    <template v-if="readOnly && activitiesHasDeletedItems">
+                        &nbsp;
                         <label class="">
                             <input type="checkbox" v-model="taskActivities.showDeleted" />
-                            Show Deleted
+                             Show Deleted
                         </label>
                     </template>
 
@@ -237,7 +238,7 @@
                                         <label>{{readOnly ? 'Message':'Enter a message '}}</label>
                                         <textarea class="form-control" rows="2" v-model="activityModal.form.message"></textarea>
                                     </div>
-                                    <p class="text-danger " v-if="activityModal.form.deletedAtDisplay !== '-'">Deleted at {{activityModal.form.deletedAtDisplay}}</p>
+                                    <p class="text-danger " v-if="activityModal.form.deletedAtDisplay !== '-'">Deleted on {{activityModal.form.deletedAtDisplay}}</p>
                                 </td>
                             </tr>
 
@@ -292,7 +293,7 @@
     @*
 <script src="~/services/ProjectFilesService.js"></script>*@
 
-<script src="~/js/UserTimeSheets.js"></script>
+<script src="~/js/UserTimeSheets.js?v=1"></script>
 }
 
 @section styles {
