@@ -222,13 +222,13 @@
                                 <td>
                                     <div class="modal-control">
                                         <label>From Date</label>
-                                        <date-picker v-model="activityModal.form.fromDate" :config="dateTimeOptions"></date-picker>
+                                        <date-picker v-model="activityModal.form.fromDate" :config="dateTimeOptionsMaxNow"></date-picker>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="modal-control">
                                         <label>To Date</label>
-                                        <date-picker v-model="activityModal.form.toDate" :config="dateTimeOptions"></date-picker>
+                                        <date-picker v-model="activityModal.form.toDate" :config="dateTimeOptionsMaxNow"></date-picker>
                                     </div>
                                 </td>
                             </tr>
@@ -293,7 +293,7 @@
     @*
 <script src="~/services/ProjectFilesService.js"></script>*@
 
-<script src="~/js/UserTimeSheets.js?v=1"></script>
+<script src="~/js/UserTimeSheets.js?v=2"></script>
 }
 
 @section styles {

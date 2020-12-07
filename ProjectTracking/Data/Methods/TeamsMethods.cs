@@ -133,24 +133,22 @@ namespace ProjectTracking.Data.Methods
                     string addedSupervisorId = supervisorId;
 
                     // end session and notify removed supervisor
-                    await observerHub.Clients.User(removedSupervisorId).SendAsync("SessionEnd", "You have been removed from supervising a team");
-                    await notificationMethods.Send(assignedById, removedSupervisorId, "You have been removed from supervising a team", NotificationType.Important);
+                    await observerHub.Clients.User(removedSupervisorId).SendAsync("SessionEnd", $"You have been removed from supervising a team");
+                    await notificationMethods.Send(assignedById, removedSupervisorId, $"You have been removed from supervising team \"{dbTeam.Name}\"", NotificationType.Important);
 
                     var dbRemovedSupervisor = _context.Users.First(k => k.Id == removedSupervisorId);
 
                     dbRemovedSupervisor.NotificationFlag = true;
                     dbRemovedSupervisor.SecurityStamp = Guid.NewGuid().ToString("D");
 
-
                     // end session and notify new supervisor
                     await observerHub.Clients.User(addedSupervisorId).SendAsync("SessionEnd", "You have been assigned as a supervisor to a team");
-                    await notificationMethods.Send(assignedById, addedSupervisorId, "You have been assigned as a supervisor to a team", NotificationType.Important);
+                    await notificationMethods.Send(assignedById, addedSupervisorId, $"You have been assigned as a supervisor to team \"{dbTeam.Name}\"", NotificationType.Important);
 
                     var dbNewSupervisor = _context.Users.First(k => k.Id == addedSupervisorId);
 
                     dbNewSupervisor.NotificationFlag = true;
                     dbNewSupervisor.SecurityStamp = Guid.NewGuid().ToString("D");
-
 
                     // move current to logs
                     _context.SupervisorLogs.Add(new DataSets.SupervisorLog()
@@ -171,7 +169,7 @@ namespace ProjectTracking.Data.Methods
                 dbTeam.Name = model.name;
 
                 // add/remove team members
-                await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds, assignedById);
+                await AddRemoveTeamsUsersFromContext(dbTeam, model.userIds, assignedById);
 
 
                 // save changes
@@ -210,7 +208,7 @@ namespace ProjectTracking.Data.Methods
 
                 // end session and notify new supervisor
                 await observerHub.Clients.User(supervisorId).SendAsync("SessionEnd", "You have been assigned as a supervisor to a team");
-                await notificationMethods.Send(addedByUserId, supervisorId, "You have been assigned as a supervisor to a team", NotificationType.Important);
+                await notificationMethods.Send(addedByUserId, supervisorId, $"You have been assigned as a supervisor to team \"{dbTeam.Name}\"", NotificationType.Important);
 
 
                 var dbSupervisor = _context.Users.First(k => k.Id == supervisorId);
@@ -225,7 +223,7 @@ namespace ProjectTracking.Data.Methods
                 _context.SaveChanges();
 
                 // set team members
-                await AddRemoveTeamsUsersFromContext(dbTeam.ID, model.userIds, addedByUserId);
+                await AddRemoveTeamsUsersFromContext(dbTeam, model.userIds, addedByUserId);
 
                 // save changes on teamsteams
                 _context.SaveChanges();
@@ -251,16 +249,18 @@ namespace ProjectTracking.Data.Methods
         /// <summary>
         /// no commit is made to the db
         /// </summary>
-        private async Task AddRemoveTeamsUsersFromContext(int teamId, List<string> userIds, string byUserId)
+        private async Task AddRemoveTeamsUsersFromContext(DataSets.Team dbTeam, List<string> userIds, string byUserId)
         {
             string notifyMessage = "your team has been changed, you are required to login again";
 
-            var dbTeam = _context.Teams.First(k => k.ID == teamId);
+            int teamId = dbTeam.ID;
 
-            if (dbTeam == null)
-            {
-                throw new ClientException("team not found");
-            }
+            //var dbTeam = _context.Teams.First(k => k.ID == teamId);
+
+            //if (dbTeam == null)
+            //{
+            //    throw new ClientException("team not found");
+            //}
 
             // get existing users under the team
             var existingUsersUnderTeam = _context.Users.Where(k => k.TeamId == teamId);

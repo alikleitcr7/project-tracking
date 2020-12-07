@@ -179,6 +179,10 @@ var user_timesheet_app = new Vue({
         activityModal: activityModalObject(),
         dateOptions,
         dateTimeOptions,
+        dateTimeOptionsMaxNow: {
+            ...dateTimeOptions,
+            maxDate: moment(),
+        },
         activeSubProject: null,
         activeActivityData: null,
         endActivityData: null,

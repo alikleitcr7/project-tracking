@@ -47,6 +47,11 @@ namespace ProjectTracking.Data.Methods
                 }
             }
 
+            if (model.fromDate >= model.toDate)
+            {
+                throw new ClientException("from date must be before to date");
+            }
+
 
             if (model.id.HasValue)
             {
@@ -65,6 +70,28 @@ namespace ProjectTracking.Data.Methods
                     throw new ClientException("record not found");
                 }
 
+                // check activities
+                var minActivity = db.TimeSheetActivities
+                    .OrderBy(k => k.FromDate)
+                    .FirstOrDefault();
+
+                var maxActivity = db.TimeSheetActivities
+                    .OrderByDescending(k => k.FromDate)
+                    .FirstOrDefault();
+
+
+
+                if (minActivity != null && model.fromDate > minActivity.FromDate)
+                {
+                    throw new ClientException($"from date should be before {minActivity.FromDate.Date.ToDisplayDate()} which is the earliest activity made on that date on the schedule");
+                }
+                
+
+                if (maxActivity != null && model.toDate < maxActivity.FromDate)
+                {
+                    throw new ClientException($"to date should be after {maxActivity.FromDate.Date.ToDisplayDate()} which is the latest activity made on that date on the schedule");
+                }
+
                 // update values
 
                 dbTimeSheet.FromDate = model.fromDate;
@@ -76,9 +103,9 @@ namespace ProjectTracking.Data.Methods
                 await notificationMethods.Send(model.GetAddedByUser(), model.userId, $"schedule time was modified", NotificationType.Information, true, dbTimeSheet.ID);
 
 
-                
 
-                var parsed =  _mapper.Map<TimeSheet>(dbTimeSheet);
+
+                var parsed = _mapper.Map<TimeSheet>(dbTimeSheet);
 
                 parsed.HasTasks = db.TimeSheetTasks.Any(k => k.TimeSheetId == parsed.ID);
 
