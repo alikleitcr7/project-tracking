@@ -145,6 +145,8 @@
     <Compile Remove="Migrations\20201108193903_status by to proj.Designer.cs" />
     <Compile Remove="Migrations\20201110124814_UserNotifRefDeleteSetNull.cs" />
     <Compile Remove="Migrations\20201110124814_UserNotifRefDeleteSetNull.Designer.cs" />
+    <Compile Remove="Migrations\20201208184601_droped usused identtyy tables.cs" />
+    <Compile Remove="Migrations\20201208184601_droped usused identtyy tables.Designer.cs" />
     <Compile Remove="Models\TimeSheet\TimeSheetModel.cs" />
     <Compile Remove="Services\BackgroundServiceStarter.cs" />
     <Compile Remove="Services\LiveObserverHost.cs" />
@@ -346,6 +348,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\lib\bootbox-5.3.2\" />
     <Folder Include="wwwroot\lib\bootbox-latest\" />
+    <Folder Include="wwwroot\lib\vue-bootstrap-datetimepicker-5\" />
     <Folder Include="wwwroot\lib\vuejs-paginate\" />
   </ItemGroup>
 

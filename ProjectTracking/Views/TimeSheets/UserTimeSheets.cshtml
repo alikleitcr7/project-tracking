@@ -13,7 +13,7 @@
      data-active-role="@Model.CurrentUserRole"
      data-active-user="@Model.CurrentUserId"
      data-active-supervisor="@Model.CurrentUserIsSupervisor" class="v-container" v-bind:class="{'is-readonly':readOnly}" v-cloak>
- 
+
     <h3 v-show="timesheetsAreLoading">Loading...</h3>
     <h3 v-show="!timesheetsAreLoading && !timesheets.length">Nothing Here Yet! <i class="far fa-smile-beam"></i> </h3>
 
@@ -25,22 +25,22 @@
         </select>
 
         @*
-        <ul class="list-group">
-            <li v-for="timesheet in timesheets" class="list-group-item" v-on:click="openTimeSheet(timesheet)" v-bind:class="{'active-tab': (activeTimeSheet !== null && activeTimeSheet.id === timesheet.id) }">
-                {{timesheet.fromDateDisplay}} - {{timesheet.toDateDisplay}}
-            </li>
-        </ul>
+            <ul class="list-group">
+                <li v-for="timesheet in timesheets" class="list-group-item" v-on:click="openTimeSheet(timesheet)" v-bind:class="{'active-tab': (activeTimeSheet !== null && activeTimeSheet.id === timesheet.id) }">
+                    {{timesheet.fromDateDisplay}} - {{timesheet.toDateDisplay}}
+                </li>
+            </ul>
         *@
     </div>
 
-    <div class="user-timesheets-content" >
+    <div class="user-timesheets-content">
 
         @*<h4 v-show="activeTimeSheetDisplay">{{activeTimeSheetDisplay}}</h4>*@
 
         <div class="user-timesheets-content-container">
 
             <div class="user-timesheets-content__days" v-if="activeTimeSheetLoading">
-                <ul class="list-group" >
+                <ul class="list-group">
                     <li v-for="i in [,,,,,,,,,,,,,]"
                         class="list-group-item list-group-item--loading">
                         <span></span>
@@ -64,7 +64,7 @@
                 </ul>
             </div>
 
-            <div v-if="activeTimeSheet" class="user-timesheets-content__projects" >
+            <div v-if="activeTimeSheet" class="user-timesheets-content__projects">
 
                 <p v-show="filteredProjectsLoading">Loading...</p>
                 <h4>{{activeDate ? activeDate.format('LL') : ''}} {{activeDateIndexIsCurrentDay !== -1 && activeDateIndexIsCurrentDay === activeDateIdx ? '(Today)' : ''}} </h4>
@@ -96,33 +96,33 @@
                         </div>
 
                         @*<table class="timesheet-tasks">
-                            <tbody>
-                                <template v-for="(subProject,subProjectIdx) in proj.tasks">
-                                    <tr>
-                                        <td>
-                                            <span class="item-subproject">
-                                                <span class="item-subproject__title">
-                                                    <span>
-                                                        {{subProject.title}}
+                                <tbody>
+                                    <template v-for="(subProject,subProjectIdx) in proj.tasks">
+                                        <tr>
+                                            <td>
+                                                <span class="item-subproject">
+                                                    <span class="item-subproject__title">
+                                                        <span>
+                                                            {{subProject.title}}
+                                                        </span>
+                                                    </span>
+                                                    <span class="item-subproject__buttons" v-show="!readOnly && !activeTimeSheetDateIsLocked">
+                                                        <span v-bind:class="{'active': subProject.isActive, 'disabled' :activeActivities && activeActivities.length > 0 }" v-on:click="startActiveActivity(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-play"></span>
+                                                        <span v-bind:class="{'disabled':!subProject.isActive}" v-on:click="Z(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-stop"></span>
                                                     </span>
                                                 </span>
-                                                <span class="item-subproject__buttons" v-show="!readOnly && !activeTimeSheetDateIsLocked">
-                                                    <span v-bind:class="{'active': subProject.isActive, 'disabled' :activeActivities && activeActivities.length > 0 }" v-on:click="startActiveActivity(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-play"></span>
-                                                    <span v-bind:class="{'disabled':!subProject.isActive}" v-on:click="Z(idx,subProjectIdx,subProject)" class="glyphicon glyphicon-stop"></span>
-                                                </span>
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="item-subproject__tags">
-                                                <span class="item-subproject-activity" v-bind:class="{'disabled':!activity.toDate }" v-for="(activity, tagIdx) in subProject.activities" v-on:click="openEditActivityModal(activity, tagIdx,subProjectIdx,idx)">
-                                                    {{tagIdx < subProject.activities.length - 1? activity.tagDisplayHours : activity.tagDisplay}}
-                                                </span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>*@
+                                            </td>
+                                            <td>
+                                                <div class="item-subproject__tags">
+                                                    <span class="item-subproject-activity" v-bind:class="{'disabled':!activity.toDate }" v-for="(activity, tagIdx) in subProject.activities" v-on:click="openEditActivityModal(activity, tagIdx,subProjectIdx,idx)">
+                                                        {{tagIdx < subProject.activities.length - 1? activity.tagDisplayHours : activity.tagDisplay}}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>*@
 
 
                     </div>
@@ -135,7 +135,7 @@
 
                 <h5 v-if="selectedTask">{{selectedTask.title}} Activities</h5>
 
-                <div class="task-activities-actions" >
+                <div class="task-activities-actions">
 
                     <template v-if="activeDateIndexIsToday && !readOnly">
 
@@ -170,7 +170,7 @@
                         &nbsp;
                         <label class="">
                             <input type="checkbox" v-model="taskActivities.showDeleted" />
-                             Show Deleted
+                            Show Deleted
                         </label>
                     </template>
 
@@ -287,20 +287,16 @@
 
 @section scripts{
 
-<script src="https://cdn.jsdelivr.net/npm/vue-bootstrap-datetimepicker@5"></script>
-    @*
-<script src="~/services/TypeOfWorkService.js"></script>*@
-    @*
-<script src="~/services/MeasurementUnitsService.js"></script>*@
-<script src="~/services/TimeSheetsService.js"></script>
-<script src="~/services/TimeSheetActivitiesService.js"></script>
-<script src="~/services/ProjectTasksService.js"></script>
-    @*
-<script src="~/services/ProjectFilesService.js"></script>*@
+    <script src="~/lib/vue-bootstrap-datetimepicker-5/vue-bootstrap-datetimepicker.js"></script>
 
-<script src="~/js/UserTimeSheets.js?v=3"></script>
+    <script src="~/services/TimeSheetsService.js"></script>
+    <script src="~/services/TimeSheetActivitiesService.js"></script>
+    <script src="~/services/ProjectTasksService.js"></script>
+
+    <script src="~/js/UserTimeSheets.js?v=4"></script>
 }
 
 @section styles {
-<link href="~/css/UserTimeSheets.min.css" rel="stylesheet" />
+
+    <link href="~/css/UserTimeSheets.min.css?v=1" rel="stylesheet" />
 }
