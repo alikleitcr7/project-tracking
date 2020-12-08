@@ -310,7 +310,7 @@ namespace ProjectTracking.Data.Methods
             }).ToList();
         }
 
-        public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, int? taskId, DateTime date, bool includeDeleted)
+        public List<TimeSheetActivity> GetTimeSheetActivities(int timeSheetId, int? taskId, DateTime? date, bool includeDeleted)
         {
             IQueryable<DataSets.TimeSheetActivity> query = db.TimeSheetActivities
                 //.Include(k => k.TimeSheetTask)
@@ -318,13 +318,19 @@ namespace ProjectTracking.Data.Methods
                 //  k.TimeSheetTask != null &&
                 .Where(k =>
                             k.TimeSheetTask.TimeSheetId == timeSheetId &&
-                            k.TimeSheetTask.ProjectTaskId == taskId &&
-                            k.FromDate.Month == date.Month
-                            && k.FromDate.Day == date.Day
-                            && k.FromDate.Year == date.Year
+                            k.TimeSheetTask.ProjectTaskId == taskId 
                             && (includeDeleted ? true : !k.DeletedAt.HasValue)
                             );
 
+            if (date.HasValue)
+            {
+                query = query.Where(k =>
+                           k.FromDate.Month == date.Value.Month
+                           && k.FromDate.Day == date.Value.Day
+                           && k.FromDate.Year == date.Value.Year);
+            }
+
+            query = query.OrderBy(k => k.FromDate);
 
             var dbTimeSheetActivities = query.ToList();
 

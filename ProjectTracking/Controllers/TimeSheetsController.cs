@@ -346,7 +346,7 @@ namespace ProjectTracking.Controllers
             }
         }
 
-        public IActionResult GetActivitiesByDate(int timeSheetId, int? taskId, DateTime date, bool includeDeleted)
+        public IActionResult GetActivitiesByDate(int timeSheetId, int? taskId, DateTime? date, bool includeDeleted)
         {
             try
             {

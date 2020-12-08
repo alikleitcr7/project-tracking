@@ -780,7 +780,7 @@ var user_timesheet_app = new Vue({
         },
         openTimeSheetDate: function (idx) {
 
-            this.activeDate = moment(this.activeTimeSheet.datesList[idx].date, 'MM/DD/YYYY')
+            this.activeDate = idx === -1 ? null : moment(this.activeTimeSheet.datesList[idx].date, 'MM/DD/YYYY')
             this.activeDateIdx = idx
 
             if (this.selectedTask) {
@@ -842,12 +842,12 @@ var user_timesheet_app = new Vue({
 
             const activeDateIdx = this.activeDateIdx
 
-            if (activeDateIdx === -1) {
-                console.error('no active date')
-                return
-            }
+            //if (activeDateIdx === -1) {
+            //    console.error('no active date')
+            //    return
+            //}
 
-            const date = this.activeTimeSheet.datesList[activeDateIdx].date;
+            const date = activeDateIdx === -1 ? null : this.activeTimeSheet.datesList[activeDateIdx].date;
 
             let taskActivities = { ...this.taskActivities }
 

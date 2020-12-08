@@ -56,10 +56,15 @@
                         class="list-group-item">
                         {{dateDisplay.display}}
                     </li>
+                    <li v-on:click="openTimeSheetDate(-1)"
+                        v-bind:class="{'active-tab':activeDateIdx === -1}"
+                        class="list-group-item">
+                        View All
+                    </li>
                 </ul>
             </div>
 
-            <div v-if="activeTimeSheet" class="user-timesheets-content__projects" :class="{'collapsed':activeDateIdx === -1}">
+            <div v-if="activeTimeSheet" class="user-timesheets-content__projects" >
 
                 <p v-show="filteredProjectsLoading">Loading...</p>
                 <h4>{{activeDate ? activeDate.format('LL') : ''}} {{activeDateIndexIsCurrentDay !== -1 && activeDateIndexIsCurrentDay === activeDateIdx ? '(Today)' : ''}} </h4>
@@ -293,7 +298,7 @@
     @*
 <script src="~/services/ProjectFilesService.js"></script>*@
 
-<script src="~/js/UserTimeSheets.js?v=2"></script>
+<script src="~/js/UserTimeSheets.js?v=3"></script>
 }
 
 @section styles {
