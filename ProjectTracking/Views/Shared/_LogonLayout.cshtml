@@ -12,44 +12,14 @@
     <link href="~/css/core.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.min.css" />
     <link rel="stylesheet" href="~/css/logon.min.css" />
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
-
-    @*<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">*@
-    @*<script src="~/lib/signalr/signalr.js"></script>*@
-    @*<link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />*@
-    @*<link href="~/css/Notifications.min.css" rel="stylesheet" />*@
-
-    @*<script src="~/lib/font-awesome/js/all.min.js"></script>*@
-    <script src="~/lib/font-awesome/registered/c02d468215.js"></script>
-
+    <link href="~/lib/bootstrap/bootstrap-glyphicons.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
 
     @RenderSection("Styles", required: false)
 
 </head>
 
 <body class=" @(User.Identity.IsAuthenticated ? "":"is-logon" )">
-
-    @*<nav class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">3T System</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>*@
 
     <div class="body-container ">
 

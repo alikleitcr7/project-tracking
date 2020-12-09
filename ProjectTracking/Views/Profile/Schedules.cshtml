@@ -3,19 +3,19 @@
     @* <div class="v-container">
 
 
-           <a asp-controller="Projects"
-                   asp-action="ProjectsProgress"
-                   asp-route-userId="@Model.Id"
-                   class="btn Button-Shared mb-4">
-                    Projects Progress
-                </a>
+        <a asp-controller="Projects"
+           asp-action="ProjectsProgress"
+           asp-route-userId="@Model.Id"
+           class="btn Button-Shared mb-4">
+            Projects Progress
+        </a>
 
 
-                <a class="btn Button-Shared mb-4"
-                   target="_blank" v-show="isInAdministration"
-                   href="/userinsights?userId=@Model.Id">Active Hours Insights</a>
+        <a class="btn Button-Shared mb-4"
+           target="_blank" v-show="isInAdministration"
+           href="/userinsights?userId=@Model.Id">Active Hours Insights</a>
 
-        </div>*@
+    </div>*@
 
 
     <div v-show="!timeSheetsLoading && ( !isCurrentUser || timeSheets.length > 0)">
@@ -30,7 +30,7 @@
                         <i class="fa fa-calendar"></i> Add
                     </button>
 
-                    <a class="s-btn s-btn-outline" 
+                    <a class="s-btn s-btn-outline"
                        v-show="timeSheets.length > 0"
                        v-bind:href="`/timesheets/explore?uid=${userId}`">
                         Explore
@@ -39,7 +39,7 @@
 
                 </td>
             </tr>
-            <tr v-show="timeSheets.length > 0">
+            <tr v-show="timeSheetYears && timeSheetYears.length > 0">
                 <td>
 
                     <select v-model="selectedTimeSheetYear" class="form-control ">
@@ -65,29 +65,37 @@
             <tr>
                 <th>From Date</th>
                 <th>To Date</th>
+                <th>By User</th>
+                <th>Added On</th>
                 <th></th>
             </tr>
 
             <tr v-for="(timeSheet,idx) in timeSheets">
                 <td>{{timeSheet.fromDateDisplay}}</td>
                 <td>{{timeSheet.toDateDisplay}}</td>
+                <td><a :href="`/profile/${timeSheet.addedByUserId}`">{{timeSheet.addedByUserName}}</a></td>
+                <td>{{timeSheet.dateAddedDisplay}}</td>
                 <td>
                     <div class="btn-group">
                         @* availableProjects,assignedProjects *@
 
-                        <button type="button" 
+                        <button type="button"
                                 v-if="teamId && isSupervisingUser"
-                                class="btn btn-sm btn-default" v-on:click="openTimeSheetProjectsModal(timeSheet)"><i class="fa fa-tasks"></i> Tasks</button>
-                        <button type="button" 
-                           v-if="isSupervisingUser" class="btn btn-sm btn-default" v-on:click="editTimeSheet(timeSheet)"><i class="fa fa-edit"></i> Edit</button>
+                                class="btn btn-sm btn-default" v-on:click="openTimeSheetProjectsModal(timeSheet)">
+                            <i class="fa fa-tasks"></i> Tasks
+                        </button>
+                        <button type="button"
+                                v-if="isSupervisingUser" class="btn btn-sm btn-default" v-on:click="editTimeSheet(timeSheet)">
+                            <i class="fa fa-edit"></i> Edit
+                        </button>
                         @*<a class="btn btn-sm btn-default" v-bind:href="`/timesheets?id=${timeSheet.id}`">Time Sheet</a>*@
-                        <a class="btn btn-sm btn-default" 
+                        <a class="btn btn-sm btn-default"
                            v-bind:href="`/timesheets/explore?uid=${userId}&tid=${timeSheet.id}`">
                             Explore <i class="fa fa-angle-right"></i>
                         </a>
 
                         <button type="button"
-                                v-if="isSupervisingUser && !timeSheet.hasTasks" 
+                                v-if="isSupervisingUser && !timeSheet.hasTasks"
                                 class="btn btn-sm btn-danger"
                                 v-on:click="deleteTimeSheet(timeSheet,idx)">
                             <i class="fa fa-trash"></i>
@@ -108,9 +116,9 @@
             <!-- Modal content-->
             <div class="modal-content">
                 @*<div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Add Time Sheet</h4>
-                    </div>*@
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add Time Sheet</h4>
+                </div>*@
 
                 <div class="modal-body">
 

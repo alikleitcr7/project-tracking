@@ -11,7 +11,7 @@ namespace ProjectTracking.DataContract
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
         public DateTime DateAdded { get; set; }
-
+        public string AddedByUserId { get; set; }
 
         public string FromDateDisplay
         {
@@ -20,6 +20,7 @@ namespace ProjectTracking.DataContract
                 return FromDate.ToString("MM/dd/yyyy");
             }
         }
+
         public string ToDateDisplay
         {
             get
@@ -28,26 +29,20 @@ namespace ProjectTracking.DataContract
             }
         }
 
-        public DateTime ToDatePlusOneDay
+        public string DateAddedDisplay
         {
             get
             {
-                return ToDate.AddDays(1);
-            }
-        }
-        public DateTime ToDatePlusMonth
-        {
-            get
-            {
-                return ToDate.AddDays(26);
+                return DateAdded.ToString("MM/dd/yyyy");
             }
         }
 
         public string UserId { get; set; }
 
-        public  User User { get; set; }
-        public  List<TimeSheetTask> TimeSheetTasks { get; set; }
+        public User User { get; set; }
+        public List<TimeSheetTask> TimeSheetTasks { get; set; }
         public bool HasTasks { get; set; }
+        public string AddedByUserName { get; set; }
     }
-   
+
 }

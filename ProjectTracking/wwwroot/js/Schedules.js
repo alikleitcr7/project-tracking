@@ -749,7 +749,20 @@ new Vue({
             TimeSheetsService.GetTimeSheetYears(this.userId)
                 .then(r => {
                     console.log('get timesheet years', r)
-                    this.timeSheetYears = r.data
+                    this.timeSheetYears = r.data || []
+
+                    const selectedYear = this.selectedTimeSheetYear
+
+                    // check if year still exist
+                    if (this.timeSheetYears.length && selectedYear) {
+
+                        if (!this.timeSheetYears.findIndex(k => k === selectedYear) > -1) {
+                            this.selectedTimeSheetYear = this.timeSheetYears[0]
+                            this.filterTimeSheets()
+
+                        }
+                    }
+
                 })
                 .catch(e => {
                     console.error('error', e)

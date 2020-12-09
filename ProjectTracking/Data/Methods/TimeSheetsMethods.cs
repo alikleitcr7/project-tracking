@@ -85,7 +85,7 @@ namespace ProjectTracking.Data.Methods
                 {
                     throw new ClientException($"from date should be before {minActivity.FromDate.Date.ToDisplayDate()} which is the earliest activity made on that date on the schedule");
                 }
-                
+
 
                 if (maxActivity != null && model.toDate < maxActivity.FromDate)
                 {
@@ -108,6 +108,10 @@ namespace ProjectTracking.Data.Methods
                 var parsed = _mapper.Map<TimeSheet>(dbTimeSheet);
 
                 parsed.HasTasks = db.TimeSheetTasks.Any(k => k.TimeSheetId == parsed.ID);
+
+                var addedByUser = db.Users.First(k => k.Id == dbTimeSheet.AddedByUserId);
+
+                parsed.AddedByUserName = addedByUser.FirstName + " " + addedByUser.LastName;
 
                 return parsed;
             }
@@ -136,7 +140,13 @@ namespace ProjectTracking.Data.Methods
 
                 await notificationMethods.Send(model.GetAddedByUser(), model.userId, $"New schedule added", NotificationType.Default, true, dbTimeSheet.ID);
 
-                return _mapper.Map<TimeSheet>(dbTimeSheet);
+                var parsed = _mapper.Map<TimeSheet>(dbTimeSheet);
+
+                var addedByUser = db.Users.First(k => k.Id == dbTimeSheet.AddedByUserId);
+
+                parsed.AddedByUserName = addedByUser.FirstName + " " + addedByUser.LastName;
+
+                return parsed;
             }
 
 
@@ -300,6 +310,8 @@ namespace ProjectTracking.Data.Methods
                 FromDate = k.FromDate,
                 ToDate = k.ToDate,
                 UserId = k.UserId,
+                AddedByUserName = k.AddedByUser.FirstName + " " + k.AddedByUser.LastName,
+                AddedByUserId = k.AddedByUserId,
                 HasTasks = k.TimeSheetTasks.Any(),
                 TimeSheetTasks = includeTasks ? k.TimeSheetTasks.Select(t => new TimeSheetTask()
                 {
@@ -318,7 +330,7 @@ namespace ProjectTracking.Data.Methods
                 //  k.TimeSheetTask != null &&
                 .Where(k =>
                             k.TimeSheetTask.TimeSheetId == timeSheetId &&
-                            k.TimeSheetTask.ProjectTaskId == taskId 
+                            k.TimeSheetTask.ProjectTaskId == taskId
                             && (includeDeleted ? true : !k.DeletedAt.HasValue)
                             );
 

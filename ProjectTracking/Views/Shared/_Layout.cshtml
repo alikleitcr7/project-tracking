@@ -38,21 +38,18 @@
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link href="~/lib/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
-    @*<link href="~/css/bs4.min.css" rel="stylesheet" />*@
     <link href="~/css/core.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.min.css?v=1" />
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/bootstrap-glyphicons.css" />
     <script src="~/lib/signalr/signalr.js"></script>
-    @*<link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />*@
     <link href="~/css/Notifications.min.css" rel="stylesheet" />
-
-    <script src="~/lib/font-awesome/registered/c02d468215.js"></script>
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
 
     @RenderSection("Styles", required: false)
 
 </head>
 
-<body class=" @( isAuthenticated? "":"is-logon" ) @(sidebarCollapsed ? "sidebar-collapsed":"")"
+<body class=" @( isAuthenticated? " ":" is-logon" ) @(sidebarCollapsed ? "sidebar-collapsed" :"")"
       data-userName="@userName"
       data-fullName="@fullName"
       data-user="@userId"
@@ -77,7 +74,8 @@
     <!-- development version, includes helpful console warnings -->
     <script src="~/lib/vuejs/vue-dev.js"></script>
     <!-- production version, optimized for size and speed -->
-    @*<script src="~/lib/vuejs/vue-prod.js"></script>*@
+    @*
+        <script src="~/lib/vuejs/vue-prod.js"></script>*@
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
 
@@ -109,7 +107,8 @@
 
         <script src="~/js/SideBar.js?v=1"></script>
 
-        @*<script src="~/lib/signalr/broadcastSignalR.js"></script>*@
+        @*
+            <script src="~/lib/signalr/broadcastSignalR.js"></script>*@
     }
 
     @* vue components *@
