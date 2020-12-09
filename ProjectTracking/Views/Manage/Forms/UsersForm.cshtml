@@ -13,7 +13,7 @@
         <div class="input-group-btn">
             <button class="btn btn-default" type="submit"
                     v-on:click="users_getAll(0)">
-                <i class="glyphicon glyphicon-search"></i>
+                <i class="fa fa-search"></i>
             </button>
         </div>
 
@@ -99,7 +99,7 @@
                             <ul class="dropdown-menu dropdown-menu-right " role="menu">
                                 <li  v-if="!users_isAdmin(item)">
                                     <a v-on:click="userRoles_edit(item)">
-                                        <i class="glyphicon glyphicon-file"></i>
+                                        <i class="fa fa-file"></i>
                                         Role
                                     </a>
                                 </li>
@@ -111,7 +111,7 @@
                                 </li>
                                 <li>
                                     <a v-on:click="users_edit(idx)">
-                                        <i class="glyphicon glyphicon-edit"></i>
+                                        <i class="fa fa-edit"></i>
                                         Edit
                                     </a>
                                 </li>

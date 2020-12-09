@@ -11,7 +11,7 @@
 
     <div>
         <div class="buttons mb-2">
-            <button type="button" v-on:click="teams_openModal" class="s-btn s-btn-primary">New Team &nbsp;<i class="glyphicon glyphicon-plus"></i></button>
+            <button type="button" v-on:click="teams_openModal" class="s-btn s-btn-primary">New Team &nbsp;<i class="fa fa-plus"></i></button>
             <a href="/teams" class="s-btn s-btn-outline">Insights <i class="fa fa-chart-line"></i></a>
         </div>
 
@@ -88,7 +88,7 @@
                                     </button>*@
                                 <button class="s-btn s-btn-sm s-btn-outline" type="button"
                                         v-on:click="teams_edit(idx)">
-                                    <i class="glyphicon glyphicon-edit"></i>
+                                    <i class="fa fa-edit"></i>
                                     Edit
 
                                 </button>
@@ -102,7 +102,7 @@
 
                                 <button v-if="!item.hasProjects" class="s-btn s-btn-sm s-btn-danger" type="button"
                                         v-on:click="teams_delete(idx)">
-                                    <i class="glyphicon glyphicon-trash"></i>
+                                    <i class="fa fa-trash"></i>
                                     Delete
 
                                 </button>

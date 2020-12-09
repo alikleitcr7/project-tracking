@@ -76,7 +76,10 @@
     <script src="~/js/UsersNotifications.js"></script>
     <script src="~/js/UsersLogs.js"></script>
     <script src="~/js/Categories.js"></script>
-    <script src="~/js/RolesKeys.js"></script>
+    @if (role == "Admin")
+    {
+        <script src="~/js/RolesKeys.js"></script>
+    }
     <script src="~/js/Users.js"></script>
     <script src="~/js/IpAddresses.js"></script>
 }
