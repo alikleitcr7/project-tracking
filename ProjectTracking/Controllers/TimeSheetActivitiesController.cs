@@ -145,6 +145,24 @@ namespace ProjectTracking.Controllers
             return _activitiesMethods.GetByTimeSheet(timesheetId);
         }
 
+        //public IActionResult GetByTask(int taskId)
+        //{
+        //    try
+        //    {
+        //        _activitiesMethods.GetByTask(taskId);
+
+        //        return Ok(true);
+        //    }
+        //    catch (ClientException ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { message = ex.Message });
+        //    }
+        //}
+
         //public TimeSheetActivity Update([FromBody]TimeSheetActivityUpdateModel model)
         //{
         //    //string remoteIpAddress = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();

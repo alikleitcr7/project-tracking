@@ -478,12 +478,12 @@ var user_timesheet_app = new Vue({
                     this.taskActivities.isStarting = false
                 })
         },
-        openActivityCommitModal: function (activity) {
+        openActivityCommitModal: function (activityToOpen) {
 
             //const task = this.activeTask
 
             /** @type {ActivityModalForm} */
-            activity = activity || this.activeActivity
+            const activity = { ...(activityToOpen || this.activeActivity) }
 
             if (!activity) {
                 console.error('no active activity')
@@ -719,7 +719,7 @@ var user_timesheet_app = new Vue({
                             const el = $('.user-timesheets-content__days .list-group-item.is-current-day')
 
                             $('.user-timesheets-content__days').animate({
-                                scrollTop: $(el).offset().top / 1.5
+                                scrollTop: $(el).offset().top / 1.2
                             }, 800);
 
                         }, 100)

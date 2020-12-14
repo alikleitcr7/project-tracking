@@ -70,6 +70,10 @@ namespace ProjectTracking.Data.Methods
             {
                 return false;
             }
+            else if (address == "::1")
+            {
+                address = "127.0.0.1";
+            }
 
             var dbRecord = _context.IpAddresses.FirstOrDefault(k => k.Address == address);
 
@@ -166,7 +170,7 @@ namespace ProjectTracking.Data.Methods
             }
             else
             {
-                ipAddress.Address = ipAddress.Address.Trim();
+                ipAddress.Address = ipAddress.Address == "::1" ? "127.0.0.1" : ipAddress.Address.Trim();
             }
 
             if (!System.Net.IPAddress.TryParse(ipAddress.Address, out _))

@@ -51,15 +51,20 @@ namespace ProjectTracking.Data.Methods
                 throw new ClientException($"there is already an active activity");
             }
 
+            if (ipAddress == "::1")
+            {
+                ipAddress = "127.0.0.1";
+            }
+
+            bool ipAdded = _ipAddressMethods.AddIfNotExist(ipAddress);
+
             DataSets.TimeSheetActivity activity = new DataSets.TimeSheetActivity()
             {
-                Address = ipAddress,
+                //Address = ipAddress,
                 FromDate = DateTime.Now,
                 TimeSheetTaskId = timeSheetTaskId,
                 DateAdded = DateTime.Now
             };
-
-            bool ipAdded = _ipAddressMethods.AddIfNotExist(ipAddress);
 
             if (ipAdded)
             {
@@ -129,6 +134,12 @@ namespace ProjectTracking.Data.Methods
             // save the location if doesn't exist
             if (ipAddress != null)
             {
+
+                if (ipAddress == "::1")
+                {
+                    ipAddress = "127.0.0.1";
+                }
+
                 _ipAddressMethods.AddIfNotExist(ipAddress);
             }
 

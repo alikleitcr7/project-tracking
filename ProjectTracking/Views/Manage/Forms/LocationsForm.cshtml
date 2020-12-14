@@ -5,11 +5,11 @@
             <tr>
                 <td>
                     <label>Address</label>
-                    <input @@keyup.enter="addIpAddress" type="text" class="form-control" v-model="ipAddresses.form.address" />
+                    <input @@keyup.enter="addIpAddress" maxlength="15" type="text" class="form-control" v-model="ipAddresses.form.address" />
                 </td>
                 <td>
                     <label>Title</label>
-                    <input @@keyup.enter="addIpAddress" type="text" class="form-control" v-model="ipAddresses.form.title" />
+                    <input @@keyup.enter="addIpAddress" maxlength="50" type="text" class="form-control" v-model="ipAddresses.form.title" />
                 </td>
                 <td>
                     <label>&nbsp;</label>
@@ -54,7 +54,7 @@
                         </td>
                         <td>
                             <span v-show="!item.isEdit">{{item.title}}</span>
-                            <input class="form-control" v-show="item.isEdit" type="text" v-model="item.title" />
+                            <input maxlength="50" class="form-control" v-show="item.isEdit" type="text" v-model="item.title" />
                         </td>
                         <td>
                             <button v-show="item.isEdit" class="btn btn-sm btn-default" type="button" v-on:click="updateIpAddress(idx)">Save</button>

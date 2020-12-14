@@ -17,8 +17,8 @@
 }
 #GanttChart #gantt-chart {
   /*overflow: auto;*/
-  height: 400px;
-  width: 100%!important;
+  /*height: 400px;*/
+  /*width: 100%!important;*/
   /*max-height:450px;*/
   /*.t;*/
 }

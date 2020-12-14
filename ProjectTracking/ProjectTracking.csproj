@@ -147,6 +147,8 @@
     <Compile Remove="Migrations\20201110124814_UserNotifRefDeleteSetNull.Designer.cs" />
     <Compile Remove="Migrations\20201208184601_droped usused identtyy tables.cs" />
     <Compile Remove="Migrations\20201208184601_droped usused identtyy tables.Designer.cs" />
+    <Compile Remove="Migrations\20201214201156_location_max_len.cs" />
+    <Compile Remove="Migrations\20201214201156_location_max_len.Designer.cs" />
     <Compile Remove="Models\TimeSheet\TimeSheetModel.cs" />
     <Compile Remove="Services\BackgroundServiceStarter.cs" />
     <Compile Remove="Services\LiveObserverHost.cs" />

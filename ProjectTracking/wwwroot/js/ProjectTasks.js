@@ -2,6 +2,7 @@
 Vue.component('date-picker', VueBootstrapDatetimePicker)
 
 const debugProjectTasks = true;
+var chart;
 
 const projectTaskFields = [
     {
@@ -389,11 +390,16 @@ const projectTasksMethods = {
 
                         // append to gantt if loaded
 
+                        //if (this.ganttChart.isLoaded) {
+
+                        //    this.ganttChart.data = [...this.ganttChart.data, record]
+
+                        //    this.drawGantt(this.ganttChart.data)
+                        //}
+
+
                         if (this.ganttChart.isLoaded) {
-
-                            this.ganttChart.data = [...this.ganttChart.data, record]
-
-                            this.drawGantt(this.ganttChart.data)
+                            this.populateGannt();
                         }
 
                         this.projectTasks_setFormMessage('Added!')
@@ -408,6 +414,10 @@ const projectTasksMethods = {
                 })
                 .then(() => {
                     this.projectTasks_setFormSaving(false)
+
+
+                    this.ganttChart.isLoaded = false
+
                 });
 
         }
@@ -450,6 +460,10 @@ const projectTasksMethods = {
                     this.projectTasks.data = data
                     this.projectTasks_getAll(0)
                     this.projectTasks_setMessage('Subject deleted!')
+
+                    this.ganttChart.isLoaded = false
+
+                    this.populateGannt();
                 }
                 else {
                     this.projectTasks_setMessage(BASIC_ERROR_MESSAGE)
@@ -650,9 +664,9 @@ var projectTasks_app = new Vue({
         populateGannt: function () {
 
 
-            if (this.ganttChart.isLoaded) {
-                return
-            }
+            //if (this.ganttChart.isLoaded) {
+            //    return
+            //}
 
             this.errors = null
 
@@ -827,13 +841,23 @@ var projectTasks_app = new Vue({
 
             const chartId = 'gantt-chart'
 
-
             const app = this
 
-            var chart = JSC.chart(chartId, {
+            //$('#'+chartId).html('')
+            //if (chart) {
+            //    chart.instance.destroy()
+            //}
+
+            if (chart) {
+                console.log('POINTS', chart.series(0).points)
+                //    .add({ y: Math.random() * 200, x: new Date(dt) }, { shift: useShift });
+            }
+
+            chart = JSC.chart(chartId, {
                 debug: false,
                 type: 'horizontal column',
                 zAxisScaleType: 'stacked',
+                width: Math.max(500, $(document).width() - 200),
                 yAxis_scale_type: 'time',
                 xAxis_visible: false,
                 yAxis: {
@@ -863,6 +887,12 @@ var projectTasks_app = new Vue({
                     }
                 ]
             });
+
+
+            document.onresize = function () {
+
+
+            }
 
             console.log({ chart })
         }

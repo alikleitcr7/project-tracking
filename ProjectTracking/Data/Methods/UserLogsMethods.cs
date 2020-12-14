@@ -48,6 +48,11 @@ namespace ProjectTracking.Data.Methods
                     return activeLog;
                 }
 
+                if (ipAddress == "::1")
+                {
+                    ipAddress = "127.0.0.1";
+                }
+
                 bool ipAdded = _ipAddressesMethods.AddIfNotExist(ipAddress);
 
                 DataSets.UserLog dbLog = new DataSets.UserLog()
