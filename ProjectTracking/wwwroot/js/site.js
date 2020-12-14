@@ -13,6 +13,10 @@ $(document).ready(function () {
             maxDate: moment(),
         });
 
+        if (dateTimePicker.hasClass('noinitialvalue')) {
+
+            dateTimePicker.val('')
+        }
         //dateTimePicker.val('')
     }
 
@@ -21,7 +25,10 @@ $(document).ready(function () {
             format: 'YYYY-MM-DD HH:mm:ss',
         });
 
-        dateTimePicker.val('')
+        if (dateTimePicker_time.hasClass('noinitialvalue')) {
+
+            dateTimePicker_time.val('')
+        }
     }
     //if (dataTables_en.length) {
     //    dataTables_en.DataTable(dtOptions_TopControls_en);
