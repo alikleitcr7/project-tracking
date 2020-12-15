@@ -66,7 +66,7 @@ namespace ProjectTracking.Data.Methods
                 }
 
                 // check if status changed
-                bool statusChanged = dbTask.StatusCode != model.statusCode;
+                bool statusChanged = dbTask.StatusCode != model.statusCode || dbTask.StatusByUserId != model.GetStatusByUserId();
 
                 if (statusChanged)
                 {
@@ -284,6 +284,7 @@ namespace ProjectTracking.Data.Methods
                 LastModifiedDate = k.LastModifiedDate,
                 StatusByUserName = k.StatusByUser.FirstName + " " + k.StatusByUser.LastName,
                 Title = k.Title,
+                IsAssignedToTimeSheet = k.TimeSheetTasks.Any()
             };
 
         public static Expression<Func<DataSets.ProjectTask, ProjectTask>> MapProjectTaskWithUserAndCheckActivities =>

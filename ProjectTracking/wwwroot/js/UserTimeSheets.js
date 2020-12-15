@@ -645,7 +645,9 @@ var user_timesheet_app = new Vue({
 
         },
         getActivityTitle: function (activity) {
-            return activity.toDate ? activity.message : 'Active'
+
+
+            return activity.toDate ? activity.message : (activity.deletedAt ? 'Deleted' : 'Active')
         },
         openTimeSheet: function (timesheet) {
 

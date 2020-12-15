@@ -191,7 +191,7 @@
                          v-for="activity in taskActivitiesView"
                          @@click="openActivityCommitModal(activity)"
                          :title="`${activity.id} - ${getActivityTitle(activity)}`"
-                         :class="{'active':!activity.toDate, 'activity-deleted' :activity.deletedAt !== null  , 'c-box-clickable':(activity.toDate || !readOnly)}">
+                         :class="{'active':activity.deletedAt === null && !activity.toDate, 'activity-deleted' :activity.deletedAt !== null  , 'c-box-clickable':(activity.toDate || !readOnly)}">
                         <div class="c-box-title">{{getActivityTitle(activity)}}</div>
                         <small>{{activity.fromDateDisplay}}</small>
                     </div>
@@ -293,7 +293,7 @@
     <script src="~/services/TimeSheetActivitiesService.js"></script>
     <script src="~/services/ProjectTasksService.js"></script>
 
-    <script src="~/js/UserTimeSheets.js?v=4"></script>
+    <script src="~/js/UserTimeSheets.js?v=5"></script>
 }
 
 @section styles {

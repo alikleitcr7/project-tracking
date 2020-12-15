@@ -77,7 +77,7 @@ namespace ProjectTracking.Data.Methods
                 }
 
                 // check if status changed
-                bool statusChanged = dbProject.StatusCode != model.statusCode;
+                bool statusChanged = dbProject.StatusCode != model.statusCode || dbProject.StatusByUserId != model.GetStatusByUserId();
 
                 if (statusChanged)
                 {
@@ -261,7 +261,8 @@ namespace ProjectTracking.Data.Methods
                {
                    ProjectId = t.ProjectId,
                    TeamId = t.TeamId
-               })
+               }),
+               HasTasks = k.Tasks.Any()
            };
 
         public List<ProjectStatusModification> GetStatusModifications(int projectId)
