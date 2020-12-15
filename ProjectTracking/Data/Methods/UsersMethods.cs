@@ -1480,6 +1480,12 @@ namespace ProjectTracking.Data.Methods
                         Title = k.TimeSheetTask.ProjectTask.Title,
                         StatusCode = k.TimeSheetTask.ProjectTask.StatusCode,
                         TimeSheetId = k.TimeSheetTask.TimeSheetId,
+                    },
+                    TimeSheetTask = new TimeSheetTask()
+                    {
+                        ID = k.TimeSheetTask.ID,
+                        ProjectTaskId = k.TimeSheetTask.ProjectTaskId,
+                        TimeSheetId = k.TimeSheetTask.TimeSheetId
                     }
                 })
                 .ToList();

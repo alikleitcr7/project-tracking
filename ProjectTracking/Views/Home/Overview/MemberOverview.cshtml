@@ -33,7 +33,10 @@
                 <tbody>
                     <tr v-for="activity in overview.data.latestActivities">
                         <td>
-                            <a :href="`/tasks/${activity.projectTask.id}`">
+                            <a v-if="activity.timeSheetTask" :href="`/timesheets/explore?tid=${activity.timeSheetTask.timeSheetId}&pt=${activity.timeSheetTask.projectTaskId}`">
+                                {{activity.projectTask.title}}
+                            </a>
+                            <a v-else :href="`/tasks/${activity.projectTask.id}`">
                                 {{activity.projectTask.title}}
                             </a>
                         </td>
