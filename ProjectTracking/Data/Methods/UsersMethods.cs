@@ -103,6 +103,7 @@ namespace ProjectTracking.Data.Methods
                 dbUser.EmploymentTypeCode = model.employmentTypeCode;
                 //dbUser.MonthlySalary = model.monthlySalary;
                 //dbUser.HourlyRate = model.hourlyRate;
+                dbUser.SecurityStamp = Guid.NewGuid().ToString("D");
 
                 db.SaveChanges();
 

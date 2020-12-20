@@ -275,7 +275,7 @@ namespace ProjectTracking.Controllers
 
         [Authorize(AuthPolicies.Admins)]
         [HttpPost]
-        public IActionResult Save([FromBody]UserSaveModel user)
+        public async Task<IActionResult> Save([FromBody]UserSaveModel user)
         {
             try
             {
@@ -301,7 +301,11 @@ namespace ProjectTracking.Controllers
                     throw new Exception("System admin username cannot be changed!");
                 }
 
-                return Ok(_userMethods.Save(user));
+                _userMethods.Save(user);
+
+                await observerHub.Clients.User(user.id).SendAsync("SessionEnd", "your profile information has been modified, you are required to login again");
+
+                return Ok(user);
             }
             catch (ClientException ex)
             {
