@@ -118,6 +118,19 @@ new Vue({
 
             return totalPages || 0
         },
+        //activitiesYearsFilter() {
+
+        //    const team = this.team
+
+        //    if (!team) {
+        //        return []
+        //    }
+
+        //    const frequencies = (team.activitiesFrequency || []).map(k => moment(k.key))
+        //    console.log({ frequencies})
+
+
+        //}
     },
     mounted: function () {
 

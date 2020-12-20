@@ -92,6 +92,7 @@ else
 
         <section class="team-visualization">
             <div class="c-box-view c-box-view--responsive" v-if="team">
+
                 <div class="c-box">
                     <h5 class="c-box-title">Active Activities</h5>
                     <div class="scrollable-container-200">
@@ -122,6 +123,7 @@ else
                         <h5 v-else>Nothing Here</h5>
                     </div>
                 </div>
+
                 <div class="c-box vis-workload">
                     <h5 class="c-box-title">Workload</h5>
                     <canvas id="bar_workload"></canvas>
@@ -205,6 +207,54 @@ else
 
         <partial name="~/Views/Teams/Modals/BroadcastsModal.cshtml" model="@Model.ID" />
 
+
+
+
+        @*<div id="TaskActivitiesModal" class="modal" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">
+                            Activities
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <h4 v-show="!activities.isLoading && !activities.data.length ">
+                            <br />
+                            Nothing here yet
+                        </h4>
+
+                        <section  class="c-pagination" v-show="activitiesTotalPages > 1">
+                            <div>
+                                <paginate v-bind:page-count="activitiesTotalPages"
+                                          v-bind:container-class="activities.dataPaging.pagination"
+                                          v-bind:prev-text="activities.dataPaging.prev"
+                                          v-bind:next-text="activities.dataPaging.next"
+                                          v-bind:click-handler="activities_pageClick">
+                                </paginate>
+                            </div>
+                        </section>
+
+                        <div class="notification-container scrollable-container-300" v-show="activities.data.length">
+                            <div class="notification" v-for="(item,idx) in activities.data"
+                                 v-on:click="activityClick(idx)"
+                                 v-bind:class="getNotificationClasses(item)">
+                                <div class="notification__user"> {{item.fromUserDisplay}}</div>
+                                <div class="notification__message" v-html="item.message"></div>
+                                <div class="notification__date">{{item.dateSentDisplay}}</div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="s-btn s-btn-outline" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>*@
     </div>
 }
 
