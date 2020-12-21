@@ -1,4 +1,16 @@
 ﻿//#region Document
+
+const notify_user = (message, additionalClass) => {
+    $.notify(message, {
+        className: 'shared-notification ' + additionalClass,
+        position: 'top right',
+        clickToHide: true,
+        autoHide: false,
+    });
+}
+
+var notifyActiveUserInfo = true
+
 $(document).ready(function () {
     //let dataTables_en = $('[data-custom-dt=en]');
 
@@ -33,6 +45,24 @@ $(document).ready(function () {
     //if (dataTables_en.length) {
     //    dataTables_en.DataTable(dtOptions_TopControls_en);
     //}
+
+    if (notifyActiveUserInfo) {
+
+        const userName = $('body').attr('data-userName');
+        const userRole = $('body').attr('data-role');
+
+        if (userName && userRole) {
+
+            if (userName === 'admin') {
+                notify_user(`admin`, 'notify-' + userRole)
+
+            }
+            else {
+                notify_user(`${userName} - ${userRole}`, 'notify-' + userRole)
+            }
+        }
+    }
+
 });
 
 
@@ -583,6 +613,8 @@ const notify = (message) => {
         //autoHide: false,
     });
 }
+
+
 //#endregion 
 
 //#region bootbox

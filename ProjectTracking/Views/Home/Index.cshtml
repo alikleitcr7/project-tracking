@@ -1,13 +1,31 @@
-﻿
+﻿@inject ProjectTracking.Data.Methods.Interfaces.IUserMethods userMethods
+
 @{
     string userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
     string role_value = User.FindFirst(System.Security.Claims.ClaimTypes.Role).Value;
     ApplicationUserRole role = (ApplicationUserRole)Enum.Parse(typeof(ApplicationUserRole), role_value, true);
+
+    string userIntro = User.Identity.Name;
+
+    try
+    {
+        ProjectTracking.Models.Users.UserKeyValue userKeyValue = userMethods.GetUserKeyValue(userId);
+
+        userIntro = User.Identity.Name == "admin" ? "admin" : userKeyValue.Name?.ToLower();
+
+        if (userIntro != null && userIntro.IndexOf(' ') > -1)
+        {
+            userIntro = userIntro.Split(' ')[0];
+        }
+    }
+    catch (Exception)
+    {
+    }
 }
 
 <div id="Dashboard" class="v-container" data-user="@userId" v-cloak>
 
-    <h2>Good Day, @User.Identity.Name</h2>
+    <h2>Good Day, @(userIntro ?? User.Identity.Name)</h2>
 
     <section class="c-box-view c-box-view--wrap">
 
